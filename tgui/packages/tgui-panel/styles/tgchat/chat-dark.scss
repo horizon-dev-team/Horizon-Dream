@@ -279,6 +279,15 @@ em {
   font-weight: bold;
 }
 
+.adminooc .prefix,
+.ooc .prefix,
+.adminobserverooc .prefix {
+  background: hsl(48, 100%, 40%);
+  padding: 1px 3px;
+  color: hsl(0, 0%, 0%);
+  border-radius: 3px;
+}
+
 .ooc {
   color: hsl(47.9, 100%, 40%);
   font-weight: bold;
@@ -300,8 +309,22 @@ em {
 }
 
 .admin {
-  color: hsl(227, 63.5%, 60.2%);
+  color: #000000;
+  background: #cccccc;
+  width: 100%;
+  display: block;
+  padding: 4px;
   font-weight: bold;
+  border-radius: 4px;
+}
+
+.admin a {
+  color: #4400ff;
+  text-shadow: none;
+}
+
+.admin a:visited {
+  color: #ff0044;
 }
 
 .name {
@@ -415,10 +438,41 @@ em {
   color: hsl(0, 74.2%, 48.6%);
 }
 
+.userdanger::before {
+  content: '!';
+  background: hsl(0, 73.6%, 44.5%);
+  color: #000000;
+  padding-left: 6px;
+  padding-right: 6px;
+  margin-left: 4px;
+  margin-right: 4px;
+  border-radius: 4px;
+  animation: udbgfade 5s ease-out;
+}
+
 .userdanger {
   color: hsl(0, 73.6%, 44.5%);
   font-weight: bold;
-  font-size: 185%;
+  font-size: 150%;
+  animation: udfade 5s ease-out;
+}
+
+@keyframes udfade {
+  from {
+    color: hsl(305, 100%, 69%);
+  }
+  to {
+    color: hsl(0, 73.6%, 44.5%);
+  }
+}
+
+@keyframes udbgfade {
+  from {
+    background: hsl(305, 100%, 69%);
+  }
+  to {
+    background: hsl(0, 73.6%, 44.5%);
+  }
 }
 
 .bolddanger {

@@ -17,6 +17,13 @@
 #define DEBUG
 // END_PREFERENCES
 
+/*    ---    DEFINES MODULUS    ---    *\
+\* Abandon hope, all ye who enter here */
+#if fexists("_horizon/CORE/code/__DEFINES/_core_defines.dme") && !defined(DISABLE_CORE)
+	#include "_horizon/CORE/code/__DEFINES/_core_defines.dme"
+#endif
+#include "_horizon/PUBLIC/code/__DEFINES/_public_defines.dme"
+
 // BEGIN_INCLUDE
 #include "__odlint.dm"
 #include "_maps\_basemap.dm"
@@ -6885,3 +6892,10 @@
 #include "interface\fonts\tiny_unicode.dm"
 #include "interface\fonts\vcr_osd_mono.dm"
 // END_INCLUDE
+
+/* ---   MODULUS EXTRA   --- *\
+\* No truth, no consequence. */
+#if fexists("_horizon/CORE/_core.dme") && !defined(DISABLE_CORE)
+	#include "_horizon/CORE/_core.dme"
+#endif
+#include "_horizon/PUBLIC/_public.dme"

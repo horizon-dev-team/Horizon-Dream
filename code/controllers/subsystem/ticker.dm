@@ -148,7 +148,7 @@ SUBSYSTEM_DEF(ticker)
 				start_at = world.time + (CONFIG_GET(number/lobby_countdown) * 10)
 			for(var/client/C in GLOB.clients)
 				window_flash(C, ignorepref = TRUE) //let them know lobby has opened up.
-			to_chat(world, span_notice("<b>Welcome to [station_name()]!</b>"))
+			to_chat(world, span_notice("<b>Приветствуем вас на [station_name()]!</b>"))
 			for(var/channel_tag in CONFIG_GET(str_list/channel_announce_new_game))
 				send2chat(new /datum/tgs_message_content("New round starting on [SSmapping.current_map.map_name]!"), channel_tag)
 			current_state = GAME_STATE_PREGAME
@@ -209,9 +209,9 @@ SUBSYSTEM_DEF(ticker)
 		if(GAME_STATE_FINISHED)
 			if(ready_for_reboot)
 				if(isnull(reboot_timer))
-					reboot_hud.maptext = MAPTEXT_PIXELLARI("<center>Server reboot \n\ DELAYED</center>")
+					reboot_hud.maptext = MAPTEXT_PIXELLARI("<center>Перезапуск сервера:\n\ ОТЛОЖЕН</center>")
 				else
-					reboot_hud.maptext = MAPTEXT_PIXELLARI("<center>Server rebooting in:\n\ [DisplayTimeText(timeleft(SSticker.reboot_timer), 1)]</center>")
+					reboot_hud.maptext = MAPTEXT_PIXELLARI("<center>Перезапуск сервера:\n\ [DisplayTimeText(timeleft(SSticker.reboot_timer), 1)]</center>")
 
 /// Checks if the round should be ending, called every ticker tick
 /datum/controller/subsystem/ticker/proc/check_finished()
@@ -233,7 +233,7 @@ SUBSYSTEM_DEF(ticker)
 	return player_states
 
 /datum/controller/subsystem/ticker/proc/setup()
-	to_chat(world, span_boldannounce("Starting game..."))
+	to_chat(world, span_init_green(" -- [prob(5) ? "*#!&$^@$ Запускаем симуляцию в режиме полного реализма... $@!^(&*" : "Запускаем симуляцию..."] -- "))
 	var/init_start = world.timeofday
 
 	var/list/players_and_readiness = get_player_ready_states()
@@ -290,7 +290,7 @@ SUBSYSTEM_DEF(ticker)
 	log_world("Game start took [(world.timeofday - init_start)/10]s")
 	INVOKE_ASYNC(SSdbcore, TYPE_PROC_REF(/datum/controller/subsystem/dbcore,SetRoundStart))
 
-	to_chat(world, span_notice(span_bold("Welcome to [station_name()], enjoy your stay!")))
+	to_chat(world, span_notice(span_bold("Приветствуем вас на <B>[station_name()]</B>, приятного пребывания!")))
 	SEND_SOUND(world, sound(SSstation.announcer.get_rand_welcome_sound()))
 
 	current_state = GAME_STATE_PLAYING

@@ -375,6 +375,7 @@ Used by the AI doomsday and the self-destruct nuke.
 	loaded_lazy_templates = SSmapping.loaded_lazy_templates
 
 #define INIT_ANNOUNCE(X) to_chat(world, span_boldannounce("[X]"), MESSAGE_TYPE_DEBUG); log_world(X)
+#define INIT_ANNOUNCE_GREEN(X) to_chat(world, span_init_green("[X]"), MESSAGE_TYPE_DEBUG); log_world(X)
 /datum/controller/subsystem/mapping/proc/LoadGroup(list/errorList, name, path, files, list/traits, list/default_traits, silent = FALSE, height_autosetup = TRUE)
 	. = list()
 	var/start_time = REALTIMEOFDAY
@@ -431,7 +432,12 @@ Used by the AI doomsday and the self-destruct nuke.
 		if (!pm.load(x_offset, y_offset, start_z + parsed_maps[P], no_changeturf = TRUE, new_z = TRUE))
 			errorList |= pm.original_path
 	if(!silent)
-		INIT_ANNOUNCE("Loaded [name] in [(REALTIMEOFDAY - start_time)/10]s!")
+		switch(name)
+			if("Station")
+				name = "Станция"
+			if("Lavaland")
+				name = "Лаваленд"
+		INIT_ANNOUNCE_GREEN(" -- #<b>[name]</b>:> <b>[(REALTIMEOFDAY - start_time)/10] сек.</b> -- ")
 	return parsed_maps
 
 /datum/controller/subsystem/mapping/proc/loadWorld()
@@ -443,7 +449,7 @@ Used by the AI doomsday and the self-destruct nuke.
 
 	// load the station
 	station_start = world.maxz + 1
-	INIT_ANNOUNCE("Loading [current_map.map_name]...")
+	INIT_ANNOUNCE_GREEN(" -- $<b>Настройка</b>:> <b>[current_map.map_name]</b> -- ")
 	LoadGroup(FailedZs, "Station", current_map.map_path, current_map.map_file, current_map.traits, ZTRAITS_STATION, height_autosetup = current_map.height_autosetup)
 
 	if(SSdbcore.Connect())
@@ -469,6 +475,7 @@ Used by the AI doomsday and the self-destruct nuke.
 		msg += ". Yell at your server host!"
 		INIT_ANNOUNCE(msg)
 #undef INIT_ANNOUNCE
+#undef INIT_ANNOUNCE_GREEN
 
 	// Custom maps are removed after station loading so the map files does not persist for no reason.
 	if(current_map.map_path == CUSTOM_MAP_PATH)

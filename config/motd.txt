@@ -1,5 +1,24 @@
-<!-- Most valid html will work in here, but you have to use URL links for images. -->
+<div id="motd-header">
+	<center>
+		<h1 id="motd-header">Добро пожаловать на HORIZON: Alpha-Test!</h1>
+		<i id="motd-p">Этот сервер использует модифицированный билд <a id="motd-a" href="https://github.com/tgstation/tgstation">/TG/Station</a></i>
+	</center>
+</div>
 
-<h1>Welcome to Space Station 13!</h1>
+<div id="motd-main">
+	<center>
+		<p id="motd-p">Добавь в закладки: <b id="motd-b">byond://localhost:1337</b></p>
+		<p id="motd-p">
+			<a id="motd-a" href="https://horizon-dev-team.github.io/Horizon-Changelog/">Чейнжлог</a> |
+			<a id="motv-a" href="https://github.com/nebula-in-space/Horizon">GitHub</a> |
+			<a id="motd-a" href="https://horizon-dev-team.github.io/handbook/">Wiki</a> |
+			<a id="motd-a" href="https://discord.gg/xTCHgdUbeQ">Discord</a>
+		</p>
+	</center>
+</div>
 
-<i>This server is running a /tg/station 13 Git build.</i>
+<div id="motd-footer">
+	<center>
+		<p>Сервер активно разрабатывается. Оставайтесь с нами на одной волне!</p>
+	</center>
+</div>

@@ -301,13 +301,13 @@ ADMIN_VERB(cmd_controller_view_ui, R_SERVER|R_DEBUG, "Controller Overview", "Vie
 		LAZYINITLIST(BadBoy.failure_strikes)
 		switch(++BadBoy.failure_strikes[BadBoy.type])
 			if(2)
-				msg = "The [BadBoy.name] subsystem was the last to fire for 2 controller restarts. It will be recovered now and disabled if it happens again."
+				msg = "Подсистема <b>[BadBoy.name]</b> после 2 перезапусков хочет поломать игру. Она была перезапущена и будет отключена, если не прекратит."
 				FireHim = TRUE
 			if(3)
-				msg = "The [BadBoy.name] subsystem seems to be destabilizing the MC and will be put offline."
+				msg = "Подсистема <b>[BadBoy.name]</b> похоже хочет умереть. Отключаем её."
 				BadBoy.ss_flags |= SS_NO_FIRE
 		if(msg)
-			to_chat(GLOB.admins, span_boldannounce("[msg]"))
+			to_chat(GLOB.admins, span_init_green("[msg]"))
 			log_world(msg)
 
 	if (istype(Master.subsystems))
@@ -317,7 +317,7 @@ ADMIN_VERB(cmd_controller_view_ui, R_SERVER|R_DEBUG, "Controller Overview", "Vie
 		current_runlevel = Master.current_runlevel
 		StartProcessing(10)
 	else
-		to_chat(world, span_boldannounce("The Master Controller is having some issues, we will need to re-initialize EVERYTHING"))
+		to_chat(world, span_init_green("Мастер-контроллер возникли проблемы, Пытаемся переинициализировать <b>ВСЕ подсистемы</b>."))
 		Initialize(20, TRUE, FALSE)
 
 // Please don't stuff random bullshit here,
@@ -334,7 +334,7 @@ ADMIN_VERB(cmd_controller_view_ui, R_SERVER|R_DEBUG, "Controller Overview", "Vie
 	init_stage_completed = 0
 	var/mc_started = FALSE
 
-	to_chat(world, span_boldannounce("Initializing subsystems..."), MESSAGE_TYPE_DEBUG)
+	to_chat(world, span_init_green("Инциализация подсистем..."), MESSAGE_TYPE_DEBUG)
 
 	var/list/stage_sorted_subsystems = new(INITSTAGE_MAX)
 	for (var/i in 1 to INITSTAGE_MAX)
@@ -456,8 +456,8 @@ ADMIN_VERB(cmd_controller_view_ui, R_SERVER|R_DEBUG, "Controller Overview", "Vie
 
 
 
-	var/msg = "Initializations complete within [time] second[time == 1 ? "" : "s"]!"
-	to_chat(world, span_boldannounce("[msg]"), MESSAGE_TYPE_DEBUG)
+	var/msg = "-- $<b>Мир</b>:> <b>[time] сек.</b> --"
+	to_chat(world, span_init_green("[msg]"), MESSAGE_TYPE_DEBUG)
 	log_world(msg)
 
 
@@ -535,20 +535,20 @@ ADMIN_VERB(cmd_controller_view_ui, R_SERVER|R_DEBUG, "Controller Overview", "Vie
 
 	switch(result)
 		if(SS_INIT_FAILURE)
-			message_prefix = "Failed to initialize [subsystem.name] subsystem after"
+			message_prefix = "Инициализация подсистемы [subsystem.name] провалена"
 			chat_warning = TRUE
 		if(SS_INIT_SUCCESS, SS_INIT_NO_MESSAGE)
-			message_prefix = "Initialized [subsystem.name] subsystem within"
+			message_prefix = "Инициализация подсистемы [subsystem.name]"
 		if(SS_INIT_NO_NEED)
 			// This SS is disabled or is otherwise shy.
 			return
 		else
 			// SS_INIT_NONE or an invalid value.
-			message_prefix = "Initialized [subsystem.name] subsystem with errors within"
+			message_prefix = "Инициализация подсистемы [subsystem.name] с ошибками"
 			chat_warning = TRUE
 
-	var/message = "[message_prefix] [seconds] second[seconds == 1 ? "" : "s"]!"
-	var/chat_message = chat_warning ? span_boldwarning(message) : span_boldannounce(message)
+	var/message = "[message_prefix] за [seconds] сек."
+	var/chat_message = chat_warning ? span_boldwarning(message) : span_init_green(message)
 
 	if(result != SS_INIT_NO_MESSAGE)
 		to_chat(world, chat_message, MESSAGE_TYPE_DEBUG)

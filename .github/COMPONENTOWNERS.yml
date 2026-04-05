@@ -1,0 +1,45 @@
+##
+# Почти CODEOWNERS, только работает лучше. Формат: https://github.com/dyladan/component-owners
+# Реквестит ревью указанных людей/команд при изменениях в указанных файлах/папках. Названия команд начинаются с "/", пути от корневой папки.
+#
+# Вы должны быть частью команды гитхаб-организации, иначе гитхаб не сможет назначить вас на ревью.
+# Так что запросите у мейнтейнеров инвайт в группу Collaborators, если необходимо. Или в другие подходящие группы.
+#
+# Держите файлы и папки в алфавитном порядке (так, как они отсортированны в DreamMaker).
+#
+# CODEOWNERS используются у нас ТОЛЬКО ДЛЯ УВЕДОМЛЕНИЙ, если вы хотите закрепить за собой обязательность
+# ревью PR-а перед мержем - напишите об этом дополнительно в PR, желательно в первые сутки его открытия!
+#
+##
+
+components:
+  ## Конфигурация ##
+  .github/:  KOCMODECAHTHUK
+  bin/:  KOCMODECAHTHUK
+  cfg/: KOCMODECAHTHUK
+  config/: KOCMODECAHTHUK
+  SQL/:  KOCMODECAHTHUK
+  tools/:  KOCMODECAHTHUK
+
+  ## Папки ##
+  _horizon/: horizon-dev-team/HORIZON-TEAM
+  _maps/: horizon-dev-team/HORIZON-TEAM
+  code/: horizon-dev-team/HORIZON-TEAM
+  html/: horizon-dev-team/HORIZON-TEAM
+  icons/: horizon-dev-team/HORIZON-TEAM
+  sound/: horizon-dev-team/HORIZON-TEAM
+  strings/: horizon-dev-team/HORIZON-TEAM
+  tgui/: horizon-dev-team/HORIZON-TEAM
+
+  ## Общее ##
+  "**/*": horizon-dev-team/HORIZON-TEAM
+  "**/*.dm": horizon-dev-team/HORIZON-TEAM
+  "**/*.ogg": horizon-dev-team/HORIZON-TEAM
+  "**/*.mp3": horizon-dev-team/HORIZON-TEAM
+  "**/*.dmi": horizon-dev-team/HORIZON-TEAM
+  "**/*.dmm": horizon-dev-team/HORIZON-TEAM
+  "**/*.json": horizon-dev-team/HORIZON-TEAM
+  "**/*.txt": horizon-dev-team/HORIZON-TEAM
+
+ignored-authors:
+  - dependabot

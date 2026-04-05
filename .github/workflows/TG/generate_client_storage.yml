@@ -15,14 +15,10 @@ jobs:
       - name: Generate App Token
         id: app-token-generation
         uses: actions/create-github-app-token@v3
-        if: env.APP_PRIVATE_KEY != '' && env.APP_ID != ''
         with:
           app-id: ${{ secrets.APP_ID }}
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
           owner: tgstation
-        env:
-          APP_PRIVATE_KEY: ${{ secrets.APP_PRIVATE_KEY }}
-          APP_ID: ${{ secrets.APP_ID }}
 
       - name: Send Repository Dispatch
         if: success()

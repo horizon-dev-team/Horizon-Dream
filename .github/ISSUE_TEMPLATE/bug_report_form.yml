@@ -1,65 +1,76 @@
-name: Bug Report
-description: Create a report to help reproduce and fix the issue.
+name: 🐞 Сообщить о баге
+description: Сообщить найденой ошибке в игре
+title: "[БАГ]: "
+type: Баг
 body:
   - type: markdown
     attributes:
       value: |
-        # **Please read the following guidelines. Follow all instructions or else your issue is subject to closure.**
-        ## If you use the "Report Issue" button in the top-right corner of the game, it will automatically fill in some of the information below.
+        ## Называйте заголовок кратко и понятно:
+        ### ПРИМЕР: `[БАГ]: Автолат - Вызывает невыносимые лаги`
+        Это поможет быстрее передать сути проблемы.
+        Можно называть и так:
+        **`[БАГ]: Неработающий автолат - Создающий лаги`**
+        #### В игре есть кнопка «Bug Report» в правом верхнем углу игры, при её нажатии часть информации ниже заполнится автоматически.
 
-        If you are reporting an issue found in another branch or codebase, you _must_ link the branch or codebase repo in your issue report or it will be closed.
-        For branches, If you have not pushed your code up, please either reproduce it on master or push your code up before making an issue report.
-        For other codebases, if you do not have a public code repository you will be refused help unless you can completely reproduce the issue on our master branch.
-  - type: input
-    id: reporting-version
+  - type: checkboxes
+    id: feature_scope
     attributes:
-      label: "Client Version:"
-      description: |
-        The BYOND version you are using to report this issue. You can find this information in the bottom left corner of the "About BYOND" window in the BYOND client.
-        It is strongly recommended that you include this, especially for concerns on the visual aspects of the game.
-      placeholder: "xxx.xxxx"
-    validations:
-      required: false
+      label: "Категория бага"
+      description: "К какому типу контента относится проблема?"
+      options:
+        - label: "🧱 Код"
+        - label: "🎨 Спрайты"
+        - label: "🗺 Карты"
+
   - type: textarea
-    id: issue-summary
+    id: bug_description
     attributes:
-      label: "Issue Summary:"
-      description: |
-        Briefly explain your issue in a few plain sentences. You may copy and paste the issue title here if it is suitable.
-      placeholder: |
-        "When I do X, Y happens instead of Z."
-        "X on Y map has Z issue."
+      label: Описание бага
+      description: Четкое и понятное описание сути бага.
+      placeholder: Не работает автолат, вызывает лаги при попытке с ним взаимодействовать.
     validations:
       required: true
-  - type: input
-    id: round-id
-    attributes:
-      label: "Round ID:"
-      description: |
-        If you discovered this issue from playing tgstation hosted servers, the Round ID can be found in the Status panel or retrieved from https://statbus.space/
-        The Round ID lets us look up valuable information and logs for the round the bug happened. Leave this blank if there is no round ID.
-      placeholder: "XXXXXX"
-    validations:
-      required: false
+
   - type: textarea
-    id: test-merges
+    id: bug_reproduction
     attributes:
-      label: "Test Merge Information:"
-      description: |
-        If you're certain the issue is to be caused by a test merge [OOC Tab -> Show Server Revision], report it in the pull request's comment section rather than on the tracker.
-        If you're unsure you can refer to the issue number by prefixing said number with #. The issue number can be found beside the title after submission of this form.
-    validations:
-      required: false
-  - type: textarea
-    id: reproduction
-    attributes:
-      label: "Reproduction Steps:"
-      description: |
-        Describe the steps to reproduce the issue in detail. Include any relevant information, such as the map, round type, and any other factors that may be relevant.
-        If it is a runtime-related error, please include the runtime here as that is pertient information. Issues are not for oddities introduced by admin varedits, ensure these occur in normal circumstances.
+      label: Шаги воспроизведения
+      description: Опишите способ воспроизведения бага.
       placeholder: |
-        1. Go to the X location
-        2. Do Y action
-        3. Observe Z result
+        1. Найти автолат
+        2. Открыть его меню, кликнуть ЛКМ
+        3. Получить лаги
     validations:
       required: true
+
+  - type: textarea
+    id: expected_behaviour
+    attributes:
+      label: Ожидаемое поведение
+      description: Четкое и понятное описание того, что должно было произойти.
+      placeholder: Работающий автолат, без лагов.
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        ### Пример заполнения `Дополнительной информации`:
+        В чате при этом пишет что автолат занят, хотя на деле он не занят.
+        (Опционально скриншоты)
+        Версия клиента: `XXX.XXXX`
+        Round ID: `XXXXXX`
+
+  - type: textarea
+    id: additional-info
+    attributes:
+      label: Дополнительная информация
+      description: |
+        Укажите версию клиента, на которой произошёл баг. Указана в клиенте BYOND в меню 'About BYOND...'.
+        Round ID можно найти в игре в панели статуса, либо в канале дискорд сервера https://discord.gg/rxsggTJzY3 round-report
+      placeholder: |
+        Здесь можете описать любую дополнительную информацию, которая касается бага.
+        (Опционально скриншоты)
+        Версия клиента: XXX.XXXX
+        Round ID: XXXXXX

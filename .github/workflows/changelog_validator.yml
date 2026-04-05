@@ -1,0 +1,51 @@
+name: Changelog - Validator
+
+permissions:
+  contents: read
+  pull-requests: write
+
+on:
+  pull_request_target:
+    types: [edited, labeled]
+    branches:
+      - master
+
+jobs:
+  CheckCL:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.state != 'closed'
+
+    steps:
+      - name: Generate App Token
+        id: app-token-generation
+        uses: actions/create-github-app-token@v3
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          repositories: |
+            HORIZON-Project-Prototype
+            horizon-scripts
+
+      - name: Download validation scripts
+        env:
+          GH_TOKEN: ${{ steps.app-token-generation.outputs.token }}
+        run: |
+          gh api repos/horizon-dev-team/horizon-scripts/contents/changelog_utils.py --jq '.content' | base64 -d > changelog_utils.py
+          gh api repos/horizon-dev-team/horizon-scripts/contents/check_changelog.py --jq '.content' | base64 -d > check_changelog.py
+          gh api repos/horizon-dev-team/horizon-scripts/contents/tags.yml --jq '.content' | base64 -d > tags.yml
+          ls -la *.py *.yml
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install dependencies
+        run: |
+          pip install ruamel.yaml PyGithub
+
+      - name: Changelog validation
+        env:
+          GITHUB_TOKEN: ${{ steps.app-token-generation.outputs.token }}
+        run: python check_changelog.py

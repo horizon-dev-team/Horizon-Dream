@@ -1,4 +1,4 @@
-name: TGS Test Suite
+name: TGS - Test Suite
 on:
   push:
     branches:

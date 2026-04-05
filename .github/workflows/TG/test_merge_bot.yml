@@ -3,10 +3,8 @@
 # { round_id, datetime, test_merges, server, url }
 # You can see the moth.fans implementation in Rust here: https://github.com/Mothblocks/mothbus/blob/41fec056824edba0ffdfa39882b67739bf475d83/src/routes/recent_test_merges.rs#L30
 # This is hosted on https://bus.moth.fans/recent-test-merges.json.
-name: Test Merge Detector
+name: TM - Test Merge Detector
 on:
-  schedule:
-    - cron: "*/30 * * * *"
   workflow_dispatch:
 jobs:
   test_merge_bot:

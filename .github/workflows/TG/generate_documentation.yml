@@ -1,7 +1,5 @@
 name: Generate documentation
 on:
-  schedule:
-    - cron: "44 */6 * * *"
   workflow_dispatch:
 permissions:
   contents: read

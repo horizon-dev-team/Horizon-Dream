@@ -1,0 +1,36 @@
+# This list auto requests reviews from the specified org members
+# when a PR that modifies the file in question is opened
+# This list is alphabetized by User -> Filename and separated into sections for Maintainers/Contributors KEEP IT THAT WAY
+# In the event that people are to be informed of changes
+# to the same file or dir, add them to the end of under Multiple Owners
+
+# CODEOWNER
+
+# @KOCMODECAHTHUK
+
+/.github/ @KOCMODECAHTHUK
+/SQL/ @KOCMODECAHTHUK
+/tools/ @KOCMODECAHTHUK
+/bin/ @KOCMODECAHTHUK
+
+# MAINTAINERS
+
+/**/* @horizon-dev-team/HORIZON-TEAM
+/**/*.dm @horizon-dev-team/HORIZON-TEAM
+/**/*.ogg @horizon-dev-team/HORIZON-TEAM
+/**/*.mp3 @horizon-dev-team/HORIZON-TEAM
+/**/*.dmi @horizon-dev-team/HORIZON-TEAM
+/**/*.dmm @horizon-dev-team/HORIZON-TEAM
+/**/*.json @horizon-dev-team/HORIZON-TEAM
+/**/*.dmi @horizon-dev-team/HORIZON-TEAM
+/**/*.txt @horizon-dev-team/HORIZON-TEAM
+/_horizon/ @horizon-dev-team/HORIZON-TEAM
+/_maps/ @horizon-dev-team/HORIZON-TEAM
+/code/ @horizon-dev-team/HORIZON-TEAM
+/icons/ @horizon-dev-team/HORIZON-TEAM
+/html/ @horizon-dev-team/HORIZON-TEAM
+/sound/ @horizon-dev-team/HORIZON-TEAM
+/strings/ @horizon-dev-team/HORIZON-TEAM
+/tgui/ @horizon-dev-team/HORIZON-TEAM
+
+# CONTRIBUTORS

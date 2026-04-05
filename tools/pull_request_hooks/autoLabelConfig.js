@@ -6,35 +6,57 @@
 // if the edit to the file is removed in a later commit,
 // the label will not be removed
 export const file_labels = {
-  GitHub: {
-    filepaths: [".github/"],
+  '🏭 Github': {
+    filepaths: [".github/", '.vscode/'],
   },
-  SQL: {
+  "📚 SQL": {
     filepaths: ["SQL/"],
   },
-  "Map Edit": {
+  '🪓 CORE-CODE': {
+    filepaths: ['_maps/map_files/', '_maps/shuttles/', 'code/', 'icons/', 'sound/']
+  },
+  '🧱 Код': {
+    filepaths: ["code/"],
+  },
+  '🗺 Маппинг': {
     filepaths: ["_maps/"],
     file_extensions: [".dmm"],
   },
-  Tools: {
+  '🚀 Корабли': {
+    filepaths: ["_maps/shuttles/", "_maps/configs/", '_maps/_horizon/shuttles/', '_maps/_horizon/configs/'],
+    file_extensions: [".dmm"],
+  },
+  '🏔 Руинки': {
+    filepaths: ["_maps/RandomRuins/", "_maps/_horizon/RandomRuins/", "_maps/_horizon/RandomRuins/"],
+    file_extensions: [".dmm"],
+  },
+  '🛠️ Инструменты': {
     filepaths: ["tools/"],
   },
-  "Config Update": {
+  '🔮 Конфиги': {
     filepaths: ["config/", "code/controllers/configuration/entries/"],
-    add_only: true,
   },
-  Sprites: {
+  '🎨 Спрайты': {
     filepaths: ["icons/"],
     file_extensions: [".dmi"],
-    add_only: true,
   },
-  Sound: {
+  '🔊 Звуки': {
     filepaths: ["sound/"],
-    file_extensions: [".ogg"],
+    file_extensions: ['.aif', '.aiff', '.it', '.mid', '.midi', '.mod', '.mp3', '.ogg', '.oxm', '.raw', '.s3m', '.wma', '.wav', '.xm'],
+  },
+  "💬 UI": {
+    filepaths: ["tgui/"],
+  },
+  "UpdatePaths 🚧": {
+    filepaths: ["tools/UpdatePaths/Scripts/"],
+  },
+  "CL: ❌": {
     add_only: true,
   },
-  UI: {
-    filepaths: ["tgui/"],
+  "CL: ✔️": {
+    add_only: true,
+  },
+  "CL: 🔘": {
     add_only: true,
   },
 };
@@ -43,29 +65,26 @@ export const file_labels = {
 //
 // Add a label based on keywords in the title
 export const title_labels = {
-  Logging: {
+  "📝 Логирование": {
     keywords: ["log", "logging"],
   },
-  Removal: {
+  "🗑️ Удаление": {
     keywords: ["remove", "delete"],
   },
-  Refactor: {
+  "🏗 Рефакторинг": {
     keywords: ["refactor"],
   },
-  "Unit Tests": {
+  "🧪 Unit Tests": {
     keywords: ["unit test"],
   },
-  "April Fools": {
+  "🎭 April Fools": {
     keywords: ["[april fools]"],
   },
-  "Do Not Merge": {
-    keywords: ["[dnm]", "[do not merge]"],
+  "Обновление с TG ☠": {
+    keywords: ["[UPDATE-SYNC]"],
   },
-  "GBP: No Update": {
-    keywords: ["[no gbp]"],
-  },
-  "Test Merge Only": {
-    keywords: ["[tm only]", "[test merge only]"],
+  '🛠️ Инструменты': {
+    keywords: ["[TGS]"],
   },
 };
 
@@ -74,53 +93,49 @@ export const title_labels = {
 // Adds labels based on keywords in the changelog
 // TODO use the existing changelog parser
 export const changelog_labels = {
-  Fix: {
-    default_text: "fixed a few things",
-    keywords: ["fix", "fixes", "bugfix"],
+  "🔧 Фикс": {
+    default_text: "Исправлена ошибка",
+    keywords: ["fix", "fixes", "bugfix", "фикс", "пофиксил", "исправлен", "исправлено", "исправлены"],
   },
-  "Quality of Life": {
-    default_text: "made something easier to use",
-    keywords: ["qol"],
-  },
-  Sound: {
-    default_text: "added/modified/removed audio or sound effects",
+  "🔊 Звуки": {
+    default_text: "Добавлен/изменен/удален звук",
     keywords: ["sound"],
   },
-  Feature: {
-    default_text: "Added new mechanics or gameplay changes",
+  "🔩 Улучшение": {
+    default_text: "Добавлено что-то новое",
     alt_default_text: "Added more things",
     keywords: ["add", "adds", "rscadd"],
   },
-  Removal: {
-    default_text: "Removed old things",
-    keywords: ["del", "dels", "rscdel"],
+  "🗑️ Удаление": {
+    default_text: "Удалено что-то старое",
+    keywords: ["del", "dels", "rscdel", "удалено"],
   },
-  Sprites: {
-    default_text: "added/modified/removed some icons or images",
+  "🎨 Спрайты": {
+    default_text: "Добавлен/изменен/удален спрайт",
     keywords: ["image"],
   },
-  "Grammar and Formatting": {
-    default_text: "fixed a few typos",
+  "✍️ Текст": {
+    default_text: "Исправлена опечатка / Добавлен перевод",
     keywords: ["typo", "spellcheck"],
   },
-  Balance: {
-    default_text: "rebalanced something",
+  "⚖️ Баланс": {
+    default_text: "Изменен баланс",
     keywords: ["balance"],
   },
-  "Code Improvement": {
-    default_text: "changed some code",
+  "🔧 Оптимизация": {
+    default_text: "Технические правки кода",
     keywords: ["code_imp", "code"],
   },
-  Refactor: {
+  "🏗 Рефакторинг": {
     default_text: "refactored some code",
     keywords: ["refactor"],
   },
-  "Config Update": {
-    default_text: "changed some config setting",
+  "🔮 Конфиги": {
+    default_text: "Изменены настройки конфигурации сервера",
     keywords: ["config"],
   },
-  Administration: {
-    default_text: "messed with admin stuff",
+  "⚙️ Админские штуки": {
+    default_text: "Изменения в кнопках администрации",
     keywords: ["admin"],
   },
 };

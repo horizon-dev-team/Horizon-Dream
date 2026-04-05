@@ -5,25 +5,37 @@ on:
   pull_request_target:
     types: [opened, synchronize, reopened, ready_for_review]
 
+permissions:
+  contents: read # to read changed files
+  issues: write # to read/write issue assignees
+  pull-requests: write # to read/write PR reviewers
+
 jobs:
   assign-users:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     timeout-minutes: 5
 
+    name: Auto Assign Owners
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so the job can access it
-      - uses: actions/checkout@v6
-
-      #Parse the Codeowner file on non draft PRs
-      - name: CodeOwnersParser
-        if: github.event.pull_request.draft == false
-        id: CodeOwnersParser
-        uses: tgstation/CodeOwnersParser@v1
-
-      #Request reviews
-      - name: Request reviews
-        if: steps.CodeOwnersParser.outputs.owners != ''
-        uses: tgstation/RequestReviewFromUser@v1
+      - name: Checkout master branch
+        uses: actions/checkout@v6
         with:
-          separator: " "
-          users: ${{ steps.CodeOwnersParser.outputs.owners }}
+          ref: ${{ github.base_ref }}
+
+      - name: Generate App Token
+        id: app-token-generation
+        uses: actions/create-github-app-token@v3
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
+      - uses: horizon-dev-team/component-owners@main
+        with:
+          # default: .github/component_owners.yml
+          config-file: .github/COMPONENTOWNERS.yml
+          # default: ${{ github.token }}
+          repo-token: ${{ steps.app-token-generation.outputs.token }}
+          # default: true
+          assign-owners: "false"
+          # default: true
+          request-owner-reviews: "true"

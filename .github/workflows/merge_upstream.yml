@@ -1,0 +1,54 @@
+name: UPDATE-SYNC - Merge Upstream
+
+on:
+  workflow_dispatch:
+
+jobs:
+  merge-upstream:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Generate App Token
+        id: app-token-generation
+        uses: actions/create-github-app-token@v3
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          repositories: |
+            HORIZON-Project-Prototype
+            horizon-scripts
+
+      - name: Download scripts
+        env:
+          GH_TOKEN: ${{ steps.app-token-generation.outputs.token }}
+        run: |
+          gh api repos/horizon-dev-team/horizon-scripts/contents/merge_upstream.py --jq '.content' | base64 -d > merge_upstream.py
+          gh api repos/horizon-dev-team/horizon-scripts/contents/changelog_utils.py --jq '.content' | base64 -d > changelog_utils.py
+          ls -la *.py
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.x
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install PyGithub
+
+      - name: Run the script
+        env:
+          GITHUB_TOKEN: ${{ steps.app-token-generation.outputs.token }}
+          TARGET_REPO: ${{ vars.TARGET_REPO }}
+          TARGET_BRANCH: ${{ vars.TARGET_BRANCH }}
+          UPSTREAM_REPO: ${{ vars.UPSTREAM_REPO }}
+          UPSTREAM_BRANCH: ${{ vars.UPSTREAM_BRANCH }}
+          MERGE_BRANCH: ${{ vars.MERGE_BRANCH }}
+          CHANGELOG_AUTHOR: ${{ vars.CHANGELOG_AUTHOR }}
+          LOG_LEVEL: ${{ runner.debug && 'DEBUG' || 'INFO' }}
+        run: |
+          git config --global user.name "${{ secrets.APP_PUBLIC_NAME }}[bot]"
+          git config --global user.email "${{ secrets.APP_PUBLIC_ID }}+${{ secrets.APP_PUBLIC_NAME }}[bot]@users.noreply.github.com"
+
+          python3 -u merge_upstream.py

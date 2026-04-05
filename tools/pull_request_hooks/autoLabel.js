@@ -213,7 +213,7 @@ export async function get_updated_label_set({ github, context }) {
 
     for (const eventData of events) {
       // Skip all bot actions
-      if (eventData.actor?.login === "github-actions[bot]") {
+      if (eventData.actor?.login === "horizon-dev-sync[bot]") {
         continue;
       }
       if (eventData.event === "labeled") {
@@ -227,7 +227,7 @@ export async function get_updated_label_set({ github, context }) {
   }
 
   // Always remove Test Merge Candidate
-  updated_labels.delete("Test Merge Candidate");
+  updated_labels.delete("! TM !");
 
   // Handle merge conflict label
   let merge_conflict = mergeable === false;
@@ -262,9 +262,9 @@ export async function get_updated_label_set({ github, context }) {
   }
 
   if (merge_conflict) {
-    updated_labels.add("Merge Conflict");
+    updated_labels.add("Merge Conflict 🔥");
   } else {
-    updated_labels.delete("Merge Conflict");
+    updated_labels.delete("Merge Conflict 🔥");
   }
 
   // return the labels to the action, which will apply it

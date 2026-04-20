@@ -1,8 +1,8 @@
 ## Horizon =][=
 
-[![Build Status](https://github.com/horizon-dev-team/HORIZON-Project-Prototype/workflows/CI%20Suite/badge.svg)](https://github.com/horizon-dev-team/HORIZON-Project-Prototype/actions?query=workflow%3A%22CI+Suite%22)
-[![Percentage of issues still open](https://isitmaintained.com/badge/open/horizon-dev-team/HORIZON-Project-Prototype.svg)](https://isitmaintained.com/project/horizon-dev-team/HORIZON-Project-Prototype "Percentage of issues still open")
-[![Average time to resolve an issue](https://isitmaintained.com/badge/resolution/horizon-dev-team/HORIZON-Project-Prototype.svg)](https://isitmaintained.com/project/horizon-dev-team/HORIZON-Project-Prototype "Average time to resolve an issue")
+[![Build Status](https://github.com/horizon-dev-team/Horizon-Dream/workflows/CI%20Suite/badge.svg)](https://github.com/horizon-dev-team/Horizon-Dream/actions?query=workflow%3A%22CI+Suite%22)
+[![Percentage of issues still open](https://isitmaintained.com/badge/open/horizon-dev-team/Horizon-Dream.svg)](https://isitmaintained.com/project/horizon-dev-team/Horizon-Dream "Percentage of issues still open")
+[![Average time to resolve an issue](https://isitmaintained.com/badge/resolution/horizon-dev-team/Horizon-Dream.svg)](https://isitmaintained.com/project/horizon-dev-team/Horizon-Dream "Average time to resolve an issue")
 
 ### Это основной репозиторий Horizon по игре [Space Station 13](https://station13.ru/).
 
@@ -20,7 +20,7 @@ Space Station 13 — это наполненная паранойей ролев
 - Пользователям Ubuntu/Debian:
 
   ```bash
-  git clone https://github.com/horizon-dev-team/HORIZON-Project-Prototype && cd HORIZON
+  git clone https://github.com/horizon-dev-team/Horizon-Dream && cd HORIZON
 
   # Сборка библиотеки rust-g
   sudo dpkg --add-architecture i386
@@ -68,9 +68,9 @@ Space Station 13 — это наполненная паранойей ролев
 
 ## Лицензия
 
-Весь код до [коммита 333c566b88108de218d882840e61928a9b759d8f on 2014/12/31 at 4:38 PM PST](https://github.com/horizon-dev-team/HORIZON-Project-Prototype/commit/333c566b88108de218d882840e61928a9b759d8f) лицензирован под [GNU AGPL v3](https://www.gnu.org/licenses/agpl-3.0.html).
+Весь код до [коммита 333c566b88108de218d882840e61928a9b759d8f on 2014/12/31 at 4:38 PM PST](https://github.com/horizon-dev-team/Horizon-Dream/commit/333c566b88108de218d882840e61928a9b759d8f) лицензирован под [GNU AGPL v3](https://www.gnu.org/licenses/agpl-3.0.html).
 
-All code before [коммита 333c566b88108de218d882840e61928a9b759d8f on 2014/12/31 at 4:38 PM PST](https://github.com/horizon-dev-team/HORIZON-Project-Prototype/commit/333c566b88108de218d882840e61928a9b759d8f) лицензирован под [GNU GPL v3](https://www.gnu.org/licenses/gpl-3.0.html).
+All code before [коммита 333c566b88108de218d882840e61928a9b759d8f on 2014/12/31 at 4:38 PM PST](https://github.com/horizon-dev-team/Horizon-Dream/commit/333c566b88108de218d882840e61928a9b759d8f) лицензирован под [GNU GPL v3](https://www.gnu.org/licenses/gpl-3.0.html).
 (Включая папку tools, но только если их readme не сообщает обратное)
 
 Смотрите LICENSE и GPLv3.txt за подробностями.

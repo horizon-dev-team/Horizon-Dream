@@ -60,12 +60,17 @@
 
 @include meta.load-css('~highlight.js/scss/a11y-dark.scss');
 
-// NT Theme
+// Horizon Theme
 .Layout__content {
-  background-image: url('tgui-core/assets/bg-nanotrasen.svg');
-  background-size: 70% 70%;
-  background-position: center;
-  background-repeat: no-repeat;
+  background-image:
+    url('./_interfaces_horizon/assets/bg-horizon-logo.svg'),
+    url('./_interfaces_horizon/assets/bg-horizon-cover.svg');
+  background-position-y: center, bottom;
+  background-position-x: center, right;
+  background-size:
+    50% 50%,
+    500px;
+  background-repeat: no-repeat, repeat-x;
 }
 
 // A default, in case someone uses the vp() function outside of a <Window>

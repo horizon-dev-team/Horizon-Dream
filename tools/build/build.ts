@@ -172,6 +172,7 @@ export const DmTarget = new Juke.Target({
     !get(SkipIconCutter) && IconCutterTarget,
   ],
   inputs: [
+    '_horizon/**',        //  [HORIZON-ADD]
     '_maps/map_files/generic/**',
     'maps/**/*.dm',
     'code/**',

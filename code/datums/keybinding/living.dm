@@ -167,7 +167,7 @@
 	return TRUE
 
 /datum/keybinding/living/toggle_throw_mode
-	hotkey_keys = list("R", "Southwest") // END 	// [HORIZON-EDIT] - UNFUCK KEYBIND
+	hotkey_keys = list("R", "Southwest") // END
 	name = "toggle_throw_mode"
 	full_name = "Toggle throw mode"
 	description = "Toggle throwing the current item or not."

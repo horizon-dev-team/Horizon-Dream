@@ -24,7 +24,7 @@ jobs:
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
           owner: ${{ github.repository_owner }}
           repositories: |
-            HORIZON-Project-Prototype
+            Horizon-Dream
             horizon-scripts
 
       - name: Download validation scripts

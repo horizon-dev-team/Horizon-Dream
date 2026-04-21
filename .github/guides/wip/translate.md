@@ -10,7 +10,7 @@
 ## Процесс перевода:
 
 1. Ставим [GitHub Desktop](https://desktop.github.com/). Логинимся под своим аккаунтом. Если умеете пользоваться, то можете не читать этот гайд, а сразу переводить.
-2. Идём [сюда](https://github.com/horizon-dev-team/HORIZON-Project-Prototype). Жмём кнопку справа-сверху:
+2. Идём [сюда](https://github.com/horizon-dev-team/Horizon-Dream). Жмём кнопку справа-сверху:
    ![](https://i.imgur.com/pjnHWbO.png)
 3. Открываем програму **GitHub Desktop** и жмём сочетание **CTRL+Shift+O**.
 4. Ищем свой форк среди списка (**в красном прямоугольнике должен быть ваш никнейм на Github**) и жмём **Clone**, папку для сохранения можете выбрать любую другую:
@@ -35,7 +35,7 @@
    ![](https://i.imgur.com/1alljPo.png)
 2. Потом сюда:
    ![](https://i.imgur.com/HdDRZun.png)
-3. Идём [снова сюда](https://github.com/horizon-dev-team/HORIZON-Project-Prototype).
+3. Идём [снова сюда](https://github.com/horizon-dev-team/Horizon-Dream).
 4. Жмём опять кнопку справа-сверху:
    ![](https://i.imgur.com/pjnHWbO.png)
 5. Нас перекинет на наш форк. Видим наш коммит, жмём:

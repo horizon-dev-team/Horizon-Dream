@@ -164,4 +164,8 @@
 
 // [HORIZON-ADD]
 #define span_init_green(str) ("<span class='init_green'>" + str + "</span>")
+#define SPAN_ROUNDHEADER(X) "<span class='round_header'>[X]</span>"
+#define SPAN_ROUNDBODY(X) "<span class='round_body'>[X]</span>"
+#define SPAN_ROLE_HEADER(X) "<span class='role_header'>[X]</span>"
+#define SPAN_ROLE_BODY(X) "<span class='role_body'>[X]</span>"
 // [/HORIZON-ADD]

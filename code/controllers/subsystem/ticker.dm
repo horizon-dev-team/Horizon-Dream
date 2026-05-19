@@ -139,6 +139,8 @@ SUBSYSTEM_DEF(ticker)
 			for(var/client/C in GLOB.clients)
 				window_flash(C, ignorepref = TRUE) //let them know lobby has opened up.
 			to_chat(world, span_notice("<b>Приветствуем вас на [station_name()]!</b>"))
+			to_chat_spaced(world, type = MESSAGE_TYPE_SYSTEM, margin_top = 2, margin_bottom = 0, html = SPAN_ROUNDHEADER("Приветствуем вас на пре-игровом лобби - [CONFIG_GET(string/servername)]!"))
+			to_chat_spaced(world, type = MESSAGE_TYPE_SYSTEM, margin_top = 0, html = SPAN_ROUNDBODY("Пожалуйста, настройте своего персонажа и выберите «Готов». Игра начнется через [floor(timeLeft / 10) || CONFIG_GET(number/lobby_countdown)] секунд."))
 			for(var/channel_tag in CONFIG_GET(str_list/channel_announce_new_game))
 				send2chat(new /datum/tgs_message_content("New round starting on [SSmapping.current_map.map_name]!"), channel_tag)
 			current_state = GAME_STATE_PREGAME
@@ -280,7 +282,7 @@ SUBSYSTEM_DEF(ticker)
 	log_world("Game start took [(world.timeofday - init_start)/10]s")
 	INVOKE_ASYNC(SSdbcore, TYPE_PROC_REF(/datum/controller/subsystem/dbcore,SetRoundStart))
 
-	to_chat(world, span_notice(span_bold("Приветствуем вас на <B>[station_name()]</B>, приятного пребывания!")))
+	to_chat_spaced(world, html = span_bold(SPAN_ROLE_BODY("Добро пожаловать на [station_name()], приятного пребывания!")))
 	SEND_SOUND(world, sound(SSstation.announcer.get_rand_welcome_sound()))
 
 	current_state = GAME_STATE_PLAYING

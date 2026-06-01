@@ -22,7 +22,7 @@
 #if fexists("_horizon/CORE/code/__DEFINES/_core_defines.dme") && !defined(DISABLE_CORE)
 	#include "_horizon/CORE/code/__DEFINES/_core_defines.dme"
 #endif
-#include "_horizon/PUBLIC/code/__DEFINES/_public_defines.dme"
+#include "_horizon/code/__DEFINES/_horizon_defines.dme"
 
 // BEGIN_INCLUDE
 #include "__odlint.dm"
@@ -6980,7 +6980,7 @@
 
 /* ---   MODULUS EXTRA   --- *\
 \* No truth, no consequence. */
-#if fexists("_horizon/CORE/_core.dme") && !defined(DISABLE_CORE)
-	#include "_horizon/CORE/_core.dme"
+#if fexists("_horizon/CORE/_core.dm") && !defined(DISABLE_CORE)
+	#include "_horizon/CORE/_core.dm"
 #endif
-#include "_horizon/PUBLIC/_public.dme"
+#include "_horizon/_horizon_dream.dm"

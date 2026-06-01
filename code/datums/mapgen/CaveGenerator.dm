@@ -7,7 +7,7 @@
 #define CAVE_SPAWN_MEGAFAUNA "megafauna"
 
 /datum/map_generator/cave_generator
-	var/name = "Cave Generator"
+	var/name = "Генератор пещер"
 	///Weighted list of the types that spawns if the turf is open
 	var/weighted_open_turf_types = list(/turf/open/misc/asteroid/airless = 1)
 	///Expanded list of the types that spawns if the turf is open
@@ -151,8 +151,8 @@
 		if(gen_turf.turf_flags & NO_RUINS)
 			new_turf.turf_flags |= NO_RUINS
 
-	var/message = "[name] terrain generation finished in [(REALTIMEOFDAY - start_time)/10]s!"
-	to_chat(world, span_boldannounce("[message]"), MESSAGE_TYPE_DEBUG)
+	var/message = "[name] (ландшафт):> [(REALTIMEOFDAY - start_time)/10] сек. --"
+	to_chat(world, span_init_green(" -- # <b>[message]</b>"), MESSAGE_TYPE_DEBUG)
 	log_world(message)
 
 
@@ -241,8 +241,8 @@
 			generated_turfs_per_area_biome[biome] = area_list
 		area_list[generate_in] = generated_turfs
 
-	var/message = "[name] terrain generation finished in [(REALTIMEOFDAY - start_time)/10]s!"
-	to_chat(world, span_boldannounce("[message]"), MESSAGE_TYPE_DEBUG)
+	var/message = "[name] (ландшафт):> [(REALTIMEOFDAY - start_time)/10] сек. --"
+	to_chat(world, span_init_green(" -- #<b>[message]</b>"), MESSAGE_TYPE_DEBUG)
 	log_world(message)
 
 /// Returns a biome datum that the turf was initialized with, or would be if it is present on our Z level and we use a consistent shared seed
@@ -367,8 +367,8 @@
 			megafauna_spawn_list = expand_weights(weighted_megafauna_spawn_list)
 			megas_allowed = megas_allowed && length(megafauna_spawn_list)
 
-	var/message = "[name] terrain population finished in [(REALTIMEOFDAY - start_time)/10]s!"
-	to_chat(world, span_boldannounce("[message]"), MESSAGE_TYPE_DEBUG)
+	var/message = "[name] (заселение):> [(REALTIMEOFDAY - start_time)/10] сек. --"
+	to_chat(world, span_init_green(" -- #<b>[message]</b>"), MESSAGE_TYPE_DEBUG)
 	log_world(message)
 
 /**
@@ -389,8 +389,8 @@
 
 	// No sense in doing anything here if nothing is allowed anyway.
 	if(!flora_allowed && !features_allowed && !fauna_allowed)
-		var/message = "[name] terrain population finished in [(REALTIMEOFDAY - start_time)/10]s!"
-		to_chat(world, span_boldannounce("[message]"), MESSAGE_TYPE_DEBUG)
+		var/message = "#[name] (заселение):> [(REALTIMEOFDAY - start_time)/10] сек. --"
+		to_chat(world, span_init_green(" -- #<b>[message]</b>"), MESSAGE_TYPE_DEBUG)
 		log_world(message)
 		return
 
@@ -401,8 +401,8 @@
 
 		CHECK_TICK
 
-	var/message = "[name] terrain population finished in [(REALTIMEOFDAY - start_time)/10]s!"
-	to_chat(world, span_boldannounce("[message]"), MESSAGE_TYPE_DEBUG)
+	var/message = "[name] (заселение):> [(REALTIMEOFDAY - start_time)/10] сек. --"
+	to_chat(world, span_init_green(" -- #<b>[message]</b>"), MESSAGE_TYPE_DEBUG)
 	log_world(message)
 
 /datum/map_generator/cave_generator/jungle

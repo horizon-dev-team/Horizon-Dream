@@ -1334,4 +1334,37 @@ $border-width-px: $border-width * 1px;
   color: #fff;
   padding: 4px;
 }
+
+.role_header {
+  color: hsl(0, 100%, 43%);
+  display: block;
+  text-align: center;
+  font-weight: bold;
+  font-family: trebuchet-ms;
+  font-size: 150%;
+}
+
+.role_body {
+  display: block;
+  text-align: center;
+  font-size: 125%;
+}
+
+.round_header {
+  color: hsl(0, 100%, 43%);
+  display: block;
+  text-align: center;
+  font-family: courier;
+  font-weight: bold;
+  font-size: 180%;
+}
+
+.round_body {
+  color: hsl(209, 100%, 8%);
+  display: block;
+  text-align: center;
+  font-family: trebuchet-ms;
+  font-weight: bold;
+  font-size: 125%;
+}
 // [/HORIZON-ADD]

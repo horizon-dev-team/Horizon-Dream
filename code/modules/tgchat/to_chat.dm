@@ -82,3 +82,8 @@
 	if(html) message["html"] = html
 	if(avoid_highlighting) message["avoidHighlighting"] = avoid_highlighting
 	SSchat.queue(target, message)
+
+/proc/to_chat_spaced(target, html, type, text, avoid_highlighting = FALSE, margin_top = 1, margin_bottom = 1, margin_left = 0)
+	if(html)
+		html = "<span style='display: block; margin: [margin_top]em 0 [margin_bottom]em [margin_left]em;'>[html]</span>"
+	return to_chat(target, html = html, type = type, text = text, avoid_highlighting = avoid_highlighting)

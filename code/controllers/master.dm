@@ -535,16 +535,16 @@ ADMIN_VERB(cmd_controller_view_ui, R_SERVER|R_DEBUG, "Controller Overview", "Vie
 
 	switch(result)
 		if(SS_INIT_FAILURE)
-			message_prefix = "Инициализация подсистемы [subsystem.name] провалена"
+			message_prefix = "> [span_bold(subsystem.name)] - провалено"
 			chat_warning = TRUE
 		if(SS_INIT_SUCCESS, SS_INIT_NO_MESSAGE)
-			message_prefix = "Инициализация подсистемы [subsystem.name]"
+			message_prefix = "> [span_bold(subsystem.name)] - загружено"
 		if(SS_INIT_NO_NEED)
 			// This SS is disabled or is otherwise shy.
 			return
 		else
 			// SS_INIT_NONE or an invalid value.
-			message_prefix = "Инициализация подсистемы [subsystem.name] с ошибками"
+			message_prefix = "> [span_bold(subsystem.name)] - с ошибками"
 			chat_warning = TRUE
 
 	var/message = "[message_prefix] за [seconds] сек."

@@ -42,3 +42,12 @@
 ## Force tab indents on dm files
 *.dm whitespace=indent-with-non-tab
 
+## [HORIZON] - Список файлов исключений игнорируемых в любом случае
+.github/CODEOWNERS merge=ours
+.github/ISSUE_TEMPLATE merge=ours
+.github/workflows/autowiki.yml merge=ours
+.github/workflows/generate_client_storage.yml merge=ours
+.github/workflows/generate_documentation.yml merge=ours
+.github/workflows/test_merge_bot.yml merge=ours
+.github/workflows/gbp.yml merge=ours
+.github/workflows/codeowner_reviews.yml merge=ours

@@ -7028,7 +7028,7 @@
 
 /* ---   MODULUS EXTRA   --- *\
 \* No truth, no consequence. */
-#if fexists("_horizon/CORE/_core.dm") && !defined(DISABLE_CORE)
-	#include "_horizon/CORE/_core.dm"
+#if fexists("_horizon/CORE/_core.dme") && !defined(DISABLE_CORE)
+	#include "_horizon/CORE/_core.dme"
 #endif
-#include "_horizon/_horizon_dream.dm"
+#include "_horizon/_horizon_dream.dme"

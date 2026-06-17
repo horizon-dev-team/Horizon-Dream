@@ -32,8 +32,8 @@ jobs:
       - name: Commit and Push
         continue-on-error: true
         run: |
-          git config user.name "${{ secrets.APP_PUBLIC_NAME }}[bot]"
-          git config user.email "${{ secrets.APP_PUBLIC_ID }}+${{ secrets.APP_PUBLIC_NAME }}[bot]@users.noreply.github.com"
+          git config user.name "${{ secrets.APP_NAME }}[bot]"
+          git config user.email "${{ secrets.APP_ID }}+${{ secrets.APP_NAME }}[bot]@users.noreply.github.com"
           git add .
           git commit -m 'Update TGS DMAPI'
           git push -f -u origin tgs-dmapi-update
@@ -42,7 +42,7 @@ jobs:
         id: app-token-generation
         uses: actions/create-github-app-token@v3.2.0
         with:
-          client-id: ${{ secrets.APP_ID }}
+          client-id: ${{ secrets.APP_CLIENT_ID }}
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
 
       - name: Create Pull Request

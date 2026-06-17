@@ -6,6 +6,7 @@ on:
 
 permissions:
   issues: write
+  contents: read
 
 jobs:
   process-labels:
@@ -19,11 +20,18 @@ jobs:
         with:
           client-id: ${{ secrets.APP_CLIENT_ID }}
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          repositories: |
+            Horizon-Dream
+            Horizon-Core
+            horizon-scripts
 
-      - name: Checkout
-        uses: actions/checkout@v6
-        with:
-          github-token: ${{ steps.app-token-generation.outputs.token }}
+      - name: Download scripts
+        env:
+          GH_TOKEN: ${{ steps.app-token-generation.outputs.token }}
+        run: |
+          gh api repos/horizon-dev-team/horizon-scripts/contents/AutoLabel/autoLabelIssues.js --jq '.content' | base64 -d > autoLabelIssues.js
+          ls -la *.js
 
       - name: Parse and add labels based on checkboxes
         id: process_issue
@@ -31,5 +39,5 @@ jobs:
         with:
           github-token: ${{ steps.app-token-generation.outputs.token }}
           script: |
-            const { processIssueLabelsAndBody } = await import('${{ github.workspace }}/tools/pull_request_hooks/autoLabelIssues.js');
+            const { processIssueLabelsAndBody } = await import('${{ github.workspace }}/autoLabelIssues.js');
             return await processIssueLabelsAndBody({ github, context, core });

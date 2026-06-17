@@ -48,7 +48,7 @@ jobs:
           CHANGELOG_AUTHOR: ${{ vars.CHANGELOG_AUTHOR }}
           LOG_LEVEL: ${{ runner.debug && 'DEBUG' || 'INFO' }}
         run: |
-          git config --global user.name "${{ secrets.APP_PUBLIC_NAME }}[bot]"
-          git config --global user.email "${{ secrets.APP_PUBLIC_ID }}+${{ secrets.APP_PUBLIC_NAME }}[bot]@users.noreply.github.com"
+          git config --global user.name "${{ secrets.APP_NAME }}[bot]"
+          git config --global user.email "${{ secrets.APP_ID }}+${{ secrets.APP_NAME }}[bot]@users.noreply.github.com"
 
           python3 -u merge_upstream.py

@@ -3,13 +3,13 @@ on:
   pull_request_target:
     types: [closed, opened, synchronize]
 jobs:
-  # labeler must run before gbp because gbp calculates itself based on labels
   labeler:
     runs-on: ubuntu-24.04
     if: github.event.action == 'opened' || github.event.action == 'synchronize'
     permissions:
-      pull-requests: write # to apply labels
-      issues: write # to apply labels
+      pull-requests: write
+      issues: write
+      contents: read
     steps:
       - name: "Check for ACTION_ENABLER secret and pass true to output if it exists to be checked by later steps"
         id: value_holder
@@ -29,11 +29,13 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@v6
+        with:
+          token: ${{ steps.app-token-generation.outputs.token }}
 
       - name: Run Auto Labeler
         uses: actions/github-script@v9
         with:
-          github-token: ${{ steps.app-token-generation.outputs.token || secrets.GITHUB_TOKEN }}
+          github-token: ${{ steps.app-token-generation.outputs.token }}
           script: |
             const { get_updated_label_set } = await import('${{ github.workspace }}/tools/pull_request_hooks/autoLabel.js');
             const new_labels = await get_updated_label_set({ github, context });

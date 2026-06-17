@@ -13,9 +13,6 @@ jobs:
     if: github.event.issue.state == 'open'
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-
       - name: Generate App Token
         id: app-token-generation
         uses: actions/create-github-app-token@v3
@@ -23,9 +20,14 @@ jobs:
           client-id: ${{ secrets.APP_CLIENT_ID }}
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
 
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          github-token: ${{ steps.app-token-generation.outputs.token }}
+
       - name: Parse and add labels based on checkboxes
         id: process_issue
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           github-token: ${{ steps.app-token-generation.outputs.token }}
           script: |

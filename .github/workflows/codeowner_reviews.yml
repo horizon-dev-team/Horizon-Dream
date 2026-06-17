@@ -6,9 +6,9 @@ on:
     types: [opened, synchronize, reopened, ready_for_review]
 
 permissions:
-  contents: read # to read changed files
-  issues: write # to read/write issue assignees
-  pull-requests: write # to read/write PR reviewers
+  contents: read
+  issues: write
+  pull-requests: write
 
 jobs:
   assign-users:
@@ -17,17 +17,17 @@ jobs:
 
     name: Auto Assign Owners
     steps:
-      - name: Checkout master branch
-        uses: actions/checkout@v6
-        with:
-          ref: ${{ github.base_ref }}
-
       - name: Generate App Token
         id: app-token-generation
         uses: actions/create-github-app-token@v3
         with:
           client-id: ${{ secrets.APP_CLIENT_ID }}
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
+      - name: Checkout master branch
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.base_ref }}
 
       - uses: horizon-dev-team/component-owners@main
         with:

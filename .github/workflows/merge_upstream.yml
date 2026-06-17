@@ -17,6 +17,7 @@ jobs:
           owner: ${{ github.repository_owner }}
           repositories: |
             Horizon-Dream
+            Horizon-Core
             horizon-scripts
 
       - name: Download scripts

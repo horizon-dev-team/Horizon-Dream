@@ -36,6 +36,8 @@ excluded_files = [
     "code/_globalvars/*.dm",
     # TGS files come from another repository so lets not worry about them.
     "code/modules/tgs/**/*.dm",
+    # [HORIZON-ADD]
+    "_horizon/code/__DEFINES/*.dm",
     # Doesn't come with the repo, but is in CI.
     "DMCompiler_linux-x64/*.dm",
 ]

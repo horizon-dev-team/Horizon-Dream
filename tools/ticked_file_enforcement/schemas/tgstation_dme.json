@@ -4,6 +4,7 @@
 	"subdirectories": true,
 	"excluded_files": [],
 	"forbidden_includes": [
+        "_horizon/**/*.dm",
 		"code/modules/tgs/**/*.dm",
 		"code/modules/unit_tests/[!_]*.dm",
 		"DMCompiler_linux-x64/*.dm",

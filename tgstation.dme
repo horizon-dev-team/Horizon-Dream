@@ -19,10 +19,7 @@
 
 /*    ---    DEFINES MODULUS    ---    *\
 \* Abandon hope, all ye who enter here */
-#if fexists("_horizon/CORE/code/__DEFINES/_core_defines.dme") && !defined(DISABLE_CORE)
-	#include "_horizon/CORE/code/__DEFINES/_core_defines.dme"
-#endif
-#include "_horizon/code/__DEFINES/_horizon_defines.dme"
+#include "_horizon/_horizon_defines.dme"
 
 // BEGIN_INCLUDE
 #include "__odlint.dm"
@@ -7028,7 +7025,4 @@
 
 /* ---   MODULUS EXTRA   --- *\
 \* No truth, no consequence. */
-#if fexists("_horizon/CORE/_core.dme") && !defined(DISABLE_CORE)
-	#include "_horizon/CORE/_core.dme"
-#endif
 #include "_horizon/_horizon_dream.dme"

@@ -18,4 +18,5 @@
 // END_PREFERENCES
 
 // BEGIN_INCLUDE
+#include "code\test.dm"
 // END_INCLUDE

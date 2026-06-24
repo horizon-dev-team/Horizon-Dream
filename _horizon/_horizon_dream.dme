@@ -1,0 +1,22 @@
+/*
+ *  ПРАВИЛО ВКЛЮЧЕНИЙ:
+ * - Новые #include пишите только в секции BEGIN_INCLUDE…END_INCLUDE
+ * - Не трогайте BEGIN_INTERNALS, FILE_DIR, PREFERENCES
+ * - Скрипт автоматически сортирует подключения внутри секции после первой же сборки.
+ * - После добавления новых подключений ОБЯЗАТЕЛЬНО тестируйте код:
+ *   - Недостаточно просто собрать проект - убедитесь, что всё работает так, как задумано.
+*/
+
+// BEGIN_INTERNALS
+// END_INTERNALS
+
+// BEGIN_FILE_DIR
+#define FILE_DIR .
+// END_FILE_DIR
+
+// BEGIN_PREFERENCES
+// END_PREFERENCES
+
+// BEGIN_INCLUDE
+#include "code\test.dm"
+// END_INCLUDE

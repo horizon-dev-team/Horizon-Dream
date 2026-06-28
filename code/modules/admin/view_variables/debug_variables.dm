@@ -11,9 +11,9 @@
 				value = list_owner[name]
 			else
 				name = list_owner[name] //name is really the index until this line
-			. = "<li style='backgroundColor:white'>([VV_HREF_TARGET_1V(owner, VV_HK_LIST_EDIT, "E", index)]) ([VV_HREF_TARGET_1V(owner, VV_HK_LIST_CHANGE, "C", index)]) ([VV_HREF_TARGET_1V(owner, VV_HK_LIST_REMOVE, "-", index)]) "
+			. = "<li style='backgroundColor:white'>[VV_HREF_TARGET_1V(owner, VV_HK_LIST_EDIT, "E", index)][VV_HREF_TARGET_1V(owner, VV_HK_LIST_CHANGE, "C", index)][VV_HREF_TARGET_1V(owner, VV_HK_LIST_REMOVE, "-", index)] "
 		else
-			. = "<li style='backgroundColor:white'>([VV_HREF_TARGET_1V(owner, VV_HK_BASIC_EDIT, "E", name)]) ([VV_HREF_TARGET_1V(owner, VV_HK_BASIC_CHANGE, "C", name)]) ([VV_HREF_TARGET_1V(owner, VV_HK_BASIC_MASSEDIT, "M", name)]) "
+			. = "<li style='backgroundColor:white'>[VV_HREF_TARGET_1V(owner, VV_HK_BASIC_EDIT, "E", name)][VV_HREF_TARGET_1V(owner, VV_HK_BASIC_CHANGE, "C", name)][VV_HREF_TARGET_1V(owner, VV_HK_BASIC_MASSEDIT, "M", name)] "
 	else
 		. = "<li>"
 

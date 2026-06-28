@@ -1,11 +1,18 @@
 body {
+	color: #aaa;
 	font-family: Verdana, sans-serif;
-	font-size: 9pt;
-}
-.value {
-	font-family: "Courier New", monospace;
 	font-size: 8pt;
+	background: linear-gradient(#212121, #121212);
+	background-attachment: fixed;
+}
+
+.value {
+	color: white;
+	font-family: "Courier New", monospace;
+	font-size: 9pt;
+	font-weight: bold;
 	display: inline-block;
+	border-radius: 3px;
 }
 
 table.matrix {
@@ -13,36 +20,49 @@ table.matrix {
 	border-spacing: 0;
 	font-size: 7pt;
 }
+
 .matrix td {
 	text-align: center;
 	padding: 0 1ex 0ex 1ex;
 }
+
 table.matrixbrak {
 	border-collapse: collapse;
 	border-spacing: 0;
 }
-table.matrixbrak td.lbrak {
-	width: 0.8ex;
-	font-size: 50%;
-	border-top: solid 0.25ex black;
-	border-bottom: solid 0.25ex black;
-	border-left: solid 0.5ex black;
-	border-right: none;
-}
+
+table.matrixbrak td.lbrak,
 table.matrixbrak td.rbrak {
 	width: 0.8ex;
 	font-size: 50%;
-	border-top: solid 0.25ex black;
-	border-bottom: solid 0.25ex black;
-	border-right: solid 0.5ex black;
+	border-top: solid 0.25ex white;
+	border-bottom: solid 0.25ex white;
+	border-left: solid 0.5ex white;
+	border-right: none;
+}
+
+table.matrixbrak td.rbrak {
+	border-right: solid 0.5ex white;
 	border-left: none;
 }
 
+input {
+	color: white;
+	background-color: #333333;
+	border: 1px solid #161616;
+	font-family: Verdana, Geneva, sans-serif;
+}
+
+input:focus {
+	outline: solid 0.5px #aaa;
+}
+
 #vvDropdownInput {
+	background-color: #1a1a1a;
 	box-sizing: border-box;
 	padding: 4px;
 	border: none;
-	border-bottom: 1px solid #ddd;
+	border-bottom: 1px solid #333;
 	width: 100%;
 }
 
@@ -51,15 +71,17 @@ table.matrixbrak td.rbrak {
 }
 
 .dropdown-content {
-	margin-top: 4px;
+	margin: 2px 0;
 	position: absolute;
-	background-color: #f6f6f6;
-	border: 1px solid #ddd;
+	left: 0;
+	right: 0;
+	background-color: #1a1a1a;
+	border: 1px solid #333;
 	z-index: 1;
 }
 
 .dropdown-options a {
-	color: black;
+	color: white;
 	font-size: 12px;
 	padding: 6px 8px;
 	text-decoration: none;
@@ -69,8 +91,33 @@ table.matrixbrak td.rbrak {
 .dropdown-options {
 	overflow-y: auto;
 	max-height: 500px;
+    scrollbar-width: thin;
+    scrollbar-color: #555 #1a1a1a;
 }
 
 .dropdown-options a:hover {
-	background-color: #dbdbdb !important;
+	background-color: #212121 !important;
+}
+
+a {
+	color: #fc4;
+}
+
+a:visited {
+	color: #6CB4E4;
+}
+
+button, .button {
+	color: #ffffff;
+    box-sizing: content-box;
+	text-decoration: none;
+	background: #40628a;
+	border: 1px solid #161616;
+	padding: 0 4px 0 4px;
+	cursor:default;
+	display: inline-block;
+}
+
+button, .button:hover {
+	background: #507aac;
 }

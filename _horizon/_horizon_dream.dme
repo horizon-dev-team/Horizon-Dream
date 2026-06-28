@@ -18,5 +18,5 @@
 // END_PREFERENCES
 
 // BEGIN_INCLUDE
-#include "code\test.dm"
+#include "code\modules\admin\all_verb_panel.dm"
 // END_INCLUDE

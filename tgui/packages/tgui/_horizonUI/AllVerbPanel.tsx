@@ -31,30 +31,26 @@ interface Context {
   categories: Category[];
 }
 
-// Custom createSearch function since tgui-core/string doesn't exist
-const createSearch = (searchText, getText) => {
+const createSearch = (searchText: string, getText: (item: VerbItem) => string) => {
   if (!searchText) return () => true;
   const searchLower = searchText.toLowerCase();
-  return (item) => {
+  return (item: VerbItem) => {
     const text = getText(item);
-    return text && text.toLowerCase().includes(searchLower);
+    return text?.toLowerCase().includes(searchLower);
   };
 };
 
-export const AllVerbPanel = (props) => {
+export const AllVerbPanel = () => {
   const { act, data } = useBackend<Context>();
   const { compactMode, categories = [] } = data;
 
-  // Use simple React state instead of useLocalState to avoid conflicts
   const [searchText, setSearchText] = React.useState('');
   const [selectedCategory, setSelectedCategory] = React.useState('Admin');
 
-  // Clear search text when component mounts to prevent stale state
   React.useEffect(() => {
     setSearchText('');
   }, []);
 
-  // Ensure categories data is always an array to prevent errors
   const safeCategories = Array.isArray(categories) ? categories : [];
 
   const testSearch = createSearch(searchText, (item) => {
@@ -68,7 +64,7 @@ export const AllVerbPanel = (props) => {
           (category) =>
             category &&
             typeof category === 'object' &&
-            category.name !== 'История'
+            category.name !== 'История',
         )
         .flatMap((category) =>
           Array.isArray(category.items) ? category.items : [],
@@ -98,7 +94,7 @@ export const AllVerbPanel = (props) => {
                 onChange={(value: string) => setSearchText(value)}
                 onEnter={() => {
                   setSearchText('');
-                  if(items.length > 0) {
+                  if (items.length > 0) {
                     act('run', {
                       name: items[0].name,
                       desc: items[0].desc,
@@ -109,10 +105,9 @@ export const AllVerbPanel = (props) => {
                 mx={1}
               />
               <Button
-                icon={compactMode ? 'list' : 'info'}
-                children={compactMode ? 'Компактно' : 'Детально'}
-                onClick={() => act('compact_toggle')}
-              />
+                icon={compactMode ? 'list' : 'info'} onClick={() => act('compact_toggle')} >
+                {compactMode ? 'Компактно' : 'Детально'}
+              </Button>
             </>
           }
         >
@@ -145,7 +140,12 @@ export const AllVerbPanel = (props) => {
   );
 };
 
-const VerbList = (props) => {
+interface VerbListProps {
+  items: VerbItem[];
+  compactMode: boolean;
+}
+
+const VerbList = (props: VerbListProps) => {
   const { items = [], compactMode } = props;
   const { act } = useBackend();
 
@@ -157,7 +157,6 @@ const VerbList = (props) => {
             <Button
               fluid
               my={1}
-              children={obj.name}
               selected={obj.selected}
               onClick={() =>
                 act('run', {
@@ -166,7 +165,9 @@ const VerbList = (props) => {
                   verb: obj.verb,
                 })
               }
-            />
+            >
+              {obj.name}
+            </Button>
           </Table.Row>
         ))}
       </Table>
@@ -180,7 +181,6 @@ const VerbList = (props) => {
       title={
         <Button
           fluid
-          children={obj.name}
           onClick={() =>
             act('run', {
               name: obj.name,
@@ -188,10 +188,12 @@ const VerbList = (props) => {
               verb: obj.verb,
             })
           }
-        />
+        >
+          {obj.name}
+        </Button>
       }
     >
-      {!!obj.desc && <Box>{obj.desc}</Box>}
+      {obj.desc ? <Box>{obj.desc}</Box> : null}
     </Section>
   ));
 };

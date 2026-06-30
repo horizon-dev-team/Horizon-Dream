@@ -21,6 +21,7 @@ def blue(text):
 schema = json.load(sys.stdin)
 file_reference = schema["file"]
 file_reference_basename = os.path.basename(file_reference)
+file_reference_dir = os.path.dirname(file_reference)
 scannable_directory = schema["scannable_directory"]
 subdirectories = schema["subdirectories"]
 FORBIDDEN_INCLUDES = schema["forbidden_includes"]
@@ -75,7 +76,8 @@ for code_file in scannable_files:
     dm_path = ""
 
     if subdirectories is True:
-        dm_path = code_file.replace('/', '\\')
+        rel_path = os.path.relpath(code_file, file_reference_dir) if file_reference_dir else code_file
+        dm_path = rel_path.replace('/', '\\')
     else:
         dm_path = os.path.basename(code_file)
 

@@ -77,7 +77,7 @@ export function getRoutedComponent(name: string) {
     const interfacePathBuilder = interfacePathBuilders.shift()!;
     const interfacePath = interfacePathBuilder(name);
     try {
-      esModule = requireInterface(interfacePath);
+      esModule = getComponent(interfacePath); // Replace: esModule = requireInterface(interfacePath); // [HORIZON-EDIT]
     } catch (err) {
       if (err.code !== 'MODULE_NOT_FOUND') {
         throw new Error('notFound');
@@ -133,3 +133,23 @@ export function RoutedComponent() {
     }
   }
 }
+
+// [HORIZON-ADD] - Загрузка своих интерфейсов в приоритете
+const requireHorizonInterface = require.context(
+  './_horizonUI',
+  true,
+  /^(?!.*\.test\.(tsx?|jsx?)).*\.(tsx?|jsx?)$/,
+);
+
+const getComponent = (interfacePath) => {
+  let esModule = null;
+
+  try {
+    esModule = requireHorizonInterface(interfacePath);
+  } catch (err) {
+    esModule = requireInterface(interfacePath);
+  }
+
+  return esModule;
+};
+// [/HORIZON-ADD]

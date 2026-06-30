@@ -1,0 +1,49 @@
+name: Auto-Label - Pull Requests
+on:
+  pull_request_target:
+    types: [closed, opened, synchronize]
+jobs:
+  labeler:
+    runs-on: ubuntu-24.04
+    if: github.event.action == 'opened' || github.event.action == 'synchronize'
+    permissions:
+      pull-requests: write
+      issues: write
+      contents: read
+    steps:
+      - name: "Check for ACTION_ENABLER secret and pass true to output if it exists to be checked by later steps"
+        id: value_holder
+        env:
+          ENABLER_SECRET: ${{ secrets.ACTION_ENABLER }}
+        run: |
+          unset SECRET_EXISTS
+          if [ -n "$ENABLER_SECRET" ]; then SECRET_EXISTS=true ; fi
+          echo "ACTIONS_ENABLED=$SECRET_EXISTS" >> $GITHUB_OUTPUT
+
+      - name: Generate App Token
+        id: app-token-generation
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ secrets.APP_CLIENT_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          repositories: |
+            Horizon-Dream
+            horizon-scripts
+
+      - name: Download scripts
+        env:
+          GH_TOKEN: ${{ steps.app-token-generation.outputs.token }}
+        run: |
+          gh api repos/horizon-dev-team/horizon-scripts/contents/AutoLabel/autoLabelConfig.js --jq '.content' | base64 -d > autoLabelConfig.js
+          gh api repos/horizon-dev-team/horizon-scripts/contents/AutoLabel/autoLabelPR.js --jq '.content' | base64 -d > autoLabelPR.js
+          gh api repos/horizon-dev-team/horizon-scripts/contents/AutoLabel/runAutoLabeler.js --jq '.content' | base64 -d > runAutoLabeler.js
+          ls -la *.js
+
+      - name: Run Auto Labeler
+        uses: actions/github-script@v9
+        with:
+          github-token: ${{ steps.app-token-generation.outputs.token }}
+          script: |
+            const { default: run } = await import('${{ github.workspace }}/runAutoLabeler.js');
+            await run(github, context);

@@ -44,7 +44,6 @@
 /mob/living/carbon/try_catch_item(obj/item/item, skip_throw_mode_check = FALSE, try_offhand = FALSE)
 	. = ..()
 	if(.)
-		item.transform = initial(item.transform)
 		throw_mode_off(THROW_MODE_TOGGLE)
 
 /mob/living/carbon/can_catch_item(skip_throw_mode_check = FALSE, try_offhand = FALSE)

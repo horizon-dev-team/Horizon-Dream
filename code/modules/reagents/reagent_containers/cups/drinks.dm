@@ -32,6 +32,14 @@
 	var/obj/item/broken_bottle/broken = new (loc)
 	broken.mimic_broken(src, target, break_top)
 	post_smash(target, thrower, throwingdatum, broken)
+// [HORIZON-ADD]
+	if(throwingdatum)
+		var/matrix/M = matrix(broken.transform)
+		M.Turn(rand(-170, 170))
+		broken.transform = M
+		broken.pixel_x = rand(-12, 12)
+		broken.pixel_y = rand(-12, 12)
+// [/HORIZON-ADD]
 	qdel(src)
 	return TRUE
 

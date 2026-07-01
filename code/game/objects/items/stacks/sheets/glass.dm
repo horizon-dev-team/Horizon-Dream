@@ -358,6 +358,14 @@ GLOBAL_LIST_INIT(plastitaniumglass_recipes, list(
 	if (icon_prefix)
 		icon_state = "[icon_prefix][icon_state]"
 
+/obj/item/shard/Initialize(mapload)
+	. = ..()
+	var/matrix/M = matrix(transform)
+	M.Turn(rand(-170, 170))
+	if(prob(50))
+		M.Scale(-1, 1)
+	transform = M
+
 	var/turf/T = get_turf(src)
 	if(T && is_station_level(T.z))
 		SSblackbox.record_feedback("tally", "station_mess_created", 1, name)

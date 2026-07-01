@@ -904,6 +904,8 @@ GAME_VERB_SRC(/obj/item, verb_pickup, oview(1), "Pick up", null)
 	if(!(item_flags & NO_ROTATE_RANDOM_THROW))
 		var/matrix/M = matrix(transform)
 		M.Turn(pick(-90, 0, 90, 180))
+		if(rand(0, 1))
+			M.Scale(-1, 1)
 		transform = M
 // [/HORIZON-ADD]
 

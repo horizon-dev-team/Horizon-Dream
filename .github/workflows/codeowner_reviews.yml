@@ -20,22 +20,3 @@ jobs:
       - name: Generate App Token
         id: app-token-generation
         uses: actions/create-github-app-token@v3
-        with:
-          client-id: ${{ secrets.APP_CLIENT_ID }}
-          private-key: ${{ secrets.APP_PRIVATE_KEY }}
-
-      - name: Checkout master branch
-        uses: actions/checkout@v6
-        with:
-          ref: ${{ github.base_ref }}
-
-      - uses: horizon-dev-team/component-owners@main
-        with:
-          # default: .github/component_owners.yml
-          config-file: .github/COMPONENTOWNERS.yml
-          # default: ${{ github.token }}
-          repo-token: ${{ steps.app-token-generation.outputs.token }}
-          # default: true
-          assign-owners: "false"
-          # default: true
-          request-owner-reviews: "true"

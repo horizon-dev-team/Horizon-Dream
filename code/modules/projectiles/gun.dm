@@ -212,13 +212,15 @@
 		if(0 to 25)
 			. += span_boldwarning("It's falling apart!")
 
+// [HORIZON-EDIT] - PHYSICS
 //called after the gun has successfully fired its chambered ammo.
-/obj/item/gun/proc/process_chamber(empty_chamber = TRUE, from_firing = TRUE, chamber_next_round = TRUE)
-	handle_chamber(empty_chamber, from_firing, chamber_next_round)
+/obj/item/gun/proc/process_chamber(mob/living/user, empty_chamber = TRUE, from_firing = TRUE, chamber_next_round = TRUE)
+	handle_chamber(user, empty_chamber, from_firing, chamber_next_round)
 	SEND_SIGNAL(src, COMSIG_GUN_CHAMBER_PROCESSED)
 
-/obj/item/gun/proc/handle_chamber(empty_chamber = TRUE, from_firing = TRUE, chamber_next_round = TRUE)
+/obj/item/gun/proc/handle_chamber(mob/living/user, empty_chamber = TRUE, from_firing = TRUE, chamber_next_round = TRUE)
 	return
+// [/HORIZON-EDIT]
 
 //check if there's enough ammo/energy/whatever to shoot one time
 //i.e if clicking would make it shoot
@@ -505,7 +507,7 @@
 	if (iteration >= burst_size)
 		firing_burst = FALSE
 
-	process_chamber()
+	process_chamber(user = user)		// [HORIZON-EDIT] - PHYSICSS
 	update_appearance()
 	return TRUE
 
@@ -593,7 +595,7 @@
 		shoot_live_shot(user, get_dist(user, target) <= 1, target, message)
 		// If gun gets destroyed as a result of firing
 		if (!QDELETED(src))
-			process_chamber()
+			process_chamber(user = user)	// [HORIZON-EDIT] - PHYSICS
 			update_appearance()
 			fire_cd = TRUE
 			addtimer(CALLBACK(src, PROC_REF(reset_fire_cd)), modified_fire_delay)

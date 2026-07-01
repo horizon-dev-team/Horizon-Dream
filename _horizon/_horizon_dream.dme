@@ -19,4 +19,8 @@
 
 // BEGIN_INCLUDE
 #include "code\modules\admin\all_verb_panel.dm"
+#include "code\modules\physics\atom_movables.dm"
+#include "code\modules\physics\physics_component.dm"
+#include "code\modules\physics\physics_SS.dm"
+#include "code\modules\physics\physics_tester.dm"
 // END_INCLUDE

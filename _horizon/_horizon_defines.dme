@@ -14,5 +14,5 @@
 // END_PREFERENCES
 
 // BEGIN_INCLUDE
-#include "code\__DEFINES\test_defines.dm"
+#include "code\__DEFINES\physics.dm"
 // END_INCLUDE

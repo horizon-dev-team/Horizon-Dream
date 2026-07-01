@@ -362,7 +362,6 @@
 			chambered = null
 // [HORIZON-EDIT] - PHYSICS
 		else if(casing_ejector || !from_firing)
-			chambered = null
 			casing.forceMove(drop_location()) //Eject casing onto ground.
 			if(!QDELETED(casing))
 				var/bounce_angle

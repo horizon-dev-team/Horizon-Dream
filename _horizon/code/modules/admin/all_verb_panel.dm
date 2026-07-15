@@ -9,9 +9,6 @@ ADMIN_VERB(show_all_verbs, R_NONE, "All Verb Panel 📋", "Show all verbs.", ADM
 	var/datum/admin_menu/admin_menu
 
 /client/proc/show_all_verbs()
-	set name = "All Verb Panel 📋"
-	set category = ADMIN_CATEGORY_MAIN
-
 	if(!holder)
 		return
 

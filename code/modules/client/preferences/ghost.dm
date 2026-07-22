@@ -32,7 +32,7 @@
 				input = GHOST_ACCS_FULL
 
 	return ..(input)
-*/
+
 /// Determines the appearance of your ghost to others, when you are a BYOND member
 /datum/preference/choiced/ghost_form
 	savefile_key = "ghost_form"
@@ -95,7 +95,7 @@
 	data[CHOICED_PREFERENCE_DISPLAY_NAMES] = ghost_forms
 
 	return data
-
+*/
 /// Toggles the HUD for ghosts
 /datum/preference/toggle/ghost_hud
 	savefile_key = "ghost_hud"

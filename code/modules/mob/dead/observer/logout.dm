@@ -1,6 +1,6 @@
 /mob/dead/observer/Logout()
-	if (client)
-		client.images -= (GLOB.ghost_images_default+GLOB.ghost_images_simple)
+//	if (client)
+//		client.images -= (GLOB.ghost_images_default+GLOB.ghost_images_simple)
 
 	if(observetarget && ismob(observetarget))
 		cleanup_observe()

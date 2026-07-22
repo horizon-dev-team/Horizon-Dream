@@ -3,7 +3,7 @@
 	savefile_key = "ghost_accs"
 	savefile_identifier = PREFERENCE_PLAYER
 	category = PREFERENCE_CATEGORY_GAME_PREFERENCES
-
+/*
 /datum/preference/choiced/ghost_accessories/init_possible_values()
 	return list(GHOST_ACCS_NONE, GHOST_ACCS_DIR, GHOST_ACCS_FULL)
 
@@ -32,7 +32,7 @@
 				input = GHOST_ACCS_FULL
 
 	return ..(input)
-
+*/
 /// Determines the appearance of your ghost to others, when you are a BYOND member
 /datum/preference/choiced/ghost_form
 	savefile_key = "ghost_form"
@@ -136,7 +136,7 @@
 	savefile_key = "ghost_others"
 	savefile_identifier = PREFERENCE_PLAYER
 	category = PREFERENCE_CATEGORY_GAME_PREFERENCES
-
+/*
 /datum/preference/choiced/ghost_others/init_possible_values()
 	return list(
 		GHOST_OTHERS_SIMPLE,
@@ -146,14 +146,14 @@
 
 /datum/preference/choiced/ghost_others/create_default_value()
 	return GHOST_OTHERS_DEFAULT_OPTION
-
+*/
 /datum/preference/choiced/ghost_others/apply_to_client(client/client, value)
 	var/mob/dead/observer/ghost = client.mob
 	if (!istype(ghost))
 		return
 
 	ghost.update_sight()
-
+/*
 /datum/preference/choiced/ghost_others/deserialize(input, datum/preferences/preferences)
 	// Old ghost preferences used to be 1/50/100.
 	// Whoever did that wasted an entire day of my time trying to get those sent
@@ -168,7 +168,7 @@
 				input = GHOST_OTHERS_THEIR_SETTING
 
 	return ..(input, preferences)
-
+*/
 /// Whether or not ghosts can examine things by clicking on them.
 /datum/preference/toggle/inquisitive_ghost
 	savefile_key = "inquisitive_ghost"

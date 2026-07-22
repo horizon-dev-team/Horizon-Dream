@@ -10,6 +10,7 @@
 /// Ghosts will orbit objects in a pentagon
 #define GHOST_ORBIT_PENTAGON "pentagon"
 
+/*
 //Ghost showing preferences:
 /// The main player's ghost will display as a simple white ghost
 #define GHOST_ACCS_NONE "Default sprites"
@@ -30,6 +31,7 @@
 
 /// The default ghost display selection when viewing other players
 #define GHOST_OTHERS_DEFAULT_OPTION GHOST_OTHERS_THEIR_SETTING
+*/
 
 /// A ghosts min view range that we won't allow them to go under by.
 #define GHOST_MIN_VIEW_RANGE 7

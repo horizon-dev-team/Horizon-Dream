@@ -185,6 +185,8 @@
 
 	SEND_GLOBAL_SIGNAL(COMSIG_GLOB_JOB_AFTER_SPAWN, src, spawned, player_client)
 
+
+
 /// Return the outfit to use
 /datum/job/proc/get_outfit(consistent)
 	return outfit

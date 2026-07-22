@@ -144,3 +144,5 @@ do { \
 		source.lum_b = 1; \
 	}; \
 } while (FALSE)
+
+#define LIGHTING_PLANE_ALPHA_DIMINISHED_VISIBLE 210

@@ -24,6 +24,23 @@ export const ghost_hud: FeatureToggle = {
   component: CheckboxInput,
 };
 
+export const ghost_orbit: FeatureChoiced = {
+  name: 'Ghost orbit',
+  category: 'GHOST',
+  description: `
+    The shape in which your ghost will orbit.
+  `,
+  component: (
+    props: FeatureValueProps<string, string, FeatureChoicedServerData>,
+  ) => {
+    const { data } = useBackend<PreferencesMenuData>();
+
+    return (
+      <FeatureDropdownInput {...props} />
+    );
+  },
+};
+
 export const inquisitive_ghost: FeatureToggle = {
   name: 'Ghost inquisitiveness',
   category: 'GHOST',

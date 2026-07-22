@@ -79,9 +79,6 @@
 		if (is_admin && (toggle_name in deadmin_flags) && (preferences.toggles & DEADMIN_ALWAYS))
 			continue
 
-		if (toggle_name == "member_public" && !preferences.unlock_content)
-			continue
-
 		new_game_preferences[toggle_name] = (preferences.toggles & legacy_toggles[toggle_name]) != 0
 
 	for (var/toggle_name in legacy_chat_toggles)

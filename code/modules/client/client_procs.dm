@@ -164,12 +164,6 @@ GLOBAL_LIST_INIT(unrecommended_builds, list(
 /client/proc/_Topic(datum/hsrc, href, list/href_list)
 	return hsrc.Topic(href, href_list)
 
-/client/proc/is_content_unlocked()
-	if(!prefs.unlock_content)
-		to_chat(src, "Become a BYOND member to access member-perks and features, as well as support the engine that makes this game possible. Only 10 bucks for 3 months! <a href=\"https://secure.byond.com/membership\">Click Here to find out more</a>.")
-		return FALSE
-	return TRUE
-
 /client/proc/is_localhost()
 	var/static/localhost_addresses = list(
 		"127.0.0.1",

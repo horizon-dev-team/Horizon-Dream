@@ -298,7 +298,7 @@ GLOBAL_VAR_INIT(observer_default_invisibility, INVISIBILITY_OBSERVER)
 	SEND_SIGNAL(src, COMSIG_MOB_GHOSTIZED)
 	return ghost
 
-/mob/dead/observer/ghostize(can_reenter_corpse) //Sanity override
+/mob/dead/observer/ghostize(can_reenter_corpse, forced) //Sanity override
 	return
 
 /mob/living/ghostize(can_reenter_corpse = TRUE, forced = FALSE)
@@ -505,7 +505,7 @@ GAME_VERB(/mob/dead/observer, change_view_range, "View Range", null)
 		to_chat(usr, span_notice("That verb is currently globally disabled."))
 		return
 
-	var/max_view = client.prefs.unlock_content ? GHOST_MAX_VIEW_RANGE_MEMBER : GHOST_MAX_VIEW_RANGE_DEFAULT
+	var/max_view = GHOST_MAX_VIEW_RANGE_DEFAULT
 	if(client.view_size.getView() == client.view_size.default)
 		var/list/views = list()
 		for(var/i in 7 to max_view)
@@ -676,7 +676,7 @@ GAME_VERB_HIDDEN(/mob/dead/observer, add_view_range, "Add View Range")
 		to_chat(usr, span_notice("That verb is currently globally disabled."))
 		return
 
-	var/max_view = client.prefs.unlock_content ? GHOST_MAX_VIEW_RANGE_MEMBER : GHOST_MAX_VIEW_RANGE_DEFAULT
+	var/max_view = GHOST_MAX_VIEW_RANGE_DEFAULT
 	if(input)
 		client.rescale_view(input, 0, ((max_view * 2) + 1) - 15)
 

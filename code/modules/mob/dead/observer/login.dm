@@ -7,9 +7,7 @@
 //	ghost_others = client.prefs.read_preference(/datum/preference/choiced/ghost_others)
 //	var/preferred_form = null
 
-	if(client.prefs.unlock_content)
-//		preferred_form = client.prefs.read_preference(/datum/preference/choiced/ghost_form)
-		ghost_orbit = client.prefs.read_preference(/datum/preference/choiced/ghost_orbit)
+	ghost_orbit = client.prefs.read_preference(/datum/preference/choiced/ghost_orbit)
 
 //	update_icon(ALL, preferred_form)
 //	updateghostimages()

@@ -143,7 +143,7 @@ GLOBAL_DATUM_INIT(ghost_menu, /datum/ghost_menu, new)
 
 /datum/ghost_menu/ui_static_data(mob/dead/observer/user)
 	var/list/data = list()
-	data["max_extra_view"] = (user.client.prefs.unlock_content ? GHOST_MAX_VIEW_RANGE_MEMBER : GHOST_MAX_VIEW_RANGE_DEFAULT) - GHOST_MIN_VIEW_RANGE
+	data["max_extra_view"] = GHOST_MAX_VIEW_RANGE_DEFAULT
 	data["darkness_levels"] = list()
 	for(var/level in GLOB.ghost_lightings)
 		data["darkness_levels"] += level
@@ -178,7 +178,7 @@ GLOBAL_DATUM_INIT(ghost_menu, /datum/ghost_menu, new)
 	if(SSlag_switch.measures[DISABLE_GHOST_ZOOM_TRAY] && !user.client?.holder)
 		to_chat(user, span_notice("That verb is currently globally disabled."))
 		return TRUE
-	var/max_view = user.client.prefs.unlock_content ? GHOST_MAX_VIEW_RANGE_MEMBER : GHOST_MAX_VIEW_RANGE_DEFAULT
+	var/max_view = GHOST_MAX_VIEW_RANGE_DEFAULT
 	if(max_view >= new_view && new_view < GHOST_MIN_VIEW_RANGE)
 		return TRUE
 	user.client.view_size.setTo(round(new_view, 1) - GHOST_MIN_VIEW_RANGE)

@@ -425,7 +425,8 @@ GLOBAL_LIST_INIT(preference_entries_by_key, init_preference_entries_by_key())
 /// If `should_generate_icons` is TRUE, then you will also need to implement `icon_for(value)`
 /// for every possible value.
 /datum/preference/choiced/proc/init_possible_values()
-	CRASH("`init_possible_values()` was not implemented for [type]!")
+// [HORIZON] CRASH("`init_possible_values()` was not implemented for [type]!")
+
 
 /// When `should_generate_icons` is TRUE, this proc is called for every value.
 /// It can return either an /datum/universal_icon (see uni_icon() DEFINE) or a typepath to an atom to create.

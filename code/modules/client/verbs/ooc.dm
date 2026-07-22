@@ -78,7 +78,7 @@ GAME_VERB(/client, ooc, VERB_OOC, null)
 	var/keyname = key
 	var/list/key_tags
 	var/key_prefix = ""
-	var/visible_unlock = prefs.unlock_content && (prefs.toggles & MEMBER_PUBLIC)
+	var/visible_unlock = TRUE
 
 	// heart first lol
 	if(prefs.hearted)

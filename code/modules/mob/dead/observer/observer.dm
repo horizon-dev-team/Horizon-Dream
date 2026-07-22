@@ -287,7 +287,7 @@ GLOBAL_VAR_INIT(observer_default_invisibility, INVISIBILITY_OBSERVER)
 
 	// Client is now available, if appearance wasn't set, fall back to charslot appearance
 	if(!ghost.has_mob_appearance)
-		ghost.set_ghost_appearance()
+		INVOKE_ASYNC(ghost, TYPE_PROC_REF(/mob/dead/observer, set_ghost_appearance))
 
 	var/recordable_time = world.time
 	var/mob/living/former_mob = ghost.mind?.current

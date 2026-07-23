@@ -19,7 +19,7 @@
 		hunger_loss *= 2
 	adjust_nutrition(-1 * hunger_loss)
 
-// [HORIZON-ADD] - HYDRATION-THIRST
+// [HORIZON-ADD]
 	if(!HAS_TRAIT(src, TRAIT_NOHYDRATION))
 		if(hydration <= 0 || stat != DEAD)
 			return

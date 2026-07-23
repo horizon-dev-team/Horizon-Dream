@@ -1485,7 +1485,7 @@ GAME_VERB_NATIVE(/mob, DisDblClick, ".dblclick", null, argu = null as anything, 
 		hunger_bar.update_hunger_bar()
 	SEND_SIGNAL(src, COMSIG_LIVING_UPDATE_NUTRITION)
 
-// [HORIZON-ADD] - HYDRATION-THIRST - По сути можно попытаться по новому
+// [HORIZON-ADD] - По сути можно попытаться по новому
 /// Updates hydration related effects
 /mob/living/proc/update_hydration()
 	mob_mood?.update_hydration_moodlets()

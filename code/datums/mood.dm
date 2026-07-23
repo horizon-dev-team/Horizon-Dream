@@ -145,7 +145,7 @@
 
 	return TRUE
 
-// [HORIZON-ADD] - HYDRATION-THIRST
+// [HORIZON-ADD]
 /// Handles mood given by nutrition
 /datum/mood/proc/update_hydration_moodlets()
 	if(HAS_TRAIT(mob_parent, TRAIT_NOHYDRATION))
@@ -438,7 +438,7 @@
 		msg += "<br>"
 // [HORIZON-EDIT]
 
-// [HORIZON-ADD] - HYDRATION-THIRST
+// [HORIZON-ADD]
 	if(!HAS_TRAIT(src, TRAIT_NOHYDRATION))
 		msg += span_notice("My thirst: ")
 		var/hydration = mob_parent.hydration

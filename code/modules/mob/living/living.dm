@@ -990,7 +990,7 @@ GAME_VERB_PROC(/mob/living, mob_sleep, "Sleep", null)
 	// Only aheals really do this right now, so this flag should be fine for the time being
 	if(heal_flags & HEAL_ADMIN)
 		set_nutrition(NUTRITION_LEVEL_FED + 50)
-		set_hydration(HYDRATION_LEVEL_NORMAL + 50)	// [HORIZON-ADD] - HYDRATION-THIRST
+		set_hydration(HYDRATION_LEVEL_NORMAL + 50)	// [HORIZON-ADD]
 		overeatduration = 0
 		satiety = 0
 

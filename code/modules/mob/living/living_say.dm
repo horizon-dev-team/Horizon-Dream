@@ -521,7 +521,7 @@ GLOBAL_LIST_INIT(message_modes_stat_limits, list(
 	tts_filter = data[TREAT_TTS_FILTER_ARG]
 	capitalize_message = data[TREAT_CAPITALIZE_MESSAGE]
 
-// [HORIZON-ADD] - HYDRATION-THIRST
+// [HORIZON-ADD]
 	if(hydration <= HYDRATION_LEVEL_DEHYDRATED)
 		message = thirstymessage(message)
 // [/HORIZON-ADD]

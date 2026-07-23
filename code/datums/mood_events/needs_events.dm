@@ -5,7 +5,7 @@
 
 /datum/mood_event/too_wellfed
 	description = "I think I've eaten too much."
-	mood_change = -4	// [HORIZON-EDIT] - HYDRATION-THIRST
+	mood_change = -4	// [HORIZON-EDIT]
 
 /datum/mood_event/wellfed
 	description = "I'm stuffed!"
@@ -27,7 +27,7 @@
 	description = "I'm starving!"
 	mood_change = -10
 
-// [HORIZON-ADD] - HYDRATION-THIRST
+// [HORIZON-ADD]
 /datum/mood_event/overhydrated
 	description = "<B>I'M HAD TOO MUCH WATER..</B>"
 	mood_change = -6

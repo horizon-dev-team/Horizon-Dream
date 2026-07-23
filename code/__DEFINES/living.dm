@@ -12,6 +12,8 @@
 #define STOP_OVERLAY_UPDATE_BODY_PARTS (1<<2)
 /// Nutrition changed last life tick, so we should bulk update this tick
 #define QUEUE_NUTRITION_UPDATE (1<<3)
+/// Hydration changed last life tick, so we should bulk update this tick
+#define QUEUE_HYDRATION_UPDATE (1<<6)
 /// Blood volume or status has changed since the last [proc/update_blood_effects] call.
 /// Nowhere near guaranteed to happen only once per life tick, or at all.
 #define BLOOD_UPDATE_QUEUED (1<<4)

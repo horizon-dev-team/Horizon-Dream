@@ -61,8 +61,11 @@
 
 	if(living_flags & QUEUE_NUTRITION_UPDATE)
 		update_nutrition()
-		update_hydration()
 		living_flags &= ~QUEUE_NUTRITION_UPDATE
+
+	if(living_flags & QUEUE_HYDRATION_UPDATE)
+		update_hydration()
+		living_flags &= ~QUEUE_HYDRATION_UPDATE
 
 	if(living_flags & BLOOD_UPDATE_QUEUED)
 		update_blood_effects()
@@ -111,8 +114,8 @@
 	var/fullness = hydration
 	// we add the hydration value of what we're currently digesting
 	for(var/datum/reagent/consumable/bits in reagents.reagent_list)
-		fullness += bits.get_nutriment_factor(src) * bits.volume / bits.metabolization_rate
-	return hydration
+		fullness += bits.get_hydration_factor(src) * bits.volume / bits.metabolization_rate
+	return fullness
 /**
  * Check if the mob contains this reagent.
  *

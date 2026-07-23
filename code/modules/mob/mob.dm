@@ -1505,7 +1505,7 @@ GAME_VERB_NATIVE(/mob, DisDblClick, ".dblclick", null, argu = null as anything, 
 	if(abs(change) >= 6)
 		update_hydration()
 	else
-		living_flags |= QUEUE_NUTRITION_UPDATE
+		living_flags |= QUEUE_HYDRATION_UPDATE
 
 ///Force set the mob hydration
 /mob/proc/set_hydration(set_to, forced = FALSE)
@@ -1521,7 +1521,7 @@ GAME_VERB_NATIVE(/mob, DisDblClick, ".dblclick", null, argu = null as anything, 
 	if(abs(old_hydration - hydration) >= 6)
 		update_hydration()
 	else
-		living_flags |= QUEUE_NUTRITION_UPDATE
+		living_flags |= QUEUE_HYDRATION_UPDATE
 // [/HORIZON-ADD]
 
 /// Apply a proper movespeed modifier based on items we have equipped

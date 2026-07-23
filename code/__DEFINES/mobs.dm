@@ -326,7 +326,7 @@
 // After this amount of time overeating carbons become fat
 #define OVEREAT_TIME_LIMIT 200 SECONDS
 
-// [HORIZON-ADD]
+// [HORIZON-ADD] - HYDRATION-THIRST
 //Humans get thirsty
 #define HYDRATION_LEVEL_OVERHYDRATED 300
 #define HYDRATION_LEVEL_NORMAL 50

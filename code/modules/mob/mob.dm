@@ -1483,6 +1483,51 @@ GAME_VERB_NATIVE(/mob, DisDblClick, ".dblclick", null, argu = null as anything, 
 		hunger_bar.update_hunger_bar()
 	SEND_SIGNAL(src, COMSIG_LIVING_UPDATE_NUTRITION)
 
+// [HORIZON-ADD] - HYDRATION-THIRST - По сути можно попытаться по новому
+/// Updates hydration related effects
+/mob/living/proc/update_hydration()
+	mob_mood?.update_nutrition_moodlets()
+	var/atom/movable/screen/hydration/hydration_bar = hud_used?.screen_objects[HUD_MOB_HYDRATION]
+	if (hydration_bar)
+		hydration_bar.update_hydration_bar()
+	SEND_SIGNAL(src, COMSIG_LIVING_UPDATE_HYDRATION)
+
+/*
+///Adjust the hydration of a mob
+/mob/proc/adjust_hydration(change, forced = FALSE) //Honestly FUCK the oldcoders for putting hydration on /mob someone else can move it up because holy hell I'd have to fix SO many typechecks
+	if(HAS_TRAIT(src, TRAIT_NOHYDRATION) && !forced)
+		return
+
+	hydration = max(0, hydration + change)
+
+/mob/living/adjust_hydration(change, forced)
+	. = ..()
+	// Queue update if change is small enough (6 is 1% of hydration softcap)
+	if(abs(change) >= 6)
+		mob_mood?.update_hydration_moodlets()
+		hud_used?.hydration?.update_hydration_bar()
+	else
+		living_flags |= QUEUE_NUTRITION_UPDATE
+
+///Force set the mob hydration
+/mob/proc/set_hydration(set_to, forced = FALSE)
+	if(HAS_TRAIT(src, TRAIT_NOHYDRATION) && !forced)
+		return
+
+	hydration = max(0, set_to)
+
+/mob/living/set_hydration(set_to, forced)
+	var/old_hydration = hydration
+	. = ..()
+	// Queue update if change is small enough (6 is 1% of hydration softcap)
+	if(abs(old_hydration - hydration) >= 6)
+		mob_mood?.update_hydration_moodlets()
+		hud_used?.hydration?.update_hydration_bar()
+	else
+		living_flags |= QUEUE_NUTRITION_UPDATE
+*/
+// [/HORIZON-ADD]
+
 /// Apply a proper movespeed modifier based on items we have equipped
 /mob/proc/update_equipment_speed_mods()
 	var/speedies = 0

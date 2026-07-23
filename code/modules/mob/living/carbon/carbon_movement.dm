@@ -19,14 +19,15 @@
 		hunger_loss *= 2
 	adjust_nutrition(-1 * hunger_loss)
 
-	// [HORIZON-ADD] - THIRST		if(HAS_TRAIT(src, TRAIT_NOHYDRATION))
+// [HORIZON-ADD] - HYDRATION-THIRST
 	if(!HAS_TRAIT(src, TRAIT_NOHYDRATION))
 		if(hydration <= 0 || stat != DEAD)
 			return
-		hydration -= HYDRATION_LOSS_PER_MOVE
+		var/hydration_loss = HYDRATION_LOSS_PER_MOVE
 		if(move_intent == MOVE_INTENT_RUN)
-			hydration -= HYDRATION_LOSS_PER_MOVE
-	// [/HORIZON-ADD] - THIRST
+			hydration_loss *= 2
+		adjust_hydration(-hydration_loss)
+// [/HORIZON-ADD]
 
 /mob/living/carbon/set_usable_legs(new_value)
 	. = ..()

@@ -96,6 +96,10 @@
 	var/restaurant_order = /datum/custom_order/reagent/drink
 	/// How we interact with random generators
 	var/randomized_spawns = REAGENT_SPAWN_NO_RANDOM
+// [HORIZON-ADD]
+	///hydration factor to restore thirst
+	var/hydration_factor = 0
+// [/HORIZON-ADD]
 
 /datum/reagent/New()
 	SHOULD_CALL_PARENT(TRUE)

@@ -61,6 +61,10 @@
 
 	if(living_flags & QUEUE_NUTRITION_UPDATE)
 		update_nutrition()
+		// Да тут поменяли с этого на вышу штуку, просто написать аналог для воды.
+		//mob_mood?.update_nutrition_moodlets()
+		//hud_used?.hunger?.update_hunger_bar()
+		//hud_used?.hydration?.update_hydration_bar()
 		living_flags &= ~QUEUE_NUTRITION_UPDATE
 
 	if(living_flags & BLOOD_UPDATE_QUEUED)
@@ -106,6 +110,12 @@
 		fullness += bits.get_nutriment_factor(src) * bits.volume / bits.metabolization_rate
 	return fullness
 
+/mob/living/proc/get_fullness_water(only_consumable)
+	var/fullness = hydration
+	// we add the hydration value of what we're currently digesting
+	for(var/datum/reagent/consumable/bits in reagents.reagent_list)
+		fullness += bits.get_nutriment_factor(src) * bits.volume / bits.metabolization_rate
+	return hydration
 /**
  * Check if the mob contains this reagent.
  *

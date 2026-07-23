@@ -54,6 +54,9 @@
 			if(isitem(the_real_food) && !is_reagent_container(the_real_food))
 				exposed_mob.add_mob_memory(/datum/memory/good_food, food = the_real_food)
 
+	if(chemical_flags == REAGENT_CAN_BE_SYNTHESIZED)
+		exposed_mob.hydration += max(0.5, nutriment_factor) * hydration_factor
+
 /// Gets just how much nutrition this reagent supplies per server tick to the eater
 /datum/reagent/consumable/proc/get_nutriment_factor(mob/living/carbon/eater)
 	return nutriment_factor * REAGENTS_METABOLISM * purity * 2
@@ -523,6 +526,7 @@
 
 /datum/reagent/consumable/salt/expose_mob(mob/living/exposed_mob, methods, reac_volume)
 	. = ..()
+	exposed_mob.hydration -= 0.04
 	if(!iscarbon(exposed_mob))
 		return
 	var/mob/living/carbon/carbies = exposed_mob

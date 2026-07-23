@@ -113,6 +113,10 @@
 
 	/// Hunger level of the mob
 	var/nutrition = NUTRITION_LEVEL_START_MIN // randomised in Initialize
+
+	/// Hydration level of the mob
+	var/hydration = HYDRATION_LEVEL_START_MIN
+
 	/// Satiation level of the mob
 	var/satiety = 0//Carbon
 

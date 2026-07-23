@@ -1440,3 +1440,183 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 
 #undef FORMAT_XENOBIO_HUD_MAPTEXT
 #undef POTION_DROP_SPEED
+
+#define HYDRATION_STATE_FAT 5
+#define HYDRATION_STATE_FULL 4
+#define HYDRATION_STATE_FINE 3
+#define HYDRATION_STATE_HUNGRY 2
+#define HYDRATION_STATE_VERY_HUNGRY 1
+#define HYDRATION_STATE_STARVING 0
+
+/atom/movable/screen/hydration
+	name = "hydration"
+	icon_state = "hungerbar"
+	screen_loc = ui_hydration
+	mouse_opacity = MOUSE_OPACITY_TRANSPARENT
+	/// What state of hydration are we in?
+	VAR_PRIVATE/state
+	/// What was the last fullness we recorded?
+	VAR_PRIVATE/fullness
+	/// What food icon do we show by the bar
+	var/food_icon = '_horizon/icons/hud/screen_alert.dmi'
+	/// What food icon state do we show by the bar
+	var/food_icon_state = "hhydration"
+	/// The image shown by the bar.
+	VAR_PRIVATE/image/food_image
+	/// The actual bar
+	VAR_PRIVATE/atom/movable/screen/hydration_bar/hydration_bar
+
+/atom/movable/screen/hydration/Initialize(mapload, datum/hud/hud_owner)
+	. = ..()
+	var/mob/living/need_water = hud_owner?.mymob
+	if(!istype(need_water))
+		return
+
+	if(!ishuman(need_water) || CONFIG_GET(flag/disable_human_mood))
+		screen_loc = ui_mood // Slot in where mood normally is if mood is disabled
+
+	// Burger next to the bar
+	food_image = image(icon = food_icon, icon_state = food_icon_state, pixel_x = -5)
+	food_image.plane = plane
+	food_image.appearance_flags |= KEEP_APART // To be unaffected by filters applied to src
+	food_image.add_filter("simple_outline", 2, outline_filter(1, COLOR_BLACK, OUTLINE_SHARP))
+	underlays += food_image // To be below filters applied to src
+
+	// The actual bar
+	hydration_bar = new(src, null)
+	vis_contents += hydration_bar
+
+	update_hydration_bar(instant = TRUE)
+
+/atom/movable/screen/hydration/proc/update_hydration_state()
+	var/mob/living/need_water = hud?.mymob
+	if(!istype(need_water))
+		return
+
+	if(HAS_TRAIT(need_water, TRAIT_NOHUNGER) || !need_water.get_organ_slot(ORGAN_SLOT_STOMACH))
+		fullness = HYDRATION_LEVEL_NORMAL
+		state = HYDRATION_STATE_FINE
+		return
+	if(HAS_TRAIT(need_water, TRAIT_FAT))
+		fullness = HYDRATION_LEVEL_OVERHYDRATED
+		state = HYDRATION_STATE_FAT
+		return
+
+	if(HAS_TRAIT(need_water, TRAIT_GLUTTON))
+		fullness = HYDRATION_LEVEL_DEHYDRATED
+		state = HYDRATION_STATE_HUNGRY // Can't get enough
+		return
+
+	fullness = round(need_water.get_fullness_water(only_consumable = TRUE), 0.05)
+	switch(fullness)
+		if(1 + HYDRATION_LEVEL_OVERHYDRATED to INFINITY)
+			state = HYDRATION_STATE_FULL
+		if(1 + HYDRATION_LEVEL_THIRSTY to HYDRATION_LEVEL_OVERHYDRATED)
+			state = HYDRATION_STATE_FINE
+		if(1 + HYDRATION_LEVEL_DEHYDRATED to HYDRATION_LEVEL_THIRSTY)
+			state = HYDRATION_STATE_FINE
+		if(1 + HYDRATION_LEVEL_MIN_CAP to HYDRATION_LEVEL_DEHYDRATED)
+			state = HYDRATION_STATE_HUNGRY
+		if(0 to HYDRATION_LEVEL_MIN_CAP)
+			state = HYDRATION_STATE_STARVING
+
+/atom/movable/screen/hydration/update_appearance(updates)
+	update_hydration_bar()
+	return ..()
+
+/// Updates the hydration bar's appearance.
+/// If `instant` is TRUE, the bar will update immediately rather than animating.
+/atom/movable/screen/hydration/proc/update_hydration_bar(instant = FALSE)
+	var/old_state = state
+	var/old_fullness = fullness
+	update_hydration_state()
+	if(old_state != state || old_fullness != fullness)
+		// Fades out if we ARE "fine" AND if our stomach has no food digesting
+		var/mob/living/need_water = hud?.mymob
+		if(alpha == 255 && (state == HYDRATION_STATE_FINE && abs(fullness - need_water.hydration) < 1))
+			if(instant)
+				alpha = 0
+			else
+				animate(src, alpha = 0, time = 1 SECONDS)
+		// Fades in if we WERE "fine" OR if our stomach has food digesting
+		else if(alpha == 0 && (state != HYDRATION_STATE_FINE || abs(fullness - need_water.hydration) >= 1))
+			if(instant)
+				alpha = 255
+			else
+				animate(src, alpha = 255, time = 1 SECONDS)
+
+	if(old_state != state)
+		// Update filter around the bar
+		if(state == HYDRATION_STATE_STARVING)
+			if(!get_filter("hydration_outline"))
+				add_filter("hydration_outline", 1, list("type" = "outline", "color" = "#FF0033", "alpha" = 0, "size" = 2))
+				animate(get_filter("hydration_outline"), alpha = 200, time = 1.5 SECONDS, loop = -1)
+				animate(alpha = 0, time = 1.5 SECONDS)
+
+		else if(old_state == HYDRATION_STATE_STARVING)
+			remove_filter("hydration_outline")
+
+		// Update color of the food
+		if((state == HYDRATION_STATE_FAT) != (old_state == HYDRATION_STATE_FAT))
+			underlays -= food_image
+			food_image.color = state == HYDRATION_STATE_FAT ? COLOR_DARK : null
+			underlays += food_image
+
+	// Update hydration bar
+	if(old_fullness != fullness)
+		// instant if invisible OR if instant is set
+		hydration_bar.update_fullness(fullness, alpha == 0 || instant)
+
+/atom/movable/screen/hydration_bar
+	icon_state = "hungerbar_bar"
+	screen_loc = ui_hydration
+	vis_flags = VIS_INHERIT_ID | VIS_INHERIT_PLANE
+	/// Mask
+	VAR_PRIVATE/static/icon/bar_mask
+	/// Gradient used to color the bar
+	VAR_PRIVATE/static/list/hydration_gradient = list(
+		0.0, "#FF0000",
+		0.2, "#FF8000",
+		0.4, "#f0f000",
+		0.6, "#00FF00",
+		0.8, "#46daff",
+		1.0, "#2A72AA",
+		1.2, "#494949",
+	)
+	/// Offset of the mask
+	VAR_PRIVATE/bar_offset
+	/// Last "fullness" value (rounded) we used to update the bar
+	VAR_PRIVATE/last_fullness_band = -1
+
+/atom/movable/screen/hydration_bar/Initialize(mapload, datum/hud/hud_owner)
+	. = ..()
+	var/atom/movable/movable_loc = ismovable(loc) ? loc : null
+	screen_loc = movable_loc?.screen_loc
+	bar_mask ||= icon(icon, "hungerbar_mask")
+
+/atom/movable/screen/hydration_bar/proc/update_fullness(new_fullness, instant)
+	new_fullness = round(new_fullness / HYDRATION_LEVEL_NORMAL, 0.05)
+	if(new_fullness == last_fullness_band)
+		return
+	last_fullness_band = new_fullness
+	// Update color
+	var/new_color = gradient(hydration_gradient, clamp(new_fullness, 0, 1.2))
+	if(instant)
+		color = new_color
+	else
+		animate(src, color = new_color, 0.5 SECONDS)
+	// Update mask
+	var/old_bar_offset = bar_offset
+	bar_offset = clamp(-20 + (20 * new_fullness), -20, 0)
+	if(old_bar_offset != bar_offset)
+		if(instant || isnull(old_bar_offset))
+			add_filter("hydration_bar_mask", 1, alpha_mask_filter(0, bar_offset, bar_mask))
+		else
+			transition_filter("hydration_bar_mask", alpha_mask_filter(0, bar_offset), 0.5 SECONDS)
+
+#undef HYDRATION_STATE_FAT
+#undef HYDRATION_STATE_FINE
+#undef HYDRATION_STATE_FULL
+#undef HYDRATION_STATE_HUNGRY
+#undef HYDRATION_STATE_STARVING
+#undef HYDRATION_STATE_VERY_HUNGRY

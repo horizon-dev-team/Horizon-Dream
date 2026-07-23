@@ -28,6 +28,7 @@
 
 		if(.) //not dead
 			handle_blood(seconds_per_tick)
+			handle_hydration(seconds_per_tick, times_fired) // huh, глянь потом почему убрали `times_fired`
 
 		if(stat != DEAD) // still not dead (blood could have changed that)
 			for(var/key in mind?.addiction_points)
@@ -450,6 +451,19 @@
 
 /mob/living/carbon/proc/handle_blood(seconds_per_tick)
 	return
+
+// [HORIZON-ADD] - так же, глянь на times_fired
+/mob/living/carbon/proc/handle_hydration(seconds_per_tick, times_fired)
+	return
+
+/mob/living/carbon/human/handle_hydration(seconds_per_tick, times_fired)
+	if(HAS_TRAIT(src, TRAIT_NOHYDRATION))
+		hydration = HYDRATION_LEVEL_START_MIN
+		return
+	if(hydration < HYDRATION_LEVEL_MIN_CAP)
+		hydration = HYDRATION_LEVEL_MIN_CAP
+	hydration -= HYDRATION_LOSS_PER_LIFE
+// [/HORIZON-ADD]
 
 /mob/living/carbon/reagent_tick(datum/reagent/chem, seconds_per_tick, metabolization_ratio)
 	. = ..()

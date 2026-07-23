@@ -145,7 +145,7 @@
 
 // [HORIZON-ADD]
 	if(methods & INGEST)
-		exposed_mob.hydration += reac_volume * hydration_factor
+		exposed_mob.adjust_hydration(reac_volume * hydration_factor)
 // [/HORIZON-ADD]
 
 /// Applies this reagent to an [/obj]

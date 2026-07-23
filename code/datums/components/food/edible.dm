@@ -512,6 +512,9 @@ Behavior that's still missing from this component that original food items had t
 	var/atom/movable/screen/hunger/hunger_bar = eater.hud_used?.screen_objects[HUD_MOB_HUNGER]
 	if (istype(hunger_bar))
 		hunger_bar.update_hunger_bar()
+	var/atom/movable/screen/hydration/hydration_bar = eater.hud_used?.screen_objects[HUD_MOB_HYDRATION]
+	if (istype(hydration_bar))
+		hydration_bar.update_hydration_bar()
 	bitecount++
 
 	checkLiked(fraction, eater)

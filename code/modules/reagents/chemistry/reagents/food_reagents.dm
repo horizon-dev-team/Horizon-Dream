@@ -29,8 +29,12 @@
 		return
 
 	var/mob/living/carbon/human/affected_human = affected_mob
-	affected_human.adjust_nutrition(0.5 * get_nutriment_factor(affected_mob) * metabolization_ratio * seconds_per_tick)
-	affected_human.adjust_hydration(0.5 * get_hydration_factor(affected_mob) * metabolization_ratio * seconds_per_tick) // [HORIZON-ADD]
+	var/nutriment_amount = 0.5 * get_nutriment_factor(affected_mob) * metabolization_ratio * seconds_per_tick
+	var/hydration_amount = 0.5 * get_hydration_factor(affected_mob) * metabolization_ratio * seconds_per_tick // [HORIZON-ADD]
+	if(nutriment_amount)
+		affected_human.adjust_nutrition(nutriment_amount)
+	if(hydration_amount)
+		affected_human.adjust_hydration(hydration_amount)
 
 /datum/reagent/consumable/expose_mob(mob/living/exposed_mob, methods=TOUCH, reac_volume)
 	. = ..()
@@ -531,7 +535,7 @@
 
 /datum/reagent/consumable/salt/expose_mob(mob/living/exposed_mob, methods, reac_volume)
 	. = ..()
-	exposed_mob.hydration -= 0.04
+	exposed_mob.adjust_hydration(-0.04)
 	if(!iscarbon(exposed_mob))
 		return
 	var/mob/living/carbon/carbies = exposed_mob

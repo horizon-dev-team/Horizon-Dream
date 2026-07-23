@@ -103,19 +103,20 @@
  *
  * Returns a number representing fullness, scaled similarly to nutrition.
  */
-/mob/living/proc/get_fullness(only_consumable)
-	var/fullness = nutrition
-	// we add the nutrition value of what we're currently digesting
-	for(var/datum/reagent/consumable/bits in reagents.reagent_list)
-		fullness += bits.get_nutriment_factor(src) * bits.volume / bits.metabolization_rate
+/mob/living/proc/get_fullness(only_consumable, hydration_flag = FALSE)
+	var/fullness
+	switch(hydration_flag)
+		if(FALSE)
+			fullness = nutrition
+			// we add the nutrition value of what we're currently digesting
+			for(var/datum/reagent/consumable/bits in reagents.reagent_list)
+				fullness += bits.get_nutriment_factor(src) * bits.volume / bits.metabolization_rate
+		if(TRUE)
+			fullness = hydration
+			for(var/datum/reagent/consumable/bits in reagents.reagent_list)
+				fullness += bits.get_hydration_factor(src) * bits.volume / bits.metabolization_rate
 	return fullness
 
-/mob/living/proc/get_fullness_water(only_consumable)
-	var/fullness = hydration
-	// we add the hydration value of what we're currently digesting
-	for(var/datum/reagent/consumable/bits in reagents.reagent_list)
-		fullness += bits.get_hydration_factor(src) * bits.volume / bits.metabolization_rate
-	return fullness
 /**
  * Check if the mob contains this reagent.
  *

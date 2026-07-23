@@ -66,6 +66,7 @@
 		var/mob/living/carbon/human/humi = owner
 		if(!(organ_flags & ORGAN_FAILING))
 			handle_hunger(humi, seconds_per_tick)
+			handle_hydration(humi, seconds_per_tick)
 
 	var/mob/living/carbon/body = owner
 
@@ -133,6 +134,13 @@
 	if(damage > high_threshold && SPT_PROB(0.05 * damage * nutri_vol * nutri_vol, seconds_per_tick))
 		body.vomit(VOMIT_CATEGORY_DEFAULT, lost_nutrition = damage)
 		to_chat(body, span_warning("Your stomach reels in pain as you're incapable of holding down all that food!"))
+
+/obj/item/organ/stomach/proc/handle_hydration(mob/living/carbon/human/human, seconds_per_tick)
+	if(HAS_TRAIT(human, TRAIT_NOHYDRATION))
+		return
+
+	if (human.nutrition > 0 && human.stat != DEAD)
+		human.adjust_hydration(-HYDRATION_LOSS_PER_LIFE)
 
 /obj/item/organ/stomach/proc/handle_hunger(mob/living/carbon/human/human, seconds_per_tick)
 	if(HAS_TRAIT(human, TRAIT_NOHUNGER))

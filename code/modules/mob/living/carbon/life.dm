@@ -28,7 +28,6 @@
 
 		if(.) //not dead
 			handle_blood(seconds_per_tick)
-			handle_hydration(seconds_per_tick) // huh, глянь потом почему убрали `times_fired`
 
 		if(stat != DEAD) // still not dead (blood could have changed that)
 			for(var/key in mind?.addiction_points)
@@ -706,7 +705,7 @@
 //Stomach//
 ///////////
 
-/mob/living/carbon/get_fullness(only_consumable)
+/mob/living/carbon/get_fullness(only_consumable, hydration_flag)
 	. = ..()
 
 	var/obj/item/organ/stomach/belly = get_organ_slot(ORGAN_SLOT_STOMACH)
@@ -720,13 +719,19 @@
 			effective_volume -= belly.food_reagents[bits.type]
 		if(effective_volume <= 0)
 			continue
-		if(istype(bits, /datum/reagent/consumable))
-			var/datum/reagent/consumable/goodbit = bits
-			. += goodbit.get_nutriment_factor(src) * effective_volume / goodbit.metabolization_rate
+			if(istype(bits, /datum/reagent/consumable))
+				var/datum/reagent/consumable/goodbit = bits
+				switch(hydration_flag) // Я уже запутался пока разбирал это, так будет читабельнее.
+					if(FALSE)
+						. += goodbit.get_nutriment_factor(src) * effective_volume / goodbit.metabolization_rate
+						continue
+					if(TRUE)
+						. += goodbit.get_hydration_factor(src) * effective_volume / goodbit.metabolization_rate
+						continue
+		if(only_consumable)
 			continue
-		if(!only_consumable)
-			continue
-		. += 0.6 * effective_volume / bits.metabolization_rate //not food takes up space
+		if(!hydration_flag)
+			. += 0.6 * effective_volume / bits.metabolization_rate //not food takes up space
 
 	return .
 

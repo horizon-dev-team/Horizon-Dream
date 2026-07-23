@@ -1186,7 +1186,7 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 		state = HUNGER_STATE_HUNGRY // Can't get enough
 		return
 
-	fullness = round(hungry.get_fullness(only_consumable = TRUE), 0.05)
+	fullness = round(hungry.get_fullness(only_consumable = TRUE, hydration_flag = FALSE), 0.05)
 	switch(fullness)
 		if(1 + NUTRITION_LEVEL_FULL to INFINITY)
 			state = HUNGER_STATE_FULL
@@ -1455,8 +1455,8 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 	mouse_opacity = MOUSE_OPACITY_TRANSPARENT
 	/// What state of hydration are we in?
 	VAR_PRIVATE/state
-	/// What was the last fullness we recorded?
-	VAR_PRIVATE/fullness
+	/// What was the last fullness_water we recorded?
+	VAR_PRIVATE/fullness_water
 	/// What food icon do we show by the bar
 	var/water_icon = '_horizon/CORE/icons/hud/screen_alert.dmi'
 	/// What food icon state do we show by the bar
@@ -1494,12 +1494,12 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 		return
 
 	if(HAS_TRAIT(need_water, TRAIT_NOHYDRATION) || !need_water.get_organ_slot(ORGAN_SLOT_STOMACH))
-		fullness = HYDRATION_LEVEL_NORMAL
+		fullness_water = HYDRATION_LEVEL_NORMAL
 		state = HYDRATION_STATE_FINE
 		return
 
-	fullness = round(need_water.get_fullness_water(only_consumable = TRUE), 0.05)
-	switch(fullness)
+	fullness_water = round(need_water.get_fullness(only_consumable = TRUE, hydration_flag = TRUE), 0.05)
+	switch(fullness_water)
 		if(1 + HYDRATION_LEVEL_OVERHYDRATED to INFINITY)
 			state = HYDRATION_STATE_FULL
 		if(1 + HYDRATION_LEVEL_THIRSTY to HYDRATION_LEVEL_OVERHYDRATED)
@@ -1519,18 +1519,18 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 /// If `instant` is TRUE, the bar will update immediately rather than animating.
 /atom/movable/screen/hydration/proc/update_hydration_bar(instant = FALSE)
 	var/old_state = state
-	var/old_fullness = fullness
+	var/old_fullness = fullness_water
 	update_hydration_state()
-	if(old_state != state || old_fullness != fullness)
+	if(old_state != state || old_fullness != fullness_water)
 		// Fades out if we ARE "fine" AND if our stomach has no food digesting
 		var/mob/living/need_water = hud?.mymob
-		if(alpha == 255 && (state == HYDRATION_STATE_FINE && abs(fullness - need_water.hydration) < 1))
+		if(alpha == 255 && (state == HYDRATION_STATE_FINE && abs(fullness_water - need_water.hydration) < 1))
 			if(instant)
 				alpha = 0
 			else
 				animate(src, alpha = 0, time = 1 SECONDS)
 		// Fades in if we WERE "fine" OR if our stomach has food digesting
-		else if(alpha == 0 && (state != HYDRATION_STATE_FINE || abs(fullness - need_water.hydration) >= 1))
+		else if(alpha == 0 && (state != HYDRATION_STATE_FINE || abs(fullness_water - need_water.hydration) >= 1))
 			if(instant)
 				alpha = 255
 			else
@@ -1554,9 +1554,9 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 			underlays += water_image
 
 	// Update hydration bar
-	if(old_fullness != fullness)
+	if(old_fullness != fullness_water)
 		// instant if invisible OR if instant is set
-		hydration_bar.update_fullness(fullness, alpha == 0 || instant)
+		hydration_bar.update_fullness(fullness_water, alpha == 0 || instant)
 
 /atom/movable/screen/hydration_bar
 	icon_state = "hungerbar_bar"
@@ -1576,7 +1576,7 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 	)
 	/// Offset of the mask
 	VAR_PRIVATE/bar_offset
-	/// Last "fullness" value (rounded) we used to update the bar
+	/// Last "fullness_water" value (rounded) we used to update the bar
 	VAR_PRIVATE/last_fullness_band = -1
 
 /atom/movable/screen/hydration_bar/Initialize(mapload, datum/hud/hud_owner)

@@ -92,7 +92,7 @@
 		alt_hud.apply_to_new_mob(src)
 
 	set_nutrition(rand(NUTRITION_LEVEL_START_MIN, NUTRITION_LEVEL_START_MAX))
-	hydration = rand(HYDRATION_LEVEL_START_MIN, HYDRATION_LEVEL_START_MAX)
+	set_hydration(rand(HYDRATION_LEVEL_START_MIN, HYDRATION_LEVEL_START_MAX))
 	. = ..()
 	setup_hud_traits()
 	update_config_movespeed()
@@ -1453,6 +1453,8 @@ GAME_VERB_NATIVE(/mob, DisDblClick, ".dblclick", null, argu = null as anything, 
 
 /mob/living/adjust_nutrition(change, forced)
 	. = ..()
+	if(!change)
+		return
 	// Queue update if change is small enough (6 is 1% of nutrition softcap)
 	if(abs(change) >= 6)
 		update_nutrition()
@@ -1501,6 +1503,8 @@ GAME_VERB_NATIVE(/mob, DisDblClick, ".dblclick", null, argu = null as anything, 
 
 /mob/living/adjust_hydration(change, forced)
 	. = ..()
+	if(!change)
+		return
 	// Queue update if change is small enough (6 is 1% of hydration softcap)
 	if(abs(change) >= 6)
 		update_hydration()

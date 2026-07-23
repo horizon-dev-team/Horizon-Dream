@@ -719,19 +719,14 @@
 			effective_volume -= belly.food_reagents[bits.type]
 		if(effective_volume <= 0)
 			continue
-			if(istype(bits, /datum/reagent/consumable))
-				var/datum/reagent/consumable/goodbit = bits
-				switch(hydration_flag) // Я уже запутался пока разбирал это, так будет читабельнее.
-					if(FALSE)
-						. += goodbit.get_nutriment_factor(src) * effective_volume / goodbit.metabolization_rate
-						continue
-					if(TRUE)
-						. += goodbit.get_hydration_factor(src) * effective_volume / goodbit.metabolization_rate
-						continue
-		if(only_consumable)
+		if(istype(bits, /datum/reagent/consumable))
+			var/datum/reagent/consumable/goodbit = bits
+			. += (hydration_flag ? goodbit.get_hydration_factor(src) : goodbit.get_nutriment_factor(src)) * effective_volume / goodbit.metabolization_rate
 			continue
-		if(!hydration_flag)
-			. += 0.6 * effective_volume / bits.metabolization_rate //not food takes up space
+		if(!only_consumable)
+			continue
+		if(hydration_flag)
+			. += 0.06 * effective_volume / bits.metabolization_rate //not food takes up space
 
 	return .
 

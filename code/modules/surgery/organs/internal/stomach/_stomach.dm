@@ -139,7 +139,7 @@
 	if(HAS_TRAIT(human, TRAIT_NOHYDRATION))
 		return
 
-	if (human.nutrition > 0 && human.stat != DEAD)
+	if (human.hydration > 0 && human.stat != DEAD)
 		human.adjust_hydration(-HYDRATION_LOSS_PER_LIFE)
 
 /obj/item/organ/stomach/proc/handle_hunger(mob/living/carbon/human/human, seconds_per_tick)

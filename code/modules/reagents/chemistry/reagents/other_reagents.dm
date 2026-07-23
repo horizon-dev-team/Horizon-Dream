@@ -120,6 +120,7 @@
 	randomized_spawns = REAGENT_SPAWN_ALL_RANDOM_SPAWNS
 	default_container = /obj/item/reagent_containers/cup/glass/waterbottle
 	var/cooling_temperature = 2
+	hydration_factor = DRINK_HYDRATION_FACTOR_HIGH	// [HORIZON-ADD] - THIRST HYDRATION_METABOLISM
 
 /datum/glass_style/shot_glass/water
 	required_drink_type = /datum/reagent/water

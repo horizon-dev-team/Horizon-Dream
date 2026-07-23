@@ -528,8 +528,10 @@ GLOBAL_LIST_INIT(message_modes_stat_limits, list(
 		message = capitalize(message)
 		tts_message = capitalize(tts_message)
 
+// [HORIZON-ADD]
 	if(hydration <= HYDRATION_LEVEL_DEHYDRATED)
 		message = thirstymessage(message)
+// [/HORIZON-ADD]
 
 	///caps the length of individual letters to 3: ex: heeeeeeyy -> heeeyy
 	/// prevents TTS from choking on unrealistic text while keeping emphasis

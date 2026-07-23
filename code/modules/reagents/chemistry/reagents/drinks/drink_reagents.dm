@@ -7,6 +7,7 @@
 	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
 	randomized_spawns = REAGENT_SPAWN_ALL_RANDOM_SPAWNS
 	default_container = /obj/item/reagent_containers/cup/glass/bottle/juice/orangejuice
+	hydration_factor = DRINK_HYDRATION_FACTOR_HIGH	// [HORIZON-ADD] - THIRST HYDRATION_METABOLISM
 
 /datum/reagent/consumable/orangejuice/on_mob_life(mob/living/carbon/affected_mob, seconds_per_tick, metabolization_ratio)
 	. = ..()
@@ -22,6 +23,7 @@
 	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
 	randomized_spawns = REAGENT_SPAWN_ALL_RANDOM_SPAWNS
 	default_container = /obj/item/reagent_containers/cup/glass/bottle/juice/tomatojuice
+	hydration_factor = DRINK_HYDRATION_FACTOR_MEDIUM	// [HORIZON-ADD] - THIRST HYDRATION_METABOLISM
 
 /datum/reagent/consumable/tomatojuice/on_mob_life(mob/living/carbon/affected_mob, seconds_per_tick, metabolization_ratio)
 	. = ..()
@@ -38,6 +40,7 @@
 	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
 	randomized_spawns = REAGENT_SPAWN_ALL_RANDOM_SPAWNS
 	default_container = /obj/item/reagent_containers/cup/glass/bottle/juice/limejuice
+	hydration_factor = DRINK_HYDRATION_FACTOR_MEDIUM	// [HORIZON-ADD] - THIRST HYDRATION_METABOLISM
 
 /datum/reagent/consumable/limejuice/on_mob_life(mob/living/carbon/affected_mob, seconds_per_tick, metabolization_ratio)
 	. = ..()
@@ -52,6 +55,7 @@
 	taste_description = "carrots"
 	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
 	randomized_spawns = REAGENT_SPAWN_ALL_RANDOM_SPAWNS
+	hydration_factor = DRINK_HYDRATION_FACTOR_HIGH	// [HORIZON-ADD] - THIRST HYDRATION_METABOLISM
 
 /datum/reagent/consumable/carrotjuice/on_mob_life(mob/living/carbon/affected_mob, seconds_per_tick, metabolization_ratio)
 	. = ..()
@@ -74,6 +78,7 @@
 	taste_description = "berries"
 	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
 	randomized_spawns = REAGENT_SPAWN_ALL_RANDOM_SPAWNS
+	hydration_factor = DRINK_HYDRATION_FACTOR_HIGH	// [HORIZON-ADD] - THIRST HYDRATION_METABOLISM
 
 /datum/reagent/consumable/applejuice
 	name = "Apple Juice"
@@ -81,6 +86,7 @@
 	color = "#fff06b" // rgb: 255, 240, 107
 	taste_description = "apples"
 	ph = 3.2 // ~ 2.7 -> 3.7
+	hydration_factor = DRINK_HYDRATION_FACTOR_HIGH	// [HORIZON-ADD] - THIRST HYDRATION_METABOLISM
 
 /datum/reagent/consumable/poisonberryjuice
 	name = "Poison Berry Juice"
@@ -89,6 +95,7 @@
 	taste_description = "berries"
 	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
 	randomized_spawns = REAGENT_SPAWN_ALL_RANDOM_SPAWNS
+	hydration_factor = DRINK_HYDRATION_FACTOR_MEDIUM	// [HORIZON-ADD] - THIRST HYDRATION_METABOLISM
 
 /datum/reagent/consumable/poisonberryjuice/on_mob_life(mob/living/carbon/affected_mob, seconds_per_tick, metabolization_ratio)
 	. = ..()
@@ -102,6 +109,7 @@
 	taste_description = "juicy watermelon"
 	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
 	randomized_spawns = REAGENT_SPAWN_ALL_RANDOM_SPAWNS
+	hydration_factor = 10 * REAGENTS_METABOLISM	// [HORIZON-ADD] - THIRST HYDRATION_METABOLISM
 
 /datum/reagent/consumable/lemonjuice
 	name = "Lemon Juice"
@@ -112,6 +120,7 @@
 	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
 	randomized_spawns = REAGENT_SPAWN_ALL_RANDOM_SPAWNS
 	default_container = /obj/item/reagent_containers/cup/glass/bottle/juice/lemonjuice
+	hydration_factor = DRINK_HYDRATION_FACTOR_HIGH	// [HORIZON-ADD] - THIRST HYDRATION_METABOLISM
 
 /datum/reagent/consumable/banana
 	name = "Banana Juice"
@@ -120,6 +129,7 @@
 	taste_description = "banana"
 	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
 	randomized_spawns = REAGENT_SPAWN_ALL_RANDOM_SPAWNS
+	hydration_factor = DRINK_HYDRATION_FACTOR_HIGH	// [HORIZON-ADD] - THIRST HYDRATION_METABOLISM
 
 /datum/reagent/consumable/banana/on_mob_life(mob/living/carbon/affected_mob, seconds_per_tick, metabolization_ratio)
 	. = ..()
@@ -208,6 +218,7 @@
 	taste_description = "grape soda"
 	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
 	randomized_spawns = REAGENT_SPAWN_ALL_RANDOM_SPAWNS
+	hydration_factor = DRINK_HYDRATION_FACTOR_HIGH	// [HORIZON-ADD] - THIRST HYDRATION_METABOLISM
 
 /datum/reagent/consumable/plumjuice
 	name = "Plum Juice"
@@ -226,6 +237,7 @@
 	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
 	randomized_spawns = REAGENT_SPAWN_ALL_RANDOM_SPAWNS
 	default_container = /obj/item/reagent_containers/condiment/milk
+	hydration_factor = DRINK_HYDRATION_FACTOR_HIGH	// [HORIZON-ADD] - THIRST HYDRATION_METABOLISM
 
 // Milk is good for humans, but bad for plants.
 // The sugars cannot be used by plants, and the milk fat harms growth. Except shrooms.
@@ -258,6 +270,7 @@
 	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
 	randomized_spawns = REAGENT_SPAWN_ALL_RANDOM_SPAWNS
 	default_container = /obj/item/reagent_containers/condiment/soymilk
+	hydration_factor = DRINK_HYDRATION_FACTOR_MEDIUM	// [HORIZON-ADD] - THIRST HYDRATION_METABOLISM
 
 /datum/reagent/consumable/soymilk/on_mob_life(mob/living/carbon/affected_mob, seconds_per_tick, metabolization_ratio)
 	. = ..()
@@ -273,6 +286,7 @@
 	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
 	randomized_spawns = REAGENT_SPAWN_ALL_RANDOM_SPAWNS
 	default_container = /obj/item/reagent_containers/cup/glass/bottle/juice/cream
+	hydration_factor = 5 * REAGENTS_METABOLISM	// [HORIZON-ADD] - THIRST HYDRATION_METABOLISM
 
 /datum/reagent/consumable/cream/on_mob_life(mob/living/carbon/affected_mob, seconds_per_tick, metabolization_ratio)
 	. = ..()
@@ -290,6 +304,7 @@
 	randomized_spawns = REAGENT_SPAWN_ALL_RANDOM_SPAWNS
 	glass_price = DRINK_PRICE_STOCK
 	metabolized_traits = list(TRAIT_STIMULATED)
+	hydration_factor = 5 * REAGENTS_METABOLISM	// [HORIZON-ADD] - THIRST HYDRATION_METABOLISM
 
 /datum/reagent/consumable/coffee/overdose_process(mob/living/affected_mob, seconds_per_tick, metabolization_ratio)
 	. = ..()
@@ -316,6 +331,7 @@
 	glass_price = DRINK_PRICE_STOCK
 	default_container = /obj/item/reagent_containers/cup/glass/mug/tea
 	metabolized_traits = list(TRAIT_STIMULATED)
+	hydration_factor = DRINK_HYDRATION_FACTOR_MEDIUM	// [HORIZON-ADD] - THIRST HYDRATION_METABOLISM
 
 /datum/reagent/consumable/tea/on_mob_life(mob/living/carbon/affected_mob, seconds_per_tick, metabolization_ratio)
 	. = ..()
@@ -367,6 +383,7 @@
 	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
 	randomized_spawns = REAGENT_SPAWN_ALL_RANDOM_SPAWNS
 	glass_price = DRINK_PRICE_EASY
+	hydration_factor = DRINK_HYDRATION_FACTOR_HIGH	// [HORIZON-ADD] - THIRST HYDRATION_METABOLISM
 
 /datum/reagent/consumable/tea/arnold_palmer
 	name = "Arnold Palmer"
@@ -377,6 +394,7 @@
 	taste_description = "bitter tea"
 	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
 	randomized_spawns = REAGENT_SPAWN_ALL_RANDOM_SPAWNS
+	hydration_factor = DRINK_HYDRATION_FACTOR_HIGH	// [HORIZON-ADD] - THIRST HYDRATION_METABOLISM
 
 /datum/reagent/consumable/tea/arnold_palmer/on_mob_life(mob/living/carbon/affected_mob, seconds_per_tick, metabolization_ratio)
 	. = ..()
@@ -393,6 +411,7 @@
 	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
 	randomized_spawns = REAGENT_SPAWN_ALL_RANDOM_SPAWNS
 	metabolized_traits = list(TRAIT_STIMULATED)
+	hydration_factor = DRINK_HYDRATION_FACTOR_MEDIUM	// [HORIZON-ADD] - THIRST HYDRATION_METABOLISM
 
 /datum/reagent/consumable/icecoffee/overdose_process(mob/living/affected_mob, seconds_per_tick, metabolization_ratio)
 	. = ..()
@@ -438,6 +457,7 @@
 	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
 	randomized_spawns = REAGENT_SPAWN_ALL_RANDOM_SPAWNS
 	metabolized_traits = list(TRAIT_STIMULATED)
+	hydration_factor = DRINK_HYDRATION_FACTOR_HIGH	// [HORIZON-ADD] - THIRST HYDRATION_METABOLISM
 
 /datum/reagent/consumable/icetea/on_mob_life(mob/living/carbon/affected_mob, seconds_per_tick, metabolization_ratio)
 	. = ..()
@@ -456,6 +476,7 @@
 	taste_description = "cola"
 	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
 	randomized_spawns = REAGENT_SPAWN_ALL_RANDOM_SPAWNS
+	hydration_factor = DRINK_HYDRATION_FACTOR_HIGH	// [HORIZON-ADD] - THIRST HYDRATION_METABOLISM
 
 /datum/reagent/consumable/space_cola/on_mob_life(mob/living/carbon/affected_mob, seconds_per_tick, metabolization_ratio)
 	. = ..()
@@ -485,6 +506,7 @@
 	taste_description = "the future"
 	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
 	randomized_spawns = REAGENT_SPAWN_ALL_RANDOM_SPAWNS
+	hydration_factor = DRINK_HYDRATION_FACTOR_LOW	// [HORIZON-ADD] - THIRST HYDRATION_METABOLISM
 
 /datum/reagent/consumable/nuka_cola/on_mob_metabolize(mob/living/affected_mob)
 	. = ..()
@@ -548,6 +570,7 @@
 	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
 	randomized_spawns = REAGENT_SPAWN_ALL_RANDOM_SPAWNS
 	metabolized_traits = list(TRAIT_SHOCKIMMUNE)
+	hydration_factor = DRINK_HYDRATION_FACTOR_MEDIUM	// [HORIZON-ADD] - THIRST HYDRATION_METABOLISM
 
 /datum/reagent/consumable/grey_bull/on_mob_metabolize(mob/living/carbon/affected_atom)
 	. = ..()
@@ -587,6 +610,7 @@
 	taste_description = "cherry soda" // FALSE ADVERTISING
 	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
 	randomized_spawns = REAGENT_SPAWN_ALL_RANDOM_SPAWNS
+	hydration_factor = DRINK_HYDRATION_FACTOR_MEDIUM	// [HORIZON-ADD] - THIRST HYDRATION_METABOLISM
 
 /datum/reagent/consumable/dr_gibb/on_mob_life(mob/living/carbon/affected_mob, seconds_per_tick, metabolization_ratio)
 	. = ..()
@@ -600,6 +624,7 @@
 	taste_description = "cherry soda"
 	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
 	randomized_spawns = REAGENT_SPAWN_ALL_RANDOM_SPAWNS
+	hydration_factor = 10 * REAGENTS_METABOLISM	// [HORIZON-ADD] - THIRST HYDRATION_METABOLISM
 
 /datum/reagent/consumable/space_up/on_mob_life(mob/living/carbon/affected_mob, seconds_per_tick, metabolization_ratio)
 	. = ..()
@@ -612,6 +637,7 @@
 	taste_description = "tangy lime and lemon soda"
 	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
 	randomized_spawns = REAGENT_SPAWN_ALL_RANDOM_SPAWNS
+	hydration_factor = 5 * REAGENTS_METABOLISM	// [HORIZON-ADD] - THIRST HYDRATION_METABOLISM
 
 /datum/reagent/consumable/lemon_lime/on_mob_life(mob/living/carbon/affected_mob, seconds_per_tick, metabolization_ratio)
 	. = ..()
@@ -624,6 +650,7 @@
 	taste_description = "sweet and salty tang"
 	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
 	randomized_spawns = REAGENT_SPAWN_ALL_RANDOM_SPAWNS
+	hydration_factor = DRINK_HYDRATION_FACTOR_MEDIUM	// [HORIZON-ADD] - THIRST HYDRATION_METABOLISM
 
 /datum/reagent/consumable/pwr_game/expose_mob(mob/living/exposed_mob, methods=TOUCH, reac_volume)
 	. = ..()
@@ -645,6 +672,7 @@
 	taste_description = "carbonated metallic soda"
 	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
 	randomized_spawns = REAGENT_SPAWN_ALL_RANDOM_SPAWNS
+	hydration_factor = DRINK_HYDRATION_FACTOR_LOW	// [HORIZON-ADD] - THIRST HYDRATION_METABOLISM
 
 /datum/reagent/consumable/shamblers/on_mob_life(mob/living/carbon/affected_mob, seconds_per_tick, metabolization_ratio)
 	. = ..()
@@ -657,6 +685,7 @@
 	taste_description = "carbonated water"
 	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
 	randomized_spawns = REAGENT_SPAWN_ALL_RANDOM_SPAWNS
+	hydration_factor = DRINK_HYDRATION_FACTOR_HIGH	// [HORIZON-ADD] - THIRST HYDRATION_METABOLISM
 
 // A variety of nutrients are dissolved in club soda, without sugar.
 // These nutrients include carbon, oxygen, hydrogen, phosphorous, potassium, sulfur and sodium, all of which are needed for healthy plant growth.
@@ -677,6 +706,7 @@
 	taste_description = "tart and fresh"
 	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
 	randomized_spawns = REAGENT_SPAWN_ALL_RANDOM_SPAWNS
+	hydration_factor = DRINK_HYDRATION_FACTOR_HIGH	// [HORIZON-ADD] - THIRST HYDRATION_METABOLISM
 
 /datum/reagent/consumable/tonic/on_mob_life(mob/living/carbon/affected_mob, seconds_per_tick, metabolization_ratio)
 	. = ..()
@@ -716,6 +746,7 @@
 	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
 	randomized_spawns = REAGENT_SPAWN_ALL_RANDOM_SPAWNS
 	metabolized_traits = list(TRAIT_STIMULATED)
+	hydration_factor = DRINK_HYDRATION_FACTOR_LOW	// [HORIZON-ADD] - THIRST HYDRATION_METABOLISM
 
 /datum/reagent/consumable/monkey_energy/on_mob_life(mob/living/carbon/affected_mob, seconds_per_tick, metabolization_ratio)
 	. = ..()
@@ -747,6 +778,7 @@
 	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
 	randomized_spawns = REAGENT_SPAWN_ALL_RANDOM_SPAWNS
 	default_container = /obj/item/reagent_containers/cup/glass/ice
+	hydration_factor = 10 * REAGENTS_METABOLISM	// [HORIZON-ADD] - THIRST HYDRATION_METABOLISM
 
 /datum/reagent/consumable/ice/on_mob_life(mob/living/carbon/affected_mob, seconds_per_tick, metabolization_ratio)
 	. = ..()
@@ -764,6 +796,7 @@
 	randomized_spawns = REAGENT_SPAWN_ALL_RANDOM_SPAWNS
 	glass_price = DRINK_PRICE_EASY
 	metabolized_traits = list(TRAIT_STIMULATED)
+	hydration_factor = DRINK_HYDRATION_FACTOR_MEDIUM	// [HORIZON-ADD] - THIRST HYDRATION_METABOLISM
 
 /datum/reagent/consumable/soy_latte/overdose_process(mob/living/affected_mob, seconds_per_tick, metabolization_ratio)
 	. = ..()
@@ -792,6 +825,7 @@
 	randomized_spawns = REAGENT_SPAWN_ALL_RANDOM_SPAWNS
 	glass_price = DRINK_PRICE_EASY
 	metabolized_traits = list(TRAIT_STIMULATED)
+	hydration_factor = DRINK_HYDRATION_FACTOR_MEDIUM	// [HORIZON-ADD] - THIRST HYDRATION_METABOLISM
 
 /datum/reagent/consumable/cafe_latte/overdose_process(mob/living/affected_mob, seconds_per_tick, metabolization_ratio)
 	. = ..()
@@ -817,6 +851,7 @@
 	taste_description = "homely fruit"
 	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
 	randomized_spawns = REAGENT_SPAWN_ALL_RANDOM_SPAWNS
+	hydration_factor = DRINK_HYDRATION_FACTOR_MEDIUM	// [HORIZON-ADD] - THIRST HYDRATION_METABOLISM
 
 /datum/reagent/consumable/doctor_delight/on_mob_life(mob/living/carbon/affected_mob, seconds_per_tick, metabolization_ratio)
 	. = ..()
@@ -933,6 +968,7 @@
 	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
 	randomized_spawns = REAGENT_SPAWN_ALL_RANDOM_SPAWNS
 	metabolized_traits = list(TRAIT_STIMULATED)
+	hydration_factor = DRINK_HYDRATION_FACTOR_LOW	// [HORIZON-ADD] - THIRST HYDRATION_METABOLISM
 
 /datum/reagent/consumable/pumpkin_latte/overdose_process(mob/living/affected_mob, seconds_per_tick, metabolization_ratio)
 	. = ..()
@@ -959,6 +995,7 @@
 	taste_description = "creamy cherry"
 	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
 	randomized_spawns = REAGENT_SPAWN_ALL_RANDOM_SPAWNS
+	hydration_factor = DRINK_HYDRATION_FACTOR_MEDIUM	// [HORIZON-ADD] - THIRST HYDRATION_METABOLISM
 
 /datum/reagent/consumable/pumpkinjuice
 	name = "Pumpkin Juice"
@@ -967,6 +1004,7 @@
 	taste_description = "pumpkin"
 	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
 	randomized_spawns = REAGENT_SPAWN_ALL_RANDOM_SPAWNS
+	hydration_factor = DRINK_HYDRATION_FACTOR_LOW	// [HORIZON-ADD] - THIRST HYDRATION_METABOLISM
 
 /datum/reagent/consumable/blumpkinjuice
 	name = "Blumpkin Juice"
@@ -984,6 +1022,7 @@
 	taste_description = "extreme bitterness"
 	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
 	randomized_spawns = REAGENT_SPAWN_ALL_RANDOM_SPAWNS
+	hydration_factor = DRINK_HYDRATION_FACTOR_MEDIUM	// [HORIZON-ADD] - THIRST HYDRATION_METABOLISM
 
 /datum/reagent/consumable/grape_soda
 	name = "Grape Soda"
@@ -992,6 +1031,7 @@
 	taste_description = "grape soda"
 	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
 	randomized_spawns = REAGENT_SPAWN_ALL_RANDOM_SPAWNS
+	hydration_factor = DRINK_HYDRATION_FACTOR_MEDIUM	// [HORIZON-ADD] - THIRST HYDRATION_METABOLISM
 
 /datum/reagent/consumable/grape_soda/on_mob_life(mob/living/carbon/affected_mob, seconds_per_tick, metabolization_ratio)
 	. = ..()
@@ -1005,6 +1045,7 @@
 	taste_description = "chocolate milk"
 	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
 	randomized_spawns = REAGENT_SPAWN_ALL_RANDOM_SPAWNS
+	hydration_factor = DRINK_HYDRATION_FACTOR_MEDIUM	// [HORIZON-ADD] - THIRST HYDRATION_METABOLISM
 
 /datum/reagent/consumable/hot_coco
 	name = "Hot Coco"
@@ -1058,6 +1099,7 @@
 	taste_description = "sweet pomegranates"
 	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
 	randomized_spawns = REAGENT_SPAWN_ALL_RANDOM_SPAWNS
+	hydration_factor = DRINK_HYDRATION_FACTOR_LOW	// [HORIZON-ADD] - THIRST HYDRATION_METABOLISM
 
 /datum/reagent/consumable/grenadine/on_mob_metabolize(mob/living/drinker)
 	. = ..()
@@ -1078,6 +1120,7 @@
 	taste_description = "parsnip"
 	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
 	randomized_spawns = REAGENT_SPAWN_ALL_RANDOM_SPAWNS
+	hydration_factor = DRINK_HYDRATION_FACTOR_LOW	// [HORIZON-ADD] - THIRST HYDRATION_METABOLISM
 
 /datum/reagent/consumable/pineapplejuice
 	name = "Pineapple Juice"
@@ -1087,6 +1130,7 @@
 	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
 	randomized_spawns = REAGENT_SPAWN_ALL_RANDOM_SPAWNS
 	default_container = /obj/item/reagent_containers/cup/glass/bottle/juice/pineapplejuice
+	hydration_factor = DRINK_HYDRATION_FACTOR_MEDIUM	// [HORIZON-ADD] - THIRST HYDRATION_METABOLISM
 
 /datum/reagent/consumable/peachjuice //Intended to be extremely rare due to being the limiting ingredients in the blazaam drink
 	name = "Peach Juice"
@@ -1095,6 +1139,7 @@
 	taste_description = "peaches"
 	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
 	randomized_spawns = REAGENT_SPAWN_ALL_RANDOM_SPAWNS
+	hydration_factor = DRINK_HYDRATION_FACTOR_MEDIUM	// [HORIZON-ADD] - THIRST HYDRATION_METABOLISM
 
 /datum/reagent/consumable/cream_soda
 	name = "Cream Soda"
@@ -1169,6 +1214,7 @@
 	taste_description = "succulent bungo"
 	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
 	randomized_spawns = REAGENT_SPAWN_ALL_RANDOM_SPAWNS
+	hydration_factor = DRINK_HYDRATION_FACTOR_LOW	// [HORIZON-ADD] - THIRST HYDRATION_METABOLISM
 
 /datum/reagent/consumable/prunomix
 	name = "Pruno Mixture"
@@ -1177,6 +1223,7 @@
 	taste_description = "garbage"
 	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
 	randomized_spawns = REAGENT_SPAWN_ALL_RANDOM_SPAWNS
+	hydration_factor = DRINK_HYDRATION_FACTOR_MEDIUM	// [HORIZON-ADD] - THIRST HYDRATION_METABOLISM
 
 /datum/reagent/consumable/aloejuice
 	name = "Aloe Juice"

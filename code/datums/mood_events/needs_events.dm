@@ -27,6 +27,25 @@
 	description = "I'm starving!"
 	mood_change = -10
 
+// [HORIZON-ADD]
+//thirst
+/datum/mood_event/overhydrated
+	description = "СЛИШКОМ МНОГО ВОДЫ..."
+	mood_change = -3
+
+/datum/mood_event/hydrated
+	description = "Не хочу пить."
+	mood_change = 4
+
+/datum/mood_event/thirsty
+	description = "Хочу пить."
+	mood_change = -4
+
+/datum/mood_event/dehydrated
+	description = "ВОДЫ!"
+	mood_change = -6
+// [/HORIZON-ADD]
+
 //charge
 /datum/mood_event/supercharged
 	description = "I can't possibly keep all this power inside, I need to release some quick!"

@@ -143,6 +143,11 @@
 		if(amount >= 0.5)
 			exposed_mob.reagents.add_reagent(type, amount, data, holder.chem_temp, purity)
 
+// [HORIZON-ADD]
+	if(methods & INGEST)
+		exposed_mob.hydration += reac_volume * hydration_factor
+// [/HORIZON-ADD]
+
 /// Applies this reagent to an [/obj]
 /datum/reagent/proc/expose_obj(obj/exposed_obj, reac_volume, methods=TOUCH, show_message=TRUE)
 	SHOULD_CALL_PARENT(TRUE)

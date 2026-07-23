@@ -1441,6 +1441,7 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 #undef FORMAT_XENOBIO_HUD_MAPTEXT
 #undef POTION_DROP_SPEED
 
+// [HORIZON-ADD]
 #define HYDRATION_STATE_FAT 5
 #define HYDRATION_STATE_FULL 4
 #define HYDRATION_STATE_FINE 3
@@ -1458,11 +1459,11 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 	/// What was the last fullness we recorded?
 	VAR_PRIVATE/fullness
 	/// What food icon do we show by the bar
-	var/food_icon = '_horizon/icons/hud/screen_alert.dmi'
+	var/water_icon = '_horizon/CORE/icons/hud/screen_alert.dmi'
 	/// What food icon state do we show by the bar
-	var/food_icon_state = "hhydration"
+	var/water_icon_state = "hhydration"
 	/// The image shown by the bar.
-	VAR_PRIVATE/image/food_image
+	VAR_PRIVATE/image/water_image
 	/// The actual bar
 	VAR_PRIVATE/atom/movable/screen/hydration_bar/hydration_bar
 
@@ -1476,11 +1477,11 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 		screen_loc = ui_mood // Slot in where mood normally is if mood is disabled
 
 	// Burger next to the bar
-	food_image = image(icon = food_icon, icon_state = food_icon_state, pixel_x = -5)
-	food_image.plane = plane
-	food_image.appearance_flags |= KEEP_APART // To be unaffected by filters applied to src
-	food_image.add_filter("simple_outline", 2, outline_filter(1, COLOR_BLACK, OUTLINE_SHARP))
-	underlays += food_image // To be below filters applied to src
+	water_image = image(icon = water_icon, icon_state = water_icon_state, pixel_x = -5)
+	water_image.plane = plane
+	water_image.appearance_flags |= KEEP_APART // To be unaffected by filters applied to src
+	water_image.add_filter("simple_outline", 2, outline_filter(1, COLOR_BLACK, OUTLINE_SHARP))
+	underlays += water_image // To be below filters applied to src
 
 	// The actual bar
 	hydration_bar = new(src, null)
@@ -1558,9 +1559,9 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 
 		// Update color of the food
 		if((state == HYDRATION_STATE_FAT) != (old_state == HYDRATION_STATE_FAT))
-			underlays -= food_image
-			food_image.color = state == HYDRATION_STATE_FAT ? COLOR_DARK : null
-			underlays += food_image
+			underlays -= water_image
+			water_image.color = state == HYDRATION_STATE_FAT ? COLOR_DARK : null
+			underlays += water_image
 
 	// Update hydration bar
 	if(old_fullness != fullness)
@@ -1620,3 +1621,4 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 #undef HYDRATION_STATE_HUNGRY
 #undef HYDRATION_STATE_STARVING
 #undef HYDRATION_STATE_VERY_HUNGRY
+// [/HORIZON-ADD]

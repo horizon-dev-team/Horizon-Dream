@@ -56,7 +56,7 @@
 				exposed_mob.add_mob_memory(/datum/memory/good_food, food = the_real_food)
 
 	if(chemical_flags == REAGENT_CAN_BE_SYNTHESIZED)
-		exposed_mob.adjust_hydration(max(0.5, nutriment_factor) * hydration_factor)
+		exposed_mob.adjust_hydration(max(0.5, hydration_factor))
 
 /// Gets just how much nutrition this reagent supplies per server tick to the eater
 /datum/reagent/consumable/proc/get_nutriment_factor(mob/living/carbon/eater)

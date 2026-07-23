@@ -1486,7 +1486,7 @@ GAME_VERB_NATIVE(/mob, DisDblClick, ".dblclick", null, argu = null as anything, 
 // [HORIZON-ADD] - HYDRATION-THIRST - По сути можно попытаться по новому
 /// Updates hydration related effects
 /mob/living/proc/update_hydration()
-	mob_mood?.update_nutrition_moodlets()
+	mob_mood?.update_hydration_moodlets()
 	var/atom/movable/screen/hydration/hydration_bar = hud_used?.screen_objects[HUD_MOB_HYDRATION]
 	if (hydration_bar)
 		hydration_bar.update_hydration_bar()

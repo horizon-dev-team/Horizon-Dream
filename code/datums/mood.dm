@@ -152,7 +152,7 @@
 		clear_mood_event(MOOD_CATEGORY_NUTRITION)
 		return FALSE
 
-	switch(mob_parent.nutrition)
+	switch(mob_parent.hydration)
 		if(HYDRATION_LEVEL_OVERHYDRATED to INFINITY)
 			add_mood_event("thirst", /datum/mood_event/overhydrated)
 		if(HYDRATION_LEVEL_NORMAL to HYDRATION_LEVEL_OVERHYDRATED)

@@ -462,7 +462,9 @@
 		return
 	if(hydration < HYDRATION_LEVEL_MIN_CAP)
 		hydration = HYDRATION_LEVEL_MIN_CAP
-	hydration -= HYDRATION_LOSS_PER_LIFE
+	if(hydration > HYDRATION_LEVEL_OVERHYDRATED)
+		hydration = HYDRATION_LEVEL_OVERHYDRATED
+	adjust_hydration(HYDRATION_LOSS_PER_LIFE)
 // [/HORIZON-ADD]
 
 /mob/living/carbon/reagent_tick(datum/reagent/chem, seconds_per_tick, metabolization_ratio)

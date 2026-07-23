@@ -30,6 +30,7 @@
 
 	var/mob/living/carbon/human/affected_human = affected_mob
 	affected_human.adjust_nutrition(0.5 * get_nutriment_factor(affected_mob) * metabolization_ratio * seconds_per_tick)
+	affected_human.adjust_hydration(0.5 * get_hydration_factor(affected_mob) * metabolization_ratio * seconds_per_tick) // [HORIZON-ADD]
 
 /datum/reagent/consumable/expose_mob(mob/living/exposed_mob, methods=TOUCH, reac_volume)
 	. = ..()
@@ -60,6 +61,10 @@
 /// Gets just how much nutrition this reagent supplies per server tick to the eater
 /datum/reagent/consumable/proc/get_nutriment_factor(mob/living/carbon/eater)
 	return nutriment_factor * REAGENTS_METABOLISM * purity * 2
+
+/// Gets just how much nutrition this reagent supplies per server tick to the eater
+/datum/reagent/consumable/proc/get_hydration_factor(mob/living/carbon/eater)
+	return hydration_factor * REAGENTS_METABOLISM * purity * 2
 
 /datum/reagent/consumable/nutriment
 	name = "Nutriment"

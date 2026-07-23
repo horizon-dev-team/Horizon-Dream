@@ -53,6 +53,7 @@
 #define HUD_MOB_DROP "mob_drop"
 #define HUD_MOB_THROW "mob_throw"
 #define HUD_MOB_HUNGER "mob_hunger"
+#define HUD_MOB_HYDRATION "mob_hydration"
 #define HUD_MOB_STAMINA "mob_stamina"
 #define HUD_MOB_SPACESUIT "mob_spacesuit"
 #define HUD_MOB_COMBO "mob_combo"

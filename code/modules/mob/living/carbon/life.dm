@@ -28,7 +28,7 @@
 
 		if(.) //not dead
 			handle_blood(seconds_per_tick)
-			handle_hydration(seconds_per_tick, times_fired) // huh, глянь потом почему убрали `times_fired`
+			handle_hydration(seconds_per_tick) // huh, глянь потом почему убрали `times_fired`
 
 		if(stat != DEAD) // still not dead (blood could have changed that)
 			for(var/key in mind?.addiction_points)

@@ -1492,7 +1492,6 @@ GAME_VERB_NATIVE(/mob, DisDblClick, ".dblclick", null, argu = null as anything, 
 		hydration_bar.update_hydration_bar()
 	SEND_SIGNAL(src, COMSIG_LIVING_UPDATE_HYDRATION)
 
-/*
 ///Adjust the hydration of a mob
 /mob/proc/adjust_hydration(change, forced = FALSE) //Honestly FUCK the oldcoders for putting hydration on /mob someone else can move it up because holy hell I'd have to fix SO many typechecks
 	if(HAS_TRAIT(src, TRAIT_NOHYDRATION) && !forced)
@@ -1504,8 +1503,7 @@ GAME_VERB_NATIVE(/mob, DisDblClick, ".dblclick", null, argu = null as anything, 
 	. = ..()
 	// Queue update if change is small enough (6 is 1% of hydration softcap)
 	if(abs(change) >= 6)
-		mob_mood?.update_hydration_moodlets()
-		hud_used?.hydration?.update_hydration_bar()
+		update_hydration()
 	else
 		living_flags |= QUEUE_NUTRITION_UPDATE
 
@@ -1521,11 +1519,9 @@ GAME_VERB_NATIVE(/mob, DisDblClick, ".dblclick", null, argu = null as anything, 
 	. = ..()
 	// Queue update if change is small enough (6 is 1% of hydration softcap)
 	if(abs(old_hydration - hydration) >= 6)
-		mob_mood?.update_hydration_moodlets()
-		hud_used?.hydration?.update_hydration_bar()
+		update_hydration()
 	else
 		living_flags |= QUEUE_NUTRITION_UPDATE
-*/
 // [/HORIZON-ADD]
 
 /// Apply a proper movespeed modifier based on items we have equipped

@@ -394,7 +394,7 @@
 	if(hunger_bar)
 		hunger_bar.update_hunger_bar()
 // [HORIZON-ADD] - HYDRATION-THIRST - Может не работать после обновления, нужно проверить
-	var/atom/movable/screen/hydration/hydration_bar = receiver.hud_used?.screen_objects[HUD_MOB_HUDRATION]
+	var/atom/movable/screen/hydration/hydration_bar = receiver.hud_used?.screen_objects[HUD_MOB_HYDRATION]
 	if(hydration_bar)
 		hydration_bar.update_hydration_bar()
 // [/HORIZON-ADD]
@@ -410,7 +410,7 @@
 	if(hunger_bar)
 		hunger_bar.update_hunger_bar()
 // [HORIZON-ADD] - HYDRATION-THIRST - Может не работать после обновления, нужно проверить
-	var/atom/movable/screen/hydration/hydration_bar = stomach_owner.hud_used?.screen_objects[HUD_MOB_HUDRATION]
+	var/atom/movable/screen/hydration/hydration_bar = stomach_owner.hud_used?.screen_objects[HUD_MOB_HYDRATION]
 	if(hydration_bar)
 		hydration_bar.update_hydration_bar()
 // [/HORIZON-ADD]

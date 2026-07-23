@@ -62,9 +62,9 @@
 	if(living_flags & QUEUE_NUTRITION_UPDATE)
 		update_nutrition()
 		// Да тут поменяли с этого на вышу штуку, просто написать аналог для воды.
-		//mob_mood?.update_nutrition_moodlets()
+		//mob_mood?.update_nutrition_moodlets()			// [HORIZON-ADD] - HYDRATION-THIRST
 		//hud_used?.hunger?.update_hunger_bar()
-		//hud_used?.hydration?.update_hydration_bar()
+		//hud_used?.hydration?.update_hydration_bar()	// [HORIZON-ADD] - HYDRATION-THIRST
 		living_flags &= ~QUEUE_NUTRITION_UPDATE
 
 	if(living_flags & BLOOD_UPDATE_QUEUED)

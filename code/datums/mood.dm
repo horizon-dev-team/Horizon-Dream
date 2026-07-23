@@ -145,7 +145,7 @@
 
 	return TRUE
 
-// [HORIZON-ADD]
+// [HORIZON-ADD] - HYDRATION-THIRST
 /// Handles mood given by nutrition
 /datum/mood/proc/update_hydration_moodlets()
 	if(HAS_TRAIT(mob_parent, TRAIT_NOHYDRATION))
@@ -416,42 +416,45 @@
 /datum/mood/proc/print_mood(mob/user)
 	var/msg = "[span_info("<EM>My current mental status:</EM>")]<br>"
 
+// [HORIZON-EDIT] - FIX STUPID <br>
 	if(!HAS_TRAIT(src, TRAIT_NOHUNGER))
 		msg += span_notice("My hunger: ")
 		var/nutrition = mob_parent.nutrition
 		switch(nutrition)
 			if(NUTRITION_LEVEL_FULL to INFINITY)
-				msg += "[span_info("I'm completely stuffed!")]<br>"
+				msg += span_grey("I'm completely stuffed!")
 			if(NUTRITION_LEVEL_WELL_FED to NUTRITION_LEVEL_FULL)
-				msg += "[span_info("I'm well fed!")]<br>"
+				msg += span_nicegreen("I'm well fed!")
 			if(NUTRITION_LEVEL_FED to NUTRITION_LEVEL_WELL_FED)
-				msg += "[span_info("I'm not hungry.")]<br>"
+				msg += span_info("I'm not hungry.")
 			if(NUTRITION_LEVEL_HUNGRY to NUTRITION_LEVEL_FED)
-				msg += "[span_info("I could use a bite to eat.")]<br>"
+				msg += span_info("I could use a bite to eat.")
 			if(NUTRITION_LEVEL_VERY_HUNGRY to NUTRITION_LEVEL_HUNGRY)
-				msg += "[span_warning("I'm feeling hungry.")]<br>"
+				msg += span_warning("I'm feeling hungry.")
 			if(NUTRITION_LEVEL_STARVING to NUTRITION_LEVEL_VERY_HUNGRY)
-				msg += "[span_warning("I feel quite hungry.")]<br>"
+				msg += span_warning("I feel quite hungry!")
 			if(0 to NUTRITION_LEVEL_STARVING)
-				msg += "[span_boldwarning("I'm starving!")]<br>"
+				msg += span_boldwarning("I'm starving!")
+		msg += "<br>"
+// [HORIZON-EDIT]
 
-	// [HORIZON-ADD] - THIRST
+// [HORIZON-ADD] - HYDRATION-THIRST
 	if(!HAS_TRAIT(src, TRAIT_NOHYDRATION))
-		msg += span_notice("My current thirst:")
+		msg += span_notice("My thirst: ")
 		var/hydration = mob_parent.hydration
 		switch(hydration)
 			if(HYDRATION_LEVEL_OVERHYDRATED to INFINITY)
-				msg += span_warning("СЛИШКОМ МНОГО ВОДЫ!")
+				msg += span_grey("I'M HAD TOO MUCH WATER...")
 			if(HYDRATION_LEVEL_NORMAL to HYDRATION_LEVEL_OVERHYDRATED)
-				msg += span_nicegreen("I'm completely full of water!")
-			if(HYDRATION_LEVEL_DEHYDRATED to HYDRATION_LEVEL_NORMAL)
-				msg += span_info("I could use a drink to quench my thirst.")
+				msg += span_nicegreen("I'm not thirsty anymore")
+			if(HYDRATION_LEVEL_THIRSTY to HYDRATION_LEVEL_NORMAL)
+				msg += span_info("I'm could use a drink.")
 			if(HYDRATION_LEVEL_DEHYDRATED to HYDRATION_LEVEL_THIRSTY)
-				msg += span_warning("I feel quite thirsty!")
+				msg += span_warning("I'm feel quite thirsty!")
 			if(-INFINITY to HYDRATION_LEVEL_DEHYDRATED)
-				msg += span_danger("I'm parched!")
+				msg += span_boldwarning("I'M NEED WATER!")
 		msg += "<br>"
-	// [/HORIZON-ADD] - THIRST
+// [/HORIZON-ADD]
 
 	var/drunkness = mob_parent.get_drunk_amount()
 	if(drunkness >= 1)

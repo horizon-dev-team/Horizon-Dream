@@ -157,6 +157,7 @@
 		. += letter
 	return sanitize(.)
 
+// [HORIZON-ADD] - HYDRATION-THIRST
 /proc/thirstymessage(message)
 	. = ""
 	for(var/n = 1, n <= length_char(message), n++)
@@ -164,6 +165,7 @@
 		. += chance ? "-" : copytext_char(message, n, n + 1)
 
 	return sanitize(.)
+// [/HORIZON-ADD]
 
 #define TILES_PER_SECOND 0.7
 ///Shake the camera of the person viewing the mob SO REAL!

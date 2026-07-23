@@ -1441,13 +1441,12 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 #undef FORMAT_XENOBIO_HUD_MAPTEXT
 #undef POTION_DROP_SPEED
 
-// [HORIZON-ADD]
-#define HYDRATION_STATE_FAT 5
-#define HYDRATION_STATE_FULL 4
-#define HYDRATION_STATE_FINE 3
-#define HYDRATION_STATE_HUNGRY 2
-#define HYDRATION_STATE_VERY_HUNGRY 1
-#define HYDRATION_STATE_STARVING 0
+// [HORIZON-ADD] - YDRATION-THIRST
+#define HYDRATION_STATE_OVERHYDRATED 4
+#define HYDRATION_STATE_FULL 3
+#define HYDRATION_STATE_FINE 2
+#define HYDRATION_STATE_THIRSTY 1
+#define HYDRATION_STATE_DEHYDRATED 0
 
 /atom/movable/screen/hydration
 	name = "hydration"
@@ -1494,18 +1493,9 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 	if(!istype(need_water))
 		return
 
-	if(HAS_TRAIT(need_water, TRAIT_NOHUNGER) || !need_water.get_organ_slot(ORGAN_SLOT_STOMACH))
+	if(HAS_TRAIT(need_water, TRAIT_NOHYDRATION) || !need_water.get_organ_slot(ORGAN_SLOT_STOMACH))
 		fullness = HYDRATION_LEVEL_NORMAL
 		state = HYDRATION_STATE_FINE
-		return
-	if(HAS_TRAIT(need_water, TRAIT_FAT))
-		fullness = HYDRATION_LEVEL_OVERHYDRATED
-		state = HYDRATION_STATE_FAT
-		return
-
-	if(HAS_TRAIT(need_water, TRAIT_GLUTTON))
-		fullness = HYDRATION_LEVEL_DEHYDRATED
-		state = HYDRATION_STATE_HUNGRY // Can't get enough
 		return
 
 	fullness = round(need_water.get_fullness_water(only_consumable = TRUE), 0.05)
@@ -1515,11 +1505,11 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 		if(1 + HYDRATION_LEVEL_THIRSTY to HYDRATION_LEVEL_OVERHYDRATED)
 			state = HYDRATION_STATE_FINE
 		if(1 + HYDRATION_LEVEL_DEHYDRATED to HYDRATION_LEVEL_THIRSTY)
-			state = HYDRATION_STATE_FINE
+			state = HYDRATION_STATE_THIRSTY
 		if(1 + HYDRATION_LEVEL_MIN_CAP to HYDRATION_LEVEL_DEHYDRATED)
-			state = HYDRATION_STATE_HUNGRY
+			state = HYDRATION_STATE_THIRSTY
 		if(0 to HYDRATION_LEVEL_MIN_CAP)
-			state = HYDRATION_STATE_STARVING
+			state = HYDRATION_STATE_DEHYDRATED
 
 /atom/movable/screen/hydration/update_appearance(updates)
 	update_hydration_bar()
@@ -1548,19 +1538,19 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 
 	if(old_state != state)
 		// Update filter around the bar
-		if(state == HYDRATION_STATE_STARVING)
+		if(state == HYDRATION_STATE_DEHYDRATED)
 			if(!get_filter("hydration_outline"))
 				add_filter("hydration_outline", 1, list("type" = "outline", "color" = "#FF0033", "alpha" = 0, "size" = 2))
 				animate(get_filter("hydration_outline"), alpha = 200, time = 1.5 SECONDS, loop = -1)
 				animate(alpha = 0, time = 1.5 SECONDS)
 
-		else if(old_state == HYDRATION_STATE_STARVING)
+		else if(old_state == HYDRATION_STATE_DEHYDRATED)
 			remove_filter("hydration_outline")
 
 		// Update color of the food
-		if((state == HYDRATION_STATE_FAT) != (old_state == HYDRATION_STATE_FAT))
+		if((state == HYDRATION_STATE_OVERHYDRATED) != (old_state == HYDRATION_STATE_OVERHYDRATED))
 			underlays -= water_image
-			water_image.color = state == HYDRATION_STATE_FAT ? COLOR_DARK : null
+			water_image.color = state == HYDRATION_STATE_OVERHYDRATED ? COLOR_DARK : null
 			underlays += water_image
 
 	// Update hydration bar
@@ -1615,10 +1605,9 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 		else
 			transition_filter("hydration_bar_mask", alpha_mask_filter(0, bar_offset), 0.5 SECONDS)
 
-#undef HYDRATION_STATE_FAT
+#undef HYDRATION_STATE_OVERHYDRATED
 #undef HYDRATION_STATE_FINE
 #undef HYDRATION_STATE_FULL
-#undef HYDRATION_STATE_HUNGRY
-#undef HYDRATION_STATE_STARVING
-#undef HYDRATION_STATE_VERY_HUNGRY
+#undef HYDRATION_STATE_THIRSTY
+#undef HYDRATION_STATE_DEHYDRATED
 // [/HORIZON-ADD]

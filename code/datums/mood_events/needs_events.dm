@@ -5,7 +5,7 @@
 
 /datum/mood_event/too_wellfed
 	description = "I think I've eaten too much."
-	mood_change = 0
+	mood_change = -4	// [HORIZON-EDIT] - HYDRATION-THIRST
 
 /datum/mood_event/wellfed
 	description = "I'm stuffed!"
@@ -27,23 +27,22 @@
 	description = "I'm starving!"
 	mood_change = -10
 
-// [HORIZON-ADD]
-//thirst
+// [HORIZON-ADD] - HYDRATION-THIRST
 /datum/mood_event/overhydrated
-	description = "СЛИШКОМ МНОГО ВОДЫ..."
-	mood_change = -3
+	description = "<B>I'M HAD TOO MUCH WATER..</B>"
+	mood_change = -6
 
 /datum/mood_event/hydrated
-	description = "Не хочу пить."
+	description = "I'm not thirsty anymore"
 	mood_change = 4
 
 /datum/mood_event/thirsty
-	description = "Хочу пить."
-	mood_change = -4
+	description = "I'm could use a drink."
+	mood_change = -10
 
 /datum/mood_event/dehydrated
-	description = "ВОДЫ!"
-	mood_change = -6
+	description = "I'M NEED WATER!"
+	mood_change = -15
 // [/HORIZON-ADD]
 
 //charge

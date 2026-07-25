@@ -1,0 +1,51 @@
+name: "Smart Discord Notifications"
+on:
+  pull_request:
+    types: [opened, reopened, closed]
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate App Token
+        id: app-token-generation
+        uses: actions/create-github-app-token@v3.2.0
+        with:
+          client-id: ${{ secrets.APP_CLIENT_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          repositories: |
+            Horizon-Dream
+            horizon-scripts
+
+      - name: Download Discord Notify - horizon-scripts
+        env:
+          GH_TOKEN: ${{ steps.app-token-generation.outputs.token }}
+        run: |
+          gh api repos/horizon-dev-team/horizon-scripts/contents/discordNotify.js --jq '.content' | base64 -d > discordNotify.js
+
+      - name: Prepare payload
+        id: prep
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const { processDiscordNotification } = await import('${{ github.workspace }}/discordNotify.js')
+            await processDiscordNotification({ github, context, core })
+          github-token: ${{ steps.app-token-generation.outputs.token }}
+
+      - name: Send Discord Notification
+        uses: tsickert/discord-webhook@v7.0.0
+        with:
+          webhook-url: ${{ secrets.WEBHOOK_URL }}
+          username: "Horizon Sync System"
+          avatar-url: ${{ steps.prep.outputs.org_avatar }}
+          embed-title: ${{ steps.prep.outputs.title }}
+          embed-url: ${{ steps.prep.outputs.url }}
+          embed-description: ${{ steps.prep.outputs.content }}
+          embed-author-name: ${{ steps.prep.outputs.author_name }}
+          embed-author-icon-url: ${{ steps.prep.outputs.author_avatar }}
+          embed-author-url: ${{ steps.prep.outputs.author_url }}
+          embed-footer-text: "${{ steps.prep.outputs.full_repo_name }}"
+          embed-footer-icon-url: ${{ steps.prep.outputs.org_avatar }}
+          embed-timestamp: ${{ steps.prep.outputs.timestamp }}
+          embed-color: ${{ steps.prep.outputs.embed_color }}

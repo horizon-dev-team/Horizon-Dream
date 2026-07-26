@@ -28,7 +28,7 @@ jobs:
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
           owner: ${{ github.repository_owner }}
           repositories: |
-            Horizon-Dream
+            Horizon-Test
             horizon-scripts
 
       - name: Download scripts

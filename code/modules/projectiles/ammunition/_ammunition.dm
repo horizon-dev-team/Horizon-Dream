@@ -47,6 +47,8 @@
 	/// Set when this casing is fired. Only used for checking if it should burn a user's hand when caught from an ejection port.
 	var/shot_timestamp = 0
 
+	item_flags = NO_ROTATE_RANDOM_THROW // [HORIZON-ADD] - Rotate_Item
+
 /obj/item/ammo_casing/spent
 	name = "spent bullet casing"
 	loaded_projectile = null

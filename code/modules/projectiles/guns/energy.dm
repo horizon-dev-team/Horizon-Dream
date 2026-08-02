@@ -299,8 +299,7 @@
 		return
 	var/mutable_appearance/charge_overlay = mutable_appearance(icon, overlay_icon_state)
 	for(var/i = ratio, i >= 1, i--)
-		charge_overlay.pixel_w = ammo_x_offset * (i - 1)
-		charge_overlay.pixel_z = ammo_y_offset * (i - 1)
+		charge_overlay.transform = matrix(transform).Translate(ammo_x_offset * (i - 1), ammo_y_offset * (i - 1))	// [HORIZON-EDIT] - Rotate_Item
 		. += new /mutable_appearance(charge_overlay)
 
 

@@ -30,7 +30,7 @@ Buildable meters
 	var/pipe_color
 	///Initial direction of the created pipe (either made from the RPD or after unwrenching the pipe)
 	var/p_init_dir = SOUTH
-	item_flags = NO_ROTATE_RANDOM_THROW
+	item_flags = NO_ROTATE_RANDOM_THROW // [HORIZON-ADD] - Rotate_Item
 
 /obj/item/pipe/on_craft_completion(list/components, datum/crafting_recipe/current_recipe, atom/crafter)
 	. = ..()

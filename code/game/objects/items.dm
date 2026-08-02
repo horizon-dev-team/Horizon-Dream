@@ -897,10 +897,10 @@ GAME_VERB_SRC(/obj/item, verb_pickup, oview(1), "Pick up", null)
 	if (callback) //call the original callback
 		. = callback.Invoke()
 	item_flags &= ~IN_INVENTORY
-	if(!pixel_y && !pixel_x && !(item_flags & NO_PIXEL_RANDOM_DROP) && !ismob(loc)) // [HORIZON-EDIT]
+	if(!pixel_y && !pixel_x && !(item_flags & NO_PIXEL_RANDOM_DROP) && !ismob(loc)) // [HORIZON-EDIT] - Rotate_Item
 		pixel_x = rand(-8,8)
 		pixel_y = rand(-8,8)
-// [HORIZON-ADD]
+// [HORIZON-ADD] - Rotate_Item
 	if(!(item_flags & NO_ROTATE_RANDOM_THROW) && !ismob(loc))
 		var/matrix/M = matrix(transform)
 		M.Turn(pick(0, 90, 180, 270))

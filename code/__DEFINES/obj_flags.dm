@@ -71,7 +71,7 @@
 /// If an item causes bluespace interference when teleported with.
 #define BLUESPACE_INTERFERENCE (1<<22)
 //if throwed, it wont have a randomized transform
-#define NO_ROTATE_RANDOM_THROW (1<<23)
+#define NO_ROTATE_RANDOM_THROW (1<<23)	// [HORIZON-ADD] - Rotate_Item
 
 // Flags for the clothing_flags var on /obj/item/clothing
 

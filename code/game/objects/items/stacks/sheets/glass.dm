@@ -368,10 +368,7 @@ GLOBAL_LIST_INIT(plastitaniumglass_recipes, list(
 
 // [HORIZON-ADD] - Rotate_Item
 	var/matrix/M = matrix(transform)
-	M.Turn(rand(-170, 170))
-	if(prob(50))
-		M.Scale(-1, 1)
-	transform = M
+	transform = M.Turn(rand(-170, 170))
 // [/HORIZON-ADD]
 
 /obj/item/shard/Destroy()

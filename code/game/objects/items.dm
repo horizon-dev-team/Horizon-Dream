@@ -903,8 +903,7 @@ GAME_VERB_SRC(/obj/item, verb_pickup, oview(1), "Pick up", null)
 // [HORIZON-ADD] - Rotate_Item
 	if(!(item_flags & NO_ROTATE_RANDOM_THROW) && !ismob(loc))
 		var/matrix/M = matrix(transform)
-		M.Turn(pick(0, 90, 180, 270))
-		transform = M
+		transform = M.Turn(pick(0, 90, 180, 270))
 // [/HORIZON-ADD]
 
 /// Takes the location to move the item to, and optionally the mob doing the removing

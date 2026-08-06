@@ -21,6 +21,7 @@ GLOBAL_VAR_INIT(observer_default_invisibility, INVISIBILITY_OBSERVER)
 // [HORIZON-ADD] - Tag-Consistent-Ghost
 	alpha = 180
 	appearance_flags = KEEP_TOGETHER | PIXEL_SCALE
+	var/has_mob_appearance = FALSE
 // [/HORIZON-ADD]
 	var/can_reenter_corpse
 	///This variable is set to 1 when you enter the game as an observer.
@@ -69,7 +70,6 @@ GLOBAL_VAR_INIT(observer_default_invisibility, INVISIBILITY_OBSERVER)
 	0.25,0.5,0.25,
 	0.25,0.25,0.5,
 	0,0,0)))
-	add_filter("ghost_fade", 3, alpha_mask_filter(icon = icon('_horizon/32x32.dmi', "ghost_fade"))) //Mask / fade
 // [/HORIZON-ADD]
 	var/turf/T
 	var/mob/body = loc
@@ -88,6 +88,16 @@ GLOBAL_VAR_INIT(observer_default_invisibility, INVISIBILITY_OBSERVER)
 		if(HAS_TRAIT_FROM_ONLY(body, TRAIT_SUICIDED, REF(body))) // transfer if the body was killed due to suicide
 			ADD_TRAIT(src, TRAIT_SUICIDED, REF(body))
 
+// [HORIZON-ADD] - Tag-Consistent-Ghost
+	var/list/dims = get_icon_dimensions(icon)
+	var/req_width = dims["width"]
+	var/req_height = dims["height"]
+	var/icon/mask_icon = icon('_horizon/icons/effect/32x32.dmi', "ghost_fade")
+	if(!ishuman(body) || (req_width > 32 && req_height > 32))
+		mask_icon.Scale(req_width, req_height)
+
+	add_filter("ghost_fade", 3, alpha_mask_filter(icon = mask_icon))
+// [/HORIZON-ADD]
 
 	if(!T || is_secret_level(T.z))
 		var/list/turfs = get_area_turfs(/area/shuttle/arrival)

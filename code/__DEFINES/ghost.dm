@@ -10,29 +10,6 @@
 /// Ghosts will orbit objects in a pentagon
 #define GHOST_ORBIT_PENTAGON "pentagon"
 
-/*
-//Ghost showing preferences:
-/// The main player's ghost will display as a simple white ghost
-#define GHOST_ACCS_NONE "Default sprites"
-/// The main player's ghost will display as a transparent mob
-#define GHOST_ACCS_DIR "Only directional sprites"
-/// The main player's ghost will display as a transparent mob with clothing
-#define GHOST_ACCS_FULL "Full accessories"
-
-/// The default ghost display selection for the main player
-#define GHOST_ACCS_DEFAULT_OPTION GHOST_ACCS_FULL
-
-/// The other players ghosts will display as a simple white ghost
-#define GHOST_OTHERS_SIMPLE "White ghosts"
-/// The other players ghosts will display as transparent mobs
-#define GHOST_OTHERS_DEFAULT_SPRITE "Default sprites"
-/// The other players ghosts will display as transparent mobs with clothing
-#define GHOST_OTHERS_THEIR_SETTING "Their sprites"
-
-/// The default ghost display selection when viewing other players
-#define GHOST_OTHERS_DEFAULT_OPTION GHOST_OTHERS_THEIR_SETTING
-*/
-
 /// A ghosts min view range that we won't allow them to go under by.
 #define GHOST_MIN_VIEW_RANGE 7
 /// A ghosts max view range if they are a BYOND guest or regular account

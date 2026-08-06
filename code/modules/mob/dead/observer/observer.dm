@@ -1,8 +1,3 @@
-/*
-GLOBAL_LIST_EMPTY(ghost_images_default) //this is a list of the default (non-accessorized, non-dir) images of the ghosts themselves
-GLOBAL_LIST_EMPTY(ghost_images_simple) //this is a list of all ghost images as the simple white ghost
-*/
-
 GLOBAL_VAR_INIT(observer_default_invisibility, INVISIBILITY_OBSERVER)
 
 /mob/dead/observer
@@ -13,8 +8,6 @@ GLOBAL_VAR_INIT(observer_default_invisibility, INVISIBILITY_OBSERVER)
 	plane = GHOST_PLANE
 	stat = DEAD
 	density = FALSE
-	alpha = 180
-	appearance_flags = KEEP_TOGETHER | PIXEL_SCALE
 	see_invisible = SEE_INVISIBLE_OBSERVER
 	lighting_cutoff = LIGHTING_CUTOFF_MEDIUM
 	invisibility = INVISIBILITY_OBSERVER
@@ -25,6 +18,10 @@ GLOBAL_VAR_INIT(observer_default_invisibility, INVISIBILITY_OBSERVER)
 	light_power = 0.6
 	light_on = FALSE
 	shift_to_open_context_menu = FALSE
+// [HORIZON-ADD] - Tag-Consistent-Ghost
+	alpha = 180
+	appearance_flags = KEEP_TOGETHER | PIXEL_SCALE
+// [/HORIZON-ADD]
 	var/can_reenter_corpse
 	///This variable is set to 1 when you enter the game as an observer.
 	///If you died in the game and are a ghost - this will remain as FALSE.
@@ -38,10 +35,6 @@ GLOBAL_VAR_INIT(observer_default_invisibility, INVISIBILITY_OBSERVER)
 	///Boolean on whether this ghost has access to 'fun' verbs in the ghost menu.
 	var/fun_verbs = FALSE
 
-/*
-	var/image/ghostimage_default = null //this mobs ghost image without accessories and dirs
-	var/image/ghostimage_simple = null //this mob with the simple white ghost sprite
-*/
 	var/mob/observetarget = null //The target mob that the ghost is observing. Used as a reference in logout()
 
 	///Flags of huds the ghost currently has enabled, data huds & ghost vision by default.
@@ -49,29 +42,6 @@ GLOBAL_VAR_INIT(observer_default_invisibility, INVISIBILITY_OBSERVER)
 	var/ghost_hud_flags = NONE
 	///The shape the ghost will make while orbiting mobs.
 	var/ghost_orbit = GHOST_ORBIT_CIRCLE
-
-// [HORIZON]
-/*
-	//These variables store hair data if the ghost originates from a species with head and/or facial hair.
-	var/hairstyle
-	var/hair_color
-	var/mutable_appearance/hair_overlay
-	var/facial_hairstyle
-	var/facial_hair_color
-	var/mutable_appearance/facial_hair_overlay
-
-	var/updatedir = 1 //Do we have to update our dir as the ghost moves around?
-	var/lastsetting = null //Stores the last setting that ghost_others was set to, for a little more efficiency when we update ghost images. Null means no update is necessary
-
-	//We store copies of the ghost display preferences locally so they can be referred to even if no client is connected.
-	//If there's a bug with changing your ghost settings, it's probably related to this.
-	var/ghost_accs = GHOST_ACCS_DEFAULT_OPTION
-	var/ghost_others = GHOST_OTHERS_DEFAULT_OPTION
-*/
-	/// TRUE if this ghost has a mob-based appearance (copied from a body or character prefs).
-	/// When TRUE, update_icon() will not override the copied appearance.
-	var/has_mob_appearance = FALSE
-// [/HORIZON]
 
 	// Used for displaying in ghost chat, without changing the actual name
 	// of the mob
@@ -93,35 +63,19 @@ GLOBAL_VAR_INIT(observer_default_invisibility, INVISIBILITY_OBSERVER)
 
 /mob/dead/observer/Initialize(mapload)
 	set_invisibility(GLOB.observer_default_invisibility)
-// [HORIZON]
-/*
-	if(icon_state in GLOB.ghost_forms_with_directions_list)
-		ghostimage_default = image(src.icon,src,src.icon_state + "_nodir")
-	else
-		ghostimage_default = image(src.icon,src,src.icon_state)
-	ghostimage_default.override = TRUE
-	GLOB.ghost_images_default |= ghostimage_default
-
-	ghostimage_simple = image(src.icon,src,"ghost_nodir")
-	ghostimage_simple.override = TRUE
-	GLOB.ghost_images_simple |= ghostimage_simple
-
-	updateallghostimages()
-*/
+// [HORIZON-ADD] - Tag-Consistent-Ghost
 	//Filters - Do this once on init because it shouldn't matter otherwise
 	add_filter("ghost_desaturation", 1, color_matrix_filter(list(0.5,0.25,0.25, //Colour
 	0.25,0.5,0.25,
 	0.25,0.25,0.5,
 	0,0,0)))
 	add_filter("ghost_fade", 3, alpha_mask_filter(icon = icon('_horizon/32x32.dmi', "ghost_fade"))) //Mask / fade
-	//Identity theft
-// [HORIZON]
+// [/HORIZON-ADD]
 	var/turf/T
 	var/mob/body = loc
 	if(ismob(body))
 		T = get_turf(body) //Where is the body located?
-		// Copy the body's full visual appearance onto the ghost
-		set_appearance(body)
+		set_appearance(body) // [HORIZON-ADD] - Tag-Consistent-Ghost
 		gender = body.gender
 		if(body.mind && body.mind.name)
 			name = body.mind.ghostname || body.mind.name
@@ -134,19 +88,6 @@ GLOBAL_VAR_INIT(observer_default_invisibility, INVISIBILITY_OBSERVER)
 		if(HAS_TRAIT_FROM_ONLY(body, TRAIT_SUICIDED, REF(body))) // transfer if the body was killed due to suicide
 			ADD_TRAIT(src, TRAIT_SUICIDED, REF(body))
 
-/*
-		if(ishuman(body))
-			var/mob/living/carbon/human/body_human = body
-			var/datum/species/human_species = body_human.dna.species
-			if(human_species.check_head_flags(HEAD_HAIR))
-				hairstyle = body_human.hairstyle
-				hair_color = ghostify_color(body_human.hair_color)
-			if(human_species.check_head_flags(HEAD_FACIAL_HAIR))
-				facial_hairstyle = body_human.facial_hairstyle
-				facial_hair_color = ghostify_color(body_human.facial_hair_color)
-
-	update_appearance()
-*/
 
 	if(!T || is_secret_level(T.z))
 		var/list/turfs = get_area_turfs(/area/shuttle/arrival)
@@ -195,20 +136,12 @@ GLOBAL_VAR_INIT(observer_default_invisibility, INVISIBILITY_OBSERVER)
 	if(isliving(mind?.current))
 		mind.current.med_hud_set_status()
 
-/*
-	GLOB.ghost_images_default -= ghostimage_default
-	ghostimage_default = null
-
-	GLOB.ghost_images_simple -= ghostimage_simple
-	ghostimage_simple = null
-
-	updateallghostimages()
-*/
 
 	QDEL_NULL(spawners_menu)
 	QDEL_NULL(minigames_menu)
 	return ..()
 
+// [HORIZON-ADD] - Tag-Consistent-Ghost
 /*
  * Updates the ghost's icon. If the ghost has a mob-based appearance
  */
@@ -250,6 +183,7 @@ GLOBAL_VAR_INIT(observer_default_invisibility, INVISIBILITY_OBSERVER)
 		icon_state = initial(icon_state)
 		cut_overlays()
 		has_mob_appearance = FALSE
+// [/HORIZON-ADD]
 
 /**
  * # Ghostize
@@ -285,9 +219,11 @@ GLOBAL_VAR_INIT(observer_default_invisibility, INVISIBILITY_OBSERVER)
 	if(!can_reenter_corpse)// Disassociates observer mind from the body mind
 		ghost.mind = null
 
+// [HORIZON-ADD] - Tag-Consistent-Ghost
 	// Client is now available, if appearance wasn't set, fall back to charslot appearance
 	if(!ghost.has_mob_appearance)
 		INVOKE_ASYNC(ghost, TYPE_PROC_REF(/mob/dead/observer, set_ghost_appearance))
+// [/HORIZON-ADD]
 
 	var/recordable_time = world.time
 	var/mob/living/former_mob = ghost.mind?.current
@@ -298,7 +234,7 @@ GLOBAL_VAR_INIT(observer_default_invisibility, INVISIBILITY_OBSERVER)
 	SEND_SIGNAL(src, COMSIG_MOB_GHOSTIZED)
 	return ghost
 
-/mob/dead/observer/ghostize(can_reenter_corpse, forced) //Sanity override
+/mob/dead/observer/ghostize(can_reenter_corpse, forced) //Sanity override // [HORIZON-ADD] - Tag-Consistent-Ghost
 	return
 
 /mob/living/ghostize(can_reenter_corpse = TRUE, forced = FALSE)
@@ -332,7 +268,7 @@ GAME_VERB_DESC(/mob/eye, ghost, "Ghost", "Relinquish your life and enter the lan
 	ghostize(FALSE)
 
 /mob/dead/observer/Move(NewLoc, direct, glide_size_override = 32)
-	setDir(direct)
+	setDir(direct) // [HORIZON-EDIT] - Tag-Consistent-Ghost
 
 	if(glide_size_override)
 		set_glide_size(glide_size_override)
@@ -505,7 +441,7 @@ GAME_VERB(/mob/dead/observer, change_view_range, "View Range", null)
 		to_chat(usr, span_notice("That verb is currently globally disabled."))
 		return
 
-	var/max_view = GHOST_MAX_VIEW_RANGE_DEFAULT
+	var/max_view = GHOST_MAX_VIEW_RANGE_DEFAULT // [HORIZON-EDIT] - Tag-Consistent-Ghost
 	if(client.view_size.getView() == client.view_size.default)
 		var/list/views = list()
 		for(var/i in 7 to max_view)
@@ -676,7 +612,7 @@ GAME_VERB_HIDDEN(/mob/dead/observer, add_view_range, "Add View Range")
 		to_chat(usr, span_notice("That verb is currently globally disabled."))
 		return
 
-	var/max_view = GHOST_MAX_VIEW_RANGE_DEFAULT
+	var/max_view = GHOST_MAX_VIEW_RANGE_DEFAULT // [HORIZON-EDIT] - Tag-Consistent-Ghost
 	if(input)
 		client.rescale_view(input, 0, ((max_view * 2) + 1) - 15)
 
@@ -800,6 +736,7 @@ GAME_VERB_HIDDEN(/mob/dead/observer, add_view_range, "Add View Range")
 	ghost_hud_flags &= ~GHOST_DATA_HUDS // only for safety, it should be unset already.
 	remove_traits(observer_hud_traits, REF(src))
 
+ // [HORIZON-ADD] - Tag-Consistent-Ghost
 /// Compile all the overlays for an atom from the cache lists
 #define COMPILE_OVERLAYS(A)\
 	if (A) {\
@@ -821,6 +758,7 @@ GAME_VERB_HIDDEN(/mob/dead/observer, add_view_range, "Add View Range")
 		}\
 		A.flags_1 &= ~OVERLAY_QUEUED_1;\
 	}
+ // [/HORIZON-ADD]
 
 /**
  * Builds character appearance from client preferences using a dummy mob
@@ -831,6 +769,7 @@ GAME_VERB_HIDDEN(/mob/dead/observer, add_view_range, "Add View Range")
 
 	client.prefs.apply_character_randomization_prefs()
 
+ // [HORIZON-EDIT] - Tag-Consistent-Ghost
 	var/mob/living/carbon/human/dummy/mannequin = generate_or_wait_for_human_dummy("ghost_appearance")
 	mannequin.wipe_state()
 
@@ -848,6 +787,7 @@ GAME_VERB_HIDDEN(/mob/dead/observer, add_view_range, "Add View Range")
 
 	set_appearance(mannequin)
 	unset_busy_human_dummy("ghost_appearance")
+ // [/HORIZON-EDIT]
 
 /mob/dead/observer/can_perform_action(atom/movable/target, action_bitflags)
 	return isAdminGhostAI(usr)
@@ -860,7 +800,7 @@ GAME_VERB_HIDDEN(/mob/dead/observer, add_view_range, "Add View Range")
 
 /mob/dead/observer/vv_edit_var(var_name, var_value)
 	. = ..()
-	switch(var_name)
+	switch(var_name)  // [HORIZON-EDIT] - Tag-Consistent-Ghost
 		if(NAMEOF(src, invisibility))
 			set_invisibility(invisibility) // updates light
 

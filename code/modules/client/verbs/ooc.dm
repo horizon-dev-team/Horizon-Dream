@@ -78,7 +78,7 @@ GAME_VERB(/client, ooc, VERB_OOC, null)
 	var/keyname = key
 	var/list/key_tags
 	var/key_prefix = ""
-	var/visible_unlock = TRUE
+	var/visible_unlock = TRUE // [HORIZON-EDIT] - Tag-Consistent-Ghost
 
 	// heart first lol
 	if(prefs.hearted)

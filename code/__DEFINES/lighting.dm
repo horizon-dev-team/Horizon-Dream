@@ -145,4 +145,5 @@ do { \
 	}; \
 } while (FALSE)
 
+// [HORIZON-ADD] - Tag-Consistent-Ghost
 #define LIGHTING_PLANE_ALPHA_DIMINISHED_VISIBLE 210

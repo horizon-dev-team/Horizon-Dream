@@ -11,4 +11,4 @@
 	if (!..(preferences))
 		return FALSE
 
-	return is_admin(preferences.parent)
+	return is_admin(preferences.parent) // [HORIZON-EDIT] - Tag-Consistent-Ghost

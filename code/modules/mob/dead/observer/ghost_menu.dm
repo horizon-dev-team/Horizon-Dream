@@ -143,7 +143,7 @@ GLOBAL_DATUM_INIT(ghost_menu, /datum/ghost_menu, new)
 
 /datum/ghost_menu/ui_static_data(mob/dead/observer/user)
 	var/list/data = list()
-	data["max_extra_view"] = GHOST_MAX_VIEW_RANGE_DEFAULT
+	data["max_extra_view"] = GHOST_MAX_VIEW_RANGE_DEFAULT // [HORIZON-EDIT] - Tag-Consistent-Ghost
 	data["darkness_levels"] = list()
 	for(var/level in GLOB.ghost_lightings)
 		data["darkness_levels"] += level

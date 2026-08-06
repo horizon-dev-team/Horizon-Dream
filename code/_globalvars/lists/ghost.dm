@@ -1,4 +1,4 @@
-/*
+/* // [HORIZON-REMOVE] - Tag-Consistent-Ghost
 /// Stores the ghost forms that support directional sprites
 GLOBAL_LIST_INIT(ghost_forms_with_directions_list, list(
 	"catghost",
@@ -58,4 +58,4 @@ GLOBAL_LIST_INIT(ghost_forms_with_accessories_list, list(
 	"ghost",
 	"skeleghost",
 ))
-*/
+*/ // [/HORIZON-REMOVE]

@@ -746,30 +746,6 @@ GAME_VERB_HIDDEN(/mob/dead/observer, add_view_range, "Add View Range")
 	ghost_hud_flags &= ~GHOST_DATA_HUDS // only for safety, it should be unset already.
 	remove_traits(observer_hud_traits, REF(src))
 
- // [HORIZON-ADD] - Tag-Consistent-Ghost
-/// Compile all the overlays for an atom from the cache lists
-#define COMPILE_OVERLAYS(A)\
-	if (A) {\
-		var/list/ad = A.add_overlays;\
-		var/list/rm = A.remove_overlays;\
-		if(LAZYLEN(rm)){\
-			A.overlays -= rm;\
-			rm.Cut();\
-		}\
-		if(LAZYLEN(ad)){\
-			A.overlays |= ad;\
-			ad.Cut();\
-		}\
-		for(var/I in A.alternate_appearances){\
-			var/datum/atom_hud/alternate_appearance/AA = A.alternate_appearances[I];\
-			if(AA.transfer_overlays){\
-				AA.copy_overlays(A, TRUE);\
-			}\
-		}\
-		A.flags_1 &= ~OVERLAY_QUEUED_1;\
-	}
- // [/HORIZON-ADD]
-
 /**
  * Builds character appearance from client preferences using a dummy mob
  */
@@ -779,7 +755,7 @@ GAME_VERB_HIDDEN(/mob/dead/observer, add_view_range, "Add View Range")
 
 	client.prefs.apply_character_randomization_prefs()
 
- // [HORIZON-EDIT] - Tag-Consistent-Ghost
+// [HORIZON-EDIT] - Tag-Consistent-Ghost
 	var/mob/living/carbon/human/dummy/mannequin = generate_or_wait_for_human_dummy("ghost_appearance")
 	mannequin.wipe_state()
 
@@ -797,7 +773,7 @@ GAME_VERB_HIDDEN(/mob/dead/observer, add_view_range, "Add View Range")
 
 	set_appearance(mannequin)
 	unset_busy_human_dummy("ghost_appearance")
- // [/HORIZON-EDIT]
+// [/HORIZON-EDIT]
 
 /mob/dead/observer/can_perform_action(atom/movable/target, action_bitflags)
 	return isAdminGhostAI(usr)
@@ -810,7 +786,7 @@ GAME_VERB_HIDDEN(/mob/dead/observer, add_view_range, "Add View Range")
 
 /mob/dead/observer/vv_edit_var(var_name, var_value)
 	. = ..()
-	switch(var_name)  // [HORIZON-EDIT] - Tag-Consistent-Ghost
+	switch(var_name) // [HORIZON-EDIT] - Tag-Consistent-Ghost
 		if(NAMEOF(src, invisibility))
 			set_invisibility(invisibility) // updates light
 

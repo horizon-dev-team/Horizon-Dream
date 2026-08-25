@@ -9,8 +9,8 @@ import {
   Tabs,
 } from 'tgui-core/components';
 
-import { useBackend } from '../backend';
-import { Window } from '../layouts';
+import { useBackend } from '../../backend';
+import { Window } from '../../layouts';
 
 const MAX_SEARCH_RESULTS = 25;
 

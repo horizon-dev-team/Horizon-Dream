@@ -372,6 +372,11 @@ GLOBAL_LIST_INIT(plastitaniumglass_recipes, list(
 	)
 	AddElement(/datum/element/connect_loc, loc_connections)
 
+// [HORIZON-ADD] - Rotate_Item
+	var/matrix/M = matrix(transform)
+	transform = M.Turn(rand(-170, 170))
+// [/HORIZON-ADD]
+
 /obj/item/shard/Destroy()
 	. = ..()
 

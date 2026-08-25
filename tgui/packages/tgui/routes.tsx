@@ -136,7 +136,7 @@ export function RoutedComponent() {
 
 // [HORIZON-ADD] - Загрузка своих интерфейсов в приоритете
 const requireHorizonInterface = require.context(
-  './_horizonUI',
+  './_horizonUI/interfaces',
   true,
   /^(?!.*\.test\.(tsx?|jsx?)).*\.(tsx?|jsx?)$/,
 );

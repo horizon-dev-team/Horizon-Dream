@@ -1,11 +1,6 @@
-/**
- * @copyright 2023 dwasint (https://github.com/Monkestation/Monkestation2.0/commit/1242447349937173ad2e9a8d35fae2f5beecbc11)
- * @author Original dwasint
- * @author Port KOCMOHABT
- */
-import { useBackend } from '../backend';
+import { useBackend } from '../../backend';
 import { Button, LabeledList, Section, Stack } from 'tgui-core/components';
-import { Window } from '../layouts';
+import { Window } from '../../layouts';
 
 type Data = {
   target_name: string;

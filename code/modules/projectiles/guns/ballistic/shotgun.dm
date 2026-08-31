@@ -214,6 +214,7 @@
 	internal_magazine = FALSE
 	tac_reloads = TRUE
 	burst_fire_selection = TRUE
+	casing_ejector = TRUE
 	/// The type of secondary magazine for the bulldog
 	var/secondary_magazine_type
 	/// The secondary magazine

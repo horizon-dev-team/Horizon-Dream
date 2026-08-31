@@ -371,54 +371,6 @@
 				casing.bounce_away(bounce_angle = bounce_angle, still_warm = TRUE)	// [HORIZON-EDIT] - PHYSICS
 // [/HORIZON-EDIT]
 				SEND_SIGNAL(casing, COMSIG_CASING_EJECTED)
-				/*
-				var/hitting_ground = TRUE
-				if(ishuman(loc))
-					var/mob/living/carbon/human/wielder = loc
-					var/caught_casing = can_catch_casing(casing, wielder, from_firing)
-					switch(caught_casing)
-						if(CASING_CATCH_NO_ATTEMPT)
-							hitting_ground = TRUE
-						if(CASING_CATCH_FAILED_SPICY)
-							hitting_ground = TRUE
-							wielder.visible_message(
-								span_warning("[wielder] reaches out for \the [casing] as it ejects from [src], and catches it... before fumbling it because it's a hot casing. Uncool!"),
-								span_warning("You reach out and catch \the [casing] as it ejects from [src]... before dropping it, because it's a hot casing! Ouch! Uncool!"),
-								span_notice("You hear someone reaching for something before a hiss of pain and the sound of something clattering."),
-							)
-							var/obj/item/bodypart/affecting = wielder.get_inactive_hand()
-							wielder.apply_damage(2, BURN, affecting, wound_bonus = CANT_WOUND)
-						if(CASING_CATCH_FAILED_CLUMSY)
-							hitting_ground = TRUE
-							wielder.visible_message(
-								span_warning("[wielder] reaches out for \the [casing] as it ejects from [src]... before fumbling it in an incredibly unlikely, comical manner! Uncool!"),
-								span_warning("You reach out and catch \the [casing] as it ejects from [src]... before fumbling it in an incredibly unlikely, comical manner! Uncool!"),
-								span_notice("You hear someone reaching for something, shortly followed by an embarassingly loud, comedic clattering."),
-							)
-							if(!(world.time >= casing.shot_timestamp + CASING_HOT_DELAY))
-								var/obj/item/bodypart/affecting = wielder.get_inactive_hand()
-								to_chat(wielder, span_warning("As if to add insult to injury, \the [casing] lands in the perfect way... to burn your [affecting.plaintext_zone]."))
-								wielder.apply_damage(5, BURN, affecting, wound_bonus = CANT_WOUND)
-						if(CASING_CATCH_FAILED_PLACEMENT)
-							hitting_ground = TRUE
-							wielder.visible_message(
-								span_warning("[wielder] reaches out for \the [casing] as it ejects from [src] and fumbles it due to [wielder.p_their()] full hands. Uncool!"),
-								span_warning("You try and reach out for \the [casing] as it ejects from [src], and fumble it because your hands are full. Uncool!"),
-								span_notice("You hear someone reaching for something, before a metallic clattering."),
-							)
-						if(CASING_CATCH_SUCCESSFUL)
-							hitting_ground = FALSE
-							casing.update_appearance()
-							to_chat(wielder, span_notice("You reach out and catch \the [casing] as it ejects from [src]. Awesome."))
-						if(CASING_CATCH_SUCCESSFUL_OUCH)
-							hitting_ground = FALSE
-							casing.update_appearance()
-							var/obj/item/bodypart/affecting = wielder.get_inactive_hand()
-							to_chat(wielder, span_notice("You reach out and catch \the [casing] as it ejects from [src]. Awesome. Your [affecting.plaintext_zone] hurts, though."))
-							wielder.apply_damage(4, BURN, affecting, wound_bonus = CANT_WOUND)
-				if(hitting_ground)
-					casing.bounce_away(bounce_angle = bounce_angle, still_warm = TRUE)	// [HORIZON-EDIT] - PHYSICS
-					*/
 		else if(empty_chamber)
 			clear_chambered()
 	if (chamber_next_round && (magazine?.max_ammo > 1))

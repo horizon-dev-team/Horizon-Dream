@@ -164,10 +164,10 @@
 	return TRUE
 
 /obj/item/ammo_casing/throw_impact(atom/hit_atom, datum/thrownthing/throwingdatum)
-	bounce_away(bounce_angle = rand(0, 360), spread_multiplier = 0.75, still_warm = FALSE, sound_delay = 0)	// [HORIZON-ADD] - PHYSICS
+	bounce_away(bounce_angle = rand(0, 360), spread_multiplier = 0.75, still_warm = FALSE, sound_delay = 0)	// [HORIZON-ADD] PHYSICS
 	return ..()
 
-// [HORIZON-EDIT] - PHYSICS
+// [HORIZON-EDIT] PHYSICS
 /obj/item/ammo_casing/proc/bounce_away(bounce_angle, spread_multiplier = 1, pixel_mess = TRUE, still_warm = FALSE, sound_delay = 3)
 	update_appearance()
 	var/turf/our_turf = get_turf(src)

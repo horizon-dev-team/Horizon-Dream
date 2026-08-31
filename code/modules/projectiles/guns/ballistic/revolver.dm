@@ -267,7 +267,7 @@ GAME_VERB(/obj/item/gun/ballistic/revolver, spin, "Spin Chamber", null)
 		return TRUE
 	return ..()
 
-/obj/item/gun/ballistic/revolver/russian/handle_chamber(empty_chamber = TRUE, from_firing = TRUE, chamber_next_round = TRUE)
+/obj/item/gun/ballistic/revolver/russian/handle_chamber(mob/living/user, empty_chamber = TRUE, from_firing = TRUE, chamber_next_round = TRUE) // [HORIZON-EDIT] PHYSICS
 	from_firing = FALSE // never eject casings from firing the gun
 	return ..()
 

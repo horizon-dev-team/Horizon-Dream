@@ -23,7 +23,7 @@
 	if (bolt_locked == FALSE)
 		balloon_alert(user, "bolt opened")
 		playsound(src, rack_sound, rack_sound_volume, rack_sound_vary)
-		process_chamber(user = user, empty_chamber = FALSE, from_firing = FALSE, chamber_next_round = FALSE)	// [HORIZON-EDIT] - PHYSICS
+		process_chamber(user, empty_chamber = FALSE, from_firing = FALSE, chamber_next_round = FALSE) // [HORIZON-EDIT] PHYSICS
 		bolt_locked = TRUE
 		update_appearance()
 		return
@@ -379,7 +379,7 @@
 /obj/item/gun/ballistic/rifle/boltaction/pipegun/add_bayonet_point()
 	AddComponent(/datum/component/bayonet_attachable, offset_x = 35, offset_y = 10)
 
-/obj/item/gun/ballistic/rifle/boltaction/pipegun/handle_chamber(mob/living/user, empty_chamber = TRUE, from_firing = TRUE, chamber_next_round = TRUE)	// [HORIZON-EDIT] - PHYSICS
+/obj/item/gun/ballistic/rifle/boltaction/pipegun/handle_chamber(mob/living/user, empty_chamber = TRUE, from_firing = TRUE, chamber_next_round = TRUE) // [HORIZON-EDIT] PHYSICS
 	. = ..()
 	do_sparks(1, TRUE, src)
 

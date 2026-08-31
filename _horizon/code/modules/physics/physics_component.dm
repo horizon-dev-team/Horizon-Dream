@@ -133,7 +133,6 @@
 	return ..()
 
 /datum/component/movable_physics/RegisterWithParent()
-	RegisterSignal(parent, COMSIG_MOVABLE_NEWTONIAN_MOVE, PROC_REF(on_newtonian_move))
 	RegisterSignal(parent, COMSIG_MOVABLE_BUMP, PROC_REF(on_bump))
 	if(isitem(parent))
 		RegisterSignal(parent, COMSIG_ITEM_PICKUP, PROC_REF(on_item_pickup))
@@ -268,12 +267,6 @@
 /datum/component/movable_physics/proc/set_angle(new_angle)
 	if(!isnull(new_angle))
 		angle = SIMPLIFY_DEGREES(new_angle)
-
-/// We do not EVER want newtonian movement while handling movement ourselves, so block it!
-/datum/component/movable_physics/proc/on_newtonian_move(atom/movable/source, direction, start_delay)
-	SIGNAL_HANDLER
-
-	return COMPONENT_MOVABLE_NEWTONIAN_BLOCK
 
 /// Proc for bouncing, aka object reached z_floor on pixel_z and needs a dose of Newton's third law
 /datum/component/movable_physics/proc/z_floor_bounce(atom/movable/moving_atom)

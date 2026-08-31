@@ -1,8 +1,7 @@
 /atom/movable
 	/**
 	 * Current visual angle in degrees
-	 * Generally if you want to make an atom rotate visually, you should use this var
-	 * and it's setter procs
+	 * Generally if you want to make an atom rotate visually, you should use this var and it's setter procs
 	 */
 	var/visual_angle = 0
 

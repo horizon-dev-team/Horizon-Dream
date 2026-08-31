@@ -1786,7 +1786,7 @@
 	VV_DROPDOWN_OPTION(VV_HK_GET_MOVABLE, "Get Movable")
 	VV_DROPDOWN_OPTION(VV_HK_GET_FACTIONS, "Get Factions")
 	VV_DROPDOWN_OPTION(VV_HK_ADD_REMOVE_FACTION, "Add/Remove Faction")
-	VV_DROPDOWN_OPTION(VV_HK_EDIT_MOVABLE_PHYSICS, "Edit Movable Physics")	// [HORIZON-ADD] - PHYSICS
+	VV_DROPDOWN_OPTION(VV_HK_EDIT_MOVABLE_PHYSICS, "Edit Movable Physics")	// [HORIZON-ADD] PHYSICS
 	VV_DROPDOWN_OPTION(VV_HK_EDIT_PARTICLES, "Edit Particles")
 	VV_DROPDOWN_OPTION(VV_HK_DEADCHAT_PLAYS, "Start/Stop Deadchat Plays")
 	VV_DROPDOWN_OPTION(VV_HK_ADD_FANTASY_AFFIX, "Add Fantasy Affix")
@@ -1828,7 +1828,7 @@
 		var/list/factions_printout = faction_to_text()
 		to_chat(usr, span_notice(span_notice("Factions for [src]:[factions_printout]")))
 
-// [HORIZON-ADD] - PHYSICS
+// [HORIZON-ADD] PHYSICS
 	if(href_list[VV_HK_EDIT_MOVABLE_PHYSICS] && check_rights(R_VAREDIT))
 		var/client/C = usr.client
 		C?.open_movable_physics_editor(src)

@@ -8,9 +8,3 @@
 #define MPHYSICS_MOVING (1<<1)
 /// The component has been "paused" and will not process
 #define MPHYSICS_PAUSED (1<<2)
-
-
-/// MARK: Signals
-///from base of atom/movable/newtonian_move(): (inertia_direction, start_delay)
-#define COMSIG_MOVABLE_NEWTONIAN_MOVE "movable_newtonian_move"
-	#define COMPONENT_MOVABLE_NEWTONIAN_BLOCK (1<<0)

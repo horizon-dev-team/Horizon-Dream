@@ -112,7 +112,7 @@
 	chambered.newshot()
 	return ..()
 
-/obj/item/gun/magic/handle_chamber(mob/living/user, empty_chamber = TRUE, from_firing = TRUE, chamber_next_round = TRUE)	// [HORIZON-EDIT] - PHYSICS
+/obj/item/gun/magic/handle_chamber(mob/living/user, empty_chamber = TRUE, from_firing = TRUE, chamber_next_round = TRUE) // [HORIZON-EDIT] PHYSICS
 	if(chambered && !chambered.loaded_projectile) //if BB is null, i.e the shot has been fired...
 		charges--//... drain a charge
 		recharge_newshot()

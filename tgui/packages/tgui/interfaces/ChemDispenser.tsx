@@ -493,14 +493,7 @@ const ReagentDispenseButton = (props: ReagentDispenseButtonProps) => {
         })
       }
     >
-      <span
-        style={{
-          color: 'white',
-          textShadow: 'none',
-          textOverflow: 'ellipsis',
-          overflow: 'hidden',
-        }}
-      >
+      <span className="ChemDispenser__buttonLabel">
         {prefix}
         {chemical.title}
       </span>

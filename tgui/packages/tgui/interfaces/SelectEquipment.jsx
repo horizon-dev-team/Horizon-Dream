@@ -10,9 +10,10 @@ import {
   Section,
   Stack,
   Tabs,
+  Dropdown,
 } from 'tgui-core/components';
 import { createSearch } from 'tgui-core/string';
-import { useBackend } from '../backend';
+import { useBackend, useLocalState } from '../backend';
 import { Window } from '../layouts';
 
 // here's an important mental define:
@@ -60,7 +61,7 @@ export function SelectEquipment(props) {
   );
 
   return (
-    <Window width={650} height={415} theme="admin">
+    <Window width={750} height={415} theme="ntos_darkmode">
       <Window.Content>
         <Stack fill>
           <Stack.Item>
@@ -100,6 +101,11 @@ export function SelectEquipment(props) {
                     src={`data:image/jpeg;base64,${icon64}`}
                     height="100%"
                   />
+                </Section>
+              </Stack.Item>
+              <Stack.Item>
+                <Section>
+                  <ConfirmationBox />
                 </Section>
               </Stack.Item>
             </Stack>
@@ -206,6 +212,35 @@ function CurrentlySelectedDisplay(props) {
           {entry?.name}
         </Box>
       </Stack.Item>
+    </Stack>
+  );
+};
+
+const ConfirmationBox = (props) => {
+  const { act, data } = useBackend();
+  const { current_outfit } = data;
+  const [effectState, setEffectState] = useLocalState('effectState', 'None');
+  const [applyQuirks, setApplyQuirks] = useLocalState(
+    'applyQuirks',
+    'No Quirks',
+  );
+
+  return (
+    <Stack>
+      <Stack.Item grow={2}>
+        <Dropdown
+          options={[
+            'No Quirks',
+            'All Quirks',
+            'Positive Quirks Only',
+            'Negative Quirks Only',
+            'Neutral Quirks Only',
+          ]}
+          selected={applyQuirks}
+          onSelected={(value) => setApplyQuirks(value)}
+          width="100%"
+        />
+      </Stack.Item>
       <Stack.Item>
         <Button
           mr={0.8}
@@ -214,6 +249,8 @@ function CurrentlySelectedDisplay(props) {
           onClick={() =>
             act('applyoutfit', {
               path: current_outfit,
+              effectState: effectState, // Pass the state directly
+              applyQuirks,
             })
           }
         >

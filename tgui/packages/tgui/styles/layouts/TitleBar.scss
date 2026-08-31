@@ -14,7 +14,7 @@
   display: flex;
   align-items: center;
   width: vp(100vw);
-  height: base.rem(32px);
+  height: base.rem(25px);
   background-color: var(--titlebar-background);
   border-bottom: var(--border-thickness-tiny) solid var(--titlebar-shadow-core);
   box-shadow: 0px 0px base.em(6px) base.em(-1px) var(--titlebar-shadow-color);
@@ -27,7 +27,7 @@
 
   &__statusIcon {
     text-align: center;
-    font-size: base.rem(20px);
+    font-size: base.rem(14px);
     transition: color var(--transition-time-slow);
   }
 
@@ -47,7 +47,7 @@
     overflow: hidden;
     white-space: nowrap;
     display: inline-block;
-    margin: 0 base.rem(9px);
+    margin: 0 base.rem(4px);
     z-index: 102;
   }
 
@@ -87,7 +87,7 @@
   &__statusIcon,
   &__close {
     width: base.rem(45px);
-    min-width: base.rem(45px);
-    max-width: base.rem(45px);
+    min-width: base.rem(25px);
+    max-width: base.rem(25px);
   }
 }

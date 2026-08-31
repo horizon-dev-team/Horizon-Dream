@@ -82,7 +82,7 @@ export function ForceEvent(props) {
   const searchQueryState = useState('');
 
   return (
-    <Window theme="admin" title="Force Event" width={450} height={450}>
+    <Window theme="horizon" title="Force Event" width={450} height={450}>
       <Window.Content>
         <ForceEventContext.Provider
           value={{ announceState, categoryState, searchQueryState }}

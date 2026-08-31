@@ -33,7 +33,7 @@ export const Adminhelp = (props) => {
 
   const confirmationText = 'alert admins';
   return (
-    <Window title="Create Adminhelp" theme="admin" height={300} width={500}>
+    <Window title="Create Adminhelp" theme="horizon" height={300} width={500}>
       <Window.Content
         style={{
           backgroundImage: 'none',
@@ -43,6 +43,7 @@ export const Adminhelp = (props) => {
           <Stack.Item grow>
             <TextArea
               autoFocus
+              backgroundColor="black"
               height="100%"
               fluid
               placeholder="Admin help"

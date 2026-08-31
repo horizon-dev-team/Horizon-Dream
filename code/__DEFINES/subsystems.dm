@@ -298,3 +298,8 @@
 
 /// Returned by [/datum/vote/proc/can_be_initiated] to denote the vote is valid and can be initiated.
 #define VOTE_AVAILABLE "Vote Available"
+
+// SS CPU display category flags
+#define SS_CPUDISPLAY_LOW 1
+#define SS_CPUDISPLAY_DEFAULT 2
+#define SS_CPUDISPLAY_HIGH 3

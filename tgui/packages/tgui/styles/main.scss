@@ -14,6 +14,9 @@
 // Tgui core bulk imports
 @include meta.load-css('~tgui-core/styles/all-atomic.scss');
 @include meta.load-css('~tgui-core/styles/all-themes.scss');
+@include meta.load-css('./_interfaces_horizon/spawn.scss');
+@include meta.load-css('./_interfaces_horizon/themes/dark.scss');
+@include meta.load-css('./_interfaces_horizon/themes/ss220.scss');
 
 // Interfaces
 @include meta.load-css('./interfaces/Accounting.scss');
@@ -52,6 +55,10 @@
 @include meta.load-css('./interfaces/AnomalyTower.scss');
 @include meta.load-css('./interfaces/CivCargoHoldTerminal.scss');
 @include meta.load-css('./interfaces/EventLogger.scss');
+
+// [HORIZON-ADD]
+@include meta.load-css('./_interfaces_horizon/VethPlayerPanel.scss');
+// [/HORIZON-ADD]
 
 // Layouts
 @include meta.load-css('./layouts/Layout.scss');

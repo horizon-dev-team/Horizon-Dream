@@ -240,7 +240,7 @@ export const BeakerPanel = () => {
       title="Spawn a Reagent Container"
       width={750}
       height={400}
-      theme="admin"
+      theme="horizon"
     >
       <Window.Content>
         <Stack vertical fill>

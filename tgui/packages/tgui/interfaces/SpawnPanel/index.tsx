@@ -46,7 +46,7 @@ export function SpawnPanel() {
   };
 
   return (
-    <Window height={550} title="Spawn Panel" width={500} theme="admin">
+    <Window height={550} title="Spawn Panel" width={500} theme="ntos_darkmode">
       <Window.Content>
         {advancedSettings && (
           <Modal

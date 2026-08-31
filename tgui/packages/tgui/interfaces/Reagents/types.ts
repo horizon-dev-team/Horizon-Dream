@@ -130,13 +130,6 @@ export const bitflagInfo = [
     toggle: 'toggle_tag_explosive',
   },
   {
-    flag: 'OTHER',
-    icon: 'question',
-    tooltip: 'Produces a reagent with some other side effect.',
-    category: 'Affects',
-    toggle: 'toggle_tag_other',
-  },
-  {
     flag: 'DANGEROUS',
     icon: 'exclamation-triangle',
     tooltip: 'Reaction may have a dangerous immediate effect.',
@@ -220,6 +213,13 @@ export const bitflagInfo = [
     tooltip: 'Produces a reagent that can help or harm plants.',
     category: 'Affects',
     toggle: 'toggle_tag_plant',
+  },
+  {
+    flag: 'OTHER',
+    icon: 'question',
+    tooltip: 'Produces a reagent with some other side effect.',
+    category: 'Affects',
+    toggle: 'toggle_tag_other',
   },
   {
     flag: 'COMPETITIVE',

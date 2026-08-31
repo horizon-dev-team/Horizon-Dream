@@ -4,7 +4,7 @@
  * @license MIT
  */
 
-export const THEMES = ['light', 'dark'] as const;
+export const THEMES = ['light', 'dark', 'onyx'] as const;
 
 export const COLORS = {
   DARK: {
@@ -21,6 +21,14 @@ export const COLORS = {
     BUTTON: '#FFFFFF',
     TEXT: '#000000',
     TEXT_IMPORTANT: '#A6A6A6',
+    BG_IMPORTANT: '#910707',
+  },
+  ONYX: {
+    BG_BASE: '#171720',
+    BG_SECOND: '#1e1e2a',
+    BUTTON: '#2a2a3a',
+    TEXT: '#d0d0e0',
+    TEXT_IMPORTANT: '#d0d0e0',
     BG_IMPORTANT: '#910707',
   },
 } as const;

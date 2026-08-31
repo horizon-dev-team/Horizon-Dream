@@ -710,7 +710,10 @@ function set_theme(which) {
   } else if (which == 'dark') {
     document.body.className = 'dark';
     document.documentElement.className = 'dark';
-  }
+  } else if (which == "onyx") {
+		document.body.className = "onyx";
+    document.documentElement.className = 'onyx';
+	}
 }
 
 function set_font_size(size) {

@@ -456,12 +456,7 @@ export function CreateObject(props: CreateObjectProps) {
                     <>
                       {allObjects[obj]?.name}
                       <span
-                        className="label label-info"
-                        style={{
-                          marginLeft: '0.5em',
-                          color: 'rgba(200, 200, 200, 0.5)',
-                          fontSize: '10px',
-                        }}
+                        className="label label-info spawnClass"
                       >
                         {obj}
                       </span>

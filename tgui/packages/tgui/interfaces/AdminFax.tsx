@@ -46,7 +46,7 @@ export function AdminFax(props) {
   }
 
   return (
-    <Window title="Admin Fax Panel" width={400} height={675} theme="admin">
+    <Window title="Admin Fax Panel" width={400} height={675} theme="ntos_darkmode">
       <Window.Content scrollable>
         <Section
           title="Fax Menu"

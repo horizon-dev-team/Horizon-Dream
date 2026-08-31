@@ -17,7 +17,7 @@ export const GhostPoolProtection = (props) => {
       title="Ghost Pool Protection"
       width={400}
       height={270}
-      theme="admin"
+      theme="horizon"
     >
       <Window.Content>
         <Flex grow={1} height="100%">

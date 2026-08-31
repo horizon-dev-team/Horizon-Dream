@@ -34,6 +34,7 @@ export function TagBox(props: ReagentsProps) {
             return (
               <Button
                 key={meta.flag}
+                color = 'red'
                 selected={(selectedBitflags & flag) !== 0}
                 icon={meta.icon}
                 tooltip={meta.tooltip}
@@ -42,7 +43,7 @@ export function TagBox(props: ReagentsProps) {
                   setPage(1);
                 }}
               >
-                {meta.flag}
+                {meta.flag.charAt(0).toUpperCase() + meta.flag.slice(1).toLowerCase()}
               </Button>
             );
           })}

@@ -1,0 +1,172 @@
+/**
+ * Dark Theme
+ */
+@use '../../colors';
+
+.theme-ntos_darkmode:root,
+.theme-nanotrasen:root,
+.theme-horizon:root {
+  // Base
+  --color-base: hsl(225, 0%, 13%);
+  --color-primary: #ccc;
+  --color-secondary: hsl(225, 0%, 18%);
+  --color-dark-secondary: hsl(225, 0%, 9%);
+  --titlebar-background: var(--color-dark-secondary);
+  --color-good: hsl(77, 62%, 39%);
+  //--base-gradient-spread: 10;
+  //--secondary-lightness-adjustment: 8;
+  --button-border-radius: 0;
+  //--button-transition: var(0s);
+  --progress-bar-fill: hsl(40, 52%, 50%);
+
+  --border-primary-saturation: 0;
+
+  --color-label: hsl(from var(--color-primary) h 0 57.5);
+
+  .Button {
+    line-height: 1.4em;
+    //transition-duration: --transition-time-fast !important;
+    &:hover {
+      transition-duration: 0.005s !important;
+    }
+  }
+
+  .Input {
+    border: var(--color-secondary);
+    background-color: var(--color-base);
+  }
+
+  .NoticeBox {
+    padding: var(--space-xs) var(--space-sm);
+  }
+
+  .Section__titleText {
+    font-size: 13px;
+  }
+
+  .ProgressBar__content {
+    font-weight: bold;
+    text-shadow: -1px 1px 0px #000;
+  }
+
+  .Techweb__ {
+    &HeaderContent {
+      background-color: var(--color-dark-secondary);
+      border: none;
+    }
+
+    &HeaderSectionTabs {
+      background-color: var(--color-dark-secondary);
+      border: none;
+      .Tabs {
+        background-color: var(--color-dark-secondary) !important;
+      }
+    }
+
+    &Locked {
+      color: var(--color-primary);
+    }
+  }
+
+  .ExperimentTechwebServer__Web,
+  .ExperimentConfigure__ExperimentPanel {
+    background: var(--color-dark-secondary);
+    border: none;
+
+    &--selected {
+      border: none;
+    }
+  }
+
+  @mixin button-swap-color($color) {
+    background-color: var(--color-base);
+    color: #{$color};
+
+    &:hover {
+      background-color: #{$color};
+      color: var(--color-base);
+    }
+
+    &.Button--disabled {
+      background-color: var(--color-base) !important;
+      color: #{$color} !important;
+    }
+  }
+
+  .Button--color-- {
+    &default {
+      --color: var(--color-secondary);
+
+      &:hover {
+        background-color: var(--color-primary);
+        color: var(--color-black); // Текст
+      }
+
+      &.Button--disabled {
+        background-color: var(--color-secondary) !important;
+        color: var(--color-white) !important;
+        opacity: 0.5;
+      }
+    }
+
+    @each $color-name, $color-value in colors.$color-map {
+      &#{$color-name} {
+        @include button-swap-color($color-value);
+      }
+    }
+    &caution {
+      background-color: var(--color-secondary) !important;
+      color: var(--color); // Текст
+      &:hover {
+        background-color: var(--color) !important;
+        color: var(--color-black) !important;
+      }
+    }
+
+    &transparent {
+      --color: var(--color-secondary) !important;
+
+      &:hover {
+        background-color: var(--color-primary);
+        color: var(--color-secondary);
+      }
+
+      &.Button--disabled {
+        background-color: var(--color-secondary) !important;
+      }
+    }
+  }
+
+  .Button--selected {
+    --color: var(--color-secondary) !important;
+    color: var(--color-good);
+
+    &:hover {
+      background-color: var(--color-good);
+    }
+  }
+
+  .Section__title {
+    padding: var(--space-sm);
+    border-bottom: 1px solid var(--color-base);
+  }
+
+  .Button__content {
+    &:hover {
+      .spawnClass {
+        color: hsl(0, 0%, 30%);
+      }
+    }
+
+    .ChemDispenser__buttonLabel {
+      color: white;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+
+    &:hover .ChemDispenser__buttonLabel {
+      text-shadow: none;
+      color: var(--color-black); // Текст
+    }
+  }
+}

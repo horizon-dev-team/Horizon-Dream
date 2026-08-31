@@ -90,7 +90,6 @@ export const AllVerbPanel = () => {
               <Input
                 autoFocus
                 value={searchText}
-                placeholder="Введите текст для поиска..."
                 onChange={(value: string) => setSearchText(value)}
                 onEnter={() => {
                   setSearchText('');

@@ -6,7 +6,7 @@
 	return user.holder ? TRUE : FALSE
 
 /datum/keybinding/admin/admin_say
-	hotkey_keys = list("F3")
+	hotkey_keys = list("CtrlF7")
 	name = ADMIN_CHANNEL
 	full_name = "Admin say"
 	description = "Talk with other admins."
@@ -51,7 +51,7 @@
 	. = ..()
 	if(.)
 		return
-	user.holder.player_panel_new()
+	SSadmin_verbs.dynamic_invoke_verb(user, /datum/admin_verb/player_panel_veth) // [HORIZON-EDIT] - Newest PP
 	return TRUE
 
 /datum/keybinding/admin/toggle_buildmode_self

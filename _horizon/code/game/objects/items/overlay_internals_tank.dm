@@ -53,21 +53,17 @@
 		if((5 * ONE_ATMOSPHERE) to INFINITY)
 			if(alert_level != 3)
 				alert_level = 3
-				update_overlays()
 		if((2 * ONE_ATMOSPHERE) to (5 * ONE_ATMOSPHERE))
 			if(alert_level != 2)
 				alert_level = 2
-				update_overlays()
 		if((0.75 * ONE_ATMOSPHERE) to (2 * ONE_ATMOSPHERE))
 			if(alert_level != 1)
 				alert_level = 1
-				update_overlays()
 				playsound(src, 'sound/machines/beep/twobeep_high.ogg', 30, FALSE)
 				say("Tank pressure low - Estimated time until depletion: [src.volume * 2.5] minutes.")
 		if((0.2 * ONE_ATMOSPHERE) to (0.75 * ONE_ATMOSPHERE))
 			if(alert_level != 0)
 				alert_level = 0
-				update_overlays()
 				playsound(src, 'sound/machines/beep/twobeep_high.ogg', 30, FALSE)
 				playsound(src, 'sound/machines/beep/beep.ogg', 30, FALSE)
 				say("Tank is nearly empty! Replacement recommended!")

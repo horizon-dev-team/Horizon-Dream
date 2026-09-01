@@ -7,8 +7,8 @@
 	update_appearance(UPDATE_OVERLAYS)
 
 /obj/item/tank/internals/process(seconds_per_tick)
-	excited = (excited | pressure_alerts(seconds_per_tick))
 	. = ..()
+	pressure_alerts()
 
 /obj/item/tank/internals/update_overlays()
 	. = ..()
@@ -37,7 +37,7 @@
 			overlay_matrix.Translate(-2, -3)
 		if(/obj/item/tank/internals/emergency_oxygen/engi)
 			overlay_matrix.Translate(-1, -2)
-		if(/obj/item/tank/internals/emergency_oxygen/double, /obj/item/tank/internals/plasmaman/belt)
+		if(/obj/item/tank/internals/emergency_oxygen/double)
 			overlay_matrix.Translate(1, 1)
 	status_overlay.transform = overlay_matrix
 	overlays += status_overlay

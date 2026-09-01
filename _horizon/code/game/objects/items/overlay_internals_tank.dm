@@ -2,6 +2,10 @@
 	//0 = empty, 1 = critical warning, 2 = warning, 3 = nominal
 	var/alert_level = 3
 
+/obj/item/tank/internals/Initialize(mapload)
+	. = ..()
+	update_appearance(UPDATE_OVERLAYS)
+
 /obj/item/tank/internals/process(seconds_per_tick)
 	excited = (excited | pressure_alerts(seconds_per_tick))
 	. = ..()

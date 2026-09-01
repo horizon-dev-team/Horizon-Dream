@@ -117,7 +117,6 @@
 	air_contents.temperature = T20C
 
 	populate_gas()
-	update_appearance(UPDATE_OVERLAYS) // [HORIZON-ADD] Ovelays_Oxygen
 
 	reaction_info = list()
 	explosion_info = list()

@@ -127,6 +127,7 @@
 /obj/item/tank/internals/plasmaman
 	name = "plasma internals tank"
 	desc = "A tank of plasma gas designed specifically for use as internals, particularly for plasma-based lifeforms. If you're not a Plasmaman, you probably shouldn't use this."
+	icon = '_horizon/icons/obj/tank.dmi' // [HORIZON-ADD]
 	icon_state = "plasmaman_tank"
 	inhand_icon_state = "plasmaman_tank"
 	tank_holder_icon_state = null

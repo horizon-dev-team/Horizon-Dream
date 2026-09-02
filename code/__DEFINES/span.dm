@@ -159,10 +159,6 @@
 #define span_danger_ml(text) "<span class='danger ml-1'>[text]</span>"
 #define span_info_ml(text) "<span class='info ml-1'>[text]</span>"
 
-// Spans that use embedded tgui components:
-// Sorted alphabetically
-#define span_tooltip(tip, main_text) ("<span data-component=\"Tooltip\" data-content=\"" + tip + "\" class=\"tooltip\">" + main_text + "</span>")
-
 // [HORIZON-ADD]
 #define span_init_green(str) ("<span class='init_green'>" + str + "</span>")
 #define SPAN_ROUNDHEADER(X) "<span class='round_header'>[X]</span>"
@@ -170,3 +166,9 @@
 #define SPAN_ROLE_HEADER(X) "<span class='role_header'>[X]</span>"
 #define SPAN_ROLE_BODY(X) "<span class='role_body'>[X]</span>"
 // [/HORIZON-ADD]
+
+// Spans that use embedded tgui components:
+// Sorted alphabetically
+#define span_tooltip(tip, main_text) ("<span data-component=\"Tooltip\" data-content=\"" + tip + "\" class=\"tooltip\">" + main_text + "</span>")
+/// Creates a tooltip without italicization or a dotted underline under the "say" class.
+#define span_tooltip_subtle(tip, main_text) ("<span data-component=\"Tooltip\" data-content=\"" + tip + "\" class=\"say\">" + main_text + "</span>")

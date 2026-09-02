@@ -1,9 +1,0 @@
-{
-    "file": "_horizon/_horizon_dream.dme",
-    "scannable_directory": "_horizon/",
-    "subdirectories": true,
-    "excluded_files": [],
-    "forbidden_includes": [
-        "_horizon/code/__DEFINES/*.dm"
-    ]
-}

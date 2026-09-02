@@ -76,8 +76,10 @@ output_hash = {}
 files = []
 if platform.system() == "Windows":
     files = glob.glob(f"{path_to_us}\\..\\..\\icons\\**\\*.toml", recursive = True)
+    files += glob.glob(f"{path_to_us}\\..\\..\\_horizon\\icons\\**\\*.toml", recursive = True) # [HORIZON-ADD] Modular icon cutter
 else:
     files = glob.glob(f"{path_to_us}/../../icons/**/*.toml", recursive = True)
+    files += glob.glob(f"{path_to_us}/../../_horizon/icons/**/*.toml", recursive = True) # [HORIZON-ADD] Modular icon cutter
 for cutter_template in files:
     resource_name = re.sub(chop_extension, r"\1", cutter_template, count = 1)
     if not os.path.isfile(resource_name):

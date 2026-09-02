@@ -9,6 +9,6 @@ NC="\033[0m" # No Color
 echo -e "${BLUE}Re-running grep checks, but looking in _horizon/...${NC}"
 
 # Run the linters again, but modular horizon code.
-sed 's/code\/\*\*\/\*\*.dm/_horizon\/features\/\*\*\/\*\*.dm/g' <tools/ci/check_grep.sh | bash
+sed 's/code\/\*\*\/\*\*.dm/_horizon\/\*\*\/\*\*.dm/g' <tools/ci/check_grep.sh | bash
 
 echo -e "${BLUE}Re-running grep checks, but looking in _horizon/...${NC}"

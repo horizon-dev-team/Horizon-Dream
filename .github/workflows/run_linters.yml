@@ -63,7 +63,9 @@ jobs:
         run: bash tools/ci/check_genesis.sh
       - name: Run Grep Checks
         if: steps.linter-setup.conclusion == 'success' && !cancelled()
-        run: bash tools/ci/check_grep.sh
+        run: |
+          bash tools/ci/check_grep.sh
+          bash _horizon/tools/horizon_check_grep.sh # [HORIZON-ADD] - checking horizon code
       - name: Ticked File Enforcement
         if: steps.linter-setup.conclusion == 'success' && !cancelled()
         run: |

@@ -1151,13 +1151,40 @@ GAME_VERB_SRC(/obj/item, verb_pickup, oview(1), "Pick up", null)
 			force_string = "exceptionally robust"
 	last_force_string_check = force
 
+/obj/item/proc/get_extra_tooltip(mob/user)
+	return ""
+
 /obj/item/proc/openTip(location, control, params, user)
 	if(last_force_string_check != force && !(item_flags & FORCE_STRING_OVERRIDE))
 		set_force_string()
+
+	var/content_str = "<table>[desc]"
+	content_str += get_extra_tooltip(user)
+
 	if(!(item_flags & FORCE_STRING_OVERRIDE))
-		openToolTip(user,src,params,title = name,content = "[desc]<br>[force ? "<b>Force:</b> [force_string]" : ""]",theme = "")
+		if(force) content_str += "<tr><td><b>Урон:</b></td><td>[force_string]</td></tr>"
 	else
-		openToolTip(user,src,params,title = name,content = "[desc]<br><b>Force:</b> [force_string]",theme = "")
+		content_str += "<tr><td><b>Урон:</b></td><td>[force_string]</td></tr>"
+
+	if(resistance_flags & INDESTRUCTIBLE)
+		content_str += "<tr><td><b>Защита:</b></td><td>" + icon2html(EMOJI_SET, user, "indestructible") + " Неуязвимый.</td></tr>"
+	else
+		var/list/rfm = list()
+		if(resistance_flags & LAVA_PROOF)
+			rfm += icon2html(EMOJI_SET, user, "lava")
+		if(resistance_flags & (ACID_PROOF | UNACIDABLE))
+			rfm += icon2html(EMOJI_SET, user, "acid")
+		if(resistance_flags & FREEZE_PROOF)
+			rfm += icon2html(EMOJI_SET, user, "cold")
+		if(resistance_flags & FIRE_PROOF)
+			rfm += icon2html(EMOJI_SET, user, "fire")
+		if(rfm.len)
+			content_str += "<tr><td><b>Защита:</b></td><td>[rfm.Join(" ")]</td></tr>"
+
+	content_str += "<tr><td><b>Размер:</b></td><td>[weight_class_to_icon(w_class, user, TRUE)]</td></tr></table>"
+
+	openToolTip(user, src, params, title = name, content = content_str, theme = "")
+
 
 /obj/item/MouseEntered(location, control, params)
 	. = ..()

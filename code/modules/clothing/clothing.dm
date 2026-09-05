@@ -365,6 +365,28 @@
 	if(is_laundered)
 		. += "[src] looks crisp and pristine."
 
+/obj/item/clothing/get_extra_tooltip(mob/user)
+    var/datum/armor/armor = src.get_armor()
+    if(!armor.has_any_armor())
+        return ""
+
+    var/list/armor_lines = list()
+    armor_lines += "<br><tr><td><b>БРОНЯ:</b></td></tr>"
+    for(var/damage_key in ARMOR_LIST_DAMAGE)
+        var/rating = armor.get_rating(damage_key)
+        if(rating)
+            armor_lines += "<tr><td>[armor_to_protection_name(damage_key)]</td><td>[armor_to_protection_class(rating)]</td></tr>"
+    armor_lines += "<tr><td><b>СТОЙКОСТЬ:</b></td></tr>"
+    for(var/durability_key in ARMOR_LIST_DURABILITY)
+        var/rating = armor.get_rating(durability_key)
+        if(rating)
+            armor_lines += "<tr><td>[armor_to_protection_name(durability_key)]</td><td>[armor_to_protection_class(rating)]</td></tr>"
+
+    if(armor_lines.len)
+        return span_smallnotice("[armor_lines.Join(" ")]")
+
+    return ""
+
 /obj/item/clothing/examine_tags(mob/user)
 	. = ..()
 	if (clothing_flags & THICKMATERIAL)

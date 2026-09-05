@@ -1449,3 +1449,27 @@ GLOBAL_LIST_EMPTY(transformation_animation_objects)
 	linear_pixels = replacetext(linear_pixels, zero_alpha_regex, COLOR_DMI_MASK)
 	return linear_pixels
 
+/proc/weight_class_to_icon(w_class, user, actually_readable = FALSE)
+	var/translation
+	switch(w_class)
+		if(WEIGHT_CLASS_TINY)
+			w_class = "tiny"
+			translation = "крошечный"
+		if(WEIGHT_CLASS_SMALL)
+			w_class = "small"
+			translation = "маленький"
+		if(WEIGHT_CLASS_NORMAL)
+			w_class = "normal"
+			translation = "средний"
+		if(WEIGHT_CLASS_BULKY)
+			w_class = "bulky"
+			translation = "громоздкий"
+		if(WEIGHT_CLASS_HUGE)
+			w_class = "huge"
+			translation = "огромный"
+		if(WEIGHT_CLASS_GIGANTIC)
+			w_class = "gigantic"
+			translation = "гигантский"
+	if(actually_readable)
+		return "[icon2html(EMOJI_SET, user, w_class)] [translation]."
+	return icon2html(EMOJI_SET, user, w_class)

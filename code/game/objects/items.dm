@@ -1151,13 +1151,41 @@ GAME_VERB_SRC(/obj/item, verb_pickup, oview(1), "Pick up", null)
 			force_string = "exceptionally robust"
 	last_force_string_check = force
 
+// [HORIZON-EDIT]
+/obj/item/proc/get_extra_tooltip(mob/user)
+	return ""
+
 /obj/item/proc/openTip(location, control, params, user)
 	if(last_force_string_check != force && !(item_flags & FORCE_STRING_OVERRIDE))
 		set_force_string()
+
+	var/content_str = "<table>[desc]"
+	content_str += get_extra_tooltip(user)
+
 	if(!(item_flags & FORCE_STRING_OVERRIDE))
-		openToolTip(user,src,params,title = name,content = "[desc]<br>[force ? "<b>Force:</b> [force_string]" : ""]",theme = "")
+		if(force) content_str += "<tr><td><b>Force:</b></td><td>[force_string]</td></tr>"
 	else
-		openToolTip(user,src,params,title = name,content = "[desc]<br><b>Force:</b> [force_string]",theme = "")
+		content_str += "<tr><td><b>Force:</b></td><td>[force_string]</td></tr>"
+
+	if(resistance_flags & INDESTRUCTIBLE)
+		content_str += "<tr><td><b>Armor:</b></td><td>" + icon2html(DAMAGE_ICON_SET, user, "Indestructible") + " Invulnerable.</td></tr>"
+	else
+		var/list/rfm = list()
+		if(resistance_flags & LAVA_PROOF)
+			rfm += icon2html(DAMAGE_ICON_SET, user, "Lava")
+		if(resistance_flags & (ACID_PROOF | UNACIDABLE))
+			rfm += icon2html(DAMAGE_ICON_SET, user, "Acid")
+		if(resistance_flags & FREEZE_PROOF)
+			rfm += icon2html(DAMAGE_ICON_SET, user, "Cold")
+		if(resistance_flags & FIRE_PROOF)
+			rfm += icon2html(DAMAGE_ICON_SET, user, "Fire")
+		if(rfm.len)
+			content_str += "<tr><td><b>Durability:</b></td><td>[rfm.Join(" ")]</td></tr>"
+
+	content_str += "<tr><td><b>Size:</b></td><td>[weight_class_to_icon(w_class, user, TRUE)]</td></tr></table>"
+
+	openToolTip(user, src, params, title = name, content = content_str, theme = "")
+// [/HORIZON-EDIT]
 
 /obj/item/MouseEntered(location, control, params)
 	. = ..()

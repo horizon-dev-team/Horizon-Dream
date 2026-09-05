@@ -18,6 +18,7 @@
 // END_PREFERENCES
 
 // BEGIN_INCLUDE
+#include "code\__HELPERS\size_icons.dm"
 #include "code\game\objects\items\overlay_internals_tank.dm"
 #include "code\modules\admin\all_verb_panel.dm"
 #include "code\modules\physics\atom_movables.dm"

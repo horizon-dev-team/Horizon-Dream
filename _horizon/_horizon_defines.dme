@@ -11,5 +11,4 @@
 // BEGIN_INCLUDE
 #include "code\__DEFINES\icons.dm"
 #include "code\__DEFINES\physics.dm"
-#include "code\__HELPERS\size_icons.dm"
 // END_INCLUDE

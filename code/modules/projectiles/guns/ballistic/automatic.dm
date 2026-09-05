@@ -13,6 +13,7 @@
 	burst_fire_selection = TRUE
 	drop_sound = 'sound/items/handling/gun/ballistics/smg/smg_drop1.ogg'
 	pickup_sound = 'sound/items/handling/gun/ballistics/smg/smg_pickup1.ogg'
+	gun_flags = GUN_SMOKE_PARTICLES
 
 /obj/item/gun/ballistic/automatic/proto
 	name = "\improper Nanotrasen Saber SMG"
@@ -336,6 +337,7 @@
 	actions_types = list()
 	fire_sound = 'sound/items/weapons/laser.ogg'
 	casing_ejector = FALSE
+	gun_flags = NONE
 
 // NT Battle Rifle //
 

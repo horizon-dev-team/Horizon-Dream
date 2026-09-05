@@ -18,6 +18,7 @@
 	tac_reloads = FALSE
 	/// Does the bolt need to be open to interact with the gun (e.g. magazine interactions)?
 	var/need_bolt_lock_to_interact = FALSE
+	gun_flags = GUN_SMOKE_PARTICLES
 
 /obj/item/gun/ballistic/rifle/rack(mob/user = null)
 	if (bolt_locked == FALSE)

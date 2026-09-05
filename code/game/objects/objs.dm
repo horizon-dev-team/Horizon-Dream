@@ -69,6 +69,8 @@ GLOBAL_LIST_EMPTY(objects_by_id_tag)
 	if(opacity)
 		SScameras.update_visibility(src)
 
+	add_debris_element() // [HORIZON-ADD] Ballistic_Impact
+
 /obj/Destroy(force)
 	if(!ismachinery(src))
 		STOP_PROCESSING(SSobj, src) // TODO: Have a processing bitflag to reduce on unnecessary loops through the processing lists

@@ -297,6 +297,17 @@
 			visible_message_flags = ALWAYS_SHOW_SELF_MESSAGE,
 		)
 
+// [HORIZON-ADD] Ballistic_Impact
+	if(CHECK_BITFIELD(gun_flags, GUN_SMOKE_PARTICLES))
+		var/x_component = sin((get_angle(user, pbtarget))) * 40
+		var/y_component = cos((get_angle(user, pbtarget))) * 40
+		var/obj/effect/abstract/particle_holder/gun_smoke = new(get_turf(src), /particles/firing_smoke)
+		gun_smoke.particles.velocity = list(x_component, y_component)
+		addtimer(VARSET_CALLBACK(gun_smoke.particles, count, 0), 5)
+		addtimer(VARSET_CALLBACK(gun_smoke.particles, drift, 0), 3)
+		QDEL_IN(gun_smoke, 0.6 SECONDS)
+// [/HORIZON-ADD]
+
 	if(chambered?.integrity_damage)
 		take_damage(chambered.integrity_damage, sound_effect = FALSE)
 	return TRUE

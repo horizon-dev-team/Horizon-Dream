@@ -29,6 +29,7 @@
 	misfire_probability_cap = 35 // Even if the misfire probability and increment are both zero, we've some shots that may do that.
 
 	pb_knockback = 2
+	gun_flags = GUN_SMOKE_PARTICLES
 
 /obj/item/gun/ballistic/shotgun/blow_up(mob/user)
 	. = 0

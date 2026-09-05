@@ -14,6 +14,7 @@
 	pin = /obj/item/firing_pin/implant/pindicate
 	bolt_type = BOLT_TYPE_NO_BOLT
 	can_muzzle_flash = FALSE
+	gun_flags = GUN_SMOKE_PARTICLES
 
 /obj/item/gun/ballistic/revolver/grenadelauncher/unrestricted
 	pin = /obj/item/firing_pin
@@ -69,6 +70,7 @@
 	fire_delay = 0 SECONDS
 	actions_types = list()
 	casing_ejector = FALSE
+	gun_flags = GUN_SMOKE_PARTICLES
 
 /obj/item/gun/ballistic/rocketlauncher
 	name = "\improper Dardo-RE Rocket Launcher"
@@ -99,6 +101,7 @@
 	can_muzzle_flash = FALSE
 	/// Do we shit flames behind us when we fire?
 	var/backblast = TRUE
+	gun_flags = GUN_SMOKE_PARTICLES
 
 /obj/item/gun/ballistic/rocketlauncher/Initialize(mapload)
 	. = ..()

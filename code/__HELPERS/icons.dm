@@ -1453,18 +1453,18 @@ GLOBAL_LIST_EMPTY(transformation_animation_objects)
 /proc/weight_class_to_icon(w_class, user, actually_readable = FALSE)
 	switch(w_class)
 		if(WEIGHT_CLASS_TINY)
-			w_class = "tiny"
+			w_class = "Tiny"
 		if(WEIGHT_CLASS_SMALL)
-			w_class = "small"
+			w_class = "Small"
 		if(WEIGHT_CLASS_NORMAL)
-			w_class = "normal"
+			w_class = "Normal"
 		if(WEIGHT_CLASS_BULKY)
-			w_class = "bulky"
+			w_class = "Bulky"
 		if(WEIGHT_CLASS_HUGE)
-			w_class = "huge"
+			w_class = "Huge"
 		if(WEIGHT_CLASS_GIGANTIC)
-			w_class = "gigantic"
+			w_class = "Gigantic"
 	if(actually_readable)
-		return "[icon2html(DAMAGE_ICON_SET, user, w_class)] [w_class]."
+		return "[icon2html(DAMAGE_ICON_SET, user, w_class)] [w_class]"
 	return icon2html(DAMAGE_ICON_SET, user, w_class)
 // [/HORIZON-ADD]

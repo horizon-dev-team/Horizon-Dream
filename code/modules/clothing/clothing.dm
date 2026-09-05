@@ -432,6 +432,7 @@
 /obj/item/clothing/Topic(href, href_list)
 	. = ..()
 
+// [HORIZON-EDIT]
 	if(href_list["list_armor"])
 		var/list/readout = list("<table class='examine_block'>")
 
@@ -456,6 +457,7 @@
 				added_durability_header = TRUE
 			readout += "<tr><td>[armor_to_protection_name(durability_key)]</td><td>[armor_to_protection_class(rating)]</td></tr>"
 		readout += "</table>"
+// [/HORIZON-EDIT]
 
 		if((flags_cover & HEADCOVERSMOUTH) || (flags_cover & PEPPERPROOF))
 			var/list/things_blocked = list()
@@ -502,7 +504,7 @@
 		if(!length(readout))
 			readout += "No armor or durability information available."
 
-		var/formatted_readout = span_notice("<b>PROTECTION CLASSES (I-X; s - HALF)</b><hr>[jointext(readout, "\n")]")
+		var/formatted_readout = span_notice("<b>PROTECTION CLASSES (I-X; s - HALF)</b><hr>[jointext(readout, "\n")]") // [HORIZON-EDIT]
 		to_chat(usr, boxed_message(formatted_readout))
 
 // [HORIZON-EDIT]

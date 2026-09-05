@@ -365,18 +365,19 @@
 	if(is_laundered)
 		. += "[src] looks crisp and pristine."
 
+// [HORIZON-ADD]
 /obj/item/clothing/get_extra_tooltip(mob/user)
 	var/datum/armor/armor = src.get_armor()
 	if(!armor.has_any_armor())
 		return ""
 
 	var/list/armor_lines = list()
-	armor_lines += "<br><tr><td><b>БРОНЯ:</b></td></tr>"
+	armor_lines += "<br><tr><td><b>ARMOR:</b></td></tr>"
 	for(var/damage_key in ARMOR_LIST_DAMAGE)
 		var/rating = armor.get_rating(damage_key)
 		if(rating)
 			armor_lines += "<tr><td>[armor_to_protection_name(damage_key)]</td><td>[armor_to_protection_class(rating)]</td></tr>"
-	armor_lines += "<tr><td><b>СТОЙКОСТЬ:</b></td></tr>"
+	armor_lines += "<tr><td><b>DURABILITY:</b></td></tr>"
 	for(var/durability_key in ARMOR_LIST_DURABILITY)
 		var/rating = armor.get_rating(durability_key)
 		if(rating)
@@ -386,6 +387,7 @@
 		return span_smallnotice("[armor_lines.Join(" ")]")
 
 	return ""
+// [/HORIZON-ADD]
 
 /obj/item/clothing/examine_tags(mob/user)
 	. = ..()
@@ -503,6 +505,7 @@
 		var/formatted_readout = span_notice("<b>PROTECTION CLASSES (I-X; s - HALF)</b><hr>[jointext(readout, "\n")]")
 		to_chat(usr, boxed_message(formatted_readout))
 
+// [HORIZON-EDIT]
 /**
  * Rounds armor_value down to the nearest 10, divides it by 10 and then converts it to Roman numerals.
  *
@@ -519,6 +522,7 @@
 	if(is_negative)
 		value = span_red("-[value]")
 	return value
+// [/HORIZON-EDIT]
 
 /obj/item/clothing/atom_break(damage_flag)
 	. = ..()

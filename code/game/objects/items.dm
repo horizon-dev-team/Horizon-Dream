@@ -1151,6 +1151,7 @@ GAME_VERB_SRC(/obj/item, verb_pickup, oview(1), "Pick up", null)
 			force_string = "exceptionally robust"
 	last_force_string_check = force
 
+// [HORIZON-EDIT]
 /obj/item/proc/get_extra_tooltip(mob/user)
 	return ""
 
@@ -1162,9 +1163,9 @@ GAME_VERB_SRC(/obj/item, verb_pickup, oview(1), "Pick up", null)
 	content_str += get_extra_tooltip(user)
 
 	if(!(item_flags & FORCE_STRING_OVERRIDE))
-		if(force) content_str += "<tr><td><b>Damage:</b></td><td>[force_string]</td></tr>"
+		if(force) content_str += "<tr><td><b>Force:</b></td><td>[force_string]</td></tr>"
 	else
-		content_str += "<tr><td><b>Damage:</b></td><td>[force_string]</td></tr>"
+		content_str += "<tr><td><b>Force:</b></td><td>[force_string]</td></tr>"
 
 	if(resistance_flags & INDESTRUCTIBLE)
 		content_str += "<tr><td><b>Armor:</b></td><td>" + icon2html(DAMAGE_ICON_SET, user, "indestructible") + " Invulnerable.</td></tr>"
@@ -1184,7 +1185,7 @@ GAME_VERB_SRC(/obj/item, verb_pickup, oview(1), "Pick up", null)
 	content_str += "<tr><td><b>Size:</b></td><td>[weight_class_to_icon(w_class, user, TRUE)]</td></tr></table>"
 
 	openToolTip(user, src, params, title = name, content = content_str, theme = "")
-
+// [/HORIZON-EDIT]
 
 /obj/item/MouseEntered(location, control, params)
 	. = ..()

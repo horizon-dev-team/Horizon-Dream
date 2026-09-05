@@ -14,6 +14,8 @@
 
 /// Emoji icon set
 #define EMOJI_SET 'icons/ui/chat/emoji.dmi'
+/// Damage icon set
+#define DAMAGE_ICON_SET 'icons/ui/chat/icons_damage.dmi'
 
 // Font metrics bitfield
 /// Include leading A width and trailing C width in GetWidth() or in DrawText()

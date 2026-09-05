@@ -1471,5 +1471,5 @@ GLOBAL_LIST_EMPTY(transformation_animation_objects)
 			w_class = "gigantic"
 			translation = "гигантский"
 	if(actually_readable)
-		return "[icon2html(EMOJI_SET, user, w_class)] [translation]."
-	return icon2html(EMOJI_SET, user, w_class)
+		return "[icon2html(DAMAGE_ICON_SET, user, w_class)] [translation]."
+	return icon2html(DAMAGE_ICON_SET, user, w_class)

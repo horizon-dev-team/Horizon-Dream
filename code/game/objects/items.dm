@@ -1167,17 +1167,17 @@ GAME_VERB_SRC(/obj/item, verb_pickup, oview(1), "Pick up", null)
 		content_str += "<tr><td><b>Урон:</b></td><td>[force_string]</td></tr>"
 
 	if(resistance_flags & INDESTRUCTIBLE)
-		content_str += "<tr><td><b>Защита:</b></td><td>" + icon2html(EMOJI_SET, user, "indestructible") + " Неуязвимый.</td></tr>"
+		content_str += "<tr><td><b>Защита:</b></td><td>" + icon2html(DAMAGE_ICON_SET, user, "indestructible") + " Неуязвимый.</td></tr>"
 	else
 		var/list/rfm = list()
 		if(resistance_flags & LAVA_PROOF)
-			rfm += icon2html(EMOJI_SET, user, "lava")
+			rfm += icon2html(DAMAGE_ICON_SET, user, "lava")
 		if(resistance_flags & (ACID_PROOF | UNACIDABLE))
-			rfm += icon2html(EMOJI_SET, user, "acid")
+			rfm += icon2html(DAMAGE_ICON_SET, user, "acid")
 		if(resistance_flags & FREEZE_PROOF)
-			rfm += icon2html(EMOJI_SET, user, "cold")
+			rfm += icon2html(DAMAGE_ICON_SET, user, "cold")
 		if(resistance_flags & FIRE_PROOF)
-			rfm += icon2html(EMOJI_SET, user, "fire")
+			rfm += icon2html(DAMAGE_ICON_SET, user, "fire")
 		if(rfm.len)
 			content_str += "<tr><td><b>Защита:</b></td><td>[rfm.Join(" ")]</td></tr>"
 

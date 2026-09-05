@@ -442,7 +442,7 @@
 			if(!added_damage_header)
 				readout += "<tr><td><b><u>ARMOR:</u></b></td></tr>"
 				added_damage_header = TRUE
-			readout += "<tr><td>[armor_to_protection_name(damage_key)]</td><td'>[armor_to_protection_class(rating)]</td></tr>"
+			readout += "<tr><td>[armor_to_protection_name(damage_key)]</td><td>[armor_to_protection_class(rating)]</td></tr>"
 
 		var/added_durability_header = FALSE
 		for(var/durability_key in ARMOR_LIST_DURABILITY)
@@ -452,7 +452,7 @@
 			if(!added_durability_header)
 				readout += "<tr><td><b><u>DURABILITY:</u></b></td></tr>"
 				added_durability_header = TRUE
-			readout += "<tr><td>[armor_to_protection_name(durability_key)]</td><td'>[armor_to_protection_class(rating)]</td></tr>"
+			readout += "<tr><td>[armor_to_protection_name(durability_key)]</td><td>[armor_to_protection_class(rating)]</td></tr>"
 		readout += "</table>"
 
 		if((flags_cover & HEADCOVERSMOUTH) || (flags_cover & PEPPERPROOF))

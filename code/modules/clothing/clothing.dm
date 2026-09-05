@@ -366,26 +366,26 @@
 		. += "[src] looks crisp and pristine."
 
 /obj/item/clothing/get_extra_tooltip(mob/user)
-    var/datum/armor/armor = src.get_armor()
-    if(!armor.has_any_armor())
-        return ""
+	var/datum/armor/armor = src.get_armor()
+	if(!armor.has_any_armor())
+		return ""
 
-    var/list/armor_lines = list()
-    armor_lines += "<br><tr><td><b>БРОНЯ:</b></td></tr>"
-    for(var/damage_key in ARMOR_LIST_DAMAGE)
-        var/rating = armor.get_rating(damage_key)
-        if(rating)
-            armor_lines += "<tr><td>[armor_to_protection_name(damage_key)]</td><td>[armor_to_protection_class(rating)]</td></tr>"
-    armor_lines += "<tr><td><b>СТОЙКОСТЬ:</b></td></tr>"
-    for(var/durability_key in ARMOR_LIST_DURABILITY)
-        var/rating = armor.get_rating(durability_key)
-        if(rating)
-            armor_lines += "<tr><td>[armor_to_protection_name(durability_key)]</td><td>[armor_to_protection_class(rating)]</td></tr>"
+	var/list/armor_lines = list()
+	armor_lines += "<br><tr><td><b>БРОНЯ:</b></td></tr>"
+	for(var/damage_key in ARMOR_LIST_DAMAGE)
+		var/rating = armor.get_rating(damage_key)
+		if(rating)
+			armor_lines += "<tr><td>[armor_to_protection_name(damage_key)]</td><td>[armor_to_protection_class(rating)]</td></tr>"
+	armor_lines += "<tr><td><b>СТОЙКОСТЬ:</b></td></tr>"
+	for(var/durability_key in ARMOR_LIST_DURABILITY)
+		var/rating = armor.get_rating(durability_key)
+		if(rating)
+			armor_lines += "<tr><td>[armor_to_protection_name(durability_key)]</td><td>[armor_to_protection_class(rating)]</td></tr>"
 
-    if(armor_lines.len)
-        return span_smallnotice("[armor_lines.Join(" ")]")
+	if(armor_lines.len)
+		return span_smallnotice("[armor_lines.Join(" ")]")
 
-    return ""
+	return ""
 
 /obj/item/clothing/examine_tags(mob/user)
 	. = ..()
@@ -431,7 +431,7 @@
 	. = ..()
 
 	if(href_list["list_armor"])
-		var/list/readout = list()
+		var/list/readout = list("<table class='examine_block'>")
 
 		var/datum/armor/armor = get_armor()
 		var/added_damage_header = FALSE
@@ -440,9 +440,9 @@
 			if(!rating)
 				continue
 			if(!added_damage_header)
-				readout += "<b><u>ARMOR (I-X)</u></b>"
+				readout += "<tr><td><b><u>ARMOR:</u></b></td></tr>"
 				added_damage_header = TRUE
-			readout += "[armor_to_protection_name(damage_key)] [armor_to_protection_class(rating)]"
+			readout += "<tr><td>[armor_to_protection_name(damage_key)]</td><td'>[armor_to_protection_class(rating)]</td></tr>"
 
 		var/added_durability_header = FALSE
 		for(var/durability_key in ARMOR_LIST_DURABILITY)
@@ -450,9 +450,10 @@
 			if(!rating)
 				continue
 			if(!added_durability_header)
-				readout += "<b><u>DURABILITY (I-X)</u></b>"
+				readout += "<tr><td><b><u>DURABILITY:</u></b></td></tr>"
 				added_durability_header = TRUE
-			readout += "[armor_to_protection_name(durability_key)] [armor_to_protection_class(rating)]"
+			readout += "<tr><td>[armor_to_protection_name(durability_key)]</td><td'>[armor_to_protection_class(rating)]</td></tr>"
+		readout += "</table>"
 
 		if((flags_cover & HEADCOVERSMOUTH) || (flags_cover & PEPPERPROOF))
 			var/list/things_blocked = list()
@@ -499,7 +500,7 @@
 		if(!length(readout))
 			readout += "No armor or durability information available."
 
-		var/formatted_readout = span_notice("<b>PROTECTION CLASSES</b><hr>[jointext(readout, "\n")]")
+		var/formatted_readout = span_notice("<b>PROTECTION CLASSES (I-X; s - HALF)</b><hr>[jointext(readout, "\n")]")
 		to_chat(usr, boxed_message(formatted_readout))
 
 /**
@@ -509,10 +510,15 @@
  * * armor_value - Number we're converting
  */
 /obj/item/clothing/proc/armor_to_protection_class(armor_value)
-	if (armor_value < 0)
-		. = "-"
-	. += "\Roman[round(abs(armor_value), 10) / 10]"
-	return .
+	var/is_negative = armor_value < 0
+	armor_value = abs(armor_value)
+	var/class_num = round(armor_value / 10)
+	var/value = "\Roman[class_num]"
+	if(armor_value % 10 >= 5 && class_num < 10)
+		value += class_num > 0 ? "<sub>s</sub>" : "s"
+	if(is_negative)
+		value = span_red("-[value]")
+	return value
 
 /obj/item/clothing/atom_break(damage_flag)
 	. = ..()

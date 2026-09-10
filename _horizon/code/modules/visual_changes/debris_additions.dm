@@ -102,3 +102,7 @@
 
 /obj/structure/falsewall/bamboo/add_debris_element()
 	AddElement(/datum/element/debris, DEBRIS_WOOD, -10, 5)
+
+/obj/Initialize(mapload)
+	. = ..()
+	add_debris_element()

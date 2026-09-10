@@ -625,11 +625,11 @@
 	return (donor_blood_data?.type_key() in patient_blood_data?.compatible_types)
 
 /// Create a small visual-only blood splatter
-/mob/living/proc/create_splatter(splatter_angle = 0) // [HORIZON-ADD] Ballistic_Impact
+/mob/living/proc/create_splatter(splatter_dir = pick(GLOB.cardinals))
 	// Check for TRAIT_NOBLOOD
 	if (!can_bleed()) // Even if we can't cover turfs, we still can add DNA to everything our blood hits
 		return
-	var/obj/effect/temp_visual/dir_setting/bloodsplatter/splatter = new(get_turf(src), splatter_angle, get_bloodtype()?.get_color()) // [HORIZON-ADD] Ballistic_Impact
+	var/obj/effect/temp_visual/dir_setting/bloodsplatter/splatter = new(get_turf(src), splatter_dir, get_bloodtype()?.get_color())
 	splatter.color = get_bloodtype()?.color
 
 /*

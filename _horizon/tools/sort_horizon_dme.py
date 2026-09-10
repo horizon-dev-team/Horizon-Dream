@@ -24,7 +24,41 @@ def sort_include_lines(lines):
         else:
             non_include_lines.append(line)
 
-    sorted_includes = [line for _, line in sorted(include_lines, key=lambda item: normalize_path(item[0]))]
+    # Sorting must match project's ticked_file_enforcement.compare_lines logic
+    def cmp_paths(a, b):
+        # a and b are include paths like: code\foo\bar.dm
+        a0 = a.replace('/', '\\').lower()
+        b0 = b.replace('/', '\\').lower()
+
+        a_suffix = ''
+        if '.' in a0:
+            a_suffix = a0.split('.')[-1]
+        b_suffix = ''
+        if '.' in b0:
+            b_suffix = b0.split('.')[-1]
+
+        a_segments = a0.split('\\')
+        b_segments = b0.split('\\')
+
+        for a_seg, b_seg in zip(a_segments, b_segments):
+            a_is_file = a_seg.endswith(('dm', 'dmf'))
+            b_is_file = b_seg.endswith(('dm', 'dmf'))
+
+            if a_is_file and not b_is_file:
+                return -1
+            if b_is_file and not a_is_file:
+                return 1
+
+            if a_seg != b_seg:
+                if a_suffix != b_suffix:
+                    return (a_suffix > b_suffix) - (a_suffix < b_suffix)
+                return (a_seg > b_seg) - (a_seg < b_seg)
+
+        # fallback
+        return 0
+
+    from functools import cmp_to_key
+    sorted_includes = [line for _, line in sorted(include_lines, key=cmp_to_key(lambda x, y: cmp_paths(x[0], y[0])))]
     return sorted_includes + non_include_lines
 
 
@@ -80,18 +114,35 @@ def parse_args():
         default=str(default_file),
         help='Путь к .dme-файлу. По умолчанию: _horizon/_horizon_dream.dme'
     )
+    parser.add_argument('--all', action='store_true', help='Отсортировать оба файлы: _horizon_dream.dme и _horizon_defines.dme')
     return parser.parse_args()
 
 
 if __name__ == '__main__':
     args = parse_args()
-    file_path = Path(args.file).resolve()
-
-    if not file_path.exists():
-        raise FileNotFoundError(f'Файл не найден: {file_path}')
-
-    changed = sort_dme_file(file_path)
-    if changed:
-        print(f'Отсортирован: {file_path}')
+    if args.all:
+        base = Path(__file__).resolve().parents[1]
+        files = [base / '_horizon_dream.dme', base / '_horizon_defines.dme']
+        any_changed = False
+        for f in files:
+            if not f.exists():
+                print(f'Файл не найден, пропускаю: {f}')
+                continue
+            changed = sort_dme_file(f)
+            any_changed = any_changed or changed
+            print((f'Отсортирован: {f}' if changed else f'Порядок уже корректный: {f}'))
+        if any_changed:
+            exit(0)
+        else:
+            exit(0)
     else:
-        print(f'Порядок уже корректный: {file_path}')
+        file_path = Path(args.file).resolve()
+
+        if not file_path.exists():
+            raise FileNotFoundError(f'Файл не найден: {file_path}')
+
+        changed = sort_dme_file(file_path)
+        if changed:
+            print(f'Отсортирован: {file_path}')
+        else:
+            print(f'Порядок уже корректный: {file_path}')

@@ -98,5 +98,3 @@
 
 /// Sent from [/datum/element/burn_on_item_ignition] to an atom being ignited by something: (mob/living/user, obj/item/burning_thing)
 #define COMSIG_ATOM_IGNITED_BY_ITEM "atom_ignited_by_item"
-///from base of atom/projectile_impact(): (/obj/projectile/proj, impact_x, impact_y)
-#define COMSIG_ATOM_PROJECTILE_IMPACT "atom_projectile_impact"

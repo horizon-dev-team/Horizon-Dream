@@ -50,7 +50,6 @@ GLOBAL_LIST_EMPTY(blood_particles)
 	. = ..()
 	var/target_pixel_x = 0
 	var/target_pixel_y = 0
-
 	switch(angle2dir(angle))
 		if(NORTH)
 			target_pixel_y = 16

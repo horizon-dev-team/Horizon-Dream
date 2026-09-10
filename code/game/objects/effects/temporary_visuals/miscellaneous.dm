@@ -36,7 +36,6 @@ GLOBAL_LIST_EMPTY(blood_particles)
 /obj/effect/temp_visual/dir_setting/bloodsplatter/Initialize(mapload, angle, set_color = BLOOD_COLOR_RED)
 	var/x_component = sin(angle) * -15
 	var/y_component = cos(angle) * -15
-	var/abs_angle = abs(round(angle))
 	var/datum/blood_type/blood_type = set_color
 	if(istype(blood_type))
 		color = blood_type.color
@@ -77,7 +76,6 @@ GLOBAL_LIST_EMPTY(blood_particles)
 			target_pixel_y = -16
 			layer = ABOVE_MOB_LAYER
 	transform = matrix().Turn(angle)
-	message_admins("Animation: x:[target_pixel_x] y:[target_pixel_y] | Angle:[abs_angle] ([angle])")
 	animate(src, pixel_x = target_pixel_x, pixel_y = target_pixel_y, alpha = 0, time = duration, flags = CUBIC_EASING | EASE_OUT)
 // [/HORIZON-EDIT]
 

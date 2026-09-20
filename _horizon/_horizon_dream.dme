@@ -18,8 +18,10 @@
 // END_PREFERENCES
 
 // BEGIN_INCLUDE
+#include "code\SSdebugview.dm"
 #include "code\__HELPERS\size_icons.dm"
 #include "code\datums\particles\leaves.dm"
+#include "code\elements\directional_attack.dm"
 #include "code\game\objects\items\overlay_internals_tank.dm"
 #include "code\game\objects\structures\flora.dm"
 #include "code\game\objects\structures\markings.dm"
@@ -32,8 +34,14 @@
 #include "code\modules\buildmode\buildmode_assets.dm"
 #include "code\modules\buildmode\tgui_browser.dm"
 #include "code\modules\buildmode\submodes\builder.dm"
+#include "code\modules\client\preferences\directional_attack.dm"
+#include "code\modules\mob\living\living.dm"
 #include "code\modules\physics\atom_movables.dm"
 #include "code\modules\physics\physics_component.dm"
 #include "code\modules\physics\physics_SS.dm"
 #include "code\modules\physics\physics_tester.dm"
+#include "code\modules\visual_changes\debris.dm"
+#include "code\modules\visual_changes\debris_additions.dm"
+#include "code\modules\visual_changes\gun_smoke.dm"
+#include "code\modules\visual_changes\shockwave.dm"
 // END_INCLUDE

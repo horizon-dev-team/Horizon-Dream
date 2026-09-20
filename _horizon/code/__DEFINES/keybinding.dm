@@ -1,0 +1,2 @@
+
+#define COMSIG_KB_ADMIN_MC_DEBUG_DOWN "keybinding_admin_mc_debug_down"

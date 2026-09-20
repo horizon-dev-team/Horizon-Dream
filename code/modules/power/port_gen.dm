@@ -8,7 +8,8 @@
 	density = TRUE
 	anchored = FALSE
 	use_power = NO_POWER_USE
-
+	/// the emissive light mask icon
+	var/light_mask = "portgen-emissive"
 	var/active = FALSE
 	var/power_gen = 5 KILO JOULES
 	var/power_output = 1
@@ -82,6 +83,13 @@
 		. += mutable_appearance(icon, "[base_icon_state]_light")
 		. += emissive_appearance(icon, "[base_icon_state]_light", src)
 // [/HORIZON-ADD]
+
+/obj/machinery/power/port_gen/update_overlays()
+	. = ..()
+	if(panel_open || !is_operational || !active)
+		return
+
+	. += emissive_appearance(icon, light_mask, src, alpha = src.alpha)
 
 /obj/machinery/power/port_gen/process()
 	if(active)
@@ -305,6 +313,18 @@
 	time_per_sheet = 60
 	power_gen = 30 KILO JOULES
 	sheet_path = /obj/item/stack/sheet/mineral/uranium
+
+/obj/machinery/power/port_gen/pacman/wood
+	name = "\improper P.L.A.N.K.M.A.N.-type portable generator"
+	desc = "Burns wood to generate some power. Do not touch when powered."
+	circuit = /obj/item/circuitboard/machine/plankman
+	icon_state = "portgen3_0"
+	base_icon_state = "portgen3"
+	max_sheets = 75
+	time_per_sheet = 360
+	power_gen = 5 KILO JOULES
+	sheet_path = /obj/item/stack/sheet/mineral/wood
+	light_mask = "portgen3-emissive"
 
 /obj/machinery/power/port_gen/pacman/pre_loaded
 	sheets = 15

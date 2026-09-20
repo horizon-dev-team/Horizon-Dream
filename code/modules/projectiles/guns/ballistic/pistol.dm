@@ -26,6 +26,7 @@
 	suppressor_x_offset = 10
 	suppressor_y_offset = -1
 	recoil_backtime_multiplier = 1
+	gun_flags = GUN_SMOKE_PARTICLES // [HORIZON-ADD] Ballistic_Impact
 
 /obj/item/gun/ballistic/automatic/pistol/no_mag
 	spawnwithmagazine = FALSE

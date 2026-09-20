@@ -1,4 +1,3 @@
-
 /// Not actually hitscan but close as we get without actual hitscan.
 #define MOVES_HITSCAN -1
 /// How many pixels to move the muzzle flash up so your character doesn't look like they're shitting out lasers.
@@ -366,6 +365,8 @@
 	else
 		impact_x = entry_x + movement_vector?.pixel_x * rand(0, ICON_SIZE_X / 2)
 		impact_y = entry_y + movement_vector?.pixel_y * rand(0, ICON_SIZE_Y / 2)
+
+	SEND_SIGNAL(target, COMSIG_ATOM_PROJECTILE_IMPACT, src, impact_x, impact_y) // [HORIZON-ADD] Ballistic_Impact
 
 	if(isturf(target) && hitsound_wall)
 		playsound(src, hitsound_wall, clamp(vol_by_damage() + (suppressed ? 0 : 20), 0, 100), TRUE, -1)

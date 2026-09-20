@@ -119,6 +119,13 @@
 	if(!is_operational)
 		set_light(0)
 		return
+
+	add_overlay("flow_on")
+	add_overlay(emissive_appearance(icon, "flow_on-emissive", src, alpha = src.alpha))
+
+	add_overlay("display_[mode]")
+	if(last_pressure_delta > 0)
+		add_overlay("fan_[mode]_[last_pressure_delta > ONE_ATMOSPHERE]")
 	else
 		if(!last_pressure_delta)
 			set_light(1)

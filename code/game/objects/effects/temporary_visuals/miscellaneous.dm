@@ -1,4 +1,26 @@
 //unsorted miscellaneous temporary visuals
+// [HORIZON-ADD] Ballistic_Impact
+GLOBAL_LIST_EMPTY(blood_particles)
+/particles/splatter
+	icon = '_horizon/icons/effect/96x96.dmi'
+	icon_state = "smoke5"
+	width = 200
+	height = 200
+	count = 3
+	spawning = 3
+	lifespan = 0.5 SECONDS
+	fade = 0.4 SECONDS
+	grow = 0.065
+	scale = 0.1
+	spin = generator(GEN_NUM, -20, 20)
+	velocity = list(50, 0)
+	friction = generator(GEN_NUM, 0.1, 0.3)
+	position = generator(GEN_CIRCLE, 4, 4)
+
+/obj/effect/abstract/particle_holder/reset_transform
+	appearance_flags = KEEP_APART|TILE_BOUND|RESET_TRANSFORM
+// [/HORIZON-ADD]
+
 /obj/effect/temp_visual/dir_setting/bloodsplatter
 	icon = 'icons/effects/blood.dmi'
 	icon_state = "splatter1"
@@ -7,23 +29,28 @@
 	randomdir = FALSE
 	layer = BELOW_MOB_LAYER
 	plane = GAME_PLANE
+	alpha = 175
 
+// [HORIZON-EDIT] Ballistic_Impact
 // set_color arg can be either a color string or a singleton /datum/blood_type to pull the color from
-/obj/effect/temp_visual/dir_setting/bloodsplatter/Initialize(mapload, set_dir, set_color = BLOOD_COLOR_RED)
-	if(set_color)
-		var/datum/blood_type/blood_type = set_color
-		if(istype(blood_type))
-			color = blood_type.color
-		else
-			color = set_color
-	if(ISDIAGONALDIR(set_dir))
-		icon_state = "[base_icon_state][pick(1, 2, 6)]"
+/obj/effect/temp_visual/dir_setting/bloodsplatter/Initialize(mapload, angle, set_color = BLOOD_COLOR_RED)
+	var/x_component = sin(angle) * -15
+	var/y_component = cos(angle) * -15
+	var/datum/blood_type/blood_type = set_color
+	if(istype(blood_type))
+		color = blood_type.color
 	else
-		icon_state = "[base_icon_state][pick(3, 4, 5)]"
+		color = set_color
+	var/obj/effect/abstract/particle_holder/reset_transform/splatter_visuals
+	splatter_visuals = new(src, /particles/splatter)
+	splatter_visuals.particles.velocity = list(x_component, y_component)
+	splatter_visuals.particles.color = color
+	splatter_visuals.layer = ABOVE_ALL_MOB_LAYER
+	icon_state = "[base_icon_state][pick(1, 2, 3, 4, 5, 6)]"
 	. = ..()
 	var/target_pixel_x = 0
 	var/target_pixel_y = 0
-	switch(set_dir)
+	switch(angle2dir(angle))
 		if(NORTH)
 			target_pixel_y = 16
 		if(SOUTH)
@@ -47,7 +74,9 @@
 			target_pixel_x = -16
 			target_pixel_y = -16
 			layer = ABOVE_MOB_LAYER
+	transform = matrix().Turn(angle)
 	animate(src, pixel_x = target_pixel_x, pixel_y = target_pixel_y, alpha = 0, time = duration, flags = CUBIC_EASING | EASE_OUT)
+// [/HORIZON-EDIT]
 
 /obj/effect/temp_visual/dir_setting/speedbike_trail
 	name = "speedbike trails"
@@ -837,3 +866,7 @@
 
 /obj/effect/temp_visual/focus_ring/proc/dissipate()
 	animate(src, alpha = 0, time = 0.5 SECONDS, easing = QUAD_EASING|EASE_OUT)
+
+/obj/effect/temp_visual/pillow_hit
+	icon_state = "pillow_hit"
+	duration = 0.9 SECONDS

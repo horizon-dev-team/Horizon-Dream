@@ -289,9 +289,28 @@
 /datum/controller/subsystem/Initialize()
 	return SS_INIT_NONE
 
+// [HORIZON-ADD]
+/datum/controller/subsystem/proc/state_colour()
+	switch(state)
+		if(SS_RUNNING) // If its actively processing, colour it green
+			. = "<font color='#32a852'>"
+		if(SS_QUEUED) // If its in the running queue, but delayed, colour it orange
+			. = "<font color='#fcba03'>"
+		if(SS_PAUSED, SS_PAUSING) // If its being paused due to lag, colour it red
+			. = "<font color='#eb4034'>"
+		if(SS_SLEEPING) // If fire() slept, colour it blue
+			. = "<font color='#4287f5'>"
+		if(SS_IDLE) // Leave it default if the SS is idle
+			. = "<font>"
+
+/// Returns what to display as the ms cost for this subsystem.
+/datum/controller/subsystem/proc/get_cost()
+	return round(cost, 1)
+// [/HORIZON-ADD]
+
 /datum/controller/subsystem/stat_entry(msg)
 	if(can_fire && !(SS_NO_FIRE & ss_flags) && init_stage <= Master.init_stage_completed)
-		msg = "[round(cost,1)]ms|[round(tick_usage,1)]%([round(tick_overrun,1)]%)|[round(ticks,0.1)] [msg]"
+		msg = "[round(cost, 1)]ms | [round(tick_usage, 1)]%([round(tick_overrun, 1)]%) | [round(ticks, 0.1)]\t[msg]"
 	else
 		msg = "OFFLINE\t[msg]"
 	return msg

@@ -89,7 +89,9 @@ MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/defibrillator_mount, 24) // [HORIZON-
 	if(!in_range(src, user))
 		to_chat(user, span_warning("[defib]'s paddles overextend and come out of your hands!"))
 		return
+	defib.on = TRUE // [HORIZON-ADD]
 	user.put_in_hands(defib.paddles)
+	update_appearance() // [HORIZON-ADD]
 
 /obj/machinery/defibrillator_mount/item_interaction(mob/living/user, obj/item/tool, list/modifiers)
 	if(istype(tool, /obj/item/defibrillator))

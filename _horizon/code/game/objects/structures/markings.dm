@@ -1,5 +1,3 @@
-/// HORIZON LOGO ///
-
 /obj/effect/turf_decal/horizon
 	icon = '_horizon/icons/walls/logo.dmi'
 	icon_state = "horizon"

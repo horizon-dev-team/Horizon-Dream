@@ -311,7 +311,7 @@
 	harvest_verb_suffix = "s down"
 	delete_on_harvest = TRUE
 	flora_flags = FLORA_HERBAL | FLORA_WOODEN
-	var/stump_type = /obj/structure/flora/tree/stump
+	var/stump_type = /obj/structure/flora/tree/stump // [HORIZON-ADD]
 
 /obj/structure/flora/tree/Initialize(mapload)
 	. = ..()
@@ -330,7 +330,7 @@
 	var/turf/my_turf = get_turf(src)
 	if(has_gravity(my_turf)) // If a tree falls in the forest, it makes a sound unless it doesn't have gravity.
 		playsound(my_turf, 'sound/effects/meteorimpact.ogg', 100 , FALSE, extrarange = TREE_FALL_EXTRARANGE)
-	var/obj/structure/flora/tree/stump/new_stump = new stump_type(my_turf)
+	var/obj/structure/flora/tree/stump/new_stump = new stump_type(my_turf)	// [HORIZON-EDIT]
 	new_stump.name = "[name] stump"
 
 /obj/structure/flora/tree/uproot(mob/living/user)
@@ -343,8 +343,10 @@
 	desc = "This represents our promise to the crew, and the station itself, to cut down as many trees as possible." //running naked through the trees
 	icon = 'icons/obj/fluff/flora/pinetrees.dmi'
 	icon_state = "tree_stump"
+	// [HORIZON-ADD]
 	layer = BELOW_OBJ_LAYER
 	plane = GAME_PLANE
+	// [/HORIZON-ADD]
 	density = FALSE
 	delete_on_harvest = TRUE
 

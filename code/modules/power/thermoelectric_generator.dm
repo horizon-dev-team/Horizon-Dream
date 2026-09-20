@@ -44,7 +44,6 @@
 	SSair.stop_processing_machine(src)
 	return ..()
 
-// [HORIZON-EDIT]
 /obj/machinery/power/thermoelectric_generator/atom_break(damage_flag)
 	null_circulators()
 	..()
@@ -112,7 +111,7 @@
 	if(!anchored)
 		null_circulators()
 	connect_to_network()
-	balloon_alert(user, "you [anchored?"secure":"unsecure"] [src].")
+	balloon_alert(user, "[anchored ? "secure" : "unsecure"]")
 	update_appearance()
 	return TRUE
 
@@ -133,7 +132,7 @@
 		return TRUE
 	panel_open = !panel_open
 	tool.play_tool_sound(src)
-	balloon_alert(user, "you [panel_open?"open":"close"] the panel on [src].")
+	balloon_alert(user, "panel [panel_open ? "open" : "closed"]")
 	update_appearance()
 	return TRUE
 
@@ -147,7 +146,6 @@
 	else
 		default_deconstruction_crowbar(user, tool)
 		return TRUE
-// [/HORIZON-EDIT]
 
 /obj/machinery/power/thermoelectric_generator/process()
 	//Setting this number higher just makes the change in power output slower, it doesnt actualy reduce power output cause **math**
@@ -204,7 +202,7 @@
 		data["error_message"] = "Unable to connect to the power network!"
 		return data
 	if(!cold_circ && !hot_circ)
-		data["error_message"] = "Unable to locate any parts! Open and wrench the machine to connect to nearby parts."
+		data["error_message"] = "Unable to locate any parts! Multitool the machine to sync to nearby parts."
 		return data
 	if(!cold_circ)
 		data["error_message"] = "Unable to locate cold circulator!"

@@ -433,7 +433,7 @@
 	keyslot = /obj/item/encryptionkey/heads/rd
 	stripe_color = "#D381C9"
 
-#define INTERCOM_OFFSET 27
+#define INTERCOM_OFFSET 22 // [HORIZON-EDIT]
 
 MAPPING_DIRECTIONAL_HELPERS(/obj/item/radio/intercom, INTERCOM_OFFSET)
 MAPPING_DIRECTIONAL_HELPERS(/obj/item/radio/intercom/prison, INTERCOM_OFFSET)

@@ -29,7 +29,11 @@
 #include "code\modules\physics\physics_component.dm"
 #include "code\modules\physics\physics_SS.dm"
 #include "code\modules\physics\physics_tester.dm"
+#include "code\game\resprite\apc.dm"
+#include "code\game\resprite\firealarm.dm"
+#include "code\game\resprite\keycard_auth.dm"
+#include "code\game\resprite\lightswitch.dm"
 #include "code\datums\particles\leaves.dm"
-#include "code\structures\flora.dm"
-#include "code\structures\markings.dm"
+#include "code\game\objects\structures\flora.dm"
+#include "code\game\objects\structures\markings.dm"
 // END_INCLUDE

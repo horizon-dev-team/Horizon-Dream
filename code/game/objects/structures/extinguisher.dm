@@ -10,7 +10,7 @@
 	var/obj/item/extinguisher/stored_extinguisher
 	var/opened = FALSE
 
-MAPPING_DIRECTIONAL_HELPERS(/obj/structure/extinguisher_cabinet, 29)
+MAPPING_DIRECTIONAL_HELPERS(/obj/structure/extinguisher_cabinet, 22) // [HORIZON-EDIT]
 
 /obj/structure/extinguisher_cabinet/Initialize(mapload)
 	. = ..()
@@ -188,4 +188,4 @@ MAPPING_DIRECTIONAL_HELPERS(/obj/structure/extinguisher_cabinet, 29)
 	icon = 'icons/obj/wallmounts.dmi'
 	icon_state = "extinguisher" //Reuses wallmount icon, but no door overlay
 	result_path = /obj/structure/extinguisher_cabinet
-	pixel_shift = 29
+	pixel_shift = 22

@@ -19,7 +19,7 @@
 	/// the type of wallframe it 'disassembles' into
 	var/wallframe_type = /obj/item/wallframe/defib_mount
 
-MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/defibrillator_mount, 28)
+MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/defibrillator_mount, 24) // [HORIZON-EDIT]
 
 /obj/machinery/defibrillator_mount/Initialize(mapload)
 	. = ..()
@@ -57,6 +57,12 @@ MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/defibrillator_mount, 28)
 		return
 
 	var/mutable_appearance/defib_overlay = mutable_appearance(icon, "defib", layer = layer+0.01, offset_spokesman = src)
+
+// [HORIZON-ADD]
+	if(!defib.on)
+		var/mutable_appearance/paddles = mutable_appearance(icon, "paddles", offset_spokesman = src)
+		defib_overlay.overlays += paddles
+// [/HORIZON-ADD]
 
 	if(defib.powered)
 		var/obj/item/stock_parts/power_store/cell = defib.cell
@@ -219,7 +225,7 @@ MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/defibrillator_mount, 28)
 	custom_materials = list(/datum/material/iron = SHEET_MATERIAL_AMOUNT, /datum/material/glass = HALF_SHEET_MATERIAL_AMOUNT)
 	w_class = WEIGHT_CLASS_BULKY
 	result_path = /obj/machinery/defibrillator_mount
-	pixel_shift = 28
+	pixel_shift = 24 // [HORIZON-EDIT]
 
 /obj/item/wallframe/defib_mount/charging
 	name = "unhooked PENLITE defibrillator mount"
@@ -232,6 +238,7 @@ MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/defibrillator_mount, 28)
 
 /obj/machinery/defibrillator_mount/mobile
 	name = "mobile defibrillator mount"
+	icon = 'icons/obj/machines/defib_mount.dmi' // [HORIZON-ADD]
 	icon_state = "mobile"
 	anchored = FALSE
 	density = TRUE

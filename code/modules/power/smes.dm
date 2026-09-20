@@ -144,11 +144,10 @@
 /obj/machinery/power/smes/update_overlays()
 	. = ..()
 // [HORIZON-EDIT]
-	if(panel_open || !is_operational)
+	if(panel_open)
 		. += "open"
-		return
 
-	if(!show_display_lights)
+	if(!is_operational || !show_display_lights)
 		return
 
 	var/clevel = chargedisplay()
@@ -541,11 +540,11 @@
 	if(. & EMP_PROTECT_SELF)
 		return
 // [HORIZON-EDIT]
-	emp_timer = addtimer(CALLBACK(src, PROC_REF(emp_end), output_attempt), 20 SECONDS, TIMER_UNIQUE | TIMER_OVERRIDE)	// ADD
-	is_emped = TRUE																										// ADD
+	emp_timer = addtimer(CALLBACK(src, PROC_REF(emp_end), output_attempt), 10 SECONDS, TIMER_UNIQUE | TIMER_OVERRIDE)
+	is_emped = TRUE
 	input_attempt = rand(0, 1)
 	inputting = input_attempt
-	output_attempt = FALSE																								// ADD
+	output_attempt = FALSE
 // [HORIZON-EDIT]
 	outputting = output_attempt
 	output_level = rand(0, output_level_max)

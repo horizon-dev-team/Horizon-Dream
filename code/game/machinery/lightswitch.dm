@@ -20,7 +20,7 @@
 	/// The sound the light makes when it's turned off
 	var/sound_off = 'sound/items/weapons/magout.ogg'
 
-MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/light_switch, 26)
+MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/light_switch, 22) // [HORIZON-EDIT]
 
 /obj/machinery/light_switch/Initialize(mapload)
 	. = ..()

@@ -2,7 +2,7 @@
 /obj/machinery/power/port_gen
 	name = "portable generator"
 	desc = "A portable generator for emergency backup power."
-	icon = '_horizon/icons/obj/pacman.dmi'	// [HORIZON-EDIT]
+	icon = '_horizon/icons/obj/machines/pacman.dmi'	// [HORIZON-EDIT]
 	icon_state = "portgen0_0"
 	base_icon_state = "portgen0"
 	density = TRUE

@@ -393,7 +393,7 @@
 	var/specialfunctions = OPEN // Bitflag, see assembly file
 	var/sync_doors = TRUE
 
-MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/button/door, 24)
+MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/button/door, 22)
 
 /obj/machinery/button/door/indestructible
 	resistance_flags = INDESTRUCTIBLE | LAVA_PROOF | FIRE_PROOF | UNACIDABLE | ACID_PROOF
@@ -520,7 +520,7 @@ MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/button/door, 24)
 	icon_state = "button"
 	result_path = /obj/machinery/button
 	custom_materials = list(/datum/material/iron = SHEET_MATERIAL_AMOUNT)
-	pixel_shift = 24
+	pixel_shift = 22
 
 /obj/item/wallframe/button/find_support_structure(atom/structure)
 	return istype(structure, /obj/structure/table) ? structure : ..()

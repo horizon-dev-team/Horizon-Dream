@@ -48,7 +48,7 @@
 	parent = null
 	return ..()
 
- // [HORIZON-ADD]
+// [HORIZON-ADD]
 /obj/effect/abstract/particle_holder/proc/delete_particle()
 	if(particle_flags & PARTICLE_FADEOUT)
 		particles.spawning = 0

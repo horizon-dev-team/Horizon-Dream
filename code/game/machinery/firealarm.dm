@@ -8,7 +8,7 @@
 	icon = 'icons/obj/machines/wallmounts.dmi'
 	icon_state = "fire_bitem"
 	result_path = /obj/machinery/firealarm
-	pixel_shift = 18
+	pixel_shift = 18 // [HORIZON-EDIT]
 
 /obj/item/wallframe/firealarm/try_build(atom/support, mob/user)
 	var/area/A = get_area(user)
@@ -621,7 +621,7 @@
 		reset()
 	user?.log_message("enabled firelock sensors using [src].", LOG_GAME)
 
-MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/firealarm, 18)
+MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/firealarm, 18) // [HORIZON-EDIT]
 
 /*
  * Return of Party button

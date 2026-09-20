@@ -2,6 +2,7 @@
 /obj/machinery/power/port_gen
 	name = "portable generator"
 	desc = "A portable generator for emergency backup power."
+	icon = 'icons/obj/machines/engine/other.dmi'
 	icon_state = "portgen0_0"
 	base_icon_state = "portgen0"
 	density = TRUE
@@ -20,7 +21,6 @@
 /obj/machinery/power/port_gen/Initialize(mapload)
 	. = ..()
 	soundloop = new(src, active)
-	update_appearance(UPDATE_OVERLAYS)
 
 /obj/machinery/power/port_gen/Destroy()
 	QDEL_NULL(soundloop)

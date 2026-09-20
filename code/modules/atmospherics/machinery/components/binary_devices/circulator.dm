@@ -1,3 +1,4 @@
+// [HORIZON-EDIT]
 //node2, air2, network2 correspond to input
 //node1, air1, network1 correspond to output
 
@@ -92,7 +93,6 @@
 
 	return ..()
 
-// [HORIZON-EDIT]
 /obj/machinery/atmospherics/components/binary/circulator/update_icon_nopipes()
 	cut_overlays()
 	SSvis_overlays.remove_vis_overlay(src, managed_vis_overlays)
@@ -147,12 +147,11 @@
 					set_light(2,1,"#FF3232")
 				SSvis_overlays.add_vis_overlay(src, icon, "circ-[mode?"cold":"hot"]", LIGHTING_ABOVE_ALL, ABOVE_LIGHTING_PLANE, dir)
 				SSvis_overlays.add_vis_overlay(src, icon, "circ-slow", LIGHTING_ABOVE_ALL, ABOVE_LIGHTING_PLANE, dir)
-// [/HORIZON-EDIT]
 
 /obj/machinery/atmospherics/components/binary/circulator/wrench_act(mob/living/user, obj/item/I)
 
 	if(!panel_open)
-		balloon_alert(user, "open the panel first!")
+		balloon_alert(user, "open the panel!")
 		return TRUE
 
 	if(generator)
@@ -161,7 +160,7 @@
 
 	set_anchored(!anchored)
 	I.play_tool_sound(src)
-	balloon_alert(user, "you [anchored?"secure":"unsecure"] [src].")
+	balloon_alert(user, "[anchored ? "secure" : "unsecure"]")
 
 	var/obj/machinery/atmospherics/node1 = nodes[1]
 	var/obj/machinery/atmospherics/node2 = nodes[2]
@@ -217,7 +216,7 @@
 		return TRUE
 
 	mode = !mode
-	balloon_alert(user, "you set [src] to [mode?"cold":"hot"] mode.")
+	balloon_alert(user, "set to [mode ? "cold" : "hot"]")
 	return TRUE
 
 /obj/machinery/atmospherics/components/binary/circulator/screwdriver_act(mob/user, obj/item/I)
@@ -228,7 +227,7 @@
 		return TRUE
 	panel_open = !panel_open
 	I.play_tool_sound(src)
-	balloon_alert(user, "you [panel_open?"open":"close"] the panel on [src].")
+	balloon_alert(user, "panel [panel_open ? "open" : "closed"]")
 	update_icon_nopipes()
 	return TRUE
 
@@ -283,4 +282,4 @@ GAME_VERB_SRC(/obj/machinery/atmospherics/components/binary/circulator, circulat
 		generator.null_circulators()
 		generator.update_appearance()
 	..()
-
+// [/HORIZON-EDIT]

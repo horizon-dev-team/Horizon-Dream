@@ -125,7 +125,7 @@ MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/light_switch, 22) // [HORIZON-EDIT]
 	icon_state = "light-nopower"
 	result_path = /obj/machinery/light_switch
 	custom_materials = list(/datum/material/iron = SHEET_MATERIAL_AMOUNT)
-	pixel_shift = 26
+	pixel_shift = 22 // [HORIZON-EDIT]
 
 /obj/item/circuit_component/light_switch
 	display_name = "Light Switch"

@@ -308,7 +308,7 @@
 
 /obj/machinery/power/smes/update_icon_state()
 	. = ..()
-	icon_state = panel_open ? "[base_icon_state]-open" : base_icon_state
+	icon_state = panel_open ? "[base_icon_state]-open" : base_icon_state // [HORIZON-EDIT]
 
 /obj/machinery/power/smes/screwdriver_act(mob/living/user, obj/item/tool)
 	return default_deconstruction_screwdriver(user, tool)

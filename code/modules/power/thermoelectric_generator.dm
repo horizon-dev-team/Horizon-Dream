@@ -1,3 +1,4 @@
+// [HORIZON-EDIT]
 #define TEG_EFFICIENCY 0.45
 
 /obj/machinery/power/thermoelectric_generator
@@ -278,3 +279,4 @@
 		cold_circ = null
 
 #undef TEG_EFFICIENCY
+// [/HORIZON-EDIT]

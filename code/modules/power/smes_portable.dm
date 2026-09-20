@@ -231,22 +231,19 @@
 	investigate_log("was connected to [possible_connector] by [key_name(user)].", INVESTIGATE_ENGINE)
 	return ITEM_INTERACT_SUCCESS
 
-///obj/machinery/smesbank/update_icon_state()
-//	. = ..()
-//	icon_state = panel_open ? "[base_icon_state]-o" : base_icon_state
+/obj/machinery/smesbank/update_icon_state()
+	. = ..()
+	icon_state = panel_open ? "[base_icon_state]-o" : base_icon_state
+
 /obj/machinery/smesbank/screwdriver_act(mob/living/user, obj/item/tool)
-	. = ITEM_INTERACT_FAILURE
-	if(default_deconstruction_screwdriver(user, "[initial(icon_state)]-o", initial(icon_state), tool))
-		update_appearance(UPDATE_OVERLAYS)
-		return ITEM_INTERACT_SUCCESS
+	return default_deconstruction_screwdriver(user, tool)
 
 /obj/machinery/smesbank/crowbar_act(mob/living/user, obj/item/tool)
 	if(connected_port)
 		balloon_alert(user, "disconnect from [connected_port] first!")
 		return ITEM_INTERACT_FAILURE
 
-	if(default_deconstruction_crowbar(user, tool))
-		return ITEM_INTERACT_SUCCESS
+	return default_deconstruction_crowbar(user, tool)
 
 /**
  * Attempt to connect the portable SMES to a given connector. Adapted from portable atmos connection code.

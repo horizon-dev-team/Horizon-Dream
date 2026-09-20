@@ -6,6 +6,7 @@
 	desc = "A high-capacity superconducting magnetic energy storage (SMES) unit."
 	icon = '_horizon/icons/obj/machines/smes.dmi'	// [HORIZON-ADD]
 	icon_state = "smes"
+	base_icon_state = "smes"
 	density = TRUE
 	use_power = NO_POWER_USE
 	circuit = /obj/item/circuitboard/machine/smes
@@ -145,10 +146,7 @@
 /obj/machinery/power/smes/update_overlays()
 	. = ..()
 // [HORIZON-EDIT]
-	if(panel_open)
-		. += "open"
-
-	if(!is_operational || !show_display_lights)
+	if(panel_open || !is_operational || !show_display_lights)
 		return
 
 	var/clevel = chargedisplay()
@@ -308,12 +306,12 @@
 		set_machine_stat(machine_stat & ~BROKEN)
 		return ITEM_INTERACT_SUCCESS
 
-///obj/machinery/power/smes/update_icon_state()
-//	. = ..()
-//	icon_state = panel_open ? "[base_icon_state]-o" : base_icon_state
+/obj/machinery/power/smes/update_icon_state()
+	. = ..()
+	icon_state = panel_open ? "[base_icon_state]-open" : base_icon_state
 
 /obj/machinery/power/smes/screwdriver_act(mob/living/user, obj/item/tool)
-	return default_deconstruction_screwdriver(user, tool) // подвох
+	return default_deconstruction_screwdriver(user, tool)
 
 /obj/machinery/power/smes/wirecutter_act(mob/living/user, obj/item/item)
 	if(terminal && panel_open)

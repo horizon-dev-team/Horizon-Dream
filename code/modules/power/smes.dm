@@ -171,8 +171,6 @@
 			. += emissive_appearance(icon, "[temp]", src)
 // [/HORIZON-EDIT]
 
-		. += emissive_appearance(icon, light_mask, src, alpha = src.alpha)
-
 /obj/machinery/power/smes/get_save_vars()
 	. = ..()
 	charge = total_charge()

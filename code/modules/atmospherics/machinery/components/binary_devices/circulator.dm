@@ -92,6 +92,7 @@
 
 	return ..()
 
+// [HORIZON-EDIT]
 /obj/machinery/atmospherics/components/binary/circulator/update_icon_nopipes()
 	cut_overlays()
 	SSvis_overlays.remove_vis_overlay(src, managed_vis_overlays)
@@ -146,6 +147,7 @@
 					set_light(2,1,"#FF3232")
 				SSvis_overlays.add_vis_overlay(src, icon, "circ-[mode?"cold":"hot"]", LIGHTING_ABOVE_ALL, ABOVE_LIGHTING_PLANE, dir)
 				SSvis_overlays.add_vis_overlay(src, icon, "circ-slow", LIGHTING_ABOVE_ALL, ABOVE_LIGHTING_PLANE, dir)
+// [/HORIZON-EDIT]
 
 /obj/machinery/atmospherics/components/binary/circulator/wrench_act(mob/living/user, obj/item/I)
 

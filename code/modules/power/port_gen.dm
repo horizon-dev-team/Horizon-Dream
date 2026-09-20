@@ -2,7 +2,6 @@
 /obj/machinery/power/port_gen
 	name = "portable generator"
 	desc = "A portable generator for emergency backup power."
-	icon = '_horizon/icons/obj/machines/pacman.dmi'	// [HORIZON-EDIT]
 	icon_state = "portgen0_0"
 	base_icon_state = "portgen0"
 	density = TRUE
@@ -58,34 +57,20 @@
 		update_appearance()
 		soundloop.start()
 
-// [HORIZON-ADD] - Не спрашивайте как оно работает
-/obj/machinery/power/port_gen/screwdriver_act(mob/living/user, obj/item/tool)
-	. = ..()
-	if(default_deconstruction_screwdriver(user, icon_state, icon_state, tool))
-		update_appearance(UPDATE_OVERLAYS)
-		return ITEM_INTERACT_SUCCESS
-
-/obj/machinery/power/port_gen/wrench_act(mob/living/user, obj/item/tool)
-	. = ..()
-	if(default_unfasten_wrench(user, tool, 0))
-		update_appearance(UPDATE_OVERLAYS)
-		return ITEM_INTERACT_SUCCESS
+/obj/machinery/power/port_gen/update_icon_state()
+	icon_state = "[base_icon_state]_[active]"
+	return ..()
 
 /obj/machinery/power/port_gen/update_overlays()
 	. = ..()
+	// [HORIZON-ADD]
 	if(anchored)
-		. += "portgen_anchored"
+		. += mutable_appearance('_horizon/icons/obj/machines/pacman.dmi', "portgen_anchored")
 
 	if(panel_open)
-		. += "portgen_open"
+		. += mutable_appearance('_horizon/icons/obj/machines/pacman.dmi', "portgen_open")
+	// [/HORIZON-ADD]
 
-	if(active)
-		. += mutable_appearance(icon, "[base_icon_state]_light")
-		. += emissive_appearance(icon, "[base_icon_state]_light", src)
-// [/HORIZON-ADD]
-
-/obj/machinery/power/port_gen/update_overlays()
-	. = ..()
 	if(panel_open || !is_operational || !active)
 		return
 
@@ -225,6 +210,7 @@
 	toggle_panel_open()
 	tool.play_tool_sound(src)
 	to_chat(user, span_notice("You [panel_open ? "open" : "close"] the access panel."))
+	update_appearance(UPDATE_OVERLAYS) // [HORIZON-ADD]
 	return ITEM_INTERACT_SUCCESS
 
 /obj/machinery/power/port_gen/wrench_act(mob/living/user, obj/item/tool)
@@ -233,11 +219,13 @@
 	if(!anchored && !isinspace())
 		set_anchored(TRUE)
 		to_chat(user, span_notice("You secure the generator to the floor."))
+		update_appearance(UPDATE_OVERLAYS) // [HORIZON-ADD]
 		return ITEM_INTERACT_SUCCESS
 
 	set_anchored(FALSE)
 	to_chat(user, span_notice("You unsecure the generator from the floor."))
 	playsound(src, 'sound/items/deconstruct.ogg', 50, TRUE)
+	update_appearance(UPDATE_OVERLAYS) // [HORIZON-ADD]
 	return ITEM_INTERACT_SUCCESS
 
 /obj/machinery/power/port_gen/crowbar_act(mob/living/user, obj/item/tool)

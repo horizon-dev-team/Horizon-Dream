@@ -3,13 +3,13 @@
 	icon = '_horizon/icons/obj/wallmounts/apc.dmi'
 
 /obj/item/radio/intercom
-	icon = '_horizon/icons/obj/wallmounts/wallmounts.dmi'
+	icon = '_horizon/icons/obj/wallmounts/intercom.dmi'
 
 /obj/item/wallframe/button
-	icon = '_horizon/icons/obj/wallmounts/wallmounts.dmi'
+	icon = '_horizon/icons/obj/wallmounts/button.dmi'
 
 /obj/machinery/button
-	icon = '_horizon/icons/obj/wallmounts/wallmounts.dmi'
+	icon = '_horizon/icons/obj/wallmounts/button.dmi'
 
 /obj/item/wallframe/airalarm
 	icon = '_horizon/icons/obj/wallmounts/airalarm.dmi'
@@ -18,7 +18,7 @@
 	icon = '_horizon/icons/obj/wallmounts/airalarm.dmi'
 
 /obj/machinery/newscaster
-	icon = '_horizon/icons/obj/wallmounts/intercom.dmi'
+	icon = '_horizon/icons/obj/wallmounts/newscaster.dmi'
 
 /obj/machinery/defibrillator_mount
 	icon = '_horizon/icons/obj/wallmounts/defib_mount.dmi'

@@ -5,7 +5,7 @@
 	icon = '_horizon/icons/obj/extinguisher.dmi'
 
 /obj/structure/fireaxecabinet
-	icon = '_horizon/icons/obj/wallmounts.dmi'
+	icon = '_horizon/icons/obj/machines/wallmounts.dmi'
 
 /obj/machinery/defibrillator_mount
 	icon = '_horizon/icons/obj/machines/defib_mount.dmi'

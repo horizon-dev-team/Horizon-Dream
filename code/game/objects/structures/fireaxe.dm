@@ -24,7 +24,9 @@
 	/// The tool behavior necessary to unlock the cabinet
 	var/unlocking_tool_behavior = TOOL_MULTITOOL
 
-MAPPING_DIRECTIONAL_HELPERS(/obj/structure/fireaxecabinet, 32)
+#define INTERCOM_FIRECABINET 26
+
+MAPPING_DIRECTIONAL_HELPERS(/obj/structure/fireaxecabinet, INTERCOM_FIRECABINET) // [HORIZON-EDIT]
 
 /datum/armor/structure_fireaxecabinet
 	melee = 50
@@ -234,7 +236,7 @@ MAPPING_DIRECTIONAL_HELPERS(/obj/structure/fireaxecabinet, 32)
 /obj/structure/fireaxecabinet/empty
 	populate_contents = FALSE
 
-MAPPING_DIRECTIONAL_HELPERS(/obj/structure/fireaxecabinet/empty, 32)
+MAPPING_DIRECTIONAL_HELPERS(/obj/structure/fireaxecabinet/empty, INTERCOM_FIRECABINET) // [HORIZON-EDIT]
 
 /obj/item/wallframe/fireaxecabinet
 	name = "fire axe cabinet"
@@ -242,7 +244,7 @@ MAPPING_DIRECTIONAL_HELPERS(/obj/structure/fireaxecabinet/empty, 32)
 	icon = 'icons/obj/wallmounts.dmi'
 	icon_state = "fireaxe"
 	result_path = /obj/structure/fireaxecabinet/empty
-	pixel_shift = 32
+	pixel_shift = INTERCOM_FIRECABINET // [HORIZON-EDIT]
 	custom_materials = list(/datum/material/glass = SHEET_MATERIAL_AMOUNT * 5.1, /datum/material/alloy/plasteel = SHEET_MATERIAL_AMOUNT * 5, /datum/material/iron = SMALL_MATERIAL_AMOUNT)
 
 /obj/structure/fireaxecabinet/mechremoval
@@ -252,7 +254,7 @@ MAPPING_DIRECTIONAL_HELPERS(/obj/structure/fireaxecabinet/empty, 32)
 	item_path = /obj/item/crowbar/mechremoval
 	item_overlay = "crowbar"
 
-MAPPING_DIRECTIONAL_HELPERS(/obj/structure/fireaxecabinet/mechremoval, 32)
+MAPPING_DIRECTIONAL_HELPERS(/obj/structure/fireaxecabinet/mechremoval, INTERCOM_FIRECABINET) // [HORIZON-EDIT]
 
 /obj/structure/fireaxecabinet/mechremoval/atom_deconstruct(disassembled = TRUE)
 	if(held_item && loc)
@@ -262,7 +264,7 @@ MAPPING_DIRECTIONAL_HELPERS(/obj/structure/fireaxecabinet/mechremoval, 32)
 /obj/structure/fireaxecabinet/mechremoval/empty
 	populate_contents = FALSE
 
-MAPPING_DIRECTIONAL_HELPERS(/obj/structure/fireaxecabinet/mechremoval/empty, 32)
+MAPPING_DIRECTIONAL_HELPERS(/obj/structure/fireaxecabinet/mechremoval/empty, INTERCOM_FIRECABINET) // [HORIZON-EDIT]
 
 /obj/item/wallframe/fireaxecabinet/mechremoval
 	name = "mech removal tool cabinet"
@@ -279,7 +281,7 @@ MAPPING_DIRECTIONAL_HELPERS(/obj/structure/fireaxecabinet/mechremoval/empty, 32)
 	item_overlay = "jaws"
 	unlocking_tool_behavior = TOOL_DRILL
 
-MAPPING_DIRECTIONAL_HELPERS(/obj/structure/fireaxecabinet/jawsofrecovery, 32)
+MAPPING_DIRECTIONAL_HELPERS(/obj/structure/fireaxecabinet/jawsofrecovery, INTERCOM_FIRECABINET) // [HORIZON-EDIT]
 
 /obj/structure/fireaxecabinet/jawsofrecovery/atom_deconstruct(disassembled = TRUE)
 	if(held_item && loc)
@@ -289,10 +291,12 @@ MAPPING_DIRECTIONAL_HELPERS(/obj/structure/fireaxecabinet/jawsofrecovery, 32)
 /obj/structure/fireaxecabinet/jawsofrecovery/empty
 	populate_contents = FALSE
 
-MAPPING_DIRECTIONAL_HELPERS(/obj/structure/fireaxecabinet/jawsofrecovery/empty, 32)
+MAPPING_DIRECTIONAL_HELPERS(/obj/structure/fireaxecabinet/jawsofrecovery/empty, INTERCOM_FIRECABINET) // [HORIZON-EDIT]
 
 /obj/item/wallframe/fireaxecabinet/jawsofrecovery
 	name = "jaws of recovery tool cabinet"
 	desc = "Home to the paramedic's jaws of recovery. Apply to wall to use."
 	icon_state = "jaws_of_recovery"
 	result_path = /obj/structure/fireaxecabinet/jawsofrecovery/empty
+
+#undef INTERCOM_FIRECABINET

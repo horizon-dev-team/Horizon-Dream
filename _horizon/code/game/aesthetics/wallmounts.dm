@@ -42,10 +42,7 @@
 	icon = '_horizon/icons/obj/wallmounts/airlock_machines.dmi'
 
 /obj/machinery/keycard_auth
-	icon = '_horizon/icons/obj/wallmounts/extinguisher.dmi'
-
-/obj/machinery/keycard_auth/wall_mounted
-	icon = '_horizon/icons/obj/wallmounts/extinguisher.dmi'
+	icon = '_horizon/icons/obj/wallmounts/keycard_auth.dmi'
 
 /obj/structure/extinguisher_cabinet
 	icon = '_horizon/icons/obj/wallmounts/extinguisher.dmi'

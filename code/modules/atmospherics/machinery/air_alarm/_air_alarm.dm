@@ -572,7 +572,8 @@ GLOBAL_LIST_EMPTY_TYPED(air_alarms, /obj/machinery/airalarm)
 
 	if(danger_level == AIR_ALARM_ALERT_WARNING || area_danger) //When there's any danger level, light up the "AIR" sign too
 		. += mutable_appearance(icon, "alarm_sign")
-		. += emissive_appearance(icon, "light_emissive_alarm", src, alpha = src.alpha)
+
+	. += emissive_appearance(icon, "light_emissive_sign", src, alpha = src.alpha)
 // [/HORIZON-EDIT]
 
 /// Check the current air and update our danger level.

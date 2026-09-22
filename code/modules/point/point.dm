@@ -25,7 +25,14 @@
 	SEND_SIGNAL(src, COMSIG_MOVABLE_POINTED, pointed_atom, visual, intentional)
 
 	animate(visual, pixel_x = (tile.x - our_tile.x) * ICON_SIZE_X + pointed_atom.pixel_x, pixel_y = (tile.y - our_tile.y) * ICON_SIZE_Y + pointed_atom.pixel_y, time = 1.7, easing = EASE_OUT)
+	addtimer(CALLBACK(src, PROC_REF(fade_out_point_visual), visual), 2.3 SECONDS) // [HORIZON-ADD]
 	return visual
+
+// [HORIZON-ADD]
+/atom/movable/proc/fade_out_point_visual(obj/visual)
+	if(!QDELETED(visual))
+		animate(visual, alpha = 0, time = 2)
+// [/HORIZON-ADD]
 
 /mob/point_at(atom/pointed_atom, intentional = FALSE)
 	. = ..()

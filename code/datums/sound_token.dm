@@ -39,7 +39,7 @@
 	///Do we repeat the sound using sound.repeat?
 	var/repeating = FALSE
 
-/datum/sound_token/New(atom/_source, _sound, _range = 10, _volume = 50, _falloff_exponent = SOUND_FALLOFF_EXPONENT, _falloff_distance = SOUND_DEFAULT_FALLOFF_DISTANCE, _allowed_listeners, _sound_duration_override, _delete_on_end, _repeating)
+/datum/sound_token/New(atom/_source, _sound, _range = 10, _volume = 50, _falloff_exponent = SOUND_FALLOFF_EXPONENT, _falloff_distance = SOUND_DEFAULT_FALLOFF_DISTANCE, _allowed_listeners, _sound_duration_override, _delete_on_end, _repeating, _channel)
 	source = _source
 	RegisterSignal(source, COMSIG_QDELETING, PROC_REF(source_deleted))
 	RegisterSignal(source, COMSIG_MOVABLE_MOVED, PROC_REF(source_moved))
@@ -53,6 +53,7 @@
 	if(_delete_on_end)
 		delete_on_end = _delete_on_end
 	repeating = _repeating
+	sound_channel = _channel
 
 	if(_allowed_listeners)
 		for(var/allowed_mob in _allowed_listeners)
@@ -173,7 +174,7 @@
 		SEND_SOUND(listener_mob, sound)
 		return
 
-	if(!listener_mob.playsound_local(get_turf(source), vol = volume, falloff_exponent = falloff_exponent, channel = sound_channel, sound_to_use = sound, max_distance = range, falloff_distance = falloff_distance, use_reverb = TRUE))
+	if(!listener_mob.playsound_local(get_turf(source), vol = volume, falloff_exponent = falloff_exponent, channel = sound_channel, sound_to_use = sound, max_distance = range, falloff_distance = falloff_distance, use_reverb = TRUE, mixer_channel = sound_channel))
 		sound.status = SOUND_UPDATE|SOUND_MUTE
 		SEND_SOUND(listener_mob, sound)
 	sound.offset = null

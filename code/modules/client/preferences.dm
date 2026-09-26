@@ -96,6 +96,9 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	/// The character profiles, saved so we can cheaply recompute them in ui_data only when necessary, without having to use expensive update_static_data calls.
 	var/list/cached_character_profiles
 
+	var/list/channel_volume = list()
+	var/list/test_sound_channels = list()
+
 /datum/preferences/Destroy(force)
 	QDEL_NULL(character_preview_view)
 	QDEL_LIST(middleware)
@@ -132,6 +135,18 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	if(loaded_preferences_successfully)
 		if(load_character())
 			return
+
+	// [HORIZON-ADD] Master_Sounds
+	var/needs_save = FALSE
+	for(var/channel in GLOB.used_sound_channels)
+		if(isnull(channel_volume["[channel]"]))
+			channel_volume["[channel]"] = 100
+			needs_save = TRUE
+
+	if(needs_save)
+		save_preferences()
+	// [/HORIZON-ADD]
+
 	//we couldn't load character data so just randomize the character appearance + name
 	randomise_appearance_prefs() //let's create a random character then - rather than a fat, bald and naked man.
 	if(parent)
@@ -168,6 +183,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 /datum/preferences/ui_status(mob/user, datum/ui_state/state)
 	return user.client == parent ? UI_INTERACTIVE : UI_CLOSE
 
+// [HORIZON-EDIT] Master_Sounds
 /datum/preferences/ui_data(mob/user)
 	var/list/data = list()
 
@@ -184,7 +200,29 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	for (var/datum/preference_middleware/preference_middleware as anything in middleware)
 		data += preference_middleware.get_ui_data(user)
 
+	// Initialize channel_volume if not already done (GLOB.used_sound_channels is only populated after Sounds.Initialize())
+	if(current_window == PREFERENCE_TAB_GAME_PREFERENCES)
+		var/list/channels = list()
+		var/list/seen_channels = list()
+		for(var/channel in GLOB.used_sound_channels)
+			if(channel in seen_channels)
+				continue
+			LAZYADD(seen_channels, channel)
+			var/volume = channel_volume["[channel]"]
+			if(isnull(volume) || !isnum(volume))
+				volume = 100
+			var/list/channel_info = get_channel_info(channel)
+			channels += list(list(
+				"num" = channel,
+				"name" = channel_info[1],
+				"desc" = channel_info[2],
+				"category" = channel_info[3],
+				"volume" = volume
+			))
+		data["channels"] = channels
+
 	return data
+// [/HORIZON-EDIT]
 
 /datum/preferences/ui_static_data(mob/user)
 	var/list/data = list()
@@ -208,6 +246,59 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 		assets += preference_middleware.get_ui_assets()
 
 	return assets
+
+// [HORIZON-ADD] Master_Sounds
+/datum/preferences/proc/mixer_channel_affected(check_channel, changed_channel)
+	if(changed_channel == CHANNEL_MASTER_VOLUME)
+		return TRUE
+	if(check_channel == changed_channel)
+		return TRUE
+	return FALSE
+
+/// Notifies datum-managed sounds (jukebox, TTS) and the ambience subsystem that a mixer
+/datum/preferences/proc/on_mixer_volume_changed(changed_channel = null)
+	var/mob/listener = parent?.mob
+	if(isnull(listener))
+		return
+
+	if(mixer_channel_affected(CHANNEL_JUKEBOX, changed_channel))
+		SEND_SIGNAL(listener, COMSIG_MOB_JUKEBOX_PREFERENCE_APPLIED)
+	if(mixer_channel_affected(CHANNEL_TTS, changed_channel))
+		SEND_SIGNAL(listener, COMSIG_MOB_TTS_VOLUME_PREFERENCE_APPLIED)
+	if(mixer_channel_affected(CHANNEL_AMBIENCE, changed_channel))
+		parent.update_ambience_pref()
+
+/datum/preferences/proc/update_channel_volume(channel)
+	//we gotta take into account existing sounds repeating/waiting, otherwise we completely wipe looping sounds (such as whitenoise).
+	for(var/sound/S in parent.SoundQuery())
+		var/sound_channel = S.channel
+		var/mixer_channel = sound_channel
+		var/base_volume = S.volume
+
+		var/list/test_info = test_sound_channels["[sound_channel]"]
+		if(test_info)
+			mixer_channel = test_info["mixer_channel"]
+			base_volume = test_info["base_volume"]
+
+		var/should_update = FALSE
+		if(channel == CHANNEL_MASTER_VOLUME)
+			should_update = TRUE
+		else if(mixer_channel == channel)
+			should_update = TRUE
+
+		if(!should_update)
+			continue
+
+		var/sound/new_sound = sound(
+			null,
+			repeat = S.repeat,
+			wait = S.wait,
+			channel = S.channel,
+			volume = calculate_mixed_volume(parent, base_volume, mixer_channel),
+		)
+		new_sound.status = SOUND_UPDATE
+		SEND_SOUND(parent.mob, new_sound)
+// [/HORIZON-ADD]
 
 /datum/preferences/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
 	. = ..()
@@ -286,6 +377,125 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 			update_static_data(ui.user)
 			ui_interact(ui.user)
 			return TRUE
+
+		if("volume")
+			var/channel = text2num(params["channel"])
+			var/volume = text2num(params["volume"])
+			if(isnull(channel))
+				return FALSE
+			channel_volume["[channel]"] = volume
+			save_preferences()
+			var/static/list/instrument_channels = list(
+				CHANNEL_INSTRUMENTS,
+			)
+			if(!(channel in GLOB.proxy_sound_channels))
+				update_channel_volume(channel)
+			else if((channel in instrument_channels))
+				var/datum/song/holder_song = new
+				for(var/used_channel in holder_song.channels_playing)
+					update_channel_volume(used_channel)
+
+			if(channel == CHANNEL_MASTER_VOLUME)
+				update_test_sound(master_changed = TRUE)
+			else
+				update_test_sound(mixer_channel_changed = channel)
+
+			on_mixer_volume_changed(changed_channel = channel)
+
+			return TRUE
+
+		if("reset_all_volumes")
+			for(var/channel in GLOB.used_sound_channels)
+				channel_volume["[channel]"] = 100
+
+			save_preferences()
+			update_channel_volume(CHANNEL_MASTER_VOLUME)
+			update_test_sound(master_changed = TRUE)
+			on_mixer_volume_changed(changed_channel = CHANNEL_MASTER_VOLUME)
+			return TRUE
+
+		if("test_sound")
+			var/channel_num = text2num(params["channel"])
+
+			parent.mob.stop_sound_channel(CHANNEL_TEST_SOUND)
+			test_sound_channels.Cut()
+
+			if(!isnull(channel_num) && (channel_num in GLOB.used_sound_channels))
+				var/sound_file
+				var/vol = 100 // У некоторых звуков отличается параметр грокмости при воспроизведении, вытаскивать из каждого вызова перебор - это упрощение
+				switch(channel_num)
+					if(CHANNEL_MASTER_VOLUME)
+						sound_file = 'sound/music/elevator/robocop-short.ogg'
+					if(CHANNEL_SOUND_EFFECTS)
+						sound_file = "sound/items/weapons/punch[rand(1,4)].ogg"
+					if(CHANNEL_AMBIENCE)
+						sound_file = "sound/ambience/general/ambigen[rand(1,14)].ogg"
+					if(CHANNEL_WEATHER)
+						sound_file = pick(
+							"sound/ambience/weather/rain/[pick(flist("sound/ambience/weather/rain/"))]",
+							"sound/ambience/weather/snowstorm/[pick(flist("sound/ambience/weather/snowstorm/"))]",
+							"sound/ambience/weather/ashstorm/outside/[pick(flist("sound/ambience/weather/ashstorm/outside/"))]",
+						)
+					if(CHANNEL_MACHINERY)
+						sound_file = 'sound/machines/mining/refinery.ogg'
+					if(CHANNEL_FOOTSTEPS)
+						sound_file = "sound/effects/footstep/[pick(flist("sound/effects/footstep/"))]"
+					if(CHANNEL_MOB_SOUNDS)
+						sound_file = "sound/mobs/non-humanoids/tourist/[pick(flist("sound/mobs/non-humanoids/tourist/"))]"
+						vol = 50
+					if(CHANNEL_MOB_EMOTES)
+						sound_file = "sound/mobs/humanoids/human/laugh/[pick(flist("sound/mobs/humanoids/human/laugh/"))]"
+						vol = 50
+					if(CHANNEL_VOICES)
+						sound_file = 'sound/runtime/chatter/griffin_10.ogg'
+						vol = 40
+					if(CHANNEL_TTS)
+						sound_file = 'sound/runtime/chatter/griffin_10.ogg'
+						vol = 40
+					if(CHANNEL_SHUTTLES)
+						sound_file = "sound/runtime/hyperspace/[pick(flist("sound/runtime/hyperspace/"))]"
+						//vol = 100
+					if(CHANNEL_RADIO)
+						sound_file = "sound/items/radio/[pick(flist("sound/items/radio/"))]"
+					if(CHANNEL_UI)
+						sound_file = "sound/machines/arcade/[pick(flist("sound/machines/arcade/"))]"
+					if(CHANNEL_RINGTONES)
+						sound_file = 'sound/machines/beep/twobeep.ogg'
+					if(CHANNEL_VOX)
+						sound_file = "sound/announcer/vox_fem/[pick(flist("sound/announcer/vox_fem/"))]"
+					if(CHANNEL_ANNOUNCEMENTS)
+						sound_file = 'sound/announcer/announcement/announce.ogg'
+					if(CHANNEL_STORYTELLER)
+						sound_file = 'sound/announcer/announcement/announce.ogg'
+					if(CHANNEL_HEARTBEAT)
+						sound_file = 'sound/effects/health/fastbeat.ogg'
+					if(CHANNEL_BREATH)
+						sound_file = "sound/mobs/humanoids/breathing/[pick(flist("sound/mobs/humanoids/breathing/"))]"
+						vol = 7
+					if(CHANNEL_LOBBYMUSIC)
+						sound_file = 'sound/music/antag/spy.ogg'
+					if(CHANNEL_EVENT_MUSIC)
+						sound_file = 'sound/music/antag/bloodcult/bloodcult_halos.ogg'
+					// if(CHANNEL_JUKEBOX)
+					if(CHANNEL_INSTRUMENTS)
+						sound_file = 'sound/music/sisyphus/sisyphus.ogg'
+					if(CHANNEL_ADMIN)
+						sound_file = 'sound/effects/adminhelp.ogg'
+						//vol = 100
+					if(CHANNEL_ADMIN_SOUNDS)
+						sound_file = 'sound/music/lobby_music/title0.ogg'
+					else
+						sound_file = 'sound/machines/ping.ogg'
+
+				test_sound_channels["[CHANNEL_TEST_SOUND]"] = list("mixer_channel" = channel_num, "base_volume" = vol)
+				parent.mob.playsound_local(get_turf(parent.mob), sound_file, vol, channel = CHANNEL_TEST_SOUND, mixer_channel = channel_num)
+
+			return TRUE
+
+		if("stop_all_sounds")
+			parent.mob.stop_sound_channel(CHANNEL_TEST_SOUND)
+			test_sound_channels.Cut()
+			return TRUE
 		// [/HORIZON-ADD]
 
 	for (var/datum/preference_middleware/preference_middleware as anything in middleware)
@@ -300,6 +510,12 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	save_preferences()
 	QDEL_NULL(character_preview_view)
 	cached_character_profiles = null
+
+	// [HORIZON-ADD] Master_Sounds
+	if(test_sound_channels)
+		user.stop_sound_channel(CHANNEL_TEST_SOUND)
+		test_sound_channels.Cut()
+	// [/HORIZON-ADD]
 
 /datum/preferences/Topic(href, list/href_list)
 	. = ..()
@@ -580,3 +796,27 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 			default_randomization[preference_key] = RANDOM_ENABLED
 
 	return default_randomization
+
+// [HORIZON-ADD] Master_Sounds
+/datum/preferences/proc/update_test_sound(mixer_channel_changed = null, master_changed = FALSE)
+	var/list/test_info = test_sound_channels["[CHANNEL_TEST_SOUND]"]
+	if(!test_info)
+		return
+
+	var/test_mixer_channel = test_info["mixer_channel"]
+	var/should_update = FALSE
+
+	if(master_changed)
+		should_update = TRUE
+	else if(mixer_channel_changed && test_mixer_channel == mixer_channel_changed)
+		should_update = TRUE
+
+	if(!should_update)
+		return
+
+	var/base_volume = test_info["base_volume"]
+	var/new_vol = calculate_mixed_volume(parent, base_volume, test_mixer_channel)
+	var/sound/new_sound = sound(null, channel = CHANNEL_TEST_SOUND, volume = new_vol)
+	new_sound.status = SOUND_UPDATE
+	SEND_SOUND(parent.mob, new_sound)
+// [/HORIZON-ADD]

@@ -12,11 +12,11 @@
  * * channel - The channel the sound is played at.
  * * pressure_affected - Whether or not difference in pressure affects the sound (E.g. if you can hear in space).
  * * ignore_walls - Whether or not the sound can pass through walls.
- * * falloff_distance - Distance at which falloff begins. Sound is at peak volume (in regards to falloff) aslong as it is in this range.
- * * volume_preference - Optional: Will be checked to modify the volume of the sound for each listener.
+ * * falloff_distance - Distance at which falloff begins. Sound is at peak volume (in regards to falloff) aslong as this range.
  * * min_volume - minimum volume the sound can reach at max_range.
+ * * mixer_channel - Optional: The mixer channel for volume control (defaults to guessing from sound file).
  */
-/proc/playsound(atom/source, soundin, vol as num, vary, extrarange as num, falloff_exponent = SOUND_FALLOFF_EXPONENT, frequency = null, channel = 0, pressure_affected = TRUE, ignore_walls = TRUE, falloff_distance = SOUND_DEFAULT_FALLOFF_DISTANCE, use_reverb = TRUE, datum/preference/numeric/volume/volume_preference = null, min_volume = 3)
+/proc/playsound(atom/source, soundin, vol as num, vary, extrarange as num, falloff_exponent = SOUND_FALLOFF_EXPONENT, frequency = null, channel = 0, pressure_affected = TRUE, ignore_walls = TRUE, falloff_distance = SOUND_DEFAULT_FALLOFF_DISTANCE, use_reverb = TRUE, min_volume = 3, mixer_channel)
 	if(isarea(source))
 		CRASH("playsound(): source is an area")
 
@@ -28,13 +28,18 @@
 
 
 	var/turf/turf_source = get_turf(source)
-	if (!turf_source)
+	if (!turf_source || !soundin || !vol)
 		return
 
+	var/sound/S = isdatum(soundin) ? soundin : sound(get_sfx(soundin))
 	//allocate a channel if necessary now so its the same for everyone
 	channel = channel || SSsounds.random_available_channel()
+	if(!mixer_channel)
+		if(channel in GLOB.used_sound_channels)
+			mixer_channel = channel
+		else
+			mixer_channel = guess_mixer_channel(S) || channel
 
-	var/sound/S = isdatum(soundin) ? soundin : sound(get_sfx(soundin))
 	var/maxdistance = SOUND_RANGE + extrarange
 	var/source_z = turf_source.z
 
@@ -73,8 +78,7 @@
 		if(!mob_turf)
 			continue
 		if(get_dist_euclidean(mob_turf, turf_source) <= maxdistance)
-			listening_mob.playsound_local(turf_source, soundin, vol, vary, frequency, falloff_exponent, channel, pressure_affected, S, maxdistance, falloff_distance, 1, use_reverb, volume_preference)
-
+			listening_mob.playsound_local(turf_source, soundin, vol, vary, frequency, falloff_exponent, channel, pressure_affected, S, maxdistance, falloff_distance, 1, use_reverb, min_volume, mixer_channel)
 	return listeners
 
 /**
@@ -92,18 +96,24 @@
  * * pressure_affected - bool Whether or not difference in pressure affects the sound (E.g. if you can hear in space).
  * * sound_to_use - Optional: Will default to soundin when absent
  * * max_distance - number, determines the maximum distance of our sound
- * * falloff_distance - Distance at which falloff begins. Sound is at peak volume (in regards to falloff) aslong as it is in this range.
+ * * falloff_distance - Distance at which falloff begins. Sound is at peak volume (in regards to falloff) aslong as this range.
  * * distance_multiplier - Default 1, multiplies the maximum distance of our sound
  * * use_reverb - bool default TRUE, determines if our sound has reverb
- * * volume_preference - Optional: Will be checked to modify the volume of the sound.
  * * min_volume - minimum volume the sound can reach at max_range.
+ * * mixer_channel - Optional: The mixer channel for volume control.
  */
-/mob/proc/playsound_local(turf/turf_source, soundin, vol as num, vary, frequency, falloff_exponent = SOUND_FALLOFF_EXPONENT, channel = 0, pressure_affected = TRUE, sound/sound_to_use, max_distance, falloff_distance = SOUND_DEFAULT_FALLOFF_DISTANCE, distance_multiplier = 1, use_reverb = TRUE, datum/preference/numeric/volume/volume_preference = null, min_volume = 5)
+/mob/proc/playsound_local(turf/turf_source, soundin, vol as num, vary, frequency, falloff_exponent = SOUND_FALLOFF_EXPONENT, channel = 0, pressure_affected = TRUE, sound/sound_to_use, max_distance, falloff_distance = SOUND_DEFAULT_FALLOFF_DISTANCE, distance_multiplier = 1, use_reverb = TRUE,  min_volume = 5, mixer_channel = 0)
 	if(!client || HAS_TRAIT(src, TRAIT_DEAF))
 		return
 
 	if(!sound_to_use)
 		sound_to_use = sound(get_sfx(soundin))
+
+	if(!mixer_channel)
+		if(channel in GLOB.used_sound_channels)
+			mixer_channel = channel
+		else
+			mixer_channel = guess_mixer_channel(sound_to_use) || channel //channel fallback in case nothing could be guessed.
 
 	sound_to_use.wait = 0 //No queue
 	sound_to_use.channel = channel || SSsounds.random_available_channel()
@@ -168,26 +178,21 @@
 			sound_to_use.echo[3] = -10000
 			sound_to_use.echo[4] = -10000
 
-	// Apply user-specific volume modifier, if necessary
-	if(ispath(volume_preference) && client.prefs)
-		var/client_volume_modifier = client.prefs.read_preference(volume_preference)
-		sound_to_use.volume *= (client_volume_modifier / 100)
-		if(sound_to_use.volume < 0.1)
-			return FALSE
-
 	if(HAS_TRAIT(src, TRAIT_SOUND_DEBUGGED))
 		to_chat(src, span_admin("Max Range-[max_distance] Distance-[distance] Vol-[round(sound_to_use.volume, 0.01)] Sound-[sound_to_use.file]"))
 
+	//Let's recalculate the volume with pressure & falloff applied.
+	sound_to_use.volume = calculate_mixed_volume(client, sound_to_use.volume, mixer_channel)
 	SEND_SOUND(src, sound_to_use)
 	return TRUE
 
-/proc/sound_to_playing_players(soundin, volume = 100, vary = FALSE, frequency = 0, channel = 0, pressure_affected = FALSE, sound/S, datum/preference/numeric/volume/volume_preference = null)
+/proc/sound_to_playing_players(soundin, volume = 100, vary = FALSE, frequency = 0, channel = 0, pressure_affected = FALSE, sound/S) // [HORIZON-EDIT] Master_Sounds
 	if(!S)
 		S = sound(get_sfx(soundin))
 	for(var/m in GLOB.player_list)
 		if(ismob(m) && !isnewplayer(m))
 			var/mob/M = m
-			M.playsound_local(M, null, volume, vary, frequency, null, channel, pressure_affected, S, volume_preference = volume_preference)
+			M.playsound_local(M, null, volume, vary, frequency, null, channel, pressure_affected, S, mixer_channel = CHANNEL_SOUND_EFFECTS) // [HORIZON-EDIT] Master_Sounds
 
 /mob/proc/stop_sound_channel(chan)
 	SEND_SOUND(src, sound(null, repeat = 0, wait = 0, channel = chan))
@@ -201,9 +206,11 @@
 	set waitfor = FALSE
 	UNTIL(SSticker.login_music) //wait for SSticker init to set the login music
 
-	var/music_volume = prefs.read_preference(/datum/preference/numeric/volume/sound_lobby_volume) * volume_multiplier
-	if((prefs && music_volume) && !CONFIG_GET(flag/disallow_title_music))
+	// [HORIZON-EDIT] Master_Sounds
+	var/music_volume = calculate_mixed_volume(src, 100 * volume_multiplier, CHANNEL_LOBBYMUSIC)
+	if(music_volume > 0 && !CONFIG_GET(flag/disallow_title_music))
 		SEND_SOUND(src, sound(SSticker.login_music, repeat = 0, wait = 0, volume = music_volume, channel = CHANNEL_LOBBYMUSIC)) // MAD JAMS
+	// [/HORIZON-EDIT]
 
 ///get a random frequency.
 /proc/get_rand_frequency()
@@ -225,6 +232,65 @@
  * Creates a soundtoken datum (a sound that updates for movement).
  * allowed_listeners is an optional list of mobs that are the only ones that can hear this sound ever.
  * sound_length is an optional length of the sound. Things like TTS need to pass this since we can't dynamically grab the length in that case.
+ * channel determines the volume basically and passes it to mixer_channel
  */
-/proc/playsoundtoken(atom/source, soundin, volume, range, falloff_exponent = SOUND_FALLOFF_EXPONENT, falloff_distance = SOUND_DEFAULT_FALLOFF_DISTANCE, allowed_listeners, sound_length)
-	return new /datum/sound_token(source, soundin, range, volume, falloff_exponent, falloff_distance, allowed_listeners, sound_length, _delete_on_end = TRUE)
+/proc/playsoundtoken(atom/source, soundin, volume, range, falloff_exponent = SOUND_FALLOFF_EXPONENT, falloff_distance = SOUND_DEFAULT_FALLOFF_DISTANCE, allowed_listeners, sound_length, channel)
+	return new /datum/sound_token(source, soundin, range, volume, falloff_exponent, falloff_distance, allowed_listeners, sound_length, _delete_on_end = TRUE, _channel = channel)
+
+/// Returns channel name and description for the volume mixer UI
+/proc/get_channel_info(channel)
+	switch(channel)
+		if(CHANNEL_MASTER_VOLUME)
+			return list("Master Volume", "Controls the volume of the whole game. This applies to every other volume slider as well.", "General")
+		if(CHANNEL_LOBBYMUSIC)
+			return list("Lobby Music", "The music that plays at the start/end of the game, including the reboot theme.", "Music & Instruments")
+		if(CHANNEL_ADMIN_SOUNDS)
+			return list("Admin MIDI", "Sound of Admin-played music.", "Admin")
+		if(CHANNEL_VOX)
+			return list("AI Vox & Blips", "AI VOX and the sound of AIs speaking over the radio.", "Announcements & Voices")
+		if(CHANNEL_RADIO)
+			return list("Radio & Headset", "The sound speaking over the radio.", "General")
+		if(CHANNEL_ANNOUNCEMENTS)
+			return list("Announcements", "The sound of reports from the Captain/Syndicate/Central Command.", "Announcements & Voices")
+		if(CHANNEL_STORYTELLER)
+			return list("Storyteller", "The voice that plays during story events.", "Announcements & Voices")
+		if(CHANNEL_JUKEBOX)
+			return list("Dance Machines", "Jukeboxes and Rave Modules.", "Music & Instruments")
+		if(CHANNEL_HEARTBEAT)
+			return list("Heartbeat", "The beating of your heart in crit/cardiac arrest.", "Player & Mobs")
+		if(CHANNEL_BREATH)
+			return list("Breath", "WiP", "Player & Mobs")
+		if(CHANNEL_AMBIENCE)
+			return list("Ambience", "Music that plays when you enter a new room, most prominently in the Detective's Office and Maintenance.", "Environment")
+		if(CHANNEL_SOUND_EFFECTS)
+			return list("Sound Effects", "Item pickup/drop/equip, anvil, polling, and other sound effects.", "Environment")
+		if(CHANNEL_FOOTSTEPS)
+			return list("Footsteps", "The sound when anyone moves around.", "Player & Mobs")
+		if(CHANNEL_WEATHER)
+			return list("Weather", "Looping noise of dust storm, rain, snow storm.", "Environment")
+		if(CHANNEL_MACHINERY)
+			return list("Machinery", "Airlocks, Buttons, Remotes, and all other machines.", "Environment")
+		if(CHANNEL_INSTRUMENTS)
+			return list("Player Instruments", "All musical sounds from instruments, including ambient music (e.g. elevator music).", "Music & Instruments")
+		if(CHANNEL_MOB_SOUNDS)
+			return list("Mob Sounds", "Non-combat creature sounds.", "Player & Mobs")
+		if(CHANNEL_MOB_EMOTES)
+			return list("Mob Emotes", "Spitting, kissing, and every other emote with a sound.", "Player & Mobs")
+		if(CHANNEL_VOICES)
+			return list("Voices", "The sound when someone speaks.", "Announcements & Voices")
+		if(CHANNEL_TTS)
+			return list("Text to Speech", "Voiced speech (TTS) of people around you and over the radio.", "Announcements & Voices")
+		if(CHANNEL_RINGTONES)
+			return list("Ringtones", "Sound when you get a notification from a mobile device.", "General")
+		if(CHANNEL_ADMIN)
+			return list("Admin Sounds", "Used for fax requests, prayers, and bwoinks. Admin-only.", "Admin")
+		if(CHANNEL_SHUTTLES)
+			return list("Shuttles", "The sound of shuttles booting, docking, and departing.", "Environment")
+		if(CHANNEL_UI)
+			return list("UI", "Sounds played directly to you, such as interactin with machinery, charges regained.", "General")
+		if(CHANNEL_EVENT_MUSIC)
+			return list("Event music", "Music played by fighting bosses or heretics ascending.", "Music & Instruments")
+
+
+	stack_trace("Sound channel [channel] is trying to pass get_channel_info despite having none set.")
+	return list("BROKEN CHANNEL", "There's a channel in the list of pre-set channels that does not have a category.", "General")

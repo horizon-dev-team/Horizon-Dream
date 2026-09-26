@@ -1,20 +1,43 @@
+// [HORIZON-EDIT] Master_Sounds
 //max channel is 1024. Only go lower from here, because byond tends to pick the first available channel to play sounds on
-#define CHANNEL_LOBBYMUSIC 1024
-#define CHANNEL_ADMIN 1023
-#define CHANNEL_VOX 1022
-#define CHANNEL_JUKEBOX 1021
-#define CHANNEL_HEARTBEAT 1020 //sound channel for heartbeats
-#define CHANNEL_BOSS_MUSIC 1019
-#define CHANNEL_AMBIENCE 1018
-#define CHANNEL_BUZZ 1017
-#define CHANNEL_TRAITOR 1016
-#define CHANNEL_CHARGED_SPELL 1015
-#define CHANNEL_ELEVATOR 1014
-#define CHANNEL_ESCAPEMENU 1013
-#define CHANNEL_WEATHER 1012
+#define CHANNEL_MASTER_VOLUME 1024
+#define CHANNEL_SOUND_EFFECTS 1023 // Everything gameplay affecting and not local (Explosion, fighting, doors/shutters, magic)
+
+#define CHANNEL_AMBIENCE 1022
+#define CHANNEL_WEATHER 1021
+
+#define CHANNEL_MACHINERY 1020 // Purely cosmetic sounds of machinery (Buzzing, printing, typing)
+#define CHANNEL_FOOTSTEPS 1019
+#define CHANNEL_MOB_SOUNDS 1018 // Something that can be important, but not purely innocent (Screaming(damage react), )
+#define CHANNEL_MOB_EMOTES 1017 // Anything not gameplay/combat at all from carbons and animals (screaming, moo)
+#define CHANNEL_RADIO 1016
+#define CHANNEL_VOICES 1015 // Sounds coming from creatures when talking (Mostly used in blubber)
+#define CHANNEL_SHUTTLES 1014 // Anything shuttle related (Descending, ascending, flying)
+
+#define CHANNEL_UI 1013 // UI sounds, Machinery interface (PDA, Consoles) and informative playsound_local()
+#define CHANNEL_RINGTONES 1012 // Notifications from devices
+#define CHANNEL_VOX 1011 // AI vox system (ass blast usa)
+#define CHANNEL_STORYTELLER 1010
+#define CHANNEL_ANNOUNCEMENTS 1009 // Cap/Corp announcemets
+#define CHANNEL_HEARTBEAT 1008 // Sound channel for personal heartbeats
+#define CHANNEL_BREATH 1007 // Something that can be important, but not purely innocent (Screaming(damage react), )
+
+#define CHANNEL_LOBBYMUSIC 1006 // Only lobby music
+#define CHANNEL_EVENT_MUSIC 1005 // Gameplay music played while fighting a strong enemy, heretic/bloodcult ascending
+#define CHANNEL_JUKEBOX 1004 // Any portable music player like boomboxes, jukeboxes, radios
+#define CHANNEL_INSTRUMENTS 1003 // MIDI shit from music instruments or In-game ambient music (elevator music)
+
+#define CHANNEL_ADMIN 1002 // Bwoinks, pms
+#define CHANNEL_ADMIN_SOUNDS 1001 // Admin music mostly
+
+#define CHANNEL_TEST_SOUND 1000 // Channel just for testing sounds in preferences. Do not use
+
+#define CHANNEL_TTS 999 // Text to speech (spoken words and radio TTS). Kept separate from CHANNEL_RADIO so muting TTS doesn't mute radio noise
+
 //THIS SHOULD ALWAYS BE THE LOWEST ONE!
 //KEEP IT UPDATED
-#define CHANNEL_HIGHEST_AVAILABLE 1011
+#define CHANNEL_HIGHEST_AVAILABLE 980
+// [/HORIZON-EDIT]
 
 #define MAX_INSTRUMENT_CHANNELS (128 * 6)
 

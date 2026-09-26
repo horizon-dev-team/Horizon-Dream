@@ -17,3 +17,4 @@
 	volume = 7
 	pressure_affected = FALSE
 	vary = TRUE
+	sound_channel = CHANNEL_BREATH

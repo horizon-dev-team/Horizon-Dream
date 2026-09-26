@@ -199,25 +199,31 @@
 		else
 			sound_token_instance = new /datum/sound_token(parent, soundfile, SOUND_RANGE + extra_range, volume_override || volume, falloff_exponent, falloff_distance, _delete_on_end = delete_when_finished, _repeating = repeat_sound)
 		return
+	// [HORIZON-EDIT] Master_Sounds
 	var/sound/sound_to_play = sound(soundfile)
-	sound_to_play.channel = sound_channel || SSsounds.random_available_channel()
-	sound_to_play.volume = volume_override || volume //Use volume as fallback if theres no override
 	if(direct)
-		SEND_SOUND(parent, sound_to_play)
+		var/mob/mob_parent = parent
+		if(!mob_parent?.client)
+			return
+		sound_to_play.channel = sound_channel || guess_mixer_channel(soundfile) || SSsounds.random_available_channel()
+		sound_to_play.volume = calculate_mixed_volume(mob_parent.client, volume_override || volume, sound_to_play.channel)
+		SEND_SOUND(mob_parent, sound_to_play)
 	else
 		playsound(
 			parent,
 			sound_to_play,
-			volume,
+			volume_override || volume,
 			vary,
 			extra_range,
 			falloff_exponent = falloff_exponent,
-			channel = sound_to_play.channel,
+			channel = sound_channel,
 			pressure_affected = pressure_affected,
 			ignore_walls = ignore_walls,
 			falloff_distance = falloff_distance,
 			use_reverb = use_reverb,
+			mixer_channel = sound_channel,
 		)
+	// [/HORIZON-EDIT]
 
 /// Returns the sound we should now be playing.
 /datum/looping_sound/proc/get_sound(_mid_sounds)

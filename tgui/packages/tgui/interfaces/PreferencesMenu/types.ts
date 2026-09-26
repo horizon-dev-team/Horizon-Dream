@@ -132,6 +132,7 @@ export enum JoblessRole {
 export enum GamePreferencesSelectedPage {
   Settings,
   Keybindings,
+  VolumeMixer,
 }
 
 export const createSetPreference =
@@ -206,6 +207,16 @@ export type PreferencesMenuData = {
   name_to_use: string;
 
   window: PrefsWindow;
+
+  channels: Channel[];
+};
+
+export type Channel = {
+  num: number;
+  name: string;
+  desc: string;
+  volume: number;
+  category?: string;
 };
 
 export type ServerData = {

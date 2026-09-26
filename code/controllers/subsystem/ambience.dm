@@ -58,11 +58,11 @@ SUBSYSTEM_DEF(ambience)
 ///Attempts to play an ambient sound to a mob, returning the cooldown in deciseconds
 /area/proc/play_ambience(mob/M, sound/override_sound, volume = 27)
 	var/sound/new_sound = override_sound || pick(ambientsounds)
+	volume = calculate_mixed_volume(M.client, volume, CHANNEL_AMBIENCE)	// [HORIZON-EDIT] Master_Sounds
+
 	if(!new_sound) // Dont try to play a sound if we dont have any.
 		return 1 MINUTES
-	/// volume modifier for ambience as set by the player in preferences.
-	var/volume_modifier = (M.client?.prefs.read_preference(/datum/preference/numeric/volume/sound_ambience_volume))/100
-	new_sound = sound(new_sound, repeat = 0, wait = 0, volume = volume*volume_modifier, channel = CHANNEL_AMBIENCE)
+	new_sound = sound(new_sound, repeat = 0, wait = 0, volume = volume, channel = CHANNEL_AMBIENCE) // [HORIZON-EDIT] Master_Sounds
 	SEND_SOUND(M, new_sound)
 
 	var/sound_length = SSsounds.get_sound_length(new_sound.file)
@@ -115,6 +115,7 @@ SUBSYSTEM_DEF(ambience)
 
 	refresh_looping_ambience()
 
+// [HORIZON-EDIT] Master_Sounds
 /mob/proc/refresh_looping_ambience()
 	SIGNAL_HANDLER
 
@@ -123,21 +124,20 @@ SUBSYSTEM_DEF(ambience)
 
 	var/area/my_area = get_area(src)
 	var/sound_to_use = my_area.ambient_buzz
-	var/volume_modifier = client.prefs.read_preference(/datum/preference/numeric/volume/sound_ship_ambience_volume)
 
-	if(!sound_to_use || !(client.prefs.read_preference(/datum/preference/numeric/volume/sound_ship_ambience_volume)))
-		SEND_SOUND(src, sound(null, repeat = 0, wait = 0, channel = CHANNEL_BUZZ))
+	if(!sound_to_use || !client?.prefs?.channel_volume["[CHANNEL_AMBIENCE]"])
+		SEND_SOUND(src, sound(null, repeat = 0, wait = 0, channel = CHANNEL_AMBIENCE))
 		client.current_ambient_sound = null
 		return
 
 	if(HAS_TRAIT(src, TRAIT_DEAF)) // Can the mob hear?
-		SEND_SOUND(src, sound(null, repeat = 0, wait = 0, channel = CHANNEL_BUZZ))
+		SEND_SOUND(src, sound(null, repeat = 0, wait = 0, channel = CHANNEL_AMBIENCE))
 		client.current_ambient_sound = null
 		return
 
 	//Station ambience is dependent on a functioning and charged APC with environment power enabled.
 	if(!is_mining_level(my_area.z) && ((!my_area.apc || !my_area.apc.operating || !my_area.apc.cell?.charge && my_area.requires_power || !my_area.power_environ)))
-		SEND_SOUND(src, sound(null, repeat = 0, wait = 0, channel = CHANNEL_BUZZ))
+		SEND_SOUND(src, sound(null, repeat = 0, wait = 0, channel = CHANNEL_AMBIENCE))
 		client.current_ambient_sound = null
 		return
 	else
@@ -145,4 +145,6 @@ SUBSYSTEM_DEF(ambience)
 			return
 
 		client.current_ambient_sound = sound_to_use
-		SEND_SOUND(src, sound(my_area.ambient_buzz, repeat = 1, wait = 0, volume = my_area.ambient_buzz_vol * (volume_modifier / 100), channel = CHANNEL_BUZZ))
+		var/volume_to_play = calculate_mixed_volume(client, my_area.ambient_buzz_vol, CHANNEL_AMBIENCE)
+		SEND_SOUND(src, sound(my_area.ambient_buzz, repeat = 1, wait = 0, volume = volume_to_play, channel = CHANNEL_AMBIENCE))
+// [/HORIZON-EDIT]

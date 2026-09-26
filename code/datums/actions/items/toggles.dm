@@ -142,7 +142,7 @@
 		stored_cutoffs = null
 		if(stored_colour)
 			goggles.change_glass_color(stored_colour)
-		playsound(goggles, 'sound/items/night_vision_on.ogg', 30, TRUE, -3)
+		playsound(goggles, 'sound/items/night_vision_on.ogg', 30, TRUE, -3, mixer_channel = CHANNEL_UI) // [HORIZON-EDIT] Master_Sounds
 	else
 		stored_cutoffs = goggles.color_cutoffs
 		stored_colour = goggles.glass_colour_type
@@ -150,7 +150,7 @@
 		goggles.flash_protect = FLASH_PROTECTION_NONE
 		if(stored_colour)
 			goggles.change_glass_color(null)
-		playsound(goggles, 'sound/machines/click.ogg', 30, TRUE, -3)
+		playsound(goggles, 'sound/machines/click.ogg', 30, TRUE, -3, mixer_channel = CHANNEL_UI) // [HORIZON-EDIT] Master_Sounds
 	holder?.update_sight()
 	goggles.update_appearance()
 	return TRUE

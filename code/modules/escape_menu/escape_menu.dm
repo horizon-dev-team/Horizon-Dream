@@ -74,6 +74,7 @@ GAME_VERB_HIDDEN(/client, reset_held_keys_verb, "Reset Held Keys")
 		"admins" = build_admin_list(),
 		"players" = build_player_list(),
 		"ignoredOffline" = build_ignored_offline(),
+		"uiVolume" = client?.prefs ? calculate_mixed_volume(client, 100, CHANNEL_UI) / 100 : 0.8, // [HORIZON-EDIT] Master_Sounds
 	))
 
 /datum/escape_menu/proc/on_client_qdel()
@@ -150,6 +151,7 @@ GAME_VERB_HIDDEN(/client, reset_held_keys_verb, "Reset Held Keys")
 		"ignoredOffline" = build_ignored_offline(),
 		"resources" = resources,
 		"suicideIcon" = GLOB.escape_menu_suicide_icon_base64,
+		"uiVolume" = client?.prefs ? calculate_mixed_volume(client, 100, CHANNEL_UI) / 100 : 0.8, // [HORIZON-EDIT] Master_Sounds
 	))
 
 /datum/escape_menu/proc/build_admin_list()

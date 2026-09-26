@@ -78,6 +78,20 @@
 	if(!istype(turf))
 		return
 
+	if(source.buckled || source.throwing || source.movement_type & (VENTCRAWLING | FLYING) || HAS_TRAIT(source, TRAIT_IMMOBILIZED) || CHECK_MOVE_LOOP_FLAGS(source, MOVEMENT_LOOP_OUTSIDE_CONTROL))
+		return
+
+	if(source.body_position == LYING_DOWN) //play crawling sound if we're lying
+		if(turf.footstep)
+			var/sound = 'sound/effects/footstep/crawl1.ogg'
+			if(HAS_TRAIT(source, TRAIT_FLOPPING))
+				sound = pick(SFX_FISH_PICKUP, 'sound/mobs/non-humanoids/fish/fish_drop1.ogg')
+			playsound(turf, sound, 15 * volume, falloff_distance = 1, vary = sound_vary, mixer_channel = CHANNEL_FOOTSTEPS) // [HORIZON-EDIT] Master_Sounds
+		return
+
+	if(iscarbon(source) && source.move_intent == MOVE_INTENT_WALK)
+		return // stealth
+
 	steps_for_living[source] += 1
 	var/steps = steps_for_living[source]
 
@@ -131,13 +145,13 @@
 
 	if(isfile(footstep_sounds) || istext(footstep_sounds))
 		/// the volume for this is defined on attach when the sound gets set footstep_sounds
-		playsound(source.loc, footstep_sounds, volume, falloff_distance = 1, vary = sound_vary)
+		playsound(source.loc, footstep_sounds, volume, falloff_distance = 1, vary = sound_vary, mixer_channel = CHANNEL_FOOTSTEPS) // [HORIZON-EDIT] Master_Sounds
 		return
 
 	var/turf_footstep = prepared_steps[footstep_type]
 	if(isnull(turf_footstep) || !footstep_sounds[turf_footstep])
 		return
-	playsound(source.loc, pick(footstep_sounds[turf_footstep][1]), footstep_sounds[turf_footstep][2] * volume, TRUE, footstep_sounds[turf_footstep][3] + e_range, falloff_distance = 1, vary = sound_vary)
+	playsound(source.loc, pick(footstep_sounds[turf_footstep][1]), footstep_sounds[turf_footstep][2] * volume, TRUE, footstep_sounds[turf_footstep][3] + e_range, falloff_distance = 1, vary = sound_vary, mixer_channel = CHANNEL_FOOTSTEPS) // [HORIZON-EDIT] Master_Sounds
 
 /datum/element/footstep/proc/play_humanstep(mob/living/carbon/human/source, atom/oldloc, direction, forced, list/old_locs, momentum_change)
 	SIGNAL_HANDLER
@@ -236,6 +250,7 @@
 		vary = sound_vary,
 		extrarange = picked_range,
 		falloff_distance = 1,
+		mixer_channel = CHANNEL_FOOTSTEPS, // [HORIZON-EDIT] Master_Sounds
 	)
 
 	if(heard_clients)
@@ -256,4 +271,7 @@
 	if(!istype(source_loc))
 		return
 
-	playsound(source_loc, footstep_sounds, 50, falloff_distance = 1, vary = sound_vary)
+	if(CHECK_MOVE_LOOP_FLAGS(source, MOVEMENT_LOOP_OUTSIDE_CONTROL))
+		return
+
+	playsound(source_loc, footstep_sounds, 50, falloff_distance = 1, vary = sound_vary, mixer_channel = CHANNEL_FOOTSTEPS) // [HORIZON-EDIT] Master_Sounds

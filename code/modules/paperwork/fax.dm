@@ -370,8 +370,8 @@ GLOBAL_VAR_INIT(fax_autoprinting, FALSE)
 				type = MESSAGE_TYPE_PRAYER,
 				confidential = TRUE)
 			for(var/client/staff as anything in GLOB.admins)
-				if(staff?.prefs.read_preference(/datum/preference/toggle/comms_notification))
-					SEND_SOUND(staff, sound('sound/misc/server-ready.ogg'))
+				if(staff?.prefs.channel_volume["[CHANNEL_ADMIN_SOUNDS]"]) // [HORIZON-EDIT] Master_Sounds
+					SEND_SOUND(staff, sound('sound/misc/server-ready.ogg', volume = calculate_mixed_volume(staff, 100, CHANNEL_ADMIN_SOUNDS)))
 
 			if(GLOB.fax_autoprinting)
 				for(var/obj/machinery/fax/admin/FAX as anything in SSmachines.get_machines_by_type_and_subtypes(/obj/machinery/fax/admin))

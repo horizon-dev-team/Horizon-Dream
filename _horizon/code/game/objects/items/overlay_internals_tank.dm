@@ -1,6 +1,7 @@
 /obj/item/tank/internals
 	//0 = empty, 1 = critical warning, 2 = alert, 3 = warning, 4 = nominal
 	var/alert_level = 4
+	var/icon_status_overlay = '_horizon/icons/obj/tank.dmi'
 
 /obj/item/tank/internals/Initialize(mapload)
 	. = ..()
@@ -27,7 +28,7 @@
 		else
 			status_overlay_icon_state = "status_empty"
 
-	var/mutable_appearance/status_overlay = mutable_appearance('_horizon/icons/obj/tank.dmi', status_overlay_icon_state)
+	var/mutable_appearance/status_overlay = mutable_appearance(icon_status_overlay, status_overlay_icon_state)
 	var/matrix/overlay_matrix = new
 	switch(type)
 		if(/obj/item/tank/internals/emergency_oxygen)

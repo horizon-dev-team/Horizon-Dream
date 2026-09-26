@@ -2179,7 +2179,7 @@
 	extended_desc = "An advanced suit that has dual ion engines powerful enough to grant a humanoid flight. \
 		Contains an internal self-recharging high-current capacitor for short, powerful bo- \
 		Oh wait, this is not actually a flight suit. Fuck."
-	default_skin = "debug"
+	default_skin = "techno-rig" // [HORIZON-EDIT] Debug_tools
 	armor_type = /datum/armor/mod_theme_debug
 	resistance_flags = FIRE_PROOF|ACID_PROOF
 	atom_flags = PREVENT_CONTENTS_EXPLOSION_1
@@ -2191,9 +2191,12 @@
 	hearing_protection = EAR_PROTECTION_NORMAL
 	allowed_suit_storage = list(
 		/obj/item/gun,
+		/obj/item/tactical_recharger,
 	)
 	variants = list(
-		"debug" = list(
+		"techno-rig" = list(
+			MOD_ICON_OVERRIDE = '_horizon/icons/obj/mod_suit.dmi',
+			MOD_WORN_ICON_OVERRIDE = '_horizon/icons/obj/in_mob/mod_suit_mob.dmi',
 			/obj/item/clothing/head/mod = list(
 				UNSEALED_CLOTHING = SNUG_FIT|THICKMATERIAL,
 				SEALED_CLOTHING = STOPSPRESSUREDAMAGE|BLOCK_GAS_SMOKE_EFFECT|HEADINTERNALS,
@@ -2258,7 +2261,8 @@
 	hearing_protection = EAR_PROTECTION_FULL
 	allowed_suit_storage = list(
 		/obj/item/gun,
-	)
+		/obj/item/tactical_recharger,
+	) // [HORIZON-EDIT] Debug_tools
 	variants = list(
 		"debug" = list(
 			/obj/item/clothing/head/mod = list(

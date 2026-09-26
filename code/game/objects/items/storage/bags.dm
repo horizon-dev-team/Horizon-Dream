@@ -435,6 +435,17 @@
 	resistance_flags = FLAMMABLE
 	storage_type = /datum/storage/bag/chemistry
 
+/obj/item/storage/bag/chemistry/debug
+
+/obj/item/storage/bag/chemistry/debug/PopulateContents()
+	for(var/i in 1 to 8)
+		new /obj/item/reagent_containers/cup/beaker/bluespace(src)
+		new /obj/item/reagent_containers/cup/beaker/meta(src)
+		new /obj/item/reagent_containers/cup/beaker/plastic(src)
+		new /obj/item/reagent_containers/cup/beaker/large(src)
+		new /obj/item/reagent_containers/cup/beaker(src)
+		new /obj/item/reagent_containers/cup/beaker/noreact(src)
+
 /obj/item/storage/bag/money
 	name = "money bag"
 	desc = "A bag for storing your profits."

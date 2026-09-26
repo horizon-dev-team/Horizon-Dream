@@ -1512,6 +1512,21 @@
 	trim = /datum/id_trim/admin
 	wildcard_slots = WILDCARD_LIMIT_ADMIN
 
+/obj/item/card/id/advanced/debug
+	name = "\improper Debug ID"
+	desc = "A debug ID card. Has ALL the all access and a boatload of money, you really shouldn't have this."
+	icon = '_horizon/icons/obj/card.dmi'
+	icon_state = "card_dev"
+	assigned_icon_state = "assigned_centcom"
+	trim = /datum/id_trim/admin/debug
+/*
+/obj/item/card/id/advanced/debug/get_trim_assignment()
+	if(ishuman(loc))
+		var/mob/living/carbon/human/owner = loc
+		if(owner.mind?.assigned_role?.title)
+			return owner.mind.assigned_role.title
+	return trim?.assignment || assignment
+*/
 /obj/item/card/id/advanced/debug/Initialize(mapload)
 	. = ..()
 	set_account(new /datum/bank_account(player_account = FALSE))
@@ -1534,6 +1549,35 @@
 		return FALSE
 
 	return TRUE
+
+/// Called when this card is equipped, updates SecHUD to use our custom icon file.
+/obj/item/card/id/advanced/debug/equipped(mob/user, slot)
+	. = ..()
+	if(slot & ITEM_SLOT_ID && ishuman(user))
+		update_custom_sechud(user)
+
+/// Called when this card is dropped, restores original SecHUD.
+/obj/item/card/id/advanced/debug/dropped(mob/user)
+	. = ..()
+	if(ishuman(user))
+		restore_sechud(user)
+
+/// Applies our custom SecHUD icon for the horizon_profession trim.
+/obj/item/card/id/advanced/debug/proc/update_custom_sechud(mob/living/carbon/human/human)
+	if(!human.hud_list || !human.hud_list[ID_HUD])
+		return
+	var/image/holder = human.hud_list[ID_HUD]
+	holder.icon = '_horizon/icons/obj/hud.dmi'
+	holder.icon_state = trim?.sechud_icon_state || "hudno_id"
+
+/// Restores the original SecHUD icon file.
+/obj/item/card/id/advanced/debug/proc/restore_sechud(mob/living/carbon/human/human)
+	if(!human.hud_list || !human.hud_list[ID_HUD])
+		return
+	var/image/holder = human.hud_list[ID_HUD]
+	holder.icon = 'icons/mob/huds/hud.dmi'
+	// Re-read the icon state from the trim so it's not stale
+	human.update_ID_card()
 
 /obj/item/card/id/advanced/prisoner
 	name = "prisoner ID card"

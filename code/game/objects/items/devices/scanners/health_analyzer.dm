@@ -110,6 +110,11 @@
 			if(readability_check)
 				woundscan(user, M, src)
 
+	// [HORIZON-ADD]
+	if(!user.Adjacent(M))
+		M.Beam(user, icon_state = "medbeam", time = 5, beam_color = "#9ce")
+	// [/HORIZON-ADD]
+
 	add_fingerprint(user)
 
 /obj/item/healthanalyzer/interact_with_atom_secondary(atom/interacting_with, mob/living/user, list/modifiers)
@@ -625,12 +630,14 @@
 	desc = "A hand-held body scanner able to distinguish vital signs of the subject with high accuracy."
 	custom_materials = list(/datum/material/iron = SHEET_MATERIAL_AMOUNT * 2.5, /datum/material/glass = SHEET_MATERIAL_AMOUNT * 1.25, /datum/material/silver = SHEET_MATERIAL_AMOUNT, /datum/material/gold = SHEET_MATERIAL_AMOUNT * 0.75)
 	scanpower = SCANPOWER_ADVANCED
+	reach = 3 // [HORIZON-ADD]
 
 /obj/item/healthanalyzer/super
 	name = "super health analyzer"
 	icon_state = "health_super"
 	desc = "A health scanner for debuggers. Functions the same as ghost healthscans."
 	scanpower = SCANPOWER_SUPER
+	reach = 6 // [HORIZON-ADD]
 
 #define AID_EMOTION_NEUTRAL "neutral"
 #define AID_EMOTION_HAPPY "happy"

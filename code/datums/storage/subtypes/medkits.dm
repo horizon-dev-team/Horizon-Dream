@@ -98,6 +98,10 @@
 	holdables = list_of_everything_medkits_can_hold
 	return ..()
 
+/datum/storage/medkit/surgery/holding
+	max_slots = 24
+	max_total_storage = 48
+
 ///Tactical medkit
 /datum/storage/medkit/tactical
 	max_slots = 21

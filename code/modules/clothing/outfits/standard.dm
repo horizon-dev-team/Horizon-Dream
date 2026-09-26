@@ -413,11 +413,11 @@
 	lock.true_owner_ckey = agent.ckey
 
 /datum/outfit/debug //Debug objs plus MODsuit
-	name = "Debug outfit"
+	name = "(Dev) Debug outfit" // [HORIZON-EDIT] Debug_tools
 
 	id = /obj/item/card/id/advanced/debug
-	uniform = /obj/item/clothing/under/misc/patriotsuit
-	suit_store = /obj/item/tank/internals/oxygen
+	uniform = /obj/item/clothing/under/rank/centcom/military // [HORIZON-EDIT]
+	suit_store = /obj/item/tactical_recharger/pulse // [HORIZON-EDIT]
 	back = /obj/item/mod/control/pre_equipped/debug
 	backpack_contents = list(
 		/obj/item/melee/energy/axe = 1,
@@ -427,15 +427,16 @@
 		/obj/item/debug/human_spawner = 1,
 		/obj/item/debug/omnitool = 1,
 )
-	belt = /obj/item/storage/belt/utility/full/powertools
+	belt = /obj/item/storage/belt/utility/full/powertools/holding // [HORIZON-EDIT]
 	ears = /obj/item/radio/headset/headset_cent/commander
-	glasses = /obj/item/clothing/glasses/debug
+	glasses = /obj/item/clothing/glasses/hud/debug // [HORIZON-EDIT]
 	gloves = /obj/item/clothing/gloves/combat
 	mask = /obj/item/clothing/mask/gas/welding/up
 	shoes = /obj/item/clothing/shoes/magboots/advance
 
 	box = /obj/item/storage/box/debugtools
-	internals_slot = ITEM_SLOT_SUITSTORE
+	l_pocket = /obj/item/tank/internals/emergency_oxygen/double // [HORIZON-ADD]
+	internals_slot = ITEM_SLOT_LPOCKET // [HORIZON-EDIT]
 
 /datum/outfit/debug/post_equip(mob/living/carbon/human/H, visuals_only = FALSE)
 	var/obj/item/card/id/W = H.wear_id
@@ -461,7 +462,7 @@
 )
 	belt = /obj/item/storage/belt/utility/full/powertools
 	ears = /obj/item/radio/headset/headset_cent/commander
-	glasses = /obj/item/clothing/glasses/debug
+	glasses = /obj/item/clothing/glasses/hud/debug // [HORIZON-EDIT]
 	gloves = /obj/item/clothing/gloves/combat
 	mask = /obj/item/clothing/mask/gas/welding/up
 	shoes = /obj/item/clothing/shoes/magboots/advance

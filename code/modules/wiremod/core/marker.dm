@@ -2,6 +2,7 @@
 	name = "circuit multitool"
 	desc = "A circuit multitool. Used to mark entities which can then be uploaded to components by pressing the upload button on a port. \
 	Acts as a normal multitool otherwise. Use in hand to clear marked entity so that you can mark another entity."
+	icon = 'icons/obj/devices/tool.dmi' // [HORIZON-ADD]
 	icon_state = "multitool_circuit"
 	apc_scanner = FALSE // would conflict with mark clearing
 	custom_materials = list(/datum/material/iron = HALF_SHEET_MATERIAL_AMOUNT, /datum/material/glass = HALF_SHEET_MATERIAL_AMOUNT)

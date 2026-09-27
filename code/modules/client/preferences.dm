@@ -479,7 +479,8 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 						sound_file = 'sound/music/antag/spy.ogg'
 					if(CHANNEL_EVENT_MUSIC)
 						sound_file = 'sound/music/antag/bloodcult/bloodcult_halos.ogg'
-					// if(CHANNEL_JUKEBOX)
+					if(CHANNEL_JUKEBOX)
+						sound_file = 'sound/music/lobby_music/title3.ogg'
 					if(CHANNEL_INSTRUMENTS)
 						sound_file = 'sound/music/sisyphus/sisyphus.ogg'
 					if(CHANNEL_ADMIN)

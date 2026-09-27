@@ -33,16 +33,19 @@ export const VolumeMixerPage = () => {
 
   const groupedChannels = groupChannelsByCategory(otherChannels);
 
-  const categories = Object.keys(groupedChannels).sort((a, b) => {
-    const countA = groupedChannels[a].length;
-    const countB = groupedChannels[b].length;
+  const CATEGORY_ORDER = [
+    'Announcements & Voices',
+    'Environment',
+    'Player & Mobs',
+    'General',
+    'Music & Instruments',
+    'Admin',
+  ];
 
-    if (countA !== countB) {
-      return countB - countA;
-    }
-
-    return a.localeCompare(b);
-  });
+  const categories = [
+  ...CATEGORY_ORDER.filter((cat) => groupedChannels[cat]),
+  ...Object.keys(groupedChannels).filter((cat) => !CATEGORY_ORDER.includes(cat)),
+];
 
   const halfIndex = Math.ceil(SOUND_OPTIONS.length / 2);
   const leftOptions = SOUND_OPTIONS.slice(0, halfIndex);

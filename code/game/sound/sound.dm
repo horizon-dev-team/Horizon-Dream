@@ -255,7 +255,7 @@
 		if(CHANNEL_STORYTELLER)
 			return list("Storyteller", "The voice that plays during story events.", "Announcements & Voices")
 		if(CHANNEL_JUKEBOX)
-			return list("Dance Machines", "Jukeboxes and Rave Modules.", "Music & Instruments")
+			return list("Jukeboxes", "Jukeboxes and Rave Modules.", "Music & Instruments")
 		if(CHANNEL_HEARTBEAT)
 			return list("Heartbeat", "The beating of your heart in crit/cardiac arrest.", "Player & Mobs")
 		if(CHANNEL_BREATH)
@@ -290,7 +290,6 @@
 			return list("UI", "Sounds played directly to you, such as interactin with machinery, charges regained.", "General")
 		if(CHANNEL_EVENT_MUSIC)
 			return list("Event music", "Music played by fighting bosses or heretics ascending.", "Music & Instruments")
-
 
 	stack_trace("Sound channel [channel] is trying to pass get_channel_info despite having none set.")
 	return list("BROKEN CHANNEL", "There's a channel in the list of pre-set channels that does not have a category.", "General")

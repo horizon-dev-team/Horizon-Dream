@@ -428,6 +428,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 						sound_file = 'sound/music/elevator/robocop-short.ogg'
 					if(CHANNEL_SOUND_EFFECTS)
 						sound_file = "sound/items/weapons/punch[rand(1,4)].ogg"
+						vol = 50
 					if(CHANNEL_AMBIENCE)
 						sound_file = "sound/ambience/general/ambigen[rand(1,14)].ogg"
 					if(CHANNEL_WEATHER)
@@ -436,8 +437,10 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 							"sound/ambience/weather/snowstorm/[pick(flist("sound/ambience/weather/snowstorm/"))]",
 							"sound/ambience/weather/ashstorm/outside/[pick(flist("sound/ambience/weather/ashstorm/outside/"))]",
 						)
+						vol = 50
 					if(CHANNEL_MACHINERY)
-						sound_file = 'sound/machines/mining/refinery.ogg'
+						sound_file = "sound/machines/[pick(flist("sound/machines/"))]"
+						vol = 50
 					if(CHANNEL_FOOTSTEPS)
 						sound_file = "sound/effects/footstep/[pick(flist("sound/effects/footstep/"))]"
 					if(CHANNEL_MOB_SOUNDS)

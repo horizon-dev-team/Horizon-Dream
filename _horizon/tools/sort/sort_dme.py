@@ -12,6 +12,24 @@ def normalize_path(value: str) -> str:
     return value.replace('\\', '/').lower()
 
 
+def normalize_include_path(path: str) -> str:
+    return path.replace('/', '\\')
+
+
+def normalize_include_path_line(line: str) -> str:
+    stripped = line.rstrip('\r\n')
+    match = INCLUDE_RE.match(stripped)
+    if not match:
+        return line
+
+    original_path = match.group(1)
+    normalized_path = normalize_include_path(original_path)
+    prefix = stripped[:match.start(1)]
+    suffix = stripped[match.end(1):]
+    newline = line[len(stripped):]
+    return f'{prefix}{normalized_path}{suffix}{newline}'
+
+
 def sort_include_lines(lines):
     include_lines = []
     non_include_lines = []
@@ -20,15 +38,14 @@ def sort_include_lines(lines):
         stripped = line.rstrip('\r\n')
         match = INCLUDE_RE.match(stripped)
         if match:
-            include_lines.append((match.group(1), line))
+            normalized_line = normalize_include_path_line(line)
+            include_lines.append((normalize_path(match.group(1)), normalized_line))
         else:
             non_include_lines.append(line)
 
-    # Sorting must match project's ticked_file_enforcement.compare_lines logic
     def cmp_paths(a, b):
-        # a and b are include paths like: code\foo\bar.dm
-        a0 = a.replace('/', '\\').lower()
-        b0 = b.replace('/', '\\').lower()
+        a0 = normalize_path(a).replace('/', '\\')
+        b0 = normalize_path(b).replace('/', '\\')
 
         a_suffix = ''
         if '.' in a0:
@@ -54,11 +71,12 @@ def sort_include_lines(lines):
                     return (a_suffix > b_suffix) - (a_suffix < b_suffix)
                 return (a_seg > b_seg) - (a_seg < b_seg)
 
-        # fallback
         return 0
 
     from functools import cmp_to_key
-    sorted_includes = [line for _, line in sorted(include_lines, key=cmp_to_key(lambda x, y: cmp_paths(x[0], y[0])))]
+    sorted_includes = [
+        line for _, line in sorted(include_lines, key=cmp_to_key(lambda x, y: cmp_paths(x[0], y[0])))
+    ]
     return sorted_includes + non_include_lines
 
 
@@ -91,10 +109,10 @@ def sort_dme_file(path: Path) -> bool:
             output.append(line)
 
     if not any(line.strip() == BEGIN_INCLUDE for line in original_lines):
-        raise ValueError(f"Не найден блок {BEGIN_INCLUDE!r} в файле {path}")
+        raise ValueError(f"Could not find the block {BEGIN_INCLUDE!r} in file {path}")
 
     if not any(line.strip() == END_INCLUDE for line in original_lines):
-        raise ValueError(f"Не найден блок {END_INCLUDE!r} в файле {path}")
+        raise ValueError(f"Could not find the block {END_INCLUDE!r} in file {path}")
 
     new_text = ''.join(output)
     if new_text != text:
@@ -105,32 +123,32 @@ def sort_dme_file(path: Path) -> bool:
 
 
 def parse_args():
-    default_file = Path(__file__).resolve().parents[1] / '_horizon_dream.dme'
+    default_file = Path(__file__).resolve().parents[2] / '_horizon_dream.dme'
 
-    parser = argparse.ArgumentParser(description='Сортирует блок #include в _horizon/_horizon_dream.dme')
+    parser = argparse.ArgumentParser(description='Sorts #include blocks in the project DME files.')
     parser.add_argument(
         'file',
         nargs='?',
         default=str(default_file),
-        help='Путь к .dme-файлу. По умолчанию: _horizon/_horizon_dream.dme'
+        help='Path to the .dme file. Default: _horizon_dream.dme'
     )
-    parser.add_argument('--all', action='store_true', help='Отсортировать оба файлы: _horizon_dream.dme и _horizon_defines.dme')
+    parser.add_argument('--all', action='store_true', help='Sort both: _horizon_dream.dme and _horizon_defines.dme')
     return parser.parse_args()
 
 
 if __name__ == '__main__':
     args = parse_args()
     if args.all:
-        base = Path(__file__).resolve().parents[1]
+        base = Path(__file__).resolve().parents[2]
         files = [base / '_horizon_dream.dme', base / '_horizon_defines.dme']
         any_changed = False
         for f in files:
             if not f.exists():
-                print(f'Файл не найден, пропускаю: {f}')
+                print(f'Skipping missing file: {f}')
                 continue
             changed = sort_dme_file(f)
             any_changed = any_changed or changed
-            print((f'Отсортирован: {f}' if changed else f'Порядок уже корректный: {f}'))
+            print(f'Sorted: {f}' if changed else f'Already sorted: {f}')
         if any_changed:
             exit(0)
         else:
@@ -139,10 +157,10 @@ if __name__ == '__main__':
         file_path = Path(args.file).resolve()
 
         if not file_path.exists():
-            raise FileNotFoundError(f'Файл не найден: {file_path}')
+            raise FileNotFoundError(f'File not found: {file_path}')
 
         changed = sort_dme_file(file_path)
         if changed:
-            print(f'Отсортирован: {file_path}')
+            print(f'Sorted: {file_path}')
         else:
-            print(f'Порядок уже корректный: {file_path}')
+            print(f'Already sorted or no sortable include block found: {file_path}')

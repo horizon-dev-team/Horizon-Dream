@@ -2,7 +2,7 @@
 setlocal
 
 set SCRIPT_DIR=%~dp0
-set SCRIPT_PATH=%SCRIPT_DIR%sort_horizon_dme.py
+set SCRIPT_PATH=%SCRIPT_DIR%sort_dme.py
 set ARGS=--all
 
 where py >nul 2>nul

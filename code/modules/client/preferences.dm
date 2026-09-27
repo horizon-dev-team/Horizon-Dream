@@ -422,7 +422,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 
 			if(!isnull(channel_num) && (channel_num in GLOB.used_sound_channels))
 				var/sound_file
-				var/vol = 100 // У некоторых звуков отличается параметр грокмости при воспроизведении, вытаскивать из каждого вызова перебор - это упрощение
+				var/vol = 100 // Some sounds have different volume parameters when played, extracting a selection from each call is a simplification
 				switch(channel_num)
 					if(CHANNEL_MASTER_VOLUME)
 						sound_file = 'sound/music/elevator/robocop-short.ogg'

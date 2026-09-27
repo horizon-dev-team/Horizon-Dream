@@ -161,7 +161,7 @@
 
 	hangup = new(eye, src)
 	hangup.Grant(user)
-	playsound(answering_holopad, 'sound/machines/ping.ogg', 100)
+	playsound(answering_holopad, 'sound/machines/ping.ogg', 100, mixer_channel = CHANNEL_MACHINERY) // [HORIZON-EDIT] Master_Sounds
 	answering_holopad.say("Connection established.")
 
 //Checks the validity of a holocall and qdels itself if it's not. Returns TRUE if valid, FALSE otherwise

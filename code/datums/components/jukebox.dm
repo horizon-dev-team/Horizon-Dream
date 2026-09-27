@@ -1,7 +1,7 @@
 // Reasons for appling STATUS_MUTE to a mob's sound status
 /// The mob is deaf
 #define MUTE_DEAF (1<<0)
-/// The mob has disabled jukeboxes in their preferences
+/// The mob muted the jukebox mixer channel (CHANNEL_JUKEBOX)
 #define MUTE_PREF (1<<1)
 /// The mob is out of range of the jukebox
 #define MUTE_RANGE (1<<2)
@@ -227,9 +227,11 @@
 
 	RegisterSignals(new_listener, list(COMSIG_MOVABLE_MOVED, COMSIG_MOB_JUKEBOX_PREFERENCE_APPLIED), PROC_REF(listener_moved))
 	RegisterSignals(new_listener, list(SIGNAL_ADDTRAIT(TRAIT_DEAF), SIGNAL_REMOVETRAIT(TRAIT_DEAF)), PROC_REF(listener_deaf))
-	var/pref_volume = new_listener.client?.prefs.read_preference(/datum/preference/numeric/volume/sound_jukebox)
-	if(HAS_TRAIT(new_listener, TRAIT_DEAF) || !pref_volume)
+	// [HORIZON-EDIT] Master_Sounds
+	var/mixed_volume = calculate_mixed_volume(new_listener.client, volume, CHANNEL_JUKEBOX)
+	if(HAS_TRAIT(new_listener, TRAIT_DEAF) || mixed_volume <= 0)
 		listeners[new_listener] |= SOUND_MUTE
+	// [/HORIZON-EDIT]
 
 	if(isnull(active_song_sound))
 		var/area/juke_area = get_area(parent)
@@ -237,7 +239,7 @@
 		active_song_sound.channel = CHANNEL_JUKEBOX
 		active_song_sound.priority = 255
 		active_song_sound.falloff = 2
-		active_song_sound.volume = volume * (pref_volume/100)
+		active_song_sound.volume = mixed_volume // [HORIZON-EDIT] Master_Sounds
 		active_song_sound.y = 1
 		active_song_sound.environment = juke_area.sound_environment || SOUND_ENVIRONMENT_NONE
 		active_song_sound.repeat = sound_loops
@@ -290,9 +292,10 @@
 
 	if((reason & MUTE_DEAF) && HAS_TRAIT(listener, TRAIT_DEAF))
 		return FALSE
-	var/pref_volume = listener.client?.prefs.read_preference(/datum/preference/numeric/volume/sound_jukebox)
-	if((reason & MUTE_PREF) && !pref_volume)
+	// [HORIZON-EDIT] Master_Sounds
+	if((reason & MUTE_PREF) && calculate_mixed_volume(listener.client, volume, CHANNEL_JUKEBOX) <= 0)
 		return FALSE
+	// [/HORIZON-EDIT]
 
 	if(reason & MUTE_RANGE)
 		var/turf/sound_turf = get_turf(parent)
@@ -353,12 +356,14 @@
 		active_song_sound.x = new_x
 		active_song_sound.z = new_z
 
-		var/pref_volume = listener.client?.prefs.read_preference(/datum/preference/numeric/volume/sound_jukebox)
-		if(!pref_volume)
+		// [HORIZON-EDIT] Master_Sounds
+		var/mixed_volume = calculate_mixed_volume(listener.client, volume, CHANNEL_JUKEBOX)
+		if(mixed_volume <= 0)
 			listeners[listener] |= SOUND_MUTE
 		else
 			unmute_listener(listener, MUTE_PREF)
-			active_song_sound.volume = volume * (pref_volume/100)
+			active_song_sound.volume = mixed_volume
+		// [/HORIZON-EDIT]
 
 	SEND_SOUND(listener, active_song_sound)
 

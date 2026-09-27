@@ -741,7 +741,7 @@
 		our_channel,
 		60
 	)
-	var/list/hearers = playsound(idle_platform, jingle, 60, FALSE, 0, extrarange = 7)
+	var/list/hearers = playsound(idle_platform, jingle, 60, FALSE, 0, extrarange = 7, mixer_channel = CHANNEL_INSTRUMENTS) // [HORIZON-EDIT] Master_Sounds
 	new /datum/threed_sound(
 		new_parent = idle_platform,
 		new_sound = jingle,
@@ -751,8 +751,7 @@
 		sound_range = SOUND_RANGE - 3,
 		sound_length = 3 SECONDS,
 		channel = our_channel,
-		preference_volume = /datum/preference/numeric/volume/sound_instruments,
-		preference_signal = null,
+		mixer_channel = CHANNEL_INSTRUMENTS, // [HORIZON-EDIT] Master_Sounds
 		falloff_exponent = SOUND_FALLOFF_EXPONENT,
 		falloff_distance = 5
 	)

@@ -241,8 +241,11 @@ SUBSYSTEM_DEF(vote)
 
 		new_voter.persistent_client.player_actions += voting_action
 		generated_actions += voting_action
-		if(current_vote.vote_sound && new_voter.prefs.read_preference(/datum/preference/toggle/sound_announcements))
-			SEND_SOUND(new_voter, sound(current_vote.vote_sound))
+		// [HORIZON-EDIT] Master_Sounds
+		var/mixed_volume = calculate_mixed_volume(new_voter, 100, CHANNEL_ANNOUNCEMENTS)
+		if(current_vote.vote_sound && mixed_volume > 0)
+			SEND_SOUND(new_voter, sound(current_vote.vote_sound, channel = CHANNEL_ANNOUNCEMENTS, volume = mixed_volume))
+		// [/HORIZON-EDIT]
 
 	return TRUE
 

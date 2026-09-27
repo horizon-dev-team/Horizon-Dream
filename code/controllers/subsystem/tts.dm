@@ -123,7 +123,7 @@ SUBSYSTEM_DEF(tts)
 		return SS_INIT_FAILURE
 	return SS_INIT_SUCCESS
 
-/datum/controller/subsystem/tts/proc/play_tts(datum/weakref/target, list/listeners, sound/audio, sound/audio_blips, datum/language/language, range = 7, volume_offset = 0, ignore_observers = FALSE, source_speaker = null, audio_length = 10 SECONDS, audio_length_blips = 10 SECONDS, volume_preference = /datum/preference/numeric/volume/sound_tts_volume, volume_signal = COMSIG_MOB_TTS_VOLUME_PREFERENCE_APPLIED)
+/datum/controller/subsystem/tts/proc/play_tts(datum/weakref/target, list/listeners, sound/audio, sound/audio_blips, datum/language/language, range = 7, volume_offset = 0, ignore_observers = FALSE, source_speaker = null, audio_length = 10 SECONDS, audio_length_blips = 10 SECONDS, mixer_channel = CHANNEL_TTS) // [HORIZON-EDIT] Master_Sounds
 	var/atom/actual_target = target?.resolve()
 	var/turf/turf_source
 	if(actual_target)
@@ -151,17 +151,18 @@ SUBSYSTEM_DEF(tts)
 		if(!ismob(hearer_atom))
 			continue
 		var/mob/listening_mob = hearer_atom.get_listening_mob()
-		/// volume modifier for TTS as set by the player in preferences.
-		var/volume_modifier = listening_mob.client?.prefs.read_preference(volume_preference)/100
 		var/tts_pref = listening_mob.client?.prefs.read_preference(/datum/preference/choiced/sound_tts)
 		var/hear_self_pref = listening_mob.client?.prefs.read_preference(/datum/preference/toggle/sound_tts_hear_self_radio)
-		if(volume_modifier == 0 || (tts_pref == TTS_SOUND_OFF))
+		// [HORIZON-EDIT] Master_Sounds
+		if(tts_pref == TTS_SOUND_OFF)
 			continue
+		if(isnull(listening_mob.client) || calculate_mixed_volume(listening_mob.client, 100, mixer_channel) <= 0)
+			continue
+		// [/HORIZON-EDIT]
 		if(listening_mob == source_speaker && !hear_self_pref)
 			continue // don't hear your own radio tts if you got it turned off
 
 		var/sound_volume = ((listening_mob == actual_target)? 60 : 85) + volume_offset
-		sound_volume = sound_volume*volume_modifier
 		var/datum/language_holder/holder = listening_mob.get_language_holder()
 		var/sound/audio_to_use = (tts_pref == TTS_SOUND_BLIPS) ? audio_blips : audio
 		if(!holder.has_language(language))
@@ -184,7 +185,8 @@ SUBSYSTEM_DEF(tts)
 				max_distance = SOUND_RANGE,
 				falloff_distance = SOUND_DEFAULT_FALLOFF_DISTANCE,
 				distance_multiplier = 1,
-				use_reverb = TRUE
+				use_reverb = TRUE,
+				mixer_channel = mixer_channel // [HORIZON-EDIT] Master_Sounds
 			)
 		else if(!actual_target)
 			listening_mob.playsound_local(
@@ -197,7 +199,8 @@ SUBSYSTEM_DEF(tts)
 				max_distance = SOUND_RANGE,
 				falloff_distance = SOUND_DEFAULT_FALLOFF_DISTANCE,
 				distance_multiplier = 1,
-				use_reverb = TRUE
+				use_reverb = TRUE,
+				mixer_channel = mixer_channel // [HORIZON-EDIT] Master_Sounds
 			)
 	if(actual_target)
 		new /datum/threed_sound(
@@ -209,8 +212,7 @@ SUBSYSTEM_DEF(tts)
 			sound_range = SOUND_RANGE,
 			sound_length = audio_length,
 			channel = channel,
-			preference_volume = volume_preference,
-			preference_signal = volume_signal
+			mixer_channel = mixer_channel // [HORIZON-EDIT] Master_Sounds
 		)
 		new /datum/threed_sound(
 			new_parent = actual_target,
@@ -221,8 +223,7 @@ SUBSYSTEM_DEF(tts)
 			sound_range = SOUND_RANGE,
 			sound_length = audio_length_blips,
 			channel = channel,
-			preference_volume = volume_preference,
-			preference_signal = volume_signal
+			mixer_channel = mixer_channel // [HORIZON-EDIT] Master_Sounds
 		)
 
 
@@ -428,8 +429,7 @@ SUBSYSTEM_DEF(tts)
 				source_speaker = tts_request.target,
 				audio_length = tts_request.audio_length_radio,
 				audio_length_blips = tts_request.audio_length_blips_radio,
-				volume_preference = /datum/preference/numeric/volume/sound_tts_radio_volume,
-				volume_signal = COMSIG_MOB_TTS_RADIO_VOLUME_PREFERENCE_APPLIED,
+				mixer_channel = CHANNEL_TTS, // [HORIZON-EDIT] Master_Sounds
 			)
 
 		clear_radio_message(identifier)

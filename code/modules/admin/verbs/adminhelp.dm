@@ -416,7 +416,7 @@ GLOBAL_DATUM_INIT(ahelp_tickets, /datum/admin_help_tickets, new)
 	//send this msg to all admins
 	for(var/client/X in GLOB.admins)
 		if(X.prefs.toggles & SOUND_ADMINHELP)
-			SEND_SOUND(X, sound('sound/effects/adminhelp.ogg'))
+			X.mob.playsound_local(null, 'sound/effects/adminhelp.ogg', 100, vary = FALSE, channel = CHANNEL_ADMIN, pressure_affected = FALSE, use_reverb = FALSE) // [HORIZON-EDIT] Master_Sounds
 		window_flash(X, ignorepref = TRUE)
 		to_chat(X,
 			type = MESSAGE_TYPE_ADMINPM,

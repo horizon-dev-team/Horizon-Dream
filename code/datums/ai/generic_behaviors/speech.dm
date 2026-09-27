@@ -32,7 +32,7 @@
 	if(roll <= audible)
 		pawn.manual_emote(pick(emote_hear))
 		if(length(sound))
-			playsound(pawn, pick(sound), 80, vary = TRUE, pressure_affected = TRUE, ignore_walls = FALSE)
+			playsound(pawn, pick(sound), 80, vary = TRUE, pressure_affected = TRUE, ignore_walls = FALSE, mixer_channel = CHANNEL_MOB_EMOTES) // [HORIZON-EDIT] Master_Sounds
 	else if(roll <= audible + visible)
 		pawn.manual_emote(pick(emote_see))
 	else
@@ -42,7 +42,7 @@
 /datum/bt_node/ai_behavior/random_speech/proc/speak(mob/living/pawn, datum/ai_controller/controller)
 	pawn.say(pick(speak), forced = "AI Controller")
 	if(length(sound))
-		playsound(pawn, pick(sound), 80, vary = TRUE)
+		playsound(pawn, pick(sound), 80, vary = TRUE, mixer_channel = CHANNEL_MOB_EMOTES) // [HORIZON-EDIT] Master_Sounds
 
 /datum/bt_node/ai_behavior/random_speech/mothroach
 	speech_chance = 15
@@ -173,12 +173,12 @@
 	if(roll <= length(emote_hear))
 		pawn.manual_emote(pick(emote_hear))
 		if(sound_to_play)
-			playsound(pawn, sound_to_play, 80, vary = TRUE, pressure_affected = TRUE, ignore_walls = FALSE)
+			playsound(pawn, sound_to_play, 80, vary = TRUE, pressure_affected = TRUE, ignore_walls = FALSE, mixer_channel = CHANNEL_MOB_EMOTES) // [HORIZON-EDIT] Master_Sounds
 	else if(roll <= length(emote_hear) + length(emote_see))
 		pawn.manual_emote(pick(emote_see))
 	else
 		INVOKE_ASYNC(pawn, TYPE_PROC_REF(/atom/movable, say), pick(speak), forced = "AI Controller")
 		if(sound_to_play)
-			playsound(pawn, sound_to_play, 80, vary = TRUE)
+			playsound(pawn, sound_to_play, 80, vary = TRUE, mixer_channel = CHANNEL_MOB_EMOTES) // [HORIZON-EDIT] Master_Sounds
 
 	return AI_BEHAVIOR_DELAY | AI_BEHAVIOR_SUCCEEDED

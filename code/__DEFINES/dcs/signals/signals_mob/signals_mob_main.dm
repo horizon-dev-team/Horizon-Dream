@@ -294,11 +294,8 @@
 /// from /mob/eye/camera/remote/assign_user(): (mob/living/new_user, mob/living/old_user)
 #define COMSIG_REMOTE_CAMERA_ASSIGN_USER "remote_camera_assign_user"
 
-///sent to TTS sounds when the volume preference is changed and applied
+///sent to TTS sounds when the volume of their mixer channel (CHANNEL_TTS) is changed in the volume mixer
 #define COMSIG_MOB_TTS_VOLUME_PREFERENCE_APPLIED "tts_volume_preference_applied"
-
-///sent to radio TTS sounds when the volume preference is changed and applied
-#define COMSIG_MOB_TTS_RADIO_VOLUME_PREFERENCE_APPLIED "tts_radio_volume_preference_applied"
 
 /// Sent when a mob's name is fullyrenamed (oldname(can be null), newname)
 #define COMSIG_MOB_FULLY_RENAMED "mob_fully_renamed"

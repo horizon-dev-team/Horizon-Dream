@@ -37,8 +37,8 @@ SUBSYSTEM_DEF(ticker)
 
 	/// Time left until the round starts after all subsystems initialize
 	var/timeLeft = 120 SECONDS
-	/// value used to initialize `timeLeft` when the master subsystem finishes initializing. 
-	/// We do this to allow for the timer to be set manually before all subsystems initialize, 
+	/// value used to initialize `timeLeft` when the master subsystem finishes initializing.
+	/// We do this to allow for the timer to be set manually before all subsystems initialize,
 	/// while also making sure that when the timer does start, it does so at the value we have set.
 	/// This is set to the config value when SSticker initializes, so setting this only makes sense after that point.
 	var/start_at = 120 SECONDS
@@ -271,7 +271,10 @@ SUBSYSTEM_DEF(ticker)
 	INVOKE_ASYNC(SSdbcore, TYPE_PROC_REF(/datum/controller/subsystem/dbcore,SetRoundStart))
 
 	to_chat_spaced(world, html = span_bold(SPAN_ROLE_BODY("Добро пожаловать на [station_name()], приятного пребывания!")))
-	SEND_SOUND(world, sound(SSstation.announcer.get_rand_welcome_sound()))
+	// [HORIZON-EDIT] Master_Sounds
+	for(var/mob/player as anything in GLOB.player_list)
+		welcome_player(player)
+	// [HORIZON-EDIT]
 
 	current_state = GAME_STATE_PLAYING
 	Master.SetRunLevel(RUNLEVEL_GAME)
@@ -285,6 +288,19 @@ SUBSYSTEM_DEF(ticker)
 	PostSetup()
 
 	return TRUE
+
+// [HORIZON-ADD] Master_Sounds
+/datum/controller/subsystem/ticker/proc/welcome_player(mob/player)
+	var/client/player_client = player?.client
+	if(!player_client?.prefs)
+		return
+	// Welcome sound is the station announcer - routes through CHANNEL_ANNOUNCEMENTS
+	// so the mixer's Announcements category + channel + master all apply.
+	var/volume_played = calculate_mixed_volume(player_client, 100, CHANNEL_ANNOUNCEMENTS)
+	if(volume_played <= 0)
+		return
+	SEND_SOUND(player, sound(SSstation.announcer.get_rand_welcome_sound(), volume = volume_played, channel = CHANNEL_ANNOUNCEMENTS))
+// [/HORIZON-ADD]
 
 /datum/controller/subsystem/ticker/proc/PostSetup()
 	set waitfor = FALSE
@@ -852,10 +868,14 @@ SUBSYSTEM_DEF(ticker)
 	gather_newscaster() //called here so we ensure the log is created even upon admin reboot
 	if(!round_end_sound)
 		round_end_sound = choose_round_end_song()
+	// [HORIZON-EDIT] Master_Sounds
+	var/sound/end_of_round_sound_ref = sound(round_end_sound)
 	for(var/mob/M in GLOB.player_list)
-		var/pref_volume = M.client.prefs.read_preference(/datum/preference/numeric/volume/sound_midi)
-		if(pref_volume > 0)
-			SEND_SOUND(M.client, sound(round_end_sound, volume = pref_volume))
+		if(!M.client?.prefs?.channel_volume?["[CHANNEL_LOBBYMUSIC]"])
+			continue
+		end_of_round_sound_ref.volume = calculate_mixed_volume(M.client, 100, CHANNEL_LOBBYMUSIC)
+		SEND_SOUND(M.client, end_of_round_sound_ref)
+	// [/HORIZON-EDIT]
 
 	text2file(login_music, "data/last_round_lobby_music.txt")
 

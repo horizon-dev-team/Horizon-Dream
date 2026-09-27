@@ -13,5 +13,5 @@
 
 // /datum/jukebox signals
 
-///sent to the jukebox when the volume preference is changed and applied
+///sent to the jukebox when the volume of its mixer channel (CHANNEL_JUKEBOX) is changed in the volume mixer
 #define COMSIG_MOB_JUKEBOX_PREFERENCE_APPLIED "jukebox_pref_applied"

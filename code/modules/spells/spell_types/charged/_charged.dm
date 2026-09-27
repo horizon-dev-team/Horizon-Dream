@@ -36,7 +36,7 @@
 		channel_message = span_notice("You start chanelling [src]...")
 
 	if(charge_sound)
-		charge_sound_instance = sound(charge_sound, channel = CHANNEL_CHARGED_SPELL)
+		charge_sound_instance = sound(charge_sound, channel = CHANNEL_SOUND_EFFECTS) // [HORIZON-EDIT] Master_Sounds
 
 	if(charge_overlay_icon && charge_overlay_state)
 		charge_overlay_instance = mutable_appearance(charge_overlay_icon, charge_overlay_state, EFFECTS_LAYER)
@@ -96,9 +96,9 @@
 		for_who.cut_overlay(charge_overlay_instance)
 
 	if(charge_sound_instance)
-		for_who.stop_sound_channel(CHANNEL_CHARGED_SPELL)
+		for_who.stop_sound_channel(CHANNEL_SOUND_EFFECTS)
 		// Play a null sound in to cancel the sound playing, because byond
-		playsound(for_who, sound(null, repeat = 0, channel = CHANNEL_CHARGED_SPELL), 50, FALSE)
+		playsound(for_who, sound(null, repeat = 0, channel = CHANNEL_SOUND_EFFECTS), 50, FALSE) // [HORIZON-EDIT] Master_Sounds
 
 	currently_channeling = FALSE
 	build_all_button_icons(UPDATE_BUTTON_STATUS)

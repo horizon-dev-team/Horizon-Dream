@@ -66,7 +66,7 @@
 	players_listening_refs += new_ref
 	RegisterSignal(new_target, COMSIG_LIVING_DEATH, PROC_REF(on_mob_death))
 	music_callbacks += addtimer(CALLBACK(src, PROC_REF(clear_target), new_ref), track_duration, TIMER_STOPPABLE)
-	new_target.playsound_local(new_target, boss_track, 200, FALSE, channel = CHANNEL_BOSS_MUSIC, pressure_affected = FALSE, use_reverb = FALSE)
+	new_target.playsound_local(new_target, boss_track, 200, FALSE, channel = CHANNEL_EVENT_MUSIC, pressure_affected = FALSE, use_reverb = FALSE)
 
 ///Called when a mob listening to boss music dies- ends their music early.
 /datum/component/boss_music/proc/on_mob_death(mob/living/source)
@@ -82,4 +82,4 @@
 	var/mob/old_target = old_ref?.resolve()
 	if(old_target)
 		UnregisterSignal(old_target, COMSIG_LIVING_DEATH)
-		old_target.stop_sound_channel(CHANNEL_BOSS_MUSIC)
+		old_target.stop_sound_channel(CHANNEL_EVENT_MUSIC)

@@ -55,6 +55,7 @@
 	else if(SSstation.announcer.event_sounds[sound])
 		sound = SSstation.announcer.event_sounds[sound]
 
+	var/sound_channel = CHANNEL_ANNOUNCEMENTS // [HORIZON-ADD] Master_Sounds
 	var/header
 	switch(type)
 		if(ANNOUNCEMENT_TYPE_PRIORITY)
@@ -66,8 +67,10 @@
 			GLOB.news_network.submit_article(text, "Captain's Announcement", NEWSCASTER_STATION_ANNOUNCEMENTS, null)
 		if(ANNOUNCEMENT_TYPE_SYNDICATE)
 			header = MAJOR_ANNOUNCEMENT_TITLE("Syndicate Captain's Announcement")
+			sound_channel = CHANNEL_VOX // [HORIZON-ADD] Master_Sounds
 		else
 			header += generate_unique_announcement_header(title, sender_override)
+			sound_channel = CHANNEL_STORYTELLER // [HORIZON-ADD] Master_Sounds
 
 	announcement_strings += ANNOUNCEMENT_HEADER(header)
 
@@ -83,7 +86,7 @@
 	else
 		finalized_announcement = CHAT_ALERT_DEFAULT_SPAN(jointext(announcement_strings, ""))
 
-	dispatch_announcement_to_players(finalized_announcement, players, sound)
+	dispatch_announcement_to_players(finalized_announcement, players, sound, sound_channel = sound_channel) // [HORIZON-EDIT] Master_Sounds
 
 	if(isnull(sender_override) && players == GLOB.player_list)
 		if(length(title) > 0)
@@ -197,9 +200,10 @@
 
 	return jointext(returnable_strings, "")
 
+// [HORIZON-EDIT] Master_Sounds
 /// Proc that just dispatches the announcement to our applicable audience. Only the announcement is a mandatory arg.
 /// `should_play_sound` can also be a callback, if you want to only play the sound to specific players.
-/proc/dispatch_announcement_to_players(announcement, list/players = GLOB.player_list, sound_override = null, should_play_sound = TRUE)
+/proc/dispatch_announcement_to_players(announcement, list/players = GLOB.player_list, sound_override = null, should_play_sound = TRUE, sound_channel = CHANNEL_ANNOUNCEMENTS) // [HORIZON-EDIT] Master_Sounds
 	var/sound_to_play = !isnull(sound_override) ? sound_override : 'sound/announcer/notice/notice2.ogg'
 
 	var/datum/callback/should_play_sound_callback = astype(should_play_sound)
@@ -211,8 +215,16 @@
 		to_chat(target, announcement)
 		if(!should_play_sound || (should_play_sound_callback && !should_play_sound_callback.Invoke(target)))
 			continue
-		if(target.client?.prefs.read_preference(/datum/preference/toggle/sound_announcements))
-			SEND_SOUND(target, sound(sound_to_play))
+
+		// [HORIZON-EDIT] Master_Sounds
+		var/client/target_client = target.client
+		if(!target_client?.prefs?.channel_volume?["[sound_channel]"])
+			continue
+		var/mixed_volume = calculate_mixed_volume(target_client, 100, sound_channel)
+		if(mixed_volume <= 0)
+			continue
+		SEND_SOUND(target, sound(sound_to_play, volume = mixed_volume, channel = sound_channel))
+		// [/HORIZON-EDIT]
 
 #undef MAJOR_ANNOUNCEMENT_TITLE
 #undef MAJOR_ANNOUNCEMENT_TEXT

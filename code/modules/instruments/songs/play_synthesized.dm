@@ -64,10 +64,9 @@
 		if(player && HAS_TRAIT(player, TRAIT_MUSICIAN) && isliving(M))
 			var/mob/living/L = M
 			L.apply_status_effect(/datum/status_effect/good_music)
-		var/pref_volume = M?.client?.prefs.read_preference(/datum/preference/numeric/volume/sound_instruments)
-		if(!pref_volume)
+		if(!(M?.client?.prefs?.channel_volume["[CHANNEL_INSTRUMENTS]"])) // [HORIZON-EDIT] Master_Sounds
 			continue
-		M.playsound_local(get_turf(parent), null, volume * (pref_volume/100), FALSE, K.frequency, exponential_falloff, channel, null, copy)
+		M.playsound_local(get_turf(parent), null, volume, FALSE, K.frequency, null, channel, null, copy, mixer_channel = CHANNEL_INSTRUMENTS)
 		// Could do environment and echo later but not for now
 
 /**

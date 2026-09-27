@@ -121,7 +121,7 @@
 
 	if(check_breath(breath) && is_on_internals)
 		// successful breath from internals, try to play the breathing sound
-		if(!HAS_TRAIT(src, TRAIT_DEAF) && client?.prefs?.read_preference(/datum/preference/toggle/sound_breathing))
+		if(!HAS_TRAIT(src, TRAIT_DEAF) && client && calculate_mixed_volume(client, 100, CHANNEL_BREATH) > 0) // [HORIZON-EDIT] Master_Sounds
 			breathing_loop.start()
 
 	if(breath)

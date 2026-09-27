@@ -200,7 +200,7 @@
 
 	else
 		do_chem_smoke(range = death_cloud_size, holder = minion, location = get_turf(minion), reagent_type = /datum/reagent/toxin/spore, reagent_volume = BLOBMOB_CLOUD_REAGENT_VOLUME, smoke_type = /datum/effect_system/fluid_spread/smoke/chem/medium)
-		playsound(minion, 'sound/mobs/non-humanoids/blobmob/blob_spore_burst.ogg', vol = 100)
+		playsound(minion, 'sound/mobs/non-humanoids/blobmob/blob_spore_burst.ogg', vol = 100, mixer_channel = CHANNEL_MOB_SOUNDS) // [HORIZON-EDIT] Master_Sounds
 
 ///When am independent mob with this component mutates, like from a random cytology mutation, give them a strain and modify their name to let the players know they have something special.
 /datum/component/blob_minion/proc/on_mutated(mob/living/minion)

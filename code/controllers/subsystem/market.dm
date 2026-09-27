@@ -168,4 +168,4 @@ SUBSYSTEM_DEF(market)
 
 	for(var/obj/machinery/ltsrbt/pad as anything in telepads)
 		pad.say("[market_name] restocked!")
-		playsound(src, 'sound/effects/cashregister.ogg', 40, FALSE)
+		playsound(src, 'sound/effects/cashregister.ogg', 40, FALSE, mixer_channel = CHANNEL_UI) // [HORIZON-EDIT] Master_Sounds

@@ -2,8 +2,8 @@
 #define MUTE_DEAF (1<<0)
 /// The mob is out of range of the sound
 #define MUTE_RANGE (1<<1)
-/// The mob muted their volume preference for this sound
-#define MUTE_VOLUME (1<<1)
+/// The mob muted this sound's mixer channel in their volume preferences
+#define MUTE_VOLUME (1<<2)
 
 /datum/threed_sound
 	var/atom/parent
@@ -18,13 +18,17 @@
 	var/our_channel
 	var/sound_length = 5 SECONDS
 	var/deletion_timer
-	var/preference_volume
-	var/preference_signal
+	/// [HORIZON-EDIT] Master_Sounds
+	var/mixer_channel
+	var/static/list/mixer_update_signals = list(
+		"[CHANNEL_TTS]" = COMSIG_MOB_TTS_VOLUME_PREFERENCE_APPLIED,
+	)
+	// [/HORIZON-EDIT]
 	var/falloff_distance
 	var/falloff_exponent
 	var/pressure_affected = TRUE
 
-/datum/threed_sound/New(atom/new_parent, sound/new_sound, list/current_listeners, can_add_new_listeners = FALSE, volume = 50, sound_range = SOUND_RANGE, sound_length = 5 SECONDS, channel, preference_volume, preference_signal, falloff_exponent = SOUND_FALLOFF_EXPONENT, falloff_distance = SOUND_DEFAULT_FALLOFF_DISTANCE, pressure_affected = TRUE)
+/datum/threed_sound/New(atom/new_parent, sound/new_sound, list/current_listeners, can_add_new_listeners = FALSE, volume = 50, sound_range = SOUND_RANGE, sound_length = 5 SECONDS, channel, mixer_channel, falloff_exponent = SOUND_FALLOFF_EXPONENT, falloff_distance = SOUND_DEFAULT_FALLOFF_DISTANCE, pressure_affected = TRUE)
 	if(!ismovable(new_parent) && !isturf(new_parent))
 		stack_trace("[type] created on non-turf or non-movable: [new_parent ? "[new_parent] ([new_parent.type])" : "null"])")
 		qdel(src)
@@ -37,8 +41,7 @@
 	src.sound_range = sound_range
 	src.sound_length = sound_length
 	our_channel = channel
-	src.preference_volume = preference_volume
-	src.preference_signal = preference_signal
+	src.mixer_channel = mixer_channel
 	src.falloff_distance = falloff_distance
 	src.falloff_exponent = falloff_exponent
 	src.pressure_affected = pressure_affected
@@ -126,20 +129,21 @@
 		if(isnull(new_listener.client))
 			RegisterSignal(new_listener, COMSIG_MOB_LOGIN, PROC_REF(listener_login))
 			return
-		if(preference_signal)
-			RegisterSignal(new_listener, preference_signal, PROC_REF(listener_moved))
-		if(new_listener != parent)
-			RegisterSignal(new_listener, COMSIG_MOVABLE_MOVED, PROC_REF(listener_moved))
+
+		// [HORIZON-EDIT] Master_Sounds
+		var/list/moved_signals = list(COMSIG_MOVABLE_MOVED)
+		var/update_signal = mixer_update_signals["[mixer_channel]"]
+		if(update_signal)
+			moved_signals += update_signal
+		RegisterSignals(new_listener, moved_signals, PROC_REF(listener_moved))
+		// [/HORIZON-EDIT]
 
 		RegisterSignals(new_listener, list(SIGNAL_ADDTRAIT(TRAIT_DEAF), SIGNAL_REMOVETRAIT(TRAIT_DEAF)), PROC_REF(listener_deaf))
 	listeners[new_listener] = NONE
-	if(preference_volume)
-		var/pref_volume = new_listener.client?.prefs.read_preference(preference_volume)
-		if(HAS_TRAIT(new_listener, TRAIT_DEAF) || !pref_volume)
-			listeners[new_listener] |= SOUND_MUTE
-
-	if(HAS_TRAIT(new_listener, TRAIT_DEAF))
+	// [HORIZON-EDIT] Master_Sounds
+	if(HAS_TRAIT(new_listener, TRAIT_DEAF) || calculate_mixed_volume(new_listener.client, volume, mixer_channel) <= 0)
 		listeners[new_listener] |= SOUND_MUTE
+	// [/HORIZON-EDIT]
 
 	update_listener(new_listener)
 	listeners[new_listener] |= SOUND_UPDATE
@@ -172,10 +176,10 @@
 
 	if((reason & MUTE_DEAF) && HAS_TRAIT(listener, TRAIT_DEAF))
 		return FALSE
-	if(preference_volume)
-		var/pref_volume = listener.client?.prefs.read_preference(preference_volume)
-		if((reason & MUTE_VOLUME) && !pref_volume)
-			return FALSE
+	// [HORIZON-EDIT] Master_Sounds
+	if((reason & MUTE_VOLUME) && calculate_mixed_volume(listener.client, volume, mixer_channel) <= 0)
+		return FALSE
+	// [/HORIZON-EDIT]
 
 	if(reason & MUTE_RANGE)
 		var/turf/sound_turf = get_turf(parent)
@@ -197,6 +201,7 @@
 
 	listeners -= no_longer_listening
 	no_longer_listening.stop_sound_channel(our_channel)
+	// [HORIZON-EDIT] Master_Sounds
 	var/list/unregister_signals = list(
 		COMSIG_MOB_LOGIN,
 		SIGNAL_ADDTRAIT(TRAIT_DEAF),
@@ -204,9 +209,11 @@
 	)
 	if(no_longer_listening != parent) // COMSIG_QDELETING/COMSIG_MOVABLE_MOVED are registered in New(), leave them registered
 		unregister_signals += list(COMSIG_QDELETING, COMSIG_MOVABLE_MOVED)
-	if(preference_signal)
-		unregister_signals += preference_signal
+	var/update_signal = mixer_update_signals["[mixer_channel]"]
+	if(update_signal)
+		unregister_signals += update_signal
 	UnregisterSignal(no_longer_listening, unregister_signals)
+	// [/HORIZON-EDIT]
 
 /datum/threed_sound/proc/update_listener(mob/listener)
 	PROTECTED_PROC(TRUE)
@@ -221,13 +228,14 @@
 		listeners[listener] |= SOUND_MUTE
 
 	else
-		if(preference_volume)
-			var/pref_volume = listener.client?.prefs.read_preference(preference_volume)
-			if(!pref_volume)
-				listeners[listener] |= SOUND_MUTE
-			else
-				unmute_listener(listener, MUTE_VOLUME)
-				our_sound.volume = volume * (pref_volume/100)
+		// [HORIZON-EDIT] Master_Sounds
+		var/mixed_volume = calculate_mixed_volume(listener.client, volume, mixer_channel)
+		if(mixed_volume <= 0)
+			listeners[listener] |= SOUND_MUTE
+		else
+			unmute_listener(listener, MUTE_VOLUME)
+			our_sound.volume = mixed_volume
+		// [/HORIZON-EDIT]
 		// keep in mind sound XYZ is different to world XYZ. sound +-z = world +-y
 		var/new_x = sound_turf.x - listener_turf.x
 		var/new_z = sound_turf.y - listener_turf.y

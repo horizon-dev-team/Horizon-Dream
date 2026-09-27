@@ -56,9 +56,11 @@ GAME_VERB(/mob, pray, VERB_PRAY, null)
 	GLOB.requests.message_centcom(sender.client, msg)
 	msg = span_adminnotice("<b><font color=orange>CENTCOM:</font>[ADMIN_FULLMONTY(sender)] [ADMIN_CENTCOM_REPLY(sender)]:</b> [msg]")
 	for(var/client/staff as anything in GLOB.admins)
-		if(staff?.prefs.read_preference(/datum/preference/toggle/comms_notification))
-			SEND_SOUND(staff, sound('sound/misc/server-ready.ogg'))
-	to_chat(GLOB.admins, msg, type = MESSAGE_TYPE_PRAYER, confidential = TRUE)
+	// [HORIZON-EDIT] Master_Sounds
+		if(staff?.prefs.channel_volume["[CHANNEL_ADMIN]"])
+			SEND_SOUND(staff, sound('sound/misc/server-ready.ogg', volume = calculate_mixed_volume(staff, 100, CHANNEL_ADMIN)))
+	to_chat(GLOB.admins, msg, confidential = TRUE)
+	// [/HORIZON-EDIT]
 	for(var/obj/machinery/computer/communications/console in GLOB.shuttle_caller_list)
 		console.override_cooldown()
 
@@ -68,9 +70,11 @@ GAME_VERB(/mob, pray, VERB_PRAY, null)
 	GLOB.requests.message_syndicate(sender.client, msg)
 	msg = span_adminnotice("<b><font color=crimson>SYNDICATE:</font>[ADMIN_FULLMONTY(sender)] [ADMIN_SYNDICATE_REPLY(sender)]:</b> [msg]")
 	for(var/client/staff as anything in GLOB.admins)
-		if(staff?.prefs.read_preference(/datum/preference/toggle/comms_notification))
-			SEND_SOUND(staff, sound('sound/misc/server-ready.ogg'))
-	to_chat(GLOB.admins, msg, type = MESSAGE_TYPE_PRAYER, confidential = TRUE)
+	// [HORIZON-EDIT] Master_Sounds
+		if(staff?.prefs.channel_volume["[CHANNEL_ADMIN]"])
+			SEND_SOUND(staff, sound('sound/misc/server-ready.ogg', volume = calculate_mixed_volume(staff, 100, CHANNEL_ADMIN)))
+	to_chat(GLOB.admins, msg, confidential = TRUE)
+	// [/HORIZON-EDIT]
 	for(var/obj/machinery/computer/communications/console in GLOB.shuttle_caller_list)
 		console.override_cooldown()
 
@@ -80,7 +84,10 @@ GAME_VERB(/mob, pray, VERB_PRAY, null)
 	GLOB.requests.nuke_request(sender.client, msg)
 	msg = span_adminnotice("<b><font color=orange>NUKE CODE REQUEST:</font>[ADMIN_FULLMONTY(sender)] [ADMIN_CENTCOM_REPLY(sender)] [ADMIN_SET_SD_CODE]:</b> [msg]")
 	for(var/client/staff as anything in GLOB.admins)
-		SEND_SOUND(staff, sound('sound/misc/server-ready.ogg'))
-	to_chat(GLOB.admins, msg, type = MESSAGE_TYPE_PRAYER, confidential = TRUE)
+	// [HORIZON-EDIT] Master_Sounds
+		if(staff?.prefs.channel_volume["[CHANNEL_ADMIN]"])
+			SEND_SOUND(staff, sound('sound/misc/server-ready.ogg', volume = calculate_mixed_volume(staff, 100, CHANNEL_ADMIN)))
+	to_chat(GLOB.admins, msg, confidential = TRUE)
+	// [/HORIZON-EDIT]
 	for(var/obj/machinery/computer/communications/console in GLOB.shuttle_caller_list)
 		console.override_cooldown()

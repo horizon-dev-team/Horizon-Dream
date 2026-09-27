@@ -6,7 +6,7 @@ Each 32x32 source tile is split into four 16x16 quadrants; the quadrants
 become the 4 directional frames (S, N, E, W) of a single `wallN`
 icon_state — NOT four separate states. 8 wallN states (wall0..wall7) are
 emitted from 5 source tiles; see WALL_STATE_LAYOUT below for the
-duplicate/split rules.
+per-quadrant source mapping (tile / quads / dup).
 
 Usage:
     python wall_dmi_cutter.py <input.png> <output.dmi>
@@ -73,28 +73,30 @@ DIRS_4 = [
 DIR_TO_QUAD = {"S": "BR", "N": "TL", "E": "TR", "W": "BL"}
 
 # Each wallN state maps to its source(s):
-#   ("tile",  N)          all 4 dirs from tile N
-#   ("split", top, bot)   TL/TR (dir=N/E) from tile `top`, BL/BR (dir=S/W) from tile `bot`
-#   ("dup",   M)          copy all 4 dir cells from wall state M
+#   ("tile",  N)             all 4 dirs from tile N
+#   ("quads", tl, tr, bl, br) per-quadrant source tile: TL=tl, TR=tr, BL=bl, BR=br
+#   ("dup",   M)             copy all 4 dir cells from wall state M
 #
 # wall2=wall0, wall3=wall1, wall6=wall4 because CORNER_DIAGONAL alone
-# doesn't change the sprite. wall1/wall4 are mirror images, packed by
-# the spriter into the tile 1/2 pair via split.
+# doesn't change the sprite. wall1/wall4 are mirror images packed by
+# the spriter into the tile 1/2 pair with a diagonal split:
+#   wall1: TL+BR from tile 2, TR+BL from tile 1
+#   wall4: TL+BR from tile 1, TR+BL from tile 2
 WALL_STATE_LAYOUT = [
     ("tile",  0),
-    ("split", 2, 1),  # wall1: top=t2, bot=t1
-    ("dup",   0),     # wall2 == wall0
-    ("dup",   1),     # wall3 == wall1
-    ("split", 1, 2),  # wall4: top=t1, bot=t2
+    ("quads", 2, 1, 1, 2),  # wall1
+    ("dup",   0),           # wall2 == wall0
+    ("dup",   1),           # wall3 == wall1
+    ("quads", 1, 2, 2, 1),  # wall4
     ("tile",  3),
-    ("dup",   4),     # wall6 == wall4
+    ("dup",   4),           # wall6 == wall4
     ("tile",  4),
 ]
 
 TILES_USED_BY_LAYOUT = sorted({
     r for kind, *rest in WALL_STATE_LAYOUT if kind == "tile" for r in rest
 } | {
-    r for kind, *rest in WALL_STATE_LAYOUT if kind == "split" for r in rest
+    r for kind, *rest in WALL_STATE_LAYOUT if kind == "quads" for r in rest
 })
 EXPECTED_TILE_COUNT = max(TILES_USED_BY_LAYOUT) + 1
 
@@ -221,9 +223,9 @@ def build_dmi(input_png: Path, output_dmi: Path,
         if kind == "tile":
             t = entry[1]
             quad_to_tile = {"TL": t, "TR": t, "BL": t, "BR": t}
-        elif kind == "split":
-            top, bot = entry[1], entry[2]
-            quad_to_tile = {"TL": top, "TR": top, "BL": bot, "BR": bot}
+        elif kind == "quads":
+            quad_to_tile = {"TL": entry[1], "TR": entry[2],
+                            "BL": entry[3], "BR": entry[4]}
         else:
             raise ValueError(f"Unknown WALL_STATE_LAYOUT kind: {kind!r}")
 
@@ -255,9 +257,9 @@ def build_dmi(input_png: Path, output_dmi: Path,
     dup_summary = ", ".join(
         f"{state_prefix}{i}={state_prefix}{e[1]}"
         for i, e in enumerate(WALL_STATE_LAYOUT) if e[0] == "dup")
-    split_summary = ", ".join(
-        f"{state_prefix}{i}(top=t{e[1]},bot=t{e[2]})"
-        for i, e in enumerate(WALL_STATE_LAYOUT) if e[0] == "split")
+    quads_summary = ", ".join(
+        f"{state_prefix}{i}(tl=t{e[1]},tr=t{e[2]},bl=t{e[3]},br=t{e[4]})"
+        for i, e in enumerate(WALL_STATE_LAYOUT) if e[0] == "quads")
     unused = sorted(set(range(num_tiles)) - set(TILES_USED_BY_LAYOUT))
     print(f"[wall_dmi_cutter] {input_png} -> {output_dmi}")
     print(f"  tiles read : {num_tiles} (used: {len(TILES_USED_BY_LAYOUT)})"
@@ -268,8 +270,8 @@ def build_dmi(input_png: Path, output_dmi: Path,
           f"{state_prefix}{len(WALL_STATE_LAYOUT)-1})")
     print(f"  duplicates : {sum(1 for e in WALL_STATE_LAYOUT if e[0] == 'dup')} "
           f"({dup_summary})")
-    if split_summary:
-        print(f"  splits     : {split_summary}")
+    if quads_summary:
+        print(f"  quads      : {quads_summary}")
     print(f"  cells      : {len(cells)}  ({cols} cols x {rows} rows grid)")
 
 

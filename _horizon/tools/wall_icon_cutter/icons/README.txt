@@ -8,8 +8,7 @@ single `wallN` icon_state.
 
 The 5 source tiles cover all 8 wallN states (wall0..wall7):
     tile 0 -> wall0   (wall2 = copy of wall0)
-    tile 1 -> wall4 top + wall1 bottom   (split with tile 2)
-    tile 2 -> wall1 top + wall4 bottom   (split with tile 1)
+    tile 1 + tile 2 -> wall1, wall4 (diagonal split — see WALL_STATE_LAYOUT)
     tile 3 -> wall5
     tile 4 -> wall7
 

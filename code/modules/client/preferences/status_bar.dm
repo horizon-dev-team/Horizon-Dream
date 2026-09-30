@@ -1,10 +1,3 @@
-/datum/preference/toggle/status_bar
-	default_value = TRUE
-	category = PREFERENCE_CATEGORY_GAME_PREFERENCES
-	savefile_key = "status_bar"
-	savefile_identifier = PREFERENCE_PLAYER
+// The status bar skin element and its preference were removed.
+// This file is no longer included in tgstation.dme and can be deleted.
 
-/datum/preference/toggle/status_bar/apply_to_client(client/client, value)
-	if(isnull(client) || istype(client, /datum/client_interface)) //no winset on mock clients.
-		return
-	winset(client, SKIN_MAPWINDOW_STATUS_BAR, "is-visible=[value]")

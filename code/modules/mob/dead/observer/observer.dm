@@ -640,7 +640,7 @@ GAME_VERB_HIDDEN(/mob/dead/observer, add_view_range, "Add View Range")
 	else
 		set_invis_see(SEE_INVISIBLE_OBSERVER)
 
-	..()
+	return ..()
 
 /mob/dead/observer/proc/possess()
 	var/list/possessible = list()

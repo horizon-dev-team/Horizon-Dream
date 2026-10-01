@@ -47,7 +47,10 @@
 	/// Set when this casing is fired. Only used for checking if it should burn a user's hand when caught from an ejection port.
 	var/shot_timestamp = 0
 
-	item_flags = NO_ROTATE_RANDOM_THROW // [HORIZON-ADD] - Rotate_Item
+// [HORIZON-ADD] - Rotate_Item
+	var/auto_rotate = TRUE
+	item_flags = NO_ROTATE_RANDOM_THROW
+// [/HORIZON-ADD]
 
 /obj/item/ammo_casing/spent
 	name = "spent bullet casing"
@@ -60,6 +63,8 @@
 	pixel_x = base_pixel_x + rand(-10, 10)
 	pixel_y = base_pixel_y + rand(-10, 10)
 	setDir(pick(GLOB.alldirs))
+	if(auto_rotate)
+		transform = transform.Turn(round(45 * rand(0, 32) / 2)) // [HORIZON-ADD]
 	update_appearance()
 
 /obj/item/ammo_casing/Destroy()
@@ -176,7 +181,6 @@
 	if(pixel_mess)
 		pixel_x = base_pixel_x + rand(-world.icon_size/4, world.icon_size/4)
 		pixel_y = base_pixel_y + rand(-world.icon_size/4, world.icon_size/4)
-	SpinAnimation(speed = 10, loops = 1)
 	if(!isnull(bounce_angle))
 		//cool awesome physics this is so sick tbh
 		AddComponent(/datum/component/movable_physics, \

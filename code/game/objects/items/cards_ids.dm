@@ -1579,6 +1579,11 @@
 	// Re-read the icon state from the trim so it's not stale
 	human.update_ID_card()
 
+// [HORIZON-ADD]
+/obj/item/card/id/advanced/debug/get_trim_sechud_icon()
+	return '_horizon/icons/obj/hud.dmi'
+// [/HORIZON-ADD]
+
 /obj/item/card/id/advanced/prisoner
 	name = "prisoner ID card"
 	desc = "You are a number, you are not a free man."

@@ -2066,7 +2066,7 @@ GLOBAL_LIST_EMPTY(fire_appearances)
 	// An average (ranging from 1 to 100) of the lighting_color_cutoffs values.
 	// Used to avoid the hardcoded lighting cutoff from overly stacking with the more specific lighting color cutoffs from eyes and glasses
 	// (or innate in the case of some mobs), with the exception of night vision I guess.
-	var/avg_light_color_cutoff = lighting_color_cutoffs = (lighting_color_cutoffs[1] + lighting_color_cutoffs[2] + lighting_color_cutoffs[3]) / 3
+	var/avg_light_color_cutoff = (lighting_color_cutoffs[1] + lighting_color_cutoffs[2] + lighting_color_cutoffs[3]) / 3
 
 	if(HAS_TRAIT(src, TRAIT_MESON_VISION))
 		new_sight |= SEE_TURFS

@@ -1752,4 +1752,9 @@ Remember to update _globalvars/traits.dm if you're adding/removing/renaming trai
 /// Mobs with this trait will appear as human to medical scanners even if they are not human
 #define TRAIT_HUMAN_DISGUISE "human_disguise"
 
+// [HORIZON-ADD] SALVAGE_TOOL
+/// Item can be used as a cutting tool — bypasses normal welder_act repair flow
+#define TRAIT_CUTTING_TOOL "cutting_tool"
+// [/HORIZON-ADD]
+
 // END TRAIT DEFINES

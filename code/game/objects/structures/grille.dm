@@ -31,6 +31,7 @@
 /obj/structure/grille/Initialize(mapload)
 	. = ..()
 	AddElement(/datum/element/atmos_sensitive, mapload)
+	AddElement(/datum/element/cutting_tool_target) // [HORIZON-ADD] SALVAGE_TOOL
 	register_context()
 
 /obj/structure/grille/Destroy()
@@ -327,6 +328,23 @@
 /obj/structure/grille/atom_deconstruct(disassembled = TRUE)
 	var/obj/rods = new rods_type(drop_location(), rods_amount)
 	transfer_fingerprints_to(rods)
+
+// [HORIZON-ADD]
+/obj/structure/grille/deconstruct_act(mob/living/user, obj/item/I)
+	. = ..() // INDESTRUCTIBLE check
+	if(.)
+		return
+	if(!I.tool_start_check(user, amount = 1))
+		return ITEM_INTERACT_BLOCKING
+	user.visible_message(span_notice("[user] starts slicing through [src] with [I]."),
+		span_notice("You start slicing through [src]..."))
+	if(!I.use_tool(src, user, 1 SECONDS, volume = 50, amount = 1))
+		return ITEM_INTERACT_BLOCKING
+	user.visible_message(span_warning("[user] slices [src] apart!"),
+		span_notice("You slice [src] apart."))
+	deconstruct(FALSE) // → rods через atom_deconstruct
+	return ITEM_INTERACT_SUCCESS
+// [/HORIZON-ADD]
 
 /obj/structure/grille/atom_break()
 	. = ..()

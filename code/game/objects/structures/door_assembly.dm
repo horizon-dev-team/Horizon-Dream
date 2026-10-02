@@ -50,6 +50,7 @@
 /obj/structure/door_assembly/Initialize(mapload)
 	. = ..()
 	obj_flags |= UNIQUE_RENAME | RENAME_NO_DESC
+	AddElement(/datum/element/cutting_tool_target) // [HORIZON-ADD] SALVAGE_TOOL
 	update_appearance()
 	update_name()
 
@@ -453,3 +454,21 @@
 
 /obj/structure/door_assembly/rename_reset()
 	created_name = null
+
+
+// [HORIZON-ADD]
+/obj/structure/door_assembly/deconstruct_act(mob/living/user, obj/item/I)
+	. = ..() // INDESTRUCTIBLE check
+	if(.)
+		return
+	if(!I.tool_start_check(user, amount = 1))
+		return ITEM_INTERACT_BLOCKING
+	user.visible_message(span_notice("[user] starts slicing through [src] with [I]."),
+		span_notice("You start slicing through [src]..."))
+	if(!I.use_tool(src, user, 3 SECONDS, volume = 50, amount = 1))
+		return ITEM_INTERACT_BLOCKING
+	user.visible_message(span_warning("[user] slices [src] apart!"),
+		span_notice("You slice [src] apart."))
+	deconstruct(FALSE) // → material sheets
+	return ITEM_INTERACT_SUCCESS
+// [/HORIZON-ADD]

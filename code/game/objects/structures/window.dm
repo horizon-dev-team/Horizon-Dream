@@ -46,6 +46,7 @@
 
 /obj/structure/window/Initialize(mapload, direct)
 	AddElement(/datum/element/blocks_explosives)
+	AddElement(/datum/element/cutting_tool_target) // [HORIZON-ADD] SALVAGE_TOOL
 	. = ..()
 	if(direct)
 		setDir(direct)
@@ -214,6 +215,9 @@
 	return ..()
 
 /obj/structure/window/welder_act(mob/living/user, obj/item/tool)
+	// [HORIZON-ADD] Режущие инструменты (TRAIT_CUTTING_TOOL) режут стекло через /datum/element/cutting_tool_target
+	// → deconstruct_act. См. /obj/structure/window/deconstruct_act ниже.
+	// [/HORIZON-ADD]
 	if(atom_integrity >= max_integrity)
 		to_chat(user, span_warning("[src] is already in good condition!"))
 		return ITEM_INTERACT_SUCCESS
@@ -224,6 +228,23 @@
 		repair_damage(max_integrity)
 		to_chat(user, span_notice("You repair [src]."))
 	return ITEM_INTERACT_SUCCESS
+
+// [HORIZON-ADD]
+/obj/structure/window/deconstruct_act(mob/living/user, obj/item/I)
+	. = ..() // INDESTRUCTIBLE check
+	if(.)
+		return
+	if(!I.tool_start_check(user, amount = 1))
+		return ITEM_INTERACT_BLOCKING
+	user.visible_message(span_notice("[user] starts slicing through [src] with [I]."),
+		span_notice("You start slicing through [src]..."))
+	if(!I.use_tool(src, user, 4 SECONDS, volume = 50, amount = 1))
+		return ITEM_INTERACT_BLOCKING
+	user.visible_message(span_notice("[user] slices through [src], shattering it!"),
+		span_notice("You slice through [src], and it shatters into pieces."))
+	deconstruct(FALSE) // shards + rods (если reinforced) через atom_deconstruct
+	return ITEM_INTERACT_SUCCESS
+// [/HORIZON-ADD]
 
 /obj/structure/window/screwdriver_act(mob/living/user, obj/item/tool)
 

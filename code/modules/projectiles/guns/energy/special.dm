@@ -114,6 +114,7 @@
 		butcher_sound = '_horizon/sound/plasma_cutter_melee.ogg', \
 	) // [HORIZON-EDIT]
 	AddElement(/datum/element/tool_flash, 1)
+	ADD_TRAIT(src, TRAIT_CUTTING_TOOL, INNATE_TRAIT) // [HORIZON-ADD]
 
 /obj/item/gun/energy/plasmacutter/examine(mob/user)
 	. = ..()
@@ -178,12 +179,16 @@
 
 // [HORIZON-ADD]
 /obj/item/gun/energy/plasmacutter/interact_with_atom(atom/interacting_with, mob/living/user, list/modifiers)
+	// Не-мобы и мобы в комбат-режиме — фоллтру к tool_act / стандартной атаке.
+	if(!isliving(interacting_with) || user.combat_mode)
+		return NONE
+	// В не-комбате не бьём мобов: не-людей (сила/животные) блокируем сразу.
 	if(!ishuman(interacting_with))
-		return NONE
-	if(user.combat_mode)
-		return NONE
-
-	return try_heal_loop(interacting_with, user)
+		return ITEM_INTERACT_BLOCKING
+	// Людей в не-комбате либо чиним (робо-конечность), либо всё равно блокируем атаку —
+	// чтобы плазморез не работал как оружие в не-комбат-режиме.
+	. = try_heal_loop(interacting_with, user)
+	return . == NONE ? ITEM_INTERACT_BLOCKING : .
 
 /obj/item/gun/energy/plasmacutter/proc/try_heal_loop(atom/interacting_with, mob/living/user, repeating = FALSE)
 	var/mob/living/carbon/human/attacked_humanoid = interacting_with
@@ -212,7 +217,7 @@
 // [/HORIZON-ADD]
 
 /obj/item/gun/energy/plasmacutter/use_tool(atom/target, mob/living/user, delay, amount=1, volume=0, datum/callback/extra_checks)
-	if(ismineralturf(target)) // [HORIZON-ADD] Нужно будет добавить сварку шлюзов и стекл и тп.
+	if(ismineralturf(target)) // [HORIZON-ADD] Резка шлюзов и стёкол через плазморез делается в их welder_act (медленная сварка → deconstruct), здесь только визуал sparks.
 		return
 	if(!amount)
 		amount = 1

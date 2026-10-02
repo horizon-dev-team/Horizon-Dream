@@ -108,6 +108,7 @@
 
 /obj/machinery/door/Initialize(mapload)
 	AddElement(/datum/element/blocks_explosives)
+	AddElement(/datum/element/cutting_tool_target) // [HORIZON-ADD] SALVAGE_TOOL
 	. = ..()
 	set_init_door_layer()
 	if(multi_tile)
@@ -514,6 +515,30 @@
 		return
 	if(prob(20/severity) && (istype(src, /obj/machinery/door/airlock) || istype(src, /obj/machinery/door/window)) )
 		INVOKE_ASYNC(src, PROC_REF(open))
+
+
+// [HORIZON-ADD]
+/obj/machinery/door/deconstruct_act(mob/living/user, obj/item/I)
+	if(operating)
+		to_chat(user, span_warning("[src] is moving — wait for it to stop."))
+		return ITEM_INTERACT_BLOCKING
+	if(seal)
+		to_chat(user, span_warning("[src] is blocked by a seal — remove it first."))
+		return ITEM_INTERACT_BLOCKING
+	. = ..() // INDESTRUCTIBLE check
+	if(.)
+		return
+	if(!I.tool_start_check(user, amount = 1))
+		return ITEM_INTERACT_BLOCKING
+	user.visible_message(span_notice("[user] starts slicing through [src] with [I]."),
+		span_notice("You start slicing through [src]..."))
+	if(!I.use_tool(src, user, 8 SECONDS, volume = 50, amount = 1))
+		return ITEM_INTERACT_BLOCKING
+	user.visible_message(span_notice("[user] slices through [src], cutting it apart!"),
+		span_notice("You slice through [src], and it falls apart."))
+	deconstruct(FALSE) // повреждённый door_assembly через on_deconstruction
+	return ITEM_INTERACT_SUCCESS
+// [/HORIZON-ADD]
 
 /obj/machinery/door/update_icon_state()
 	. = ..()

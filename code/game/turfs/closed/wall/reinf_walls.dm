@@ -23,6 +23,10 @@
 	///Base icon state to use for deconstruction
 	var/base_decon_state = "r_wall"
 
+/turf/closed/wall/r_wall/Initialize(mapload)
+	. = ..()
+	AddElement(/datum/element/cutting_tool_target) // [HORIZON-ADD] SALVAGE_TOOL
+
 /turf/closed/wall/r_wall/deconstruction_hints(mob/user)
 	switch(d_state)
 		if(INTACT)
@@ -276,3 +280,90 @@
 	icon = MAP_SWITCH('icons/turf/walls/plastitanium_wall.dmi', 'icons/turf/walls/misc_wall.dmi')
 	icon_state = MAP_SWITCH("plastitanium_wall-0", "plastitanium_overspace")
 	fixed_underlay = list("space" = TRUE)
+
+// [HORIZON-ADD] SALVAGE_TOOL
+/turf/closed/wall/r_wall/deconstruct_act(mob/living/user, obj/item/I)
+	. = ..() // INDESTRUCTIBLE check
+	if(.)
+		return
+	if(!I.tool_start_check(user, amount = 1))
+		return ITEM_INTERACT_BLOCKING
+	switch(d_state)
+		if(INTACT)
+			user.visible_message(span_notice("[user] begins slicing through the outer grille of [src]..."),
+				span_notice("You begin slicing through the outer grille..."))
+			if(!I.use_tool(src, user, 2 SECONDS, volume = 100, amount = 1))
+				return ITEM_INTERACT_BLOCKING
+			if(!istype(src, /turf/closed/wall/r_wall) || d_state != INTACT)
+				return ITEM_INTERACT_SUCCESS
+			d_state = SUPPORT_LINES
+			update_appearance()
+			to_chat(user, span_notice("You slice through the outer grille."))
+			return ITEM_INTERACT_SUCCESS
+		if(SUPPORT_LINES)
+			user.visible_message(span_notice("[user] begins slicing through the support lines of [src]..."),
+				span_notice("You begin slicing through the support lines..."))
+			if(!I.use_tool(src, user, 4 SECONDS, volume = 100, amount = 1))
+				return ITEM_INTERACT_BLOCKING
+			if(!istype(src, /turf/closed/wall/r_wall) || d_state != SUPPORT_LINES)
+				return ITEM_INTERACT_SUCCESS
+			d_state = COVER
+			update_appearance()
+			to_chat(user, span_notice("You slice through the support lines."))
+			return ITEM_INTERACT_SUCCESS
+		if(COVER)
+			user.visible_message(span_notice("[user] begins slicing through the metal cover of [src]..."),
+				span_notice("You begin slicing through the metal cover..."))
+			if(!I.use_tool(src, user, 4 SECONDS, volume = 100, amount = 1))
+				return ITEM_INTERACT_BLOCKING
+			if(!istype(src, /turf/closed/wall/r_wall) || d_state != COVER)
+				return ITEM_INTERACT_SUCCESS
+			d_state = CUT_COVER
+			update_appearance()
+			to_chat(user, span_notice("You slice through the metal cover, dislodging it."))
+			return ITEM_INTERACT_SUCCESS
+		if(CUT_COVER)
+			user.visible_message(span_notice("[user] begins slicing off the cover of [src]..."),
+				span_notice("You begin slicing off the cover..."))
+			if(!I.use_tool(src, user, 10 SECONDS, volume = 100, amount = 1))
+				return ITEM_INTERACT_BLOCKING
+			if(!istype(src, /turf/closed/wall/r_wall) || d_state != CUT_COVER)
+				return ITEM_INTERACT_SUCCESS
+			d_state = ANCHOR_BOLTS
+			update_appearance()
+			to_chat(user, span_notice("You slice off the cover."))
+			return ITEM_INTERACT_SUCCESS
+		if(ANCHOR_BOLTS)
+			user.visible_message(span_notice("[user] begins slicing through the anchor bolts of [src]..."),
+				span_notice("You begin slicing through the anchor bolts..."))
+			if(!I.use_tool(src, user, 5 SECONDS, volume = 100, amount = 1))
+				return ITEM_INTERACT_BLOCKING
+			if(!istype(src, /turf/closed/wall/r_wall) || d_state != ANCHOR_BOLTS)
+				return ITEM_INTERACT_SUCCESS
+			d_state = SUPPORT_RODS
+			update_appearance()
+			to_chat(user, span_notice("You slice through the anchor bolts."))
+			return ITEM_INTERACT_SUCCESS
+		if(SUPPORT_RODS)
+			user.visible_message(span_notice("[user] begins slicing through the support rods of [src]..."),
+				span_notice("You begin slicing through the support rods..."))
+			if(!I.use_tool(src, user, 10 SECONDS, volume = 100, amount = 1))
+				return ITEM_INTERACT_BLOCKING
+			if(!istype(src, /turf/closed/wall/r_wall) || d_state != SUPPORT_RODS)
+				return ITEM_INTERACT_SUCCESS
+			d_state = SHEATH
+			update_appearance()
+			to_chat(user, span_notice("You slice through the support rods."))
+			return ITEM_INTERACT_SUCCESS
+		if(SHEATH)
+			user.visible_message(span_notice("[user] begins slicing off the outer sheath of [src]..."),
+				span_notice("You begin slicing off the outer sheath..."))
+			if(!I.use_tool(src, user, 10 SECONDS, volume = 100, amount = 1))
+				return ITEM_INTERACT_BLOCKING
+			if(!istype(src, /turf/closed/wall/r_wall) || d_state != SHEATH)
+				return ITEM_INTERACT_SUCCESS
+			to_chat(user, span_notice("You slice off the outer sheath."))
+			dismantle_wall()
+			return ITEM_INTERACT_SUCCESS
+	return ITEM_INTERACT_BLOCKING
+// [/HORIZON-ADD]

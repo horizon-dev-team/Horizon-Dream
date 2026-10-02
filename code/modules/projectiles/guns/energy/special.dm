@@ -179,14 +179,12 @@
 
 // [HORIZON-ADD] SALVAGE_TOOL
 /obj/item/gun/energy/plasmacutter/interact_with_atom(atom/interacting_with, mob/living/user, list/modifiers)
-	// Не-мобы и мобы в комбат-режиме — фоллтру к tool_act / стандартной атаке.
 	if(!isliving(interacting_with) || user.combat_mode)
 		return NONE
-	// В не-комбате не бьём мобов: не-людей (сила/животные) блокируем сразу.
+
 	if(!ishuman(interacting_with))
 		return ITEM_INTERACT_BLOCKING
-	// Людей в не-комбате либо чиним (робо-конечность), либо всё равно блокируем атаку —
-	// чтобы плазморез не работал как оружие в не-комбат-режиме.
+
 	. = try_heal_loop(interacting_with, user)
 	return . == NONE ? ITEM_INTERACT_BLOCKING : .
 
@@ -217,11 +215,10 @@
 // [/HORIZON-ADD]
 
 /obj/item/gun/energy/plasmacutter/use_tool(atom/target, mob/living/user, delay, amount=1, volume=0, datum/callback/extra_checks)
-	if(!amount)
-		amount = 1
-		return ..()
-
-	var/mutable_appearance/sparks = mutable_appearance('_horizon/icons/effects/cutting_effect.dmi', adv ? "advanced_cutting_effect" : "cutting_effect", GASFIRE_LAYER, src, ABOVE_LIGHTING_PLANE) // [HORIZON-EDIT]
+	// [HORIZON-EDIT] — убран ранний return ..() при amount=0: sparks добавляются ВСЕГДА,
+	// иначе cutting_effect не показывается на целях где use_tool зовётся с amount=0
+	// (girder/try_construction_step, r_wall/try_decon COVER step, и т.д.).
+	var/mutable_appearance/sparks = mutable_appearance('_horizon/icons/effects/cutting_effect.dmi', adv ? "advanced_cutting_effect" : "cutting_effect", GASFIRE_LAYER, src, ABOVE_LIGHTING_PLANE)
 	target.add_overlay(sparks)
 	LAZYADD(update_overlays_on_z, sparks)
 	. = ..()

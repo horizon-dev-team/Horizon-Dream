@@ -19,7 +19,6 @@
 	righthand_file = 'icons/mob/inhands/equipment/tools_righthand.dmi'
 
 /obj/item/crowbar/mechremoval
-	icon = 'icons/obj/tools.dmi'
 	lefthand_file = 'icons/mob/inhands/equipment/tools_lefthand.dmi'
 	righthand_file = 'icons/mob/inhands/equipment/tools_righthand.dmi'
 

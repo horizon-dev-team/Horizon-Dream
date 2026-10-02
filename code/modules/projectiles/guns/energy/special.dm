@@ -102,7 +102,7 @@
 	tool_behaviour = TOOL_WELDER
 	toolspeed = 0.7 //plasmacutters can be used as welders, and are faster than standard welders
 	custom_materials = list(/datum/material/iron = SHEET_MATERIAL_AMOUNT * 0.75, /datum/material/glass = HALF_SHEET_MATERIAL_AMOUNT, /datum/material/plasma = SMALL_MATERIAL_AMOUNT * 4)
-	var/adv = FALSE // [HORIZON-ADD]
+	var/adv = FALSE // [HORIZON-ADD] SALVAGE_TOOL
 
 /obj/item/gun/energy/plasmacutter/Initialize(mapload)
 	AddElement(/datum/element/update_icon_blocker)
@@ -114,7 +114,7 @@
 		butcher_sound = '_horizon/sound/plasma_cutter_melee.ogg', \
 	) // [HORIZON-EDIT]
 	AddElement(/datum/element/tool_flash, 1)
-	ADD_TRAIT(src, TRAIT_CUTTING_TOOL, INNATE_TRAIT) // [HORIZON-ADD]
+	ADD_TRAIT(src, TRAIT_CUTTING_TOOL, INNATE_TRAIT) // [HORIZON-ADD] SALVAGE_TOOL
 
 /obj/item/gun/energy/plasmacutter/examine(mob/user)
 	. = ..()
@@ -177,7 +177,7 @@
 /obj/item/gun/energy/plasmacutter/use(used)
 	return (!QDELETED(cell) && cell.use(used ? used * PLASMA_CUTTER_CHARGE_WELD : PLASMA_CUTTER_CHARGE_WELD))
 
-// [HORIZON-ADD]
+// [HORIZON-ADD] SALVAGE_TOOL
 /obj/item/gun/energy/plasmacutter/interact_with_atom(atom/interacting_with, mob/living/user, list/modifiers)
 	// Не-мобы и мобы в комбат-режиме — фоллтру к tool_act / стандартной атаке.
 	if(!isliving(interacting_with) || user.combat_mode)
@@ -217,8 +217,6 @@
 // [/HORIZON-ADD]
 
 /obj/item/gun/energy/plasmacutter/use_tool(atom/target, mob/living/user, delay, amount=1, volume=0, datum/callback/extra_checks)
-	if(ismineralturf(target)) // [HORIZON-ADD] Резка шлюзов и стёкол через плазморез делается в их welder_act (медленная сварка → deconstruct), здесь только визуал sparks.
-		return
 	if(!amount)
 		amount = 1
 		return ..()
@@ -242,7 +240,7 @@
 	force = 15
 	ammo_type = list(/obj/item/ammo_casing/energy/plasma/adv)
 	custom_materials = list(/datum/material/iron = SHEET_MATERIAL_AMOUNT * 1.5, /datum/material/plasma = SHEET_MATERIAL_AMOUNT, /datum/material/glass = HALF_SHEET_MATERIAL_AMOUNT, /datum/material/gold = HALF_SHEET_MATERIAL_AMOUNT)
-	// [HORIZON-ADD]
+	// [HORIZON-ADD] SALVAGE_TOOL
 	toolspeed = 0.5
 	adv = TRUE
 	// [/HORIZON-ADD]

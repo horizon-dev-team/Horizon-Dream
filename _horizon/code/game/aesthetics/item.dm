@@ -53,3 +53,8 @@
 /obj/item/wrench/bolter
 	lefthand_file = 'icons/mob/inhands/equipment/tools_lefthand.dmi'
 	righthand_file = 'icons/mob/inhands/equipment/tools_righthand.dmi'
+
+/obj/item/gun/energy/plasmacutter
+	icon = '_horizon/icons/obj/cutter.dmi'
+	lefthand_file = '_horizon/icons/obj/cutter_lefthand.dmi'
+	righthand_file = '_horizon/icons/obj/cutter_righthand.dmi'

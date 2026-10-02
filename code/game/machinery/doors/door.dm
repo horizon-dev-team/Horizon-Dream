@@ -522,9 +522,6 @@
 	if(operating)
 		to_chat(user, span_warning("[src] is moving — wait for it to stop."))
 		return ITEM_INTERACT_BLOCKING
-	if(seal)
-		to_chat(user, span_warning("[src] is blocked by a seal — remove it first."))
-		return ITEM_INTERACT_BLOCKING
 	. = ..() // INDESTRUCTIBLE check
 	if(.)
 		return

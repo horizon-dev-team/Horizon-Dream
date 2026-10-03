@@ -96,7 +96,6 @@
 	to_preload += /obj/item/stack/cable_coil
 	return to_preload
 
-
 // [HORIZON-EDIT]
 /obj/item/storage/belt/utility/full/powertools
 	name = "\improper Nullspace Tech's belt"

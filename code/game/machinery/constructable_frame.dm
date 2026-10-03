@@ -227,6 +227,6 @@
 		return ITEM_INTERACT_BLOCKING
 	user.visible_message(span_warning("[user] slices [src] apart!"),
 		span_notice("You slice [src] apart."))
-	deconstruct(TRUE) // разобрано → sheets (см. /obj/structure/frame/atom_deconstruct)
+	deconstruct(TRUE)
 	return ITEM_INTERACT_SUCCESS
 // [/HORIZON-ADD]

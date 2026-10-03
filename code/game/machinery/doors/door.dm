@@ -517,7 +517,7 @@
 		INVOKE_ASYNC(src, PROC_REF(open))
 
 
-// [HORIZON-ADD]
+// [HORIZON-ADD] SALVAGE_TOOL
 /obj/machinery/door/deconstruct_act(mob/living/user, obj/item/I)
 	if(operating)
 		to_chat(user, span_warning("[src] is moving — wait for it to stop."))
@@ -533,7 +533,7 @@
 		return ITEM_INTERACT_BLOCKING
 	user.visible_message(span_notice("[user] slices through [src], cutting it apart!"),
 		span_notice("You slice through [src], and it falls apart."))
-	deconstruct(FALSE) // повреждённый door_assembly через on_deconstruction
+	deconstruct(FALSE)
 	return ITEM_INTERACT_SUCCESS
 // [/HORIZON-ADD]
 

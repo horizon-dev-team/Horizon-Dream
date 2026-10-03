@@ -239,7 +239,7 @@
 		return ITEM_INTERACT_BLOCKING
 	user.visible_message(span_notice("[user] slices through [src], shattering it!"),
 		span_notice("You slice through [src], and it shatters into pieces."))
-	deconstruct(FALSE) // shards + rods (если reinforced) через atom_deconstruct
+	deconstruct(FALSE)
 	return ITEM_INTERACT_SUCCESS
 // [/HORIZON-ADD]
 

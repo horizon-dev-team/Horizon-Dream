@@ -1,4 +1,3 @@
-
 /obj/item/construction/rcd/arcd/debug
 	max_matter = INFINITY
 	matter = INFINITY

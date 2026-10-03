@@ -215,9 +215,9 @@
 // [/HORIZON-ADD]
 
 /obj/item/gun/energy/plasmacutter/use_tool(atom/target, mob/living/user, delay, amount=1, volume=0, datum/callback/extra_checks)
-	// [HORIZON-EDIT] — убран ранний return ..() при amount=0: sparks добавляются ВСЕГДА,
-	// иначе cutting_effect не показывается на целях где use_tool зовётся с amount=0
-	// (girder/try_construction_step, r_wall/try_decon COVER step, и т.д.).
+	//if(!amount)
+	//	amount = 1
+	//	return ..()
 	var/mutable_appearance/sparks = mutable_appearance('_horizon/icons/effects/cutting_effect.dmi', adv ? "advanced_cutting_effect" : "cutting_effect", GASFIRE_LAYER, src, ABOVE_LIGHTING_PLANE)
 	target.add_overlay(sparks)
 	LAZYADD(update_overlays_on_z, sparks)

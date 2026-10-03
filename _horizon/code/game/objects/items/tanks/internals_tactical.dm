@@ -18,7 +18,15 @@
 /obj/item/tank/internals/tactical/Initialize(mapload)
 	. = ..()
 	create_storage(storage_type = /datum/storage/pockets/tactical)
+	RegisterSignals(src, list(COMSIG_ATOM_ENTERED, COMSIG_ATOM_EXITED), PROC_REF(on_storage_changed))
 	update_appearance()
+
+/obj/item/tank/internals/tactical/proc/on_storage_changed(datum/source, atom/movable/arrived, atom/old_loc)
+	SIGNAL_HANDLER
+	update_appearance()
+	var/mob/living/carbon/human/wearer = loc
+	if(istype(wearer) && wearer.get_item_by_slot(ITEM_SLOT_SUITSTORE) == src)
+		wearer.update_suit_storage()
 
 /obj/item/tank/internals/tactical/populate_gas()
 	air_contents.set_gas(/datum/gas/oxygen, (6*ONE_ATMOSPHERE)*volume/(R_IDEAL_GAS_EQUATION*T20C))

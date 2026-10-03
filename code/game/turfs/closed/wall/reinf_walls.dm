@@ -299,6 +299,7 @@
 			d_state = SUPPORT_LINES
 			update_appearance()
 			to_chat(user, span_notice("You slice through the outer grille."))
+			INVOKE_ASYNC(src, "deconstruct_act", user, I) // [HORIZON-ADD] SALVAGE_TOOL auto-repeat — string ref (TYPE_PROC_REF ломается на override signature mismatch)
 			return ITEM_INTERACT_SUCCESS
 		if(SUPPORT_LINES)
 			user.visible_message(span_notice("[user] begins slicing through the support lines of [src]..."),
@@ -310,6 +311,7 @@
 			d_state = COVER
 			update_appearance()
 			to_chat(user, span_notice("You slice through the support lines."))
+			INVOKE_ASYNC(src, "deconstruct_act", user, I) // [HORIZON-ADD] SALVAGE_TOOL auto-repeat — string ref (TYPE_PROC_REF ломается на override signature mismatch)
 			return ITEM_INTERACT_SUCCESS
 		if(COVER)
 			user.visible_message(span_notice("[user] begins slicing through the metal cover of [src]..."),
@@ -321,6 +323,7 @@
 			d_state = CUT_COVER
 			update_appearance()
 			to_chat(user, span_notice("You slice through the metal cover, dislodging it."))
+			INVOKE_ASYNC(src, "deconstruct_act", user, I) // [HORIZON-ADD] SALVAGE_TOOL auto-repeat — string ref (TYPE_PROC_REF ломается на override signature mismatch)
 			return ITEM_INTERACT_SUCCESS
 		if(CUT_COVER)
 			user.visible_message(span_notice("[user] begins slicing off the cover of [src]..."),
@@ -332,6 +335,7 @@
 			d_state = ANCHOR_BOLTS
 			update_appearance()
 			to_chat(user, span_notice("You slice off the cover."))
+			INVOKE_ASYNC(src, "deconstruct_act", user, I) // [HORIZON-ADD] SALVAGE_TOOL auto-repeat — string ref (TYPE_PROC_REF ломается на override signature mismatch)
 			return ITEM_INTERACT_SUCCESS
 		if(ANCHOR_BOLTS)
 			user.visible_message(span_notice("[user] begins slicing through the anchor bolts of [src]..."),
@@ -343,6 +347,7 @@
 			d_state = SUPPORT_RODS
 			update_appearance()
 			to_chat(user, span_notice("You slice through the anchor bolts."))
+			INVOKE_ASYNC(src, "deconstruct_act", user, I) // [HORIZON-ADD] SALVAGE_TOOL auto-repeat — string ref (TYPE_PROC_REF ломается на override signature mismatch)
 			return ITEM_INTERACT_SUCCESS
 		if(SUPPORT_RODS)
 			user.visible_message(span_notice("[user] begins slicing through the support rods of [src]..."),
@@ -354,6 +359,7 @@
 			d_state = SHEATH
 			update_appearance()
 			to_chat(user, span_notice("You slice through the support rods."))
+			INVOKE_ASYNC(src, "deconstruct_act", user, I) // [HORIZON-ADD] SALVAGE_TOOL auto-repeat — string ref (TYPE_PROC_REF ломается на override signature mismatch)
 			return ITEM_INTERACT_SUCCESS
 		if(SHEATH)
 			user.visible_message(span_notice("[user] begins slicing off the outer sheath of [src]..."),

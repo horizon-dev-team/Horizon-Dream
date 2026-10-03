@@ -97,6 +97,7 @@
 	circuit = /obj/item/circuitboard/machine/portable_recharger
 	use_power = NO_POWER_USE
 	anchored = TRUE
+	portable = TRUE
 	var/obj/item/charging2 = null
 	var/using_power2 = FALSE
 	var/deploying = FALSE

@@ -20,6 +20,7 @@
 		/obj/item/modular_computer,
 		/obj/item/gun/ballistic/automatic/battle_rifle,
 	))
+	var/portable = FALSE // [HORIZON-ADD]
 
 /obj/machinery/recharger/RefreshParts()
 	. = ..()
@@ -220,6 +221,8 @@
 		return
 	if(panel_open)
 		. += mutable_appearance(icon, "[base_icon_state]-open", alpha = src.alpha)
+		return
+	if(portable) // [HORIZON-ADD]
 		return
 
 	var/icon_to_use = "[base_icon_state]-[isnull(charging) ? "empty" : (using_power ? "charging" : "full")]"

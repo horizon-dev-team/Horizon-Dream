@@ -2,6 +2,7 @@
 	icon = '_horizon/icons/obj/items/tools.dmi'
 	lefthand_file = '_horizon/icons/obj/in_hands/tools_lefthand.dmi'
 	righthand_file = '_horizon/icons/obj/in_hands/tools_righthand.dmi'
+	inhand_icon_state = "cercd"
 
 /obj/item/multitool
 	icon = '_horizon/icons/obj/items/tools.dmi'

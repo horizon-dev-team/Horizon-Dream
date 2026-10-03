@@ -20,3 +20,12 @@
 		new /obj/item/reagent_containers/cup/beaker/large(src)
 		new /obj/item/reagent_containers/cup/beaker(src)
 		new /obj/item/reagent_containers/cup/beaker/noreact(src)
+
+/obj/item/storage/belt/utility/full/powertools
+	name = "\improper Nullspace Tech's belt"
+	desc = "Can hold a boatload of things...  Why do you have this?!"
+	icon = '_horizon/icons/obj/belt.dmi'
+	icon_state = "admeme_satchel"
+	worn_icon = '_horizon/icons/obj/in_mob/belt_mob.dmi'
+	worn_icon_state = "admeme_satchel"
+	w_class = WEIGHT_CLASS_TINY

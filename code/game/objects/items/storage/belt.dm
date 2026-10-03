@@ -96,17 +96,8 @@
 	to_preload += /obj/item/stack/cable_coil
 	return to_preload
 
-// [HORIZON-EDIT]
 /obj/item/storage/belt/utility/full/powertools
-	name = "\improper Nullspace Tech's belt"
-	desc = "Can hold a boatload of things...  Why do you have this?!"
-	icon = '_horizon/icons/obj/belt.dmi'
-	icon_state = "admeme_satchel"
-	worn_icon = '_horizon/icons/obj/in_mob/belt_mob.dmi'
-	worn_icon_state = "admeme_satchel"
-	w_class = WEIGHT_CLASS_TINY
 	preload = FALSE
-// [/HORIZON-EDIT]
 
 /obj/item/storage/belt/utility/full/powertools/PopulateContents()
 	new /obj/item/screwdriver/power(src)

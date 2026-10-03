@@ -516,7 +516,6 @@
 	if(prob(20/severity) && (istype(src, /obj/machinery/door/airlock) || istype(src, /obj/machinery/door/window)) )
 		INVOKE_ASYNC(src, PROC_REF(open))
 
-
 // [HORIZON-ADD] SALVAGE_TOOL
 /obj/machinery/door/deconstruct_act(mob/living/user, obj/item/I)
 	if(operating)

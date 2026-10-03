@@ -5,6 +5,7 @@
 	delay_mod = 0.3
 
 /obj/item/inducer/adv
+	icon = '_horizon/icons/obj/items/tools.dmi'
 	icon_state = "inducer-adv"
 	desc = "A tool for inductively charging internal power cells. This one has a white-bluespace color scheme, and seems to be rigged to transfer charge at a much faster rate."
 	power_transfer_multiplier = 5
@@ -13,7 +14,7 @@
 /obj/item/storage/belt/utility/full/powertools/holding
 	name = "belt of holding"
 	desc = "The greatest in pants-supporting bluespace technology."
-	icon = '_horizon/icons/obj/belt.dmi'
+	icon = '_horizon/icons/obj/items/belt.dmi'
 	worn_icon = '_horizon/icons/obj/in_mob/belt_mob.dmi'
 	icon_state = "holdingbelt"
 	worn_icon_state = "holdingbelt"

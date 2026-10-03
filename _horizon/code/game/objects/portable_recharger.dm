@@ -2,7 +2,7 @@
 /obj/item/recharger_item
 	name = "portable recharging station"
 	desc = "A portable dual-port weapon recharger. It draws power from the station grid, with a built-in battery serving as a backup. To begin operation, deploy it in any suitable location."
-	icon = '_horizon/icons/obj/sec_recharger_portable.dmi'
+	icon = '_horizon/icons/obj/machines/sec_recharger_portable.dmi'
 	icon_state = "case"
 	inhand_icon_state = "toolbox_default"
 	lefthand_file = 'icons/mob/inhands/equipment/toolbox_lefthand.dmi'
@@ -91,7 +91,7 @@
 /obj/machinery/recharger/portable
 	name = "portable recharging station"
 	desc = "A portable dual-port weapon recharger. It draws power from the station grid, with a built-in battery serving as a backup. It can be folded up for transport when needed."
-	icon = '_horizon/icons/obj/sec_recharger_portable.dmi'
+	icon = '_horizon/icons/obj/machines/sec_recharger_portable.dmi'
 	icon_state = "sec"
 	base_icon_state = "sec"
 	circuit = /obj/item/circuitboard/machine/portable_recharger
@@ -499,7 +499,7 @@
 /obj/item/tactical_recharger
 	name = "tactical weapon recharger"
 	desc = "An advanced portable recharging station for energy weapons. Its charging rate is slightly lower than that of larger models, but using it still significantly extends the overall potential capacity of any energy weapon."
-	icon = '_horizon/icons/obj/tactical_recharger.dmi'
+	icon = '_horizon/icons/obj/items/tactical_recharger.dmi'
 	icon_state = "toz"
 	worn_icon = '_horizon/icons/obj/in_mob/tactical_recharger_body.dmi'
 	worn_icon_state = "toz"

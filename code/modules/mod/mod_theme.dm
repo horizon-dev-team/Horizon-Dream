@@ -2129,7 +2129,7 @@
 	)
 	variants = list(
 		"techno-rig" = list(
-			MOD_ICON_OVERRIDE = '_horizon/icons/obj/mod_suit.dmi',
+			MOD_ICON_OVERRIDE = '_horizon/icons/obj/items/mod_suit.dmi',
 			MOD_WORN_ICON_OVERRIDE = '_horizon/icons/obj/in_mob/mod_suit_mob.dmi',
 			/obj/item/clothing/head/mod = list(
 				UNSEALED_CLOTHING = SNUG_FIT|THICKMATERIAL,

@@ -1,5 +1,5 @@
 /obj/item/card/id/advanced/debug
-	icon = '_horizon/icons/obj/card.dmi'
+	icon = '_horizon/icons/obj/items/card.dmi'
 	icon_state = "card_dev"
 	trim = /datum/id_trim/admin/debug
 

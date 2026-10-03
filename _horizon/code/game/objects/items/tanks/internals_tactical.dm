@@ -2,11 +2,11 @@
 /obj/item/tank/internals/tactical
 	name = "tactical oxygen tank"
 	desc = "A military-grade oxygen tank for space operations. The construction is rather bulky and can only be mounted on hardsuits and heavy outerwear. It features a system of magnetic mounts and stabilizing straps to secure most standard weapon types. A universal weapon case for non-standard models is also included."
-	icon = '_horizon/icons/obj/tank_tactical.dmi'
+	icon = '_horizon/icons/obj/items/tank_tactical.dmi'
 	icon_state = "tank"
 	worn_icon = '_horizon/icons/obj/in_mob/tank_tactical_back.dmi'
 	worn_icon_state = "empty"
-	icon_status_overlay = '_horizon/icons/obj/tank_tactical.dmi'
+	icon_status_overlay = '_horizon/icons/obj/items/tank_tactical.dmi'
 	tank_holder_icon_state = null
 	distribute_pressure = TANK_DEFAULT_RELEASE_PRESSURE
 	force = 15

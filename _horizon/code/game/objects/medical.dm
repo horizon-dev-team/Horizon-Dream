@@ -2,7 +2,7 @@
 /obj/item/storage/belt/medipenal
 	name = "medipen case"
 	desc = "A compact and very convenient case that holds up to 5 medipens. A special clip lets it be attached to a pocket or a belt, and thanks to its small size it fits inside a box or a medkit."
-	icon = '_horizon/icons/obj/medipenal.dmi'
+	icon = '_horizon/icons/obj/items/medipenal.dmi'
 	icon_state = "penal"
 	slot_flags = ITEM_SLOT_BELT | ITEM_SLOT_POCKETS
 	w_class = WEIGHT_CLASS_SMALL
@@ -65,7 +65,7 @@
 /obj/item/breathing_bag
 	name = "breathing bag"
 	desc = "Also known as an Ambu bag - a manual, mechanical device used to perform artificial ventilation of the lungs."
-	icon = '_horizon/icons/obj/med_items.dmi'
+	icon = '_horizon/icons/obj/items/med_items.dmi'
 	icon_state = "breathing_bag"
 	lefthand_file = 'icons/mob/inhands/clothing/masks_lefthand.dmi'
 	righthand_file = 'icons/mob/inhands/clothing/masks_righthand.dmi'

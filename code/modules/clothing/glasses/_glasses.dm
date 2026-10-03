@@ -702,7 +702,7 @@
 	name = "debug glasses"
 	desc = "Medical, security and diagnostic hud."
 	desc_controls = "Alt click to toggle xray."
-	icon = '_horizon/icons/obj/glasses.dmi'
+	icon = '_horizon/icons/obj/items/glasses.dmi'
 	lefthand_file = '_horizon/icons/obj/in_hands/glasses_lefthand.dmi'
 	righthand_file = '_horizon/icons/obj/in_hands/glasses_righthand.dmi'
 	worn_icon = '_horizon/icons/obj/in_mob/eyes.dmi'

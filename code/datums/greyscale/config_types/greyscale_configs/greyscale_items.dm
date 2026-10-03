@@ -4,7 +4,7 @@
 
 /datum/greyscale_config/wirecutters
 	name = "Wirecutters"
-	icon_file = '_horizon/icons/obj/tools.dmi' // [HORIZON-EDIT]
+	icon_file = '_horizon/icons/obj/items/tools.dmi' // [HORIZON-EDIT]
 	json_config = 'code/datums/greyscale/json_configs/wirecutters.json'
 
 /datum/greyscale_config/wirecutters_belt_overlay

@@ -1,7 +1,7 @@
 /obj/item/tank/internals
 	//0 = empty, 1 = critical warning, 2 = alert, 3 = warning, 4 = nominal
 	var/alert_level = 4
-	var/icon_status_overlay = '_horizon/icons/obj/tank.dmi'
+	var/icon_status_overlay = '_horizon/icons/obj/items/tank.dmi'
 
 /obj/item/tank/internals/Initialize(mapload)
 	. = ..()

@@ -287,16 +287,23 @@
 		return ITEM_INTERACT_BLOCKING
 	if(!I.tool_start_check(user, amount = 1))
 		return ITEM_INTERACT_BLOCKING
-	user.visible_message(span_notice("[user] begins slicing through the support struts of [src]..."),
-		span_notice("You begin slicing through the support struts..."))
-	if(!I.use_tool(src, user, 4 SECONDS, volume = 50, amount = 1))
-		return ITEM_INTERACT_BLOCKING
-	user.visible_message(span_warning("[user] slices through the support struts, weakening the reinforced frame!"),
-		span_notice("You slice through the support struts. The reinforced girder is now a regular girder."))
-	// Spawn a new regular girder — preserves fingerprints + integrity ratio (как replace_girder).
-	var/obj/structure/girder/new_girder = new /obj/structure/girder(loc)
-	transfer_fingerprints_to(new_girder)
-	new_girder.update_integrity(new_girder.max_integrity * (atom_integrity / max_integrity))
-	qdel(src)
-	return ITEM_INTERACT_SUCCESS
+	switch(state)
+		if(GIRDER_REINF)
+			user.visible_message(span_notice("[user] begins slicing through the support struts of [src]..."),
+				span_notice("You begin slicing through the support struts..."))
+			if(!I.use_tool(src, user, 4 SECONDS, volume = 50, amount = 1))
+				return ITEM_INTERACT_BLOCKING
+			state = GIRDER_REINF_STRUTS
+			to_chat(user, span_notice("You slice through the support struts, weakening the reinforced frame."))
+			return ITEM_INTERACT_SUCCESS
+		if(GIRDER_REINF_STRUTS)
+			user.visible_message(span_notice("[user] begins slicing off the inner grille of [src]..."),
+				span_notice("You begin slicing off the inner grille..."))
+			if(!I.use_tool(src, user, 4 SECONDS, volume = 50, amount = 1))
+				return ITEM_INTERACT_BLOCKING
+			new /obj/item/stack/sheet/plasteel(drop_location(), 1)
+			to_chat(user, span_notice("You slice off the inner grille. The reinforced girder is now a regular girder."))
+			replace_girder(/obj/structure/girder)
+			return ITEM_INTERACT_SUCCESS
+	return ITEM_INTERACT_BLOCKING
 // [/HORIZON-ADD]

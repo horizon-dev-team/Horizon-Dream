@@ -1,5 +1,4 @@
-// MARK: Тактический Кислородный Баллон
-
+// MARK: Tactical Oxygen Tank
 /obj/item/tank/internals/tactical
 	name = "tactical oxygen tank"
 	desc = "A military-grade oxygen tank for space operations. The construction is rather bulky and can only be mounted on hardsuits and heavy outerwear. It features a system of magnetic mounts and stabilizing straps to secure most standard weapon types. A universal weapon case for non-standard models is also included."
@@ -78,7 +77,7 @@
 	. += gun_overlay
 	. += mutable_appearance(icon, "straps-closed", layer)
 
-// MARK: Tactical Tanks
+// MARK: Tactical Tanks Types
 /obj/item/tank/internals/tactical/wt550/Initialize(mapload)
 	. = ..()
 	new /obj/item/gun/ballistic/automatic/wt550(src)

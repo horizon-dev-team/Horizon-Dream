@@ -455,8 +455,7 @@
 /obj/structure/door_assembly/rename_reset()
 	created_name = null
 
-
-// [HORIZON-ADD]
+// [HORIZON-ADD] SALVAGE_TOOL
 /obj/structure/door_assembly/deconstruct_act(mob/living/user, obj/item/I)
 	. = ..() // INDESTRUCTIBLE check
 	if(.)

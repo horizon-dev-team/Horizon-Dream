@@ -23,6 +23,7 @@
 	icon_state = "syndiebox"
 	storage_type = /datum/storage/box/debug
 
+// [HORIZON-EDIT]
 /obj/item/storage/box/debugtools/PopulateContents()
 	var/list/items_inside = list(
 		/obj/item/card/emag=1,
@@ -43,6 +44,7 @@
 		///obj/item/storage/belt/medical/surgery_belt_adv=1,
 		)
 	generate_items_inside(items_inside, src)
+// [/HORIZON-EDIT]
 
 /obj/item/storage/box/plastic
 	name = "plastic box"

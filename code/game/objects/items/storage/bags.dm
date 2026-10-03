@@ -435,8 +435,7 @@
 	resistance_flags = FLAMMABLE
 	storage_type = /datum/storage/bag/chemistry
 
-/obj/item/storage/bag/chemistry/debug
-
+// [HORIZON-ADD] DEBUG
 /obj/item/storage/bag/chemistry/debug/PopulateContents()
 	for(var/i in 1 to 8)
 		new /obj/item/reagent_containers/cup/beaker/bluespace(src)
@@ -445,6 +444,7 @@
 		new /obj/item/reagent_containers/cup/beaker/large(src)
 		new /obj/item/reagent_containers/cup/beaker(src)
 		new /obj/item/reagent_containers/cup/beaker/noreact(src)
+// [HORIZON-ADD]
 
 /obj/item/storage/bag/money
 	name = "money bag"

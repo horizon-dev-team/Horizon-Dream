@@ -1504,14 +1504,7 @@
 	registered_age = null
 	inherent_assigned_name = "Captain"
 
-/obj/item/card/id/advanced/debug
-	name = "\improper Debug ID"
-	desc = "A debug ID card. Has ALL the all access and a boatload of money, you really shouldn't have this."
-	icon_state = "card_centcom"
-	assigned_icon_state = "assigned_centcom"
-	trim = /datum/id_trim/admin
-	wildcard_slots = WILDCARD_LIMIT_ADMIN
-
+// [HORIZON-EDIT]
 /obj/item/card/id/advanced/debug
 	name = "\improper Debug ID"
 	desc = "A debug ID card. Has ALL the all access and a boatload of money, you really shouldn't have this."
@@ -1519,14 +1512,9 @@
 	icon_state = "card_dev"
 	assigned_icon_state = "assigned_centcom"
 	trim = /datum/id_trim/admin/debug
-/*
-/obj/item/card/id/advanced/debug/get_trim_assignment()
-	if(ishuman(loc))
-		var/mob/living/carbon/human/owner = loc
-		if(owner.mind?.assigned_role?.title)
-			return owner.mind.assigned_role.title
-	return trim?.assignment || assignment
-*/
+	wildcard_slots = WILDCARD_LIMIT_ADMIN
+// [/HORIZON-EDIT]
+
 /obj/item/card/id/advanced/debug/Initialize(mapload)
 	. = ..()
 	set_account(new /datum/bank_account(player_account = FALSE))
@@ -1550,6 +1538,7 @@
 
 	return TRUE
 
+// [HORIZON-ADD]
 /// Called when this card is equipped, updates SecHUD to use our custom icon file.
 /obj/item/card/id/advanced/debug/equipped(mob/user, slot)
 	. = ..()
@@ -1579,7 +1568,6 @@
 	// Re-read the icon state from the trim so it's not stale
 	human.update_ID_card()
 
-// [HORIZON-ADD]
 /obj/item/card/id/advanced/debug/get_trim_sechud_icon()
 	return '_horizon/icons/obj/hud.dmi'
 // [/HORIZON-ADD]

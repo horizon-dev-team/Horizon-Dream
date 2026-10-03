@@ -96,8 +96,18 @@
 	to_preload += /obj/item/stack/cable_coil
 	return to_preload
 
+
+// [HORIZON-EDIT]
 /obj/item/storage/belt/utility/full/powertools
+	name = "\improper Nullspace Tech's belt"
+	desc = "Can hold a boatload of things...  Why do you have this?!"
+	icon = '_horizon/icons/obj/belt.dmi'
+	icon_state = "admeme_satchel"
+	worn_icon = '_horizon/icons/obj/in_mob/belt_mob.dmi'
+	worn_icon_state = "admeme_satchel"
+	w_class = WEIGHT_CLASS_TINY
 	preload = FALSE
+// [/HORIZON-EDIT]
 
 /obj/item/storage/belt/utility/full/powertools/PopulateContents()
 	new /obj/item/screwdriver/power(src)
@@ -999,13 +1009,3 @@
 	desc = "An imitation of a design grown by the infamous Tiziran Plasma Fire. Has a trigger mechanism to more forcefully draw the blade."
 	icon_state = "grass_gunsheath"
 	actions_types = list(/datum/action/innate/blade_counter/gunpowered)
-
-/obj/item/storage/belt/utility/full/powertools
-	name = "\improper Nullspace Tech's belt"
-	w_class = WEIGHT_CLASS_TINY
-	//storage_type = /datum/storage/debug
-	desc = "Can hold a boatload of things...  Why do you have this?!"
-	icon = '_horizon/icons/obj/belt.dmi'
-	icon_state = "admeme_satchel"
-	worn_icon = '_horizon/icons/obj/in_mob/belt_mob.dmi'
-	worn_icon_state = "admeme_satchel"

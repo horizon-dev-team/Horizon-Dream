@@ -329,7 +329,7 @@
 	var/obj/rods = new rods_type(drop_location(), rods_amount)
 	transfer_fingerprints_to(rods)
 
-// [HORIZON-ADD]
+// [HORIZON-ADD] SALVAGE_TOOL
 /obj/structure/grille/deconstruct_act(mob/living/user, obj/item/I)
 	. = ..() // INDESTRUCTIBLE check
 	if(.)

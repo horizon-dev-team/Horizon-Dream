@@ -8,6 +8,9 @@
 	lefthand_file = '_horizon/icons/obj/in_hands/tools_lefthand.dmi'
 	righthand_file = '_horizon/icons/obj/in_hands/tools_righthand.dmi'
 
+/obj/item/multitool/circuit
+	icon = 'icons/obj/devices/tool.dmi'
+
 /obj/item/crowbar
 	icon = '_horizon/icons/obj/tools.dmi'
 	lefthand_file = '_horizon/icons/obj/in_hands/tools_lefthand.dmi'

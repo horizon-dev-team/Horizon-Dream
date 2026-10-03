@@ -1,4 +1,4 @@
-// MARK: Пеналы
+// MARK: Penals
 /obj/item/storage/belt/medipenal
 	name = "medipen case"
 	desc = "A compact and very convenient case that holds up to 5 medipens. A special clip lets it be attached to a pocket or a belt, and thanks to its small size it fits inside a box or a medkit."
@@ -92,7 +92,8 @@
 		to_chat(user, span_notice("You perform artificial ventilation of the lungs!"))
 		M.adjust_oxy_loss(-15)
 
-// MARK: Мед-Сканер
+/*
+// MARK: Range-Medical Analyzer
 /obj/item/healthanalyzer/range
 	name = "long-range health analyzer"
 	desc = "A handheld body scanner capable of accurately detecting the patient's vital signs from a distance."
@@ -102,3 +103,4 @@
 	icon_state = "ranged_analyzer"
 	reach = 3
 	custom_premium_price = 1000
+*/

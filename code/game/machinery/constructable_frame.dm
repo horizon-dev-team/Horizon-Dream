@@ -214,7 +214,7 @@
 /obj/structure/frame/proc/install_parts_from_part_replacer(mob/living/user, obj/item/storage/part_replacer/replacer, no_sound = FALSE)
 	return FALSE
 
-// [HORIZON-ADD]
+// [HORIZON-ADD] SALVAGE_TOOL
 /obj/structure/frame/deconstruct_act(mob/living/user, obj/item/I)
 	. = ..() // INDESTRUCTIBLE check
 	if(.)

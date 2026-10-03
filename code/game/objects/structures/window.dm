@@ -215,9 +215,6 @@
 	return ..()
 
 /obj/structure/window/welder_act(mob/living/user, obj/item/tool)
-	// [HORIZON-ADD] Режущие инструменты (TRAIT_CUTTING_TOOL) режут стекло через /datum/element/cutting_tool_target
-	// → deconstruct_act. См. /obj/structure/window/deconstruct_act ниже.
-	// [/HORIZON-ADD]
 	if(atom_integrity >= max_integrity)
 		to_chat(user, span_warning("[src] is already in good condition!"))
 		return ITEM_INTERACT_SUCCESS
@@ -229,7 +226,7 @@
 		to_chat(user, span_notice("You repair [src]."))
 	return ITEM_INTERACT_SUCCESS
 
-// [HORIZON-ADD]
+// [HORIZON-ADD] SALVAGE_TOOL
 /obj/structure/window/deconstruct_act(mob/living/user, obj/item/I)
 	. = ..() // INDESTRUCTIBLE check
 	if(.)

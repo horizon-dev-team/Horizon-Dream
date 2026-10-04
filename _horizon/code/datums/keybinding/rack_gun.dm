@@ -9,7 +9,7 @@
 // Players can rebind it in Game Preferences -> Keybindings.
 
 /datum/keybinding/living/rack_gun
-	hotkey_keys = list("R")
+	hotkey_keys = list("Space")
 	name = "rack_gun"
 	full_name = "Rack Gun Bolt"
 	description = "Rack the bolt / drop bolt / unload the held ballistic gun. Works on both wieldable and non-wieldable guns."

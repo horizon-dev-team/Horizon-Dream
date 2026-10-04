@@ -8,8 +8,6 @@
 	shrapnel_type = null
 	range = 7
 
-// [HORIZON-ADD] Grenades that run out of range mid-flight detonate where
-// they stop instead of silently vanishing (batata grenade launcher).
 /obj/projectile/bullet/l40mm/on_range()
 	explosion(get_turf(src), devastation_range = -1, heavy_impact_range = 2, light_impact_range = 4, flame_range = 2, flash_range = 3, adminlog = FALSE, explosion_cause = src)
 	return ..()
@@ -62,8 +60,6 @@
 /obj/projectile/bullet/smoke40mm/on_hit(atom/target, blocked = FALSE, pierce_hit)
 	. = ..()
 	playsound(src, '_horizon/sound/effects/gas.ogg', 50, TRUE, 1)
-	// Upstream smoke system (the old smoke_spread stub's set_up() did nothing,
-	// so 40mm smoke grenades produced no smoke at all).
 	do_smoke(4, src, drop_location(), smoke_type = /datum/effect_system/fluid_spread/smoke/bad)
 	return BULLET_ACT_HIT
 

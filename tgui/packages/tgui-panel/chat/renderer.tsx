@@ -11,7 +11,7 @@ import { Tooltip } from 'tgui-core/components';
 import { EventEmitter } from 'tgui-core/events';
 import { classes } from 'tgui-core/react';
 import { store } from '../events/store';
-import { scrollTrackingAtom } from './atom';
+import { chatReversedAtom, scrollTrackingAtom } from './atom';
 import {
   COMBINE_MAX_MESSAGES,
   COMBINE_MAX_TIME_WINDOW,
@@ -156,6 +156,9 @@ function isSelfActionMessage(text: string): boolean {
   return /^\s*You\b/.test(text);
 }
 
+const FRAMELESS_MESSAGE_LINGER = 8000;
+const FRAMELESS_FADE_DURATION = 600;
+
 class ChatRenderer {
   loaded: boolean;
   rootNode: HTMLElement | null;
@@ -171,6 +174,10 @@ class ChatRenderer {
   currentJob: string | null;
   currentCharacter: string | null;
   handleScroll: (type: any) => void;
+  frameless: boolean;
+  reversed: boolean;
+  private framelessTimers: Map<HTMLElement, ReturnType<typeof setTimeout>>;
+  private viewportShift: number;
 
   constructor() {
     this.loaded = false;
@@ -180,6 +187,10 @@ class ChatRenderer {
     this.visibleMessages = [];
     this.page = null;
     this.events = new EventEmitter();
+    this.frameless = false;
+    this.reversed = false;
+    this.framelessTimers = new Map();
+    this.viewportShift = 0;
     // Scroll handler
 
     this.scrollNode = null;
@@ -192,11 +203,20 @@ class ChatRenderer {
       if (!node) {
         return;
       }
+      if (
+        this.frameless &&
+        !document.body.classList.contains('frameless-visible')
+      ) {
+        this.scrollToBottom();
+        return;
+      }
       const height = node.scrollHeight;
       const bottom = node.scrollTop + node.offsetHeight;
-      const scrollTracking =
-        Math.abs(height - bottom) < SCROLL_TRACKING_TOLERANCE ||
-        this.lastScrollHeight === 0;
+      const scrollTracking = this.reversed
+        ? node.scrollTop <= SCROLL_TRACKING_TOLERANCE ||
+          this.lastScrollHeight === 0
+        : Math.abs(height - bottom) < SCROLL_TRACKING_TOLERANCE ||
+          this.lastScrollHeight === 0;
       if (scrollTracking !== this.scrollTracking) {
         this.scrollTracking = scrollTracking;
         store.set(scrollTrackingAtom, scrollTracking);
@@ -241,6 +261,65 @@ class ChatRenderer {
         suppressHighlightSound: true,
       });
       this.queue = [];
+    }
+  }
+
+  setFrameless(value: boolean) {
+    this.frameless = value;
+    if (value) {
+      this.scrollTracking = true;
+      store.set(scrollTrackingAtom, true);
+      this.scrollToBottom();
+      return;
+    }
+    for (const [node, timer] of this.framelessTimers) {
+      clearTimeout(timer);
+      node.classList.remove('ChatMessage--recent', 'ChatMessage--fading');
+    }
+    this.framelessTimers.clear();
+  }
+
+  setReversed(value: boolean) {
+    if (this.reversed === value) {
+      return;
+    }
+    this.reversed = value;
+    store.set(chatReversedAtom, value);
+    this.scrollTracking = true;
+    store.set(scrollTrackingAtom, true);
+    this.scrollToBottom();
+  }
+
+  private scheduleMessageFade(node: HTMLElement) {
+    if (!this.frameless) {
+      return;
+    }
+    node.classList.add('ChatMessage--recent');
+    node.classList.remove('ChatMessage--fading');
+    const existing = this.framelessTimers.get(node);
+    if (existing) {
+      clearTimeout(existing);
+    }
+    const timer = setTimeout(() => {
+      node.classList.add('ChatMessage--fading');
+      const fadeTimer = setTimeout(() => {
+        node.classList.remove('ChatMessage--recent', 'ChatMessage--fading');
+        this.framelessTimers.delete(node);
+      }, FRAMELESS_FADE_DURATION);
+      this.framelessTimers.set(node, fadeTimer);
+    }, FRAMELESS_MESSAGE_LINGER);
+    this.framelessTimers.set(node, timer);
+  }
+
+  setViewportShift(cssPx: number) {
+    if (cssPx === this.viewportShift) {
+      return;
+    }
+    this.viewportShift = cssPx;
+    if (this.rootNode) {
+      this.rootNode.style.transform = cssPx
+        ? `translateY(${cssPx}px)`
+        : '';
     }
   }
 
@@ -388,9 +467,16 @@ class ChatRenderer {
   }
 
   scrollToBottom() {
+    if (!this.scrollNode) {
+      return;
+    }
+    if (this.reversed) {
+      this.scrollNode.scrollTop = 0;
+      return;
+    }
     // scrollHeight is always bigger than scrollTop and is
     // automatically clamped to the valid range.
-    this.scrollNode!.scrollTop = this.scrollNode!.scrollHeight;
+    this.scrollNode.scrollTop = this.scrollNode.scrollHeight;
   }
 
   changePage(page) {
@@ -415,7 +501,11 @@ class ChatRenderer {
     }
     if (node) {
       this.rootNode!.appendChild(fragment);
-      node.scrollIntoView();
+      if (this.reversed) {
+        this.scrollToBottom();
+      } else {
+        node.scrollIntoView();
+      }
     }
   }
 
@@ -479,6 +569,12 @@ class ChatRenderer {
       if (combinable) {
         combinable.times = (combinable.times || 1) + 1;
         updateMessageBadge(combinable);
+        if (combinable.node) {
+          this.scheduleMessageFade(combinable.node);
+        }
+        if (this.frameless) {
+          setTimeout(() => this.scrollToBottom());
+        }
         continue;
       }
       // Reuse message node
@@ -628,6 +724,7 @@ class ChatRenderer {
       if (canPageAcceptType(this.page, message.type)) {
         fragment.appendChild(node);
         this.visibleMessages.push(message);
+        this.scheduleMessageFade(node);
       }
     }
     if (node) {

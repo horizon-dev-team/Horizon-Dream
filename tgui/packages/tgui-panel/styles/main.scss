@@ -37,6 +37,52 @@
   gap: 0 !important;
 }
 
+.Panel__settings {
+  min-height: 0;
+  max-height: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background: var(--color-scrollbar-thumb, rgba(128, 128, 128, 0.5));
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+}
+
+.PanelDragBar {
+  height: 22px;
+  cursor: grab;
+  background-color: var(--color-section);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &::after {
+    content: '';
+    width: 40px;
+    height: 4px;
+    border-radius: 2px;
+    background-color: var(--color-border);
+  }
+
+  &:hover::after {
+    background-color: var(--color-text-translucent);
+  }
+
+  &:active {
+    cursor: grabbing;
+  }
+}
+
 :root {
   --chat-text-color: hsl(210, 50%, 80%);
 

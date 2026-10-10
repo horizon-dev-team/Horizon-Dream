@@ -18,8 +18,10 @@ import {
   handleVerbsInit,
 } from '../verbs/handlers';
 import { handleLoadAssets } from './handlers/assets';
+import { panelLayoutChanged } from './handlers/layout';
 import { playerSet } from './handlers/player';
 import { roundrestart } from './handlers/roundrestart';
+import { panelWindowClosed, panelWindowOpened } from './handlers/windows';
 
 const listeners = {
   'verbs/add': handleAddVerbs,
@@ -31,6 +33,9 @@ const listeners = {
   'verbs/hotkey_mode': handleHotkeyMode,
   'asset/stylesheet': loadStyleSheet,
   'asset/mappings': handleLoadAssets,
+  'panel/window_opened': panelWindowOpened,
+  'panel/window_closed': panelWindowClosed,
+  'panel/layout': panelLayoutChanged,
   'audio/playMusic': playMusic,
   'audio/stopMusic': stopMusic,
   'chat/message': chatMessage,

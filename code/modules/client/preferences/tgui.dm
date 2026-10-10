@@ -27,6 +27,24 @@
 		// Force it to reload either way
 		tgui.send_full_update(client.mob)
 
+/datum/preference/choiced/tgpanel_layout
+	category = PREFERENCE_CATEGORY_GAME_PREFERENCES
+	savefile_key = "tgpanel_layout"
+	savefile_identifier = PREFERENCE_PLAYER
+
+/datum/preference/choiced/tgpanel_layout/init_possible_values()
+	return list(
+		TGPANEL_ONMAP,
+		TGPANEL_PANEL,
+		TGPANEL_WINDOW,
+	)
+
+/datum/preference/choiced/tgpanel_layout/create_default_value()
+	return TGPANEL_ONMAP
+
+/datum/preference/choiced/tgpanel_layout/apply_to_client_updated(client/updated, value)
+	updated?.tgui_panel.create_browser(value, TRUE)
+
 /// Changes layout in some UI's, like Vending, Smartfridge etc. Making it list or grid
 /datum/preference/choiced/tgui_layout
 	savefile_key = "tgui_layout"

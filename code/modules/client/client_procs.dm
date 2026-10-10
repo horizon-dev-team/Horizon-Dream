@@ -271,9 +271,6 @@ GLOBAL_LIST_INIT(unrecommended_builds, list(
 	stat_panel = new(src, "statbrowser")
 	stat_panel.subscribe(src, PROC_REF(on_stat_panel_message))
 
-	// Instantiate tgui panel
-	tgui_panel = new(src, "browseroutput")
-
 	tgui_say = new(src, "tgui_say")
 
 	initialize_commandbar_spy()
@@ -294,6 +291,9 @@ GLOBAL_LIST_INIT(unrecommended_builds, list(
 		GLOB.preferences_datums[ckey] = prefs
 	prefs.last_ip = address //these are gonna be used for banning
 	prefs.last_id = computer_id //these are gonna be used for banning
+
+	tgui_panel = new(src, "browseroutput")
+	tgui_panel.create_browser(prefs.read_preference(/datum/preference/choiced/tgpanel_layout))
 
 	if(fexists(roundend_report_file()))
 		ASSIGN_GAME_VERB(src, /client, show_previous_roundend_report)

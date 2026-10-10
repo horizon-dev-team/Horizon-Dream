@@ -9,6 +9,7 @@ import { useEffect, useRef } from 'react';
 import { Button } from 'tgui-core/components';
 import {
   chatPagesRecordAtom,
+  chatReversedAtom,
   currentPageIdAtom,
   scrollTrackingAtom,
 } from './atom';
@@ -23,6 +24,7 @@ type Props = {
 export function ChatPanel(props: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const scrollTracking = useAtomValue(scrollTrackingAtom);
+  const reversed = useAtomValue(chatReversedAtom);
   // Page stuff
   const currentPageId = useAtomValue(currentPageIdAtom);
   const [pagesRecord, setPagesRecord] = useAtom(chatPagesRecordAtom);
@@ -64,11 +66,15 @@ export function ChatPanel(props: Props) {
       <div className="Chat" ref={ref} />
       {!scrollTracking && (
         <Button
-          className="Chat__scrollButton"
-          icon="arrow-down"
+          className={
+            reversed
+              ? 'Chat__scrollButton Chat__scrollButton--reversed'
+              : 'Chat__scrollButton'
+          }
+          icon={reversed ? 'arrow-up' : 'arrow-down'}
           onClick={() => chatRenderer.scrollToBottom()}
         >
-          Scroll to bottom
+          {reversed ? 'Scroll to top' : 'Scroll to bottom'}
         </Button>
       )}
     </>

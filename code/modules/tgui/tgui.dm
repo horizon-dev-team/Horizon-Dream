@@ -112,6 +112,11 @@
 		window.send_message("update", payload)
 	SStgui.on_open(src)
 
+	if (user?.client?.tgui_panel?.is_ready())
+		user.client.tgui_panel.window.send_message("panel/window_opened", list(
+			"id" = window.id,
+		))
+
 	return TRUE
 
 /datum/tgui/proc/send_assets()
@@ -147,6 +152,11 @@
 		window.close(can_be_suspended)
 		src_object.ui_close(user)
 		SStgui.on_close(src)
+
+		if (user?.client?.tgui_panel?.is_ready())
+			user.client.tgui_panel.window.send_message("panel/window_closed", list(
+				"id" = window.id,
+			))
 
 		if(user.client)
 			terminate_byondui_elements()

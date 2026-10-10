@@ -17,7 +17,8 @@
 
 //used to set the default viewport to the user's preference.
 #define VIEWPORT_USE_PREF "use_pref"
-#define WIDESCREEN_VIEWPORT_SIZE "19x15"
+#define WIDESCREEN_VIEWPORT_SIZE "27x15"
+#define WIDESCREEN_DOCKED_VIEWPORT_SIZE "19x15"
 #define SQUARE_VIEWPORT_SIZE "15x15"
 /// Largest viewport possible, required for checking if someone can see an object
 #define LARGEST_VIEWPORT_SIZE WIDESCREEN_VIEWPORT_SIZE

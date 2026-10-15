@@ -1,5 +1,4 @@
 ///Cooldown for the Reset Lobby Menu HUD verb
-#define RESET_HUD_INTERVAL 15 SECONDS
 /mob/dead/new_player
 	flags_1 = NONE
 	invisibility = INVISIBILITY_ABSTRACT
@@ -350,6 +349,17 @@
 		return FALSE //This is the only case someone should actually be completely blocked from antag rolling as well
 	return TRUE
 
+/// [HORIZON-ADD] Returns lobby-facing warnings about the player's current preference setup.
+/// Shown in the HTML lobby so players can notice problems before readying up.
+/mob/dead/new_player/proc/get_preference_issues()
+	var/list/issues = list()
+	if(!client?.prefs)
+		return issues
+	var/datum/preferences/prefs = client.prefs
+	if(prefs.job_preferences.len == 0 && prefs.read_preference(/datum/preference/choiced/jobless_role) == RETURNTOLOBBY)
+		issues += "You have no jobs enabled, along with return to lobby if job is unavailable. This makes you ineligible for any round start role, please update your job preferences."
+	return issues
+
 /**
  * Prepares a client for the interview system, and provides them with a new interview
  *
@@ -381,4 +391,3 @@
 	if(CONFIG_GET(flag/auto_deadmin_on_ready_or_latejoin) || (client.prefs.read_preference(/datum/preference/toggle/auto_deadmin_on_ready_or_latejoin)) || (client.prefs?.toggles & DEADMIN_ALWAYS))
 		return client.holder.auto_deadmin()
 
-#undef RESET_HUD_INTERVAL

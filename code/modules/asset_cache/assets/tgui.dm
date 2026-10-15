@@ -40,7 +40,7 @@
 		"Grand9K_Pixel.ttf" = file("interface/fonts/Grand9K_Pixel.ttf"),
 	)
 	parents = list(
-		"fonts.css" = file("tgui/packages/tgui-escape-menu/styles/fonts.css"),
+		"escape-fonts.css" = file("tgui/packages/tgui-escape-menu/styles/fonts.css"),
 	)
 
 /datum/asset/simple/namespaced/escape_menu_sounds
@@ -63,30 +63,20 @@
 
 /datum/asset/simple/namespaced/lobby_menu_font
 	assets = list(
-		"Pixellari.ttf" = file("interface/fonts/Pixellari.ttf"),
-		"Grand9K_Pixel.ttf" = file("interface/fonts/Grand9K_Pixel.ttf"),
+		"chakrapetch-regular.woff2" = file("tgui/packages/chakrapetch/chakrapetch-regular.woff2"),
+		"chakrapetch-regular.ttf" = file("tgui/packages/chakrapetch/chakrapetch-regular.ttf"),
+		"chakrapetch-bold.woff2" = file("tgui/packages/chakrapetch/chakrapetch-bold.woff2"),
+		"chakrapetch-bold.ttf" = file("tgui/packages/chakrapetch/chakrapetch-bold.ttf"),
 	)
 	parents = list(
-		"fonts.css" = file("tgui/packages/tgui-lobby/styles/fonts.css"),
+		"lobby-fonts.css" = file("tgui/packages/tgui-lobby/styles/fonts.css"),
 	)
 
-/// Registers all PNG/APNG files from icons/hud/lobby/png/ as named assets.
-/// To add a new lobby icon, just drop a .png file in that directory.
-/datum/asset/simple/namespaced/lobby_menu_icons
-
-/datum/asset/simple/namespaced/lobby_menu_icons/register()
-	var/dir_path = "icons/hud/lobby/png/"
-	for(var/filename in flist(dir_path))
-		if(!findtext(filename, ".png"))
-			continue
-		assets[filename] = file("[dir_path][filename]")
-	return ..()
 
 /datum/asset/simple/namespaced/lobby_menu_sounds
 	assets = list(
 		"ui_select1.ogg" = file("sound/misc/menu/ui_select1.ogg"),
-		"menu_rollup1.ogg" = file("sound/misc/menu/menu_rollup1.ogg"),
-		"menu_rolldown1.ogg" = file("sound/misc/menu/menu_rolldown1.ogg"),
+		"load.mp3" = file("sound/lobby/lobby_load.mp3"),
 	)
 
 /datum/asset/simple/chat_dark

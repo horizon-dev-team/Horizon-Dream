@@ -1,7 +1,6 @@
 /turf/closed/wall/r_wall
 	name = "reinforced wall"
 	desc = "A huge chunk of reinforced metal used to separate rooms."
-	icon = '_horizon/icons/turf/walls/modules_wall/reinforce.dmi'
 	opacity = TRUE
 	density = TRUE
 	turf_flags = IS_SOLID
@@ -193,16 +192,16 @@
 		base_icon_state = "reinforced_wall"
 		switch(d_state)
 			if(SUPPORT_LINES, COVER)
-				icon = '_horizon/icons/turf/walls/rwalls/reinforced_wall_2.dmi'
+				icon = '_horizon/icons/turf/walls/modules_wall/rstates/reinforce2.dmi'
 				return ..()
 			if(CUT_COVER)
-				icon = '_horizon/icons/turf/walls/rwalls/reinforced_wall_3.dmi'
+				icon = '_horizon/icons/turf/walls/modules_wall/rstates/reinforce3.dmi'
 				return ..()
 			if(ANCHOR_BOLTS, SUPPORT_RODS)
-				icon = '_horizon/icons/turf/walls/rwalls/reinforced_wall_4.dmi'
+				icon = '_horizon/icons/turf/walls/modules_wall/rstates/reinforce4.dmi'
 				return ..()
 			if(SHEATH)
-				icon = '_horizon/icons/turf/walls/rwalls/reinforced_wall_5.dmi'
+				icon = '_horizon/icons/turf/walls/modules_wall/rstates/reinforce5.dmi'
 				return ..()
 	else
 		icon = initial(icon)
@@ -236,7 +235,6 @@
 /turf/closed/wall/r_wall/plastitanium
 	name = /turf/closed/wall/mineral/plastitanium::name
 	desc = "An extra durable wall made of an alloy of plasma and titanium, reinforced with plasteel rods."
-	icon = '_horizon/icons/turf/walls/modules_wall/survival_pod_walls.dmi'
 	sheet_type = /obj/item/stack/sheet/mineral/plastitanium
 	hardness = 25 //plastitanium
 	turf_flags = IS_SOLID

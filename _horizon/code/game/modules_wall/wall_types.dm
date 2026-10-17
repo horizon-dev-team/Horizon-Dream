@@ -26,8 +26,50 @@
 	QUEUE_SMOOTH(src)
 
 // MARK: Types
+/turf/closed/wall/r_wall
+	icon = '_horizon/icons/turf/walls/modules_wall/reinforce.dmi'
+
+/turf/closed/wall/r_wall/plastitanium
+	icon = '_horizon/icons/turf/walls/modules_wall/pidopod.dmi'
+
+/turf/closed/wall/mineral/plastitanium
+	icon = '_horizon/icons/turf/walls/modules_wall/plastitanium.dmi'
+
 /turf/closed/wall/mineral/plastitanium/survival
-	icon = '_horizon/icons/turf/walls/modules_wall/survival_pod_walls.dmi'
+	icon = '_horizon/icons/turf/walls/modules_wall/EvaWall.dmi'
 
 /turf/closed/wall/concrete
-	icon = '_horizon/icons/turf/walls/modules_wall/concentrate.dmi'
+	icon = '_horizon/icons/turf/walls/modules_wall/concrete.dmi'
+
+/turf/closed/wall/concrete/reinforced
+	icon = '_horizon/icons/turf/walls/modules_wall/hexaconcrete.dmi'
+
+/turf/closed/wall/mineral/titanium
+	icon = '_horizon/icons/turf/walls/modules_wall/shuttle.dmi'
+
+/turf/closed/wall/mineral/snow
+	icon = '_horizon/icons/turf/walls/modules_wall/snow.dmi'
+
+/turf/closed/wall/mineral/sandstone
+	icon = '_horizon/icons/turf/walls/modules_wall/sandstone.dmi'
+
+/turf/closed/wall/mineral/iron
+	icon = '_horizon/icons/turf/walls/modules_wall/iron.dmi'
+
+/turf/closed/wall/mineral/gold
+	icon = '_horizon/icons/turf/walls/modules_wall/gold.dmi'
+
+/turf/closed/wall/mineral/silver
+	icon = '_horizon/icons/turf/walls/modules_wall/silver.dmi'
+
+/turf/closed/wall/mineral/wood
+	icon = '_horizon/icons/turf/walls/modules_wall/wood.dmi'
+
+/turf/closed/wall/mineral/uranium
+	icon = '_horizon/icons/turf/walls/modules_wall/uranium.dmi'
+
+/turf/closed/wall/mineral/diamond
+	icon = '_horizon/icons/turf/walls/modules_wall/diamond.dmi'
+
+/turf/closed/wall/mineral/plasma
+	icon = '_horizon/icons/turf/walls/modules_wall/plasma.dmi'

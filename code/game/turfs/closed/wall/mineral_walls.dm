@@ -12,7 +12,6 @@
 /turf/closed/wall/mineral/gold
 	name = "gold wall"
 	desc = "A wall with gold plating. Swag!"
-	icon = '_horizon/icons/turf/walls/modules_wall/gold.dmi'
 	sheet_type = /obj/item/stack/sheet/mineral/gold
 	hardness = 65 //gold is soft
 	explosive_resistance = 0 //gold is a soft metal you dingus.
@@ -22,7 +21,6 @@
 /turf/closed/wall/mineral/silver
 	name = "silver wall"
 	desc = "A wall with silver plating. Shiny!"
-	icon = '_horizon/icons/turf/walls/modules_wall/silver.dmi'
 	sheet_type = /obj/item/stack/sheet/mineral/silver
 	hardness = 65 //silver is also soft according to moh's scale
 	custom_materials = list(/datum/material/silver = SHEET_MATERIAL_AMOUNT*2)
@@ -30,7 +28,6 @@
 /turf/closed/wall/mineral/diamond
 	name = "diamond wall"
 	desc = "A wall with diamond plating. You monster."
-	icon = 'icons/turf/walls/diamond_wall.dmi'
 	icon_state = "diamond_wall-0"
 	base_icon_state = "diamond_wall"
 	sheet_type = /obj/item/stack/sheet/mineral/diamond
@@ -57,9 +54,6 @@
 /turf/closed/wall/mineral/sandstone
 	name = "sandstone wall"
 	desc = "A wall with sandstone plating. Rough."
-	icon = 'icons/turf/walls/sandstone_wall.dmi'
-	icon_state = "sandstone_wall-0"
-	base_icon_state = "sandstone_wall"
 	sheet_type = /obj/item/stack/sheet/mineral/sandstone
 	hardness = 50 //moh says this is apparently 6-7 on it's scale
 	explosive_resistance = 0
@@ -70,9 +64,6 @@
 	article = "a"
 	name = "uranium wall"
 	desc = "A wall with uranium plating. This is probably a bad idea."
-	icon = 'icons/turf/walls/uranium_wall.dmi'
-	icon_state = "uranium_wall-0"
-	base_icon_state = "uranium_wall"
 	sheet_type = /obj/item/stack/sheet/mineral/uranium
 	hardness = 40 //uranium is a 6 on moh's scale
 	custom_materials = list(/datum/material/uranium = SHEET_MATERIAL_AMOUNT*2)
@@ -124,7 +115,6 @@
 /turf/closed/wall/mineral/plasma
 	name = "plasma wall"
 	desc = "A wall with plasma plating. This is definitely a bad idea."
-	icon = 'icons/turf/walls/plasma_wall.dmi'
 	icon_state = "plasma_wall-0"
 	base_icon_state = "plasma_wall"
 	sheet_type = /obj/item/stack/sheet/mineral/plasma
@@ -136,9 +126,6 @@
 /turf/closed/wall/mineral/wood
 	name = "wooden wall"
 	desc = "A wall with wooden plating. Stiff."
-	icon = 'icons/turf/walls/wood_wall.dmi'
-	icon_state = "wood_wall-0"
-	base_icon_state = "wood_wall"
 	sheet_type = /obj/item/stack/sheet/mineral/wood
 	hardness = 80
 	turf_flags = IS_SOLID
@@ -182,7 +169,6 @@
 /turf/closed/wall/mineral/iron
 	name = "rough iron wall"
 	desc = "A wall with rough iron plating."
-	icon = 'icons/turf/walls/iron_wall.dmi'
 	icon_state = "iron_wall-0"
 	base_icon_state = "iron_wall"
 	sheet_type = /obj/item/stack/rods
@@ -197,12 +183,10 @@
 	icon = 'icons/turf/walls/snow_wall.dmi'
 	icon_state = "snow_wall-0"
 	base_icon_state = "snow_wall"
-	smoothing_flags = SMOOTH_BITMASK
 	hardness = 80
 	explosive_resistance = 0
 	slicing_duration = 30
 	sheet_type = /obj/item/stack/sheet/mineral/snow
-	canSmoothWith = null
 	girder_type = null
 	bullet_sizzle = TRUE
 	bullet_bounce_sound = null
@@ -230,7 +214,6 @@
 /turf/closed/wall/mineral/titanium //has to use this path due to how building walls works
 	name = "wall"
 	desc = "A light-weight titanium wall used in shuttles."
-	icon = '_horizon/icons/turf/walls/modules_wall/shuttle.dmi'
 	icon_state = "wall"
 	explosive_resistance = 3
 	flags_1 = CAN_BE_DIRTY_1
@@ -275,7 +258,6 @@
 /turf/closed/wall/mineral/plastitanium
 	name = "wall"
 	desc = "A durable wall made of an alloy of plasma and titanium."
-	icon = '_horizon/icons/turf/walls/modules_wall/plastitanium.dmi'
 	explosive_resistance = 4
 	sheet_type = /obj/item/stack/sheet/mineral/plastitanium
 	hardness = 25 //upgrade on titanium
@@ -305,7 +287,6 @@
 /turf/closed/wall/mineral/plastitanium/survival
 	name = "pod wall"
 	desc = "An easily-compressible wall used for temporary shelter."
-	icon = '_horizon/icons/turf/walls/modules_wall/EvaWall.dmi'
 	sheet_type = /obj/item/stack/wall_filling/plastitanium/survivalpod
 	sheet_amount = 1
 	rust_resistance = RUST_RESISTANCE_TITANIUM

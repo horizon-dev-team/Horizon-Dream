@@ -1,7 +1,6 @@
 /turf/closed/wall/concrete
 	name = "concrete wall"
 	desc = "A thick wall made of concrete, poured around steel supports."
-	icon = '_horizon/icons/turf/walls/modules_wall/concentrate.dmi' // [HORIZON-WALL]
 	explosive_resistance = 2
 	rad_insulation = RAD_MEDIUM_INSULATION
 	rust_resistance = RUST_RESISTANCE_REINFORCED
@@ -95,9 +94,6 @@
 	icon = 'icons/turf/walls/hexacrete.dmi'
 	icon_state = "hexacrete-0"
 	base_icon_state = "hexacrete"
-	smoothing_flags = SMOOTH_BITMASK
-	smoothing_groups = SMOOTH_GROUP_CONCRETE_WALLS + SMOOTH_GROUP_WALLS + SMOOTH_GROUP_CLOSED_TURFS
-	canSmoothWith = SMOOTH_GROUP_CONCRETE_WALLS
 
 	hardness = 15
 	explosive_resistance = 3

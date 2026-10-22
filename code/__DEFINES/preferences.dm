@@ -85,9 +85,11 @@
 
 #define DEFAULT_CYBORG_NAME "Default Cyborg Name"
 
+// [HORIZON-ADD] UI
 #define TGPANEL_ONMAP "onmap"
 #define TGPANEL_PANEL "panel"
 #define TGPANEL_WINDOW "window"
+// [/HORIZON-ADD]
 
 // Choose grid or list TGUI layouts for UI's, when possible.
 /// Force grid layout, even if default is a list.

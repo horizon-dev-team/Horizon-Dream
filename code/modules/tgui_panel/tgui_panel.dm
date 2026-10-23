@@ -319,3 +319,5 @@
 
 	if(force)
 		initialize(force = TRUE)
+
+#undef TGPANEL_POPUP_WINDOW

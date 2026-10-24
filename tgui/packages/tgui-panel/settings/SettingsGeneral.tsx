@@ -33,7 +33,11 @@ export function SettingsGeneral(props) {
     <Section>
       <LabeledList>
         <LabeledList.Item label="Theme">
-          {THEMES.map((THEME) => (
+          {THEMES.filter(
+            (THEME) =>
+              !document.body.classList.contains('onmap') ||
+              THEME !== 'light',
+          ).map((THEME) => (
             <Button
               key={THEME}
               selected={settings.theme === THEME}

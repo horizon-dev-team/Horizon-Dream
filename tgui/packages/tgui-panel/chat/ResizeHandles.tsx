@@ -1,6 +1,6 @@
 import type { ChatCorner } from '../settings/constants';
-import { anchorsForRect } from './chat-strip-geometry';
 import {
+  anchorsForRect,
   isChatStripCollapsed,
   setChatStripDragging,
   settleChatStripAfterDrag,

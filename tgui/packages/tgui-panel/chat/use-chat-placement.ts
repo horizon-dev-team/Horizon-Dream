@@ -3,15 +3,18 @@ import { useEffect, useState } from 'react';
 import { panelLayoutAtom } from '../events/handlers/layout';
 import { settingsAtom, settingsLoadedAtom } from '../settings/atoms';
 import type { ChatCorner } from '../settings/constants';
-import { anchorsForRect, winsetChatRectClamped } from './chat-strip-geometry';
+import {
+  isChatStripCollapsed,
+  refreshCombatBase,
+  stripState,
+  anchorsForRect,
+  winsetChatRectClamped,
+} from './chat-hover-strip';
 import {
   loadChatRatio,
   saveChatRatioRect,
   type ChatRatio,
 } from './chat-ratio';
-import { isChatStripCollapsed } from './chat-hover-strip';
-import { refreshCombatBase } from './chat-strip-combat';
-import { stripState } from './chat-strip-state';
 import { chatRenderer } from './renderer';
 
 const DEFAULT_W_RATIO = 1 / 3;

@@ -402,7 +402,7 @@ ADMIN_VERB(toggle_lobby_transparency, R_ADMIN, "Toggle Lobby Transparency", "Tog
 
 	var/action = payload["action"]
 	var/mob/dead/new_player/player = client?.mob
-	if(!istype(player) || client.interviewee) // [/HORIZON-EDIT] LOBBY
+	if(!istype(player) || client.interviewee) // [HORIZON-EDIT] LOBBY
 		return TRUE
 
 	switch(action)
@@ -521,6 +521,8 @@ ADMIN_VERB(toggle_lobby_transparency, R_ADMIN, "Toggle Lobby Transparency", "Tog
 	set waitfor = FALSE
 	if(!client?.prefs || !window)
 		// Preferences are not settled yet (very early login) - process() retries
+		return
+	if(SSatoms.initialized != INITIALIZATION_INNEW_REGULAR || SSearly_assets.initialized != INITIALIZATION_INNEW_REGULAR) // [HORIZON-ADD] LOBBY
 		return
 	preview_dirty = FALSE
 

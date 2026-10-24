@@ -65,8 +65,8 @@
 		var/panel_layout = chief.prefs.read_preference(/datum/preference/choiced/tgpanel_layout)
 		if(panel_layout == TGPANEL_ONMAP || panel_layout == TGPANEL_WINDOW)
 			return WIDESCREEN_VIEWPORT_SIZE
-		return WIDESCREEN_DOCKED_VIEWPORT_SIZE
-	return SQUARE_VIEWPORT_SIZE
+		return SQUARE_VIEWPORT_SIZE
+	return WIDESCREEN_DOCKED_VIEWPORT_SIZE
 // [/HORIZON-EDIT]
 
 /datum/view_data/proc/resetToDefault()

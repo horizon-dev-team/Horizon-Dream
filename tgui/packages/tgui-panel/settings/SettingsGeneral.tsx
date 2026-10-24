@@ -13,15 +13,12 @@ import { toFixed } from 'tgui-core/math';
 import { capitalize } from 'tgui-core/string';
 import { chatRenderer } from '../chat/renderer';
 import { FONTS, THEMES } from './constants';
-import { resetPaneSplitters, setEditPaneSplitters } from './scaling';
 import { exportChatSettings, importChatSettings } from './settingsImExport';
 import { useSettings } from './use-settings';
 
 export function SettingsGeneral(props) {
   const { settings, updateSettings } = useSettings();
   const [freeFont, setFreeFont] = useState(false);
-
-  const [editingPanes, setEditingPanes] = useState(false);
 
   // [HORIZON-ADD] UI
   const chatCorner = settings.chatCorner || 'top-right';
@@ -165,29 +162,6 @@ export function SettingsGeneral(props) {
             )}
           </>
         )}
-        <LabeledList.Item label="UI sizes">
-          <Stack>
-            <Stack.Item>
-              <Button
-                onClick={() =>
-                  setEditingPanes((val) => {
-                    setEditPaneSplitters(!val);
-                    return !val;
-                  })
-                }
-                color={editingPanes ? 'red' : undefined}
-                icon={editingPanes ? 'save' : undefined}
-              >
-                {editingPanes ? 'Save' : 'Adjust UI Sizes'}
-              </Button>
-            </Stack.Item>
-            <Stack.Item>
-              <Button onClick={resetPaneSplitters} icon="refresh" color="red">
-                Reset
-              </Button>
-            </Stack.Item>
-          </Stack>
-        </LabeledList.Item>
         <LabeledList.Item label="Font style">
           <Stack.Item>
             {!freeFont ? (

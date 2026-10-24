@@ -36,7 +36,6 @@
 #include "code\game\objects\items\tanks\internals_tactical.dm"
 #include "code\game\objects\structures\flora.dm"
 #include "code\game\objects\structures\markings.dm"
-#include "code\modules\admin\all_verb_panel.dm"
 #include "code\modules\buildmode\building_options.dm"
 #include "code\modules\buildmode\buildmode_assets.dm"
 #include "code\modules\buildmode\tgui_browser.dm"

@@ -1,6 +1,7 @@
 /**
  * @file
  * @copyright 2020 Aleksej Komarov
+ * @edit 2026 KOCMOHABT
  * @license MIT
  */
 
@@ -35,11 +36,7 @@ import { ReconnectButton } from './reconnect';
 import { settingsVisibleAtom } from './settings/atoms';
 import { SettingsPanel } from './settings/SettingsPanel';
 import { useSettings } from './settings/use-settings';
-import {
-  ResizeHandles,
-  startChatMove,
-  startPopupMove,
-} from './chat/ResizeHandles';
+import { ResizeHandles, startChatMove, startPopupMove } from './chat/ResizeHandles';
 import { CommandBar } from './verbs/CommandBar';
 
 const CHAT_BODY_CLASSES = [
@@ -55,7 +52,7 @@ function clearChatBodyClasses(body: HTMLElement) {
   body.classList.remove(...CHAT_BODY_CLASSES);
 }
 
-export function Panel() {
+export function Panel(props) {
   const [audioVisible, setAudioVisible] = useAtom(visibleAtom);
   const game = useAtomValue(gameAtom);
   const { settings, updateSettings } = useSettings();

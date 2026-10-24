@@ -24,7 +24,7 @@ type Props = {
 export function ChatPanel(props: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const scrollTracking = useAtomValue(scrollTrackingAtom);
-  const reversed = useAtomValue(chatReversedAtom);
+  const reversed = useAtomValue(chatReversedAtom); // [HORIZON-ADD] UI
   // Page stuff
   const currentPageId = useAtomValue(currentPageIdAtom);
   const [pagesRecord, setPagesRecord] = useAtom(chatPagesRecordAtom);

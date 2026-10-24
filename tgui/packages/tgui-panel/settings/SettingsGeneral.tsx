@@ -23,9 +23,11 @@ export function SettingsGeneral(props) {
 
   const [editingPanes, setEditingPanes] = useState(false);
 
+  // [HORIZON-ADD] UI
   const chatCorner = settings.chatCorner || 'top-right';
   const chatVertical = chatCorner.startsWith('top') ? 'top' : 'bottom';
   const chatHorizontal = chatCorner.endsWith('left') ? 'left' : 'right';
+  // [/HORIZON-ADD]
 
   return (
     <Section>
@@ -249,7 +251,7 @@ export function SettingsGeneral(props) {
                 step={1}
                 stepPixelSize={20}
                 minValue={8}
-                maxValue={18}
+                maxValue={18} // [HORIZON-EDIT] UI
                 value={settings.fontSize}
                 unit="px"
                 format={(value) => toFixed(value)}
@@ -263,7 +265,7 @@ export function SettingsGeneral(props) {
             width="100%"
             step={0.01}
             minValue={0.8}
-            maxValue={3}
+            maxValue={3} // [HORIZON-EDIT] UI
             value={settings.lineHeight}
             format={(value) => toFixed(value, 2)}
             onChange={(e, value) =>

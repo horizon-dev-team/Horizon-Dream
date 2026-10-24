@@ -122,9 +122,6 @@ export function startSettingsMigration(next: MergedSettings): void {
   draftSettings.initialized = true;
   draftSettings.view = defaultSettings.view; // Preserve view state
 
-  draftSettings.fontSize = Math.min(draftSettings.fontSize, 18);
-  draftSettings.lineHeight = Math.min(draftSettings.lineHeight, 3);
-
   generalSettingsHandler(draftSettings);
   setMusicVolume(draftSettings.adminMusicVolume);
   store.set(settingsAtom, draftSettings);

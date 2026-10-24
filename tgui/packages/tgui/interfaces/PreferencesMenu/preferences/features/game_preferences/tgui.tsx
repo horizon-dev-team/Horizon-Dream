@@ -51,9 +51,11 @@ export const tgui_say_light_mode: FeatureToggle = {
   component: CheckboxInput,
 };
 
+// [HORIZON-ADD] UI
 export const tgpanel_layout: FeatureChoiced = {
   name: 'Chat Layout',
   category: 'UI',
   description: 'Choose where the chat panel is displayed.',
   component: FeatureDropdownInput,
 };
+// [/HORIZON-ADD]

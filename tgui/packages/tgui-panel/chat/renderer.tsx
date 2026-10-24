@@ -156,8 +156,8 @@ function isSelfActionMessage(text: string): boolean {
   return /^\s*You\b/.test(text);
 }
 
-const FRAMELESS_MESSAGE_LINGER = 8000;
-const FRAMELESS_FADE_DURATION = 600;
+const FRAMELESS_MESSAGE_LINGER = 8000; // [HORIZON-ADD] UI
+const FRAMELESS_FADE_DURATION = 600; // [HORIZON-ADD] UI
 
 class ChatRenderer {
   loaded: boolean;
@@ -174,10 +174,12 @@ class ChatRenderer {
   currentJob: string | null;
   currentCharacter: string | null;
   handleScroll: (type: any) => void;
+  // [HORIZON-ADD] UI
   frameless: boolean;
   reversed: boolean;
   private framelessTimers: Map<HTMLElement, ReturnType<typeof setTimeout>>;
   private viewportShift: number;
+  // [/HORIZON-ADD]
 
   constructor() {
     this.loaded = false;
@@ -187,10 +189,12 @@ class ChatRenderer {
     this.visibleMessages = [];
     this.page = null;
     this.events = new EventEmitter();
+    // [HORIZON-ADD] UI
     this.frameless = false;
     this.reversed = false;
     this.framelessTimers = new Map();
     this.viewportShift = 0;
+    // [/HORIZON-ADD]
     // Scroll handler
 
     this.scrollNode = null;
@@ -209,14 +213,14 @@ class ChatRenderer {
       ) {
         this.scrollToBottom();
         return;
-      }
+      } // [HORIZON-EDIT] UI
       const height = node.scrollHeight;
       const bottom = node.scrollTop + node.offsetHeight;
       const scrollTracking = this.reversed
         ? node.scrollTop <= SCROLL_TRACKING_TOLERANCE ||
           this.lastScrollHeight === 0
         : Math.abs(height - bottom) < SCROLL_TRACKING_TOLERANCE ||
-          this.lastScrollHeight === 0;
+          this.lastScrollHeight === 0; // [HORIZON-EDIT] UI
       if (scrollTracking !== this.scrollTracking) {
         this.scrollTracking = scrollTracking;
         store.set(scrollTrackingAtom, scrollTracking);
@@ -264,6 +268,7 @@ class ChatRenderer {
     }
   }
 
+  // [HORIZON-ADD] UI
   setFrameless(value: boolean) {
     this.frameless = value;
     if (value) {
@@ -322,6 +327,7 @@ class ChatRenderer {
         : '';
     }
   }
+  // [/HORIZON-ADD]
 
   assignStyle(style = {}) {
     for (const key of Object.keys(style)) {
@@ -466,6 +472,7 @@ class ChatRenderer {
     });
   }
 
+  // [HORIZON-EDIT] UI
   scrollToBottom() {
     if (!this.scrollNode) {
       return;
@@ -474,10 +481,9 @@ class ChatRenderer {
       this.scrollNode.scrollTop = 0;
       return;
     }
-    // scrollHeight is always bigger than scrollTop and is
-    // automatically clamped to the valid range.
     this.scrollNode.scrollTop = this.scrollNode.scrollHeight;
   }
+  // [/HORIZON-ADD]
 
   changePage(page) {
     if (!this.isReady()) {
@@ -505,7 +511,7 @@ class ChatRenderer {
         this.scrollToBottom();
       } else {
         node.scrollIntoView();
-      }
+      } // [HORIZON-EDIT] UI
     }
   }
 
@@ -569,12 +575,14 @@ class ChatRenderer {
       if (combinable) {
         combinable.times = (combinable.times || 1) + 1;
         updateMessageBadge(combinable);
+        // [HORIZON-ADD] UI
         if (combinable.node) {
           this.scheduleMessageFade(combinable.node);
         }
         if (this.frameless) {
           setTimeout(() => this.scrollToBottom());
         }
+        // [/HORIZON-ADD]
         continue;
       }
       // Reuse message node
@@ -724,7 +732,7 @@ class ChatRenderer {
       if (canPageAcceptType(this.page, message.type)) {
         fragment.appendChild(node);
         this.visibleMessages.push(message);
-        this.scheduleMessageFade(node);
+        this.scheduleMessageFade(node); // [HORIZON-ADD] UI
       }
     }
     if (node) {

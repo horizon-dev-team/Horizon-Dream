@@ -5,7 +5,6 @@
  */
 
 export const THEMES = ['light', 'dark'] as const;
-
 export const CHAT_CORNERS = ['top-right', 'top-left', 'bottom-right', 'bottom-left'] as const;
 export type ChatCorner = (typeof CHAT_CORNERS)[number];
 

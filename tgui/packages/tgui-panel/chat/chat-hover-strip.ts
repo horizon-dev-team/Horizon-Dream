@@ -18,15 +18,8 @@ import {
   setCombatActive,
   startTailObserver,
 } from './chat-strip-combat';
-import {
-  clearYieldTracking,
-  configureStripYield,
-  scheduleYieldCheck,
-} from './chat-strip-yield';
-import { combatState, RectRatio, stripState, yieldState } from './chat-strip-state';
+import { combatState, RectRatio, stripState } from './chat-strip-state';
 import { chatRenderer } from './renderer';
-
-export { onPanelWindowOpened, onPanelWindowClosed } from './chat-strip-yield';
 
 const COLLAPSE_DELAY = 300;
 const SELECT_RETRY_DELAY = 500;
@@ -282,10 +275,6 @@ export function requestChatStripExpand(): void {
   if (combatState.active && stripState.collapsed) {
     return;
   }
-  if (yieldState.displaced) {
-    scheduleYieldCheck();
-    return;
-  }
   if (!stripState.collapsed) {
     document.body.classList.add('frameless-visible');
     return;
@@ -298,8 +287,7 @@ export function requestChatStripExpand(): void {
     if (
       !stripState.mode ||
       stripState.collapsed ||
-      stripState.chromeHovered ||
-      yieldState.displaced
+      stripState.chromeHovered
     ) {
       return;
     }
@@ -332,7 +320,6 @@ export function setChatStripMode(active: boolean): void {
       clearTimeout(expandTimer);
       expandTimer = undefined;
     }
-    clearYieldTracking();
     clearCombatState();
     if (stripState.collapsed) {
       stripState.pendingExpand = false;
@@ -552,11 +539,4 @@ chatRenderer.events.on('batchProcessed', () => {
   if (combatState.active) {
     scheduleCombatFit();
   }
-});
-
-configureStripYield({
-  isStripMode: () => stripState.mode,
-  isChromeHovered: () => stripState.chromeHovered,
-  collapse: (bypassHover?: boolean) => collapseChatToStrip(bypassHover),
-  requestExpand: () => requestChatStripExpand(),
 });

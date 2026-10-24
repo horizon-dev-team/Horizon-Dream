@@ -42,8 +42,3 @@ export const combatState = {
   chrome: null as number | null,
   stripH: null as number | null,
 };
-
-export const yieldState = {
-  displaced: false,
-  windows: new Set<string>(),
-};

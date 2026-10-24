@@ -126,6 +126,12 @@ body.onmap {
       text-shadow: none;
     }
 
+    .ChatMessage .userdanger::before {
+      -webkit-text-stroke: 0 transparent;
+      paint-order: normal;
+      text-shadow: none;
+    }
+
     &.chat-top {
       .Chat {
         display: flex;

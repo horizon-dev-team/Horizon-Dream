@@ -27,7 +27,7 @@
 		// Force it to reload either way
 		tgui.send_full_update(client.mob)
 
-// [HORIZON-ADD]
+// [HORIZON-ADD] UI
 /datum/preference/choiced/tgpanel_layout
 	category = PREFERENCE_CATEGORY_GAME_PREFERENCES
 	savefile_key = "tgpanel_layout"

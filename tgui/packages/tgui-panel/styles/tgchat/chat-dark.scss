@@ -6,6 +6,7 @@
 @use 'sass:map';
 @use 'sass:color';
 
+// [HORIZON-ADD] UI
 body.onmap {
   --chat-opacity: 0.45;
   --onmap-base: hsla(225, 10%, 10%, var(--chat-opacity));
@@ -507,6 +508,7 @@ body.chat-hover-collapsed .ChatPeekEdge {
     top: 0;
   }
 }
+// [/HORIZON-ADD]
 
 em {
   font-style: normal;

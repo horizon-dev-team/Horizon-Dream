@@ -59,6 +59,7 @@
 /datum/view_data/proc/isZooming()
 	return (width || height)
 
+// [HORIZON-EDIT] UI
 /datum/view_data/proc/getScreenSize()
 	if(chief.prefs.read_preference(/datum/preference/toggle/widescreen))
 		var/panel_layout = chief.prefs.read_preference(/datum/preference/choiced/tgpanel_layout)
@@ -66,6 +67,7 @@
 			return WIDESCREEN_VIEWPORT_SIZE
 		return WIDESCREEN_DOCKED_VIEWPORT_SIZE
 	return SQUARE_VIEWPORT_SIZE
+// [/HORIZON-EDIT]
 
 /datum/view_data/proc/resetToDefault()
 	width = 0

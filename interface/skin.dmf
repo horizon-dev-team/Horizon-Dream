@@ -8,7 +8,6 @@ macro "default"
 		name = "SHIFT+UP"
 		command = ".winset :map.right-click=true"
 
-
 window "mainwindow"
 	elem "mainwindow"
 		type = MAIN
@@ -214,8 +213,8 @@ window "infowindow"
 		size = 640x475
 		anchor1 = 0,0
 		anchor2 = 100,100
-		background-color = #202020
 		saved-params = "splitter"
+		background-color = #202020
 		left = "statwindow"
 		right = "outputwindow"
 		is-vert = false
@@ -258,8 +257,8 @@ window "outputwindow"
 		size = 640x475
 		anchor1 = 0,0
 		anchor2 = 100,100
-		background-color = #ffc41f
 		saved-params = "splitter"
+		background-color = #ffc41f
 		left = "output_selector"
 		is-vert = false
 
@@ -312,6 +311,7 @@ window "inputwindow"
 		is-default = true
 		border = line
 		saved-params = "command"
+		can-scroll = true
 
 window "inputbuttons"
 	elem "inputbuttons"

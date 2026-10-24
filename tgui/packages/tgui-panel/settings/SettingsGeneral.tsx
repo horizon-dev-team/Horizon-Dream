@@ -17,7 +17,7 @@ import { resetPaneSplitters, setEditPaneSplitters } from './scaling';
 import { exportChatSettings, importChatSettings } from './settingsImExport';
 import { useSettings } from './use-settings';
 
-export function SettingsGeneral() {
+export function SettingsGeneral(props) {
   const { settings, updateSettings } = useSettings();
   const [freeFont, setFreeFont] = useState(false);
 

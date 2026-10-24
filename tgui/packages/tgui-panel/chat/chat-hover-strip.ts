@@ -1,4 +1,3 @@
-
 import { storage } from 'common/storage';
 import { store } from '../events/store';
 import { settingsVisibleAtom } from '../settings/atoms';
@@ -34,10 +33,8 @@ const SELECT_RETRY_DELAY = 500;
 const SELECT_MAX_RETRIES = 8;
 const EXPAND_DEFER = 140;
 const EXPAND_SETTLE_FALLBACK_MS = 250;
-
 const PEEK_HEIGHT_KEY = 'chat-peek-height';
 const MIN_PEEK_HEIGHT = 100;
-
 const PING_MIN_INTERVAL = 1600;
 
 let collapseTimer: ReturnType<typeof setTimeout> | undefined;
@@ -45,7 +42,6 @@ let selectRetries = 0;
 let focusedBeforeCollapse: HTMLElement | null = null;
 let paneObserver: ResizeObserver | null = null;
 let paneObserverNode: HTMLElement | null = null;
-
 let expandTimer: ReturnType<typeof setTimeout> | undefined;
 let lastPingAt = 0;
 

@@ -104,18 +104,10 @@
 	else
 		window.send_message("ping")
 	send_assets()
-// [HORIZON-ADD] LOBBY
-	var/list/payload = get_payload(
+	window.send_message("update", get_payload(
 		with_data = TRUE,
-		with_static_data = TRUE)
-	if(payload)
-		window.send_message("update", payload)
+		with_static_data = TRUE))
 	SStgui.on_open(src)
-
-	if(user?.client?.tgui_panel?.is_ready())
-		user.client.tgui_panel.window.send_message("panel/window_opened", list(
-			"id" = window.id,
-		))
 
 	return TRUE
 
@@ -152,11 +144,6 @@
 		window.close(can_be_suspended)
 		src_object.ui_close(user)
 		SStgui.on_close(src)
-
-		if(user.client.tgui_panel?.is_ready())
-			user.client.tgui_panel.window.send_message("panel/window_closed", list(
-				"id" = window.id,
-			))
 
 		if(user.client)
 			terminate_byondui_elements()

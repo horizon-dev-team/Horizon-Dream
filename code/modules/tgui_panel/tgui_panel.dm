@@ -116,6 +116,7 @@
 		window.send_asset(get_asset_datum(/datum/asset/json/spawn_menu))
 		return TRUE
 
+	// [HORIZON-ADD] UI
 	if(type == "panel/toggle_layout")
 		winset(client, "map", "focus=true")
 		var/current = client.prefs.read_preference(/datum/preference/choiced/tgpanel_layout)
@@ -133,6 +134,7 @@
 		create_browser(next, TRUE)
 		window.send_message("panel/layout", list("layout" = next))
 		return TRUE
+	// [/HORIZON-ADD]
 
 	if(type == "verbs/request_targets")
 		var/verb_path = text2path(payload["verb_type"])
@@ -272,6 +274,7 @@
 /datum/tgui_panel/proc/send_hotkey_mode()
 	window.send_message("verbs/hotkey_mode", list("hotkeys" = client.hotkeys))
 
+// [HORIZON-ADD] UI
 /datum/tgui_panel/proc/create_browser(layout = TGPANEL_ONMAP, force = FALSE)
 	if(force)
 		winset(client, "browseroutput", list("parent" = ""))
@@ -321,3 +324,4 @@
 		initialize(force = TRUE)
 
 #undef TGPANEL_POPUP_WINDOW
+// [/HORIZON-ADD]

@@ -122,6 +122,10 @@
 		return NONE
 	if(user.can_read(src) && !user.is_blind())
 		chemscan(user, interacting_with)
+	// [HORIZON-ADD]
+	if(!user.Adjacent(interacting_with))
+		interacting_with.Beam(user, icon_state = "medbeam", time = 5, beam_color = "#99b4ee")
+	// [/HORIZON-ADD]
 	return ITEM_INTERACT_SUCCESS
 
 /obj/item/healthanalyzer/add_item_context(

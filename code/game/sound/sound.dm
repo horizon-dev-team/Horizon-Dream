@@ -259,7 +259,7 @@
 		if(CHANNEL_HEARTBEAT)
 			return list("Heartbeat", "The beating of your heart in crit/cardiac arrest.", "Player & Mobs")
 		if(CHANNEL_BREATH)
-			return list("Breath", "WiP", "Player & Mobs")
+			return list("Breath", "The sound of breathing through a breather mask or oxygen tank.", "Player & Mobs")
 		if(CHANNEL_AMBIENCE)
 			return list("Ambience", "Music that plays when you enter a new room, most prominently in the Detective's Office and Maintenance.", "Environment")
 		if(CHANNEL_SOUND_EFFECTS)

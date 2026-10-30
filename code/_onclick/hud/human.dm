@@ -3,11 +3,14 @@
 
 /datum/hud/human/initialize_screen_objects()
 	. = ..()
-	var/atom/movable/screen/using
+	// [HORIZON-ADD] WIDE_HUD
+	add_screen_object(/atom/movable/screen/human_hud_background, HUD_HUMAN_BACKGROUND, HUD_GROUP_SCREEN_OVERLAYS)
+	add_screen_object(/atom/movable/screen/human_hud_edge/top, HUD_HUMAN_EDGE_TOP, HUD_GROUP_SCREEN_OVERLAYS, ui_style)
+	add_screen_object(/atom/movable/screen/human_hud_edge/bottom, HUD_HUMAN_EDGE_BOTTOM, HUD_GROUP_SCREEN_OVERLAYS, ui_style)
+	// [/HORIZON-ADD]
 	// Static elements
 	add_screen_object(/atom/movable/screen/language_menu, HUD_MOB_LANGUAGE_MENU, HUD_GROUP_STATIC, ui_style, ui_human_language)
-	add_screen_object(/atom/movable/screen/navigate, HUD_MOB_NAVIGATE_MENU, HUD_GROUP_STATIC, ui_style, ui_human_navigate)
-	add_screen_object(/atom/movable/screen/area_creator, HUD_MOB_AREA_CREATOR, HUD_GROUP_STATIC, ui_style, ui_human_area)
+	// add_screen_object(/atom/movable/screen/area_creator, HUD_MOB_AREA_CREATOR, HUD_GROUP_STATIC, ui_style, ui_human_area)
 	add_screen_object(/atom/movable/screen/combattoggle/flashy, HUD_MOB_INTENTS, HUD_GROUP_INFO, ui_style)
 	add_screen_object(/atom/movable/screen/floor_changer/vertical, HUD_MOB_FLOOR_CHANGER, HUD_GROUP_STATIC, ui_style, ui_human_floor_changer)
 	add_screen_object(/atom/movable/screen/mov_intent, HUD_MOB_MOVE_INTENT, HUD_GROUP_STATIC, ui_style)
@@ -20,8 +23,8 @@
 	add_screen_object(/atom/movable/screen/memories, HUD_MOB_MEMORIES, HUD_GROUP_STATIC, ui_style, ui_human_memories_menu)
 	build_hand_slots()
 
-	using = add_screen_object(/atom/movable/screen/swap_hand, HUD_MOB_SWAPHAND_2, HUD_GROUP_STATIC, ui_style, ui_swaphand_position(mymob, 2))
-	using.icon_state = "act_swap"
+	add_screen_object(/atom/movable/screen/swap_hand, HUD_MOB_SWAPHAND_2, HUD_GROUP_STATIC, ui_style, ui_swaphand_position(mymob, 2)) // [HORIZON-EDIT] WIDE_HUD
+	add_screen_object(/atom/movable/screen/progbar_container, HUDKEY_MOB_USE_TIMER, HUD_GROUP_STATIC) // [/HORIZON-EDIT]
 
 	// Hotkey buttons
 	add_screen_object(/atom/movable/screen/resist, HUD_MOB_RESIST, HUD_GROUP_HOTKEYS, ui_style)
@@ -31,7 +34,7 @@
 	add_screen_object(/atom/movable/screen/spacesuit, HUD_MOB_SPACESUIT, HUD_GROUP_INFO)
 	add_screen_object(/atom/movable/screen/healthdoll/human, HUD_MOB_HEALTHDOLL, HUD_GROUP_INFO)
 	add_screen_object(/atom/movable/screen/stamina, HUD_MOB_STAMINA, HUD_GROUP_INFO)
-	add_screen_object(/atom/movable/screen/healths, HUD_MOB_HEALTH, HUD_GROUP_INFO)
+	add_screen_object(/atom/movable/screen/healths/human, HUD_MOB_HEALTH, HUD_GROUP_INFO) // [HORIZON-EDIT] WIDE_HUD
 	add_screen_object(/atom/movable/screen/hunger, HUD_MOB_HUNGER, HUD_GROUP_INFO)
 
 /datum/hud/human/update_locked_slots()
@@ -128,6 +131,7 @@ GAME_VERB_DESC(/mob/living/carbon/human, toggle_hotkey_verbs, "Toggle hotkey but
 	icon_full = "template_small"
 	screen_loc = ui_back
 	slot_id = ITEM_SLOT_BACK
+	uses_wide_icon = TRUE
 
 /datum/inventory_slot/human/l_pocket
 	name = "left pocket"
@@ -149,6 +153,7 @@ GAME_VERB_DESC(/mob/living/carbon/human, toggle_hotkey_verbs, "Toggle hotkey but
 	icon_full = "template"
 	screen_loc = ui_sstore1
 	slot_id = ITEM_SLOT_SUITSTORE
+	uses_wide_icon = TRUE
 
 /datum/inventory_slot/human/gloves
 	name = "gloves"
@@ -196,3 +201,4 @@ GAME_VERB_DESC(/mob/living/carbon/human, toggle_hotkey_verbs, "Toggle hotkey but
 	icon_full = "template_small"
 	screen_loc = ui_belt
 	slot_id = ITEM_SLOT_BELT
+	uses_wide_icon = TRUE

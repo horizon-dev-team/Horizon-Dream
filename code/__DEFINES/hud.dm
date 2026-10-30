@@ -220,12 +220,12 @@
 #define ui_xenobiodisplay "WEST:6,CENTER:-4"
 
 //Lower center, persistent menu
-#define ui_sstore1 "CENTER-5:10,SOUTH:5"
-#define ui_id "CENTER-4:12,SOUTH:5"
-#define ui_belt "CENTER-3:14,SOUTH:5"
-#define ui_back "CENTER-2:14,SOUTH:5"
-#define ui_storage1 "CENTER+1:18,SOUTH:5"
-#define ui_storage2 "CENTER+2:20,SOUTH:5"
+#define ui_sstore1 "CENTER-6:12,SOUTH:5"
+#define ui_id "CENTER+4:2,SOUTH:5"
+#define ui_belt "CENTER-4.5:14,SOUTH:5"
+#define ui_back "CENTER-3:14,SOUTH:5"
+#define ui_storage1 "CENTER+2:2,SOUTH:5"
+#define ui_storage2 "CENTER+3:2,SOUTH:5"
 #define ui_combo "CENTER+4:24,SOUTH+1:7" //combo meter for martial arts
 
 //Lower right, persistent menu
@@ -236,7 +236,7 @@
 #define ui_above_movement_top "EAST-2:26, SOUTH+1:24"
 #define ui_above_intent "EAST-3:24, SOUTH+1:7"
 #define ui_movi "EAST-2:26,SOUTH:5"
-#define ui_acti "EAST-3:24,SOUTH:5"
+#define ui_acti "EAST-2:26,SOUTH:5" // [HORIZON-EDIT]
 #define ui_floor_change "BOTTOM+1:8,RIGHT-1:28"
 #define ui_zonesel "EAST-1:28,SOUTH:5"
 #define ui_acti_alt "EAST-1:28,SOUTH:5" //alternative intent switcher for when the interface is hidden (F12)
@@ -259,13 +259,14 @@
 #define ui_palette_scroll_offset(north_offset) ("WEST+1:8,NORTH-[6+north_offset]:28")
 
 //Middle right (status indicators)
-#define ui_healthdoll "EAST-1:28,CENTER-2:17"
-#define ui_health "EAST-1:28,CENTER-1:19"
+#define ui_healthdoll_edge "EAST-1:28,CENTER-1:20" // [HORIZON-ADD]
+#define ui_healthdoll "EAST-1:28,CENTER-1:17" // [HORIZON-EDIT]
+#define ui_health "EAST-1:28,CENTER-2:17" // [HORIZON-EDIT]
 #define ui_internal "EAST-1:28,CENTER+1:21"
 #define ui_mood "EAST-1:28,CENTER:21"
 #define ui_hunger "EAST-1:2,CENTER:21"
-#define ui_spacesuit "EAST-1:28,CENTER-4:14"
-#define ui_stamina "EAST-1:28,CENTER-3:14"
+#define ui_spacesuit "EAST-1:28,CENTER-3"
+#define ui_stamina "EAST-1:28,CENTER-2:2"
 
 //Pop-up inventory
 #define ui_shoes "WEST+1:8,SOUTH:5"
@@ -283,12 +284,12 @@
 #define ui_living_healthdoll "EAST-1:28,CENTER-1:15"
 
 //Humans
-#define ui_human_floor_changer "EAST-4:22,SOUTH:5"
-#define ui_human_crafting "EAST-3:24,SOUTH+1:7"
+#define ui_human_floor_changer "EAST-3:8,SOUTH:5"
+#define ui_human_crafting "EAST-3:25,SOUTH:5"
 #define ui_human_navigate "EAST-3:7,SOUTH+1:7"
-#define ui_human_language "EAST-3:7,SOUTH+1:24"
+#define ui_human_language "EAST-3:25,SOUTH:21"
 #define ui_human_area "EAST-3:24,SOUTH+1:24"
-#define ui_human_memories_menu "EAST-4:22,SOUTH+1:7"
+#define ui_human_memories_menu "EAST-3:25,SOUTH+1:7"
 
 //Drones
 #define ui_drone_drop "CENTER+1:18,SOUTH:5"
@@ -318,11 +319,11 @@
 #define ui_alien_health "EAST,CENTER-1:15"
 #define ui_alienplasmadisplay "EAST,CENTER-2:15"
 #define ui_alien_queen_finder "EAST,CENTER-3:15"
-#define ui_alien_storage_r "CENTER+1:18,SOUTH:5"
-#define ui_alien_language_menu "EAST-4:22,SOUTH:5"
+#define ui_alien_storage_r "CENTER+2,SOUTH:5"
+#define ui_alien_language_menu "EAST-3:24,SOUTH:6"
 #define ui_alien_navigate_menu "EAST-4:6,SOUTH:5"
-#define ui_alien_memories_menu "EAST-4:22,SOUTH:1:20"
-#define ui_alien_floor_change "EAST-3:24,SOUTH:20"
+#define ui_alien_memories_menu "EAST-3:9,SOUTH:6"
+#define ui_alien_floor_change "EAST-3:25,SOUTH:5"
 #define ui_alienplasmadisplay_human "EAST,CENTER-5:8"
 
 //AI

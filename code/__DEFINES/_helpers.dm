@@ -12,6 +12,7 @@
 #define ICON_SIZE_X 32
 /// The Y/Height dimension of ICON_SIZE. This will more than likely be the smaller axis.
 #define ICON_SIZE_Y 32
+#define WIDE_HUD_ICON_WIDTH 48
 
 //Returns the hex value of a decimal number
 //len == length of returned string

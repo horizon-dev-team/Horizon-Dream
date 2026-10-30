@@ -8,8 +8,8 @@
 /datum/hud/dextrous/initialize_screen_objects()
 	. = ..()
 	var/atom/movable/screen/using
-	add_screen_object(/atom/movable/screen/drop, HUD_MOB_DROP, HUD_GROUP_STATIC, ui_style, ui_swaphand_position(mymob, 1))
-	using = add_screen_object(/atom/movable/screen/swap_hand, HUD_MOB_SWAPHAND_2, HUD_GROUP_STATIC, ui_style, ui_swaphand_position(mymob, 2))
+	add_screen_object(/atom/movable/screen/drop, HUD_MOB_DROP, HUD_GROUP_STATIC, wide_icon ? wide_icon : ui_style, ui_swaphand_position(mymob, 1))
+	using = add_screen_object(/atom/movable/screen/swap_hand, HUD_MOB_SWAPHAND_2, HUD_GROUP_STATIC, wide_icon ? wide_icon : ui_style, ui_swaphand_position(mymob, 2))
 	using.icon_state = "act_swap"
 
 	mymob.canon_client?.clear_screen()

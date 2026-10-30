@@ -252,7 +252,13 @@
 	if(!has_equipped(I, ITEM_SLOT_HANDS, initial = visuals_only))
 		return FALSE
 	update_held_items()
-	I.pixel_x = I.base_pixel_x
+	// [HORIZON-ADD] WIDE-HUD
+	var/datum/inventory_slot/hand_inv_slot = hud_used?.inventory_slots[ITEM_SLOT_HANDS]
+	if(hand_inv_slot)
+		I.pixel_x = hand_inv_slot.get_centering_pixel_x(I)
+	else
+		I.pixel_x = I.base_pixel_x
+	// [/HORIZON-ADD]
 	I.pixel_y = I.base_pixel_y
 	I.transform = initial(I.transform) // [HORIZON-ADD] - Rotate_Item
 	if(QDELETED(I)) // this is here because some ABSTRACT items like slappers and circle hands could be moved from hand to hand then delete, which meant you'd have a null in your hand until you cleared it (say, by dropping it)

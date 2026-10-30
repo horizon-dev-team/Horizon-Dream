@@ -1,20 +1,21 @@
 /datum/hud/alien
 	ui_style = 'icons/hud/screen_alien.dmi'
+	wide_icon = '_horizon/icons/ui/themed/screen_wide_alien.dmi'
+	progbar_icon = '_horizon/icons/ui/themed/progessbar_alien.dmi'
 
 /datum/hud/alien/initialize_screen_objects()
 	. = ..()
 	build_hand_slots()
 
 	var/atom/movable/screen/using
-	using = add_screen_object(/atom/movable/screen/swap_hand, HUD_MOB_SWAPHAND_1, HUD_GROUP_STATIC, ui_style, ui_swaphand_position(mymob, 1))
+	using = add_screen_object(/atom/movable/screen/swap_hand, HUD_MOB_SWAPHAND_1, HUD_GROUP_STATIC, wide_icon, ui_swaphand_position(mymob, 1))
 	using.icon_state = "swap_1"
-	using = add_screen_object(/atom/movable/screen/swap_hand, HUD_MOB_SWAPHAND_2, HUD_GROUP_STATIC, ui_style, ui_swaphand_position(mymob, 2))
+	using = add_screen_object(/atom/movable/screen/swap_hand, HUD_MOB_SWAPHAND_2, HUD_GROUP_STATIC, wide_icon, ui_swaphand_position(mymob, 2))
 	using.icon_state = "swap_2"
 
 	add_screen_object(/atom/movable/screen/combattoggle/flashy, HUD_MOB_INTENTS, HUD_GROUP_INFO, ui_style)
 	add_screen_object(/atom/movable/screen/floor_changer, HUD_MOB_FLOOR_CHANGER, HUD_GROUP_STATIC, ui_style, ui_alien_floor_change)
 	add_screen_object(/atom/movable/screen/language_menu, HUD_MOB_LANGUAGE_MENU, HUD_GROUP_STATIC, ui_style, ui_alien_language_menu)
-	add_screen_object(/atom/movable/screen/navigate, HUD_MOB_NAVIGATE_MENU, HUD_GROUP_STATIC, ui_style, ui_alien_navigate_menu)
 	add_screen_object(/atom/movable/screen/zone_sel/alien, HUD_MOB_ZONE_SELECTOR)
 	add_screen_object(/atom/movable/screen/drop, HUD_MOB_DROP, HUD_GROUP_STATIC, ui_style)
 	add_screen_object(/atom/movable/screen/pull, HUD_MOB_PULL, HUD_GROUP_STATIC, ui_style, ui_above_movement)
@@ -25,6 +26,7 @@
 	add_screen_object(/atom/movable/screen/healths/alien, HUD_MOB_HEALTH, HUD_GROUP_INFO)
 	add_screen_object(/atom/movable/screen/alien/plasma_display, HUD_ALIEN_PLASMA_DISPLAY, HUD_GROUP_INFO)
 	add_screen_object(/atom/movable/screen/memories, HUD_MOB_MEMORIES, HUD_GROUP_STATIC, ui_style, ui_alien_memories_menu)
+	add_screen_object(/atom/movable/screen/progbar_container, HUDKEY_MOB_USE_TIMER, HUD_GROUP_STATIC, progbar_icon)
 
 	if(isalienhunter(mymob))
 		add_screen_object(/atom/movable/screen/alien/leap, HUD_ALIEN_HUNTER_LEAP, HUD_GROUP_STATIC, ui_style)

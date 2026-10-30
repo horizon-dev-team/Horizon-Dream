@@ -6,7 +6,6 @@
 	// i, Robit
 	var/mob/living/silicon/robot/robit = mymob
 	add_screen_object(/atom/movable/screen/language_menu, HUD_MOB_LANGUAGE_MENU, HUD_GROUP_STATIC, ui_style, ui_borg_language_menu)
-	add_screen_object(/atom/movable/screen/navigate, HUD_MOB_NAVIGATE_MENU, HUD_GROUP_STATIC, ui_style, ui_borg_navigate_menu)
 	add_screen_object(/atom/movable/screen/memories, HUD_MOB_MEMORIES, HUD_GROUP_STATIC, ui_style, ui_borg_memories_menu)
 	add_screen_object(/atom/movable/screen/robot/radio, HUD_CYBORG_RADIO)
 

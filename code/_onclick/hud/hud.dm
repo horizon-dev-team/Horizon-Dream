@@ -4,6 +4,7 @@
 	including inventories and item quick actions.
 */
 
+// [HORIZON-EDIT] WIDE_HUD
 // The default UI style is the first one in the list
 GLOBAL_LIST_INIT(available_ui_styles, list(
 	"Atomic" = '_horizon/icons/ui/themed/screen_atomic.dmi',
@@ -38,6 +39,7 @@ GLOBAL_LIST_INIT(available_progbar_icons, list(
 		if (GLOB.available_ui_styles[style_name] == ui_icon)
 			return style_name
 	return null
+// [/HORIZON-EDIT]
 
 /datum/hud
 	var/mob/mymob
@@ -83,10 +85,12 @@ GLOBAL_LIST_INIT(available_progbar_icons, list(
 
 	/// Subtypes can override this to force a specific UI style
 	var/ui_style = null
+	// [HORIZON-ADD] WIDE_HUD
 	/// Current wide HUD icon file (48x32 format), shared by hands and wide inventory slots
 	var/wide_icon = null
 	/// Current swing-cooldown progress bar icon file (96x16), matched to ui_style
 	var/progbar_icon = null
+	// [/HORIZON-EDIT]
 	/// Assoc list of all screen objects we hold by their key
 	var/list/atom/movable/screen/screen_objects = list()
 	/// List of screen objects by their screen group
@@ -110,10 +114,12 @@ GLOBAL_LIST_INIT(available_progbar_icons, list(
 
 	// will fall back to the default if any of these are null
 	ui_style ||= ui_style2icon(owner.client?.prefs?.read_preference(/datum/preference/choiced/ui_style))
+	// [HORIZON-ADD] WIDE_HUD
 	// Wide (48x32) HUD atlas and progress bar icons follow the effective UI style
 	var/effective_style_name = ui_icon2style_name(ui_style)
 	wide_icon ||= ui_style2wide_icon(effective_style_name)
 	progbar_icon ||= ui_style2progbar_icon(effective_style_name)
+	// [/HORIZON-ADD]
 
 	add_screen_object(/atom/movable/screen/button_palette, HUD_MOB_TOGGLE_PALETTE)
 	add_screen_object(/atom/movable/screen/palette_scroll/down, HUD_MOB_PALETTE_DOWN)
@@ -452,6 +458,7 @@ GLOBAL_LIST_INIT(available_progbar_icons, list(
 	if (initial(ui_style) || ui_style == new_ui_style)
 		return
 
+	// [HORIZON-EDIT] WIDE_HUD
 	var/new_style_name = ui_icon2style_name(new_ui_style)
 	wide_icon = ui_style2wide_icon(new_style_name)
 	progbar_icon = ui_style2progbar_icon(new_style_name)
@@ -472,6 +479,7 @@ GLOBAL_LIST_INIT(available_progbar_icons, list(
 	if(progbar_obj?.progbar?.bar)
 		progbar_obj.icon = progbar_icon
 		progbar_obj.progbar.bar.icon = progbar_icon
+	// [/HORIZON-EDIT]
 
 	ui_style = new_ui_style
 	build_hand_slots(update_hud = TRUE)
@@ -499,7 +507,7 @@ GLOBAL_LIST_INIT(available_progbar_icons, list(
 		remove_screen_object(hand, FALSE)
 
 	for(var/i in 1 to mymob.get_num_hand_slots())
-		var/atom/movable/screen/inventory/hand/hand_box = add_screen_object(/atom/movable/screen/inventory/hand, HUD_KEY_HAND_SLOT(i), HUD_GROUP_STATIC, wide_icon, ui_hand_position(i))
+		var/atom/movable/screen/inventory/hand/hand_box = add_screen_object(/atom/movable/screen/inventory/hand, HUD_KEY_HAND_SLOT(i), HUD_GROUP_STATIC, wide_icon, ui_hand_position(i)) // [HORIZON-EDIT] WIDE_HUD
 		hand_box.name = mymob.get_held_index_name(i)
 		hand_box.icon_state = "hand_[mymob.held_index_to_dir(i)]"
 		hand_box.held_index = i
@@ -526,9 +534,11 @@ GLOBAL_LIST_INIT(available_progbar_icons, list(
 		swap_hands.screen_loc = ui_swaphand_position(mymob, hand_ind)
 		hand_num += 1
 
+	// [HORIZON-ADD] WIDE_HUD
 	var/atom/movable/screen/progbar_container/progbar = screen_objects[HUDKEY_MOB_USE_TIMER]
 	if(progbar)
 		progbar.screen_loc = ui_progbar_position(mymob)
+	// [/HORIZON-ADD]
 
 	if(update_hud && mymob?.hud_used == src)
 		show_hud(hud_version)

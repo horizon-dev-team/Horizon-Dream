@@ -132,7 +132,7 @@ GAME_VERB_DESC(/mob/living/carbon/human, toggle_hotkey_verbs, "Toggle hotkey but
 	icon_full = "template_small"
 	screen_loc = ui_back
 	slot_id = ITEM_SLOT_BACK
-	uses_wide_icon = TRUE
+	uses_wide_icon = TRUE // [HORIZON-ADD] WIDE_HUD
 
 /datum/inventory_slot/human/l_pocket
 	name = "left pocket"
@@ -154,7 +154,7 @@ GAME_VERB_DESC(/mob/living/carbon/human, toggle_hotkey_verbs, "Toggle hotkey but
 	icon_full = "template"
 	screen_loc = ui_sstore1
 	slot_id = ITEM_SLOT_SUITSTORE
-	uses_wide_icon = TRUE
+	uses_wide_icon = TRUE // [HORIZON-ADD] WIDE_HUD
 
 /datum/inventory_slot/human/gloves
 	name = "gloves"
@@ -202,4 +202,4 @@ GAME_VERB_DESC(/mob/living/carbon/human, toggle_hotkey_verbs, "Toggle hotkey but
 	icon_full = "template_small"
 	screen_loc = ui_belt
 	slot_id = ITEM_SLOT_BELT
-	uses_wide_icon = TRUE
+	uses_wide_icon = TRUE // [HORIZON-ADD] WIDE_HUD

@@ -28,10 +28,12 @@ GLOBAL_LIST_INIT(inventory_slot_datums, initialize_inventory_slots())
 	var/screen_type = /atom/movable/screen/inventory
 
 /datum/inventory_slot/proc/create_element(datum/hud/hud)
+	// [HORIZON-ADD] WIDE_HUD
 	var/icon_to_use = null
-	if (inherit_style)
+	if(inherit_style)
 		icon_to_use = uses_wide_icon ? hud.wide_icon : hud.ui_style
 	var/atom/movable/screen/inventory/inv_box = hud.add_screen_object(screen_type, HUD_KEY_ITEM_SLOT(slot_id), screen_group, icon_to_use, screen_loc)
+	// [/HORIZON-ADD]
 	inv_box.name = name
 	inv_box.icon_state = icon_state
 	inv_box.icon_full = icon_full
@@ -62,13 +64,16 @@ GLOBAL_LIST_INIT(inventory_slot_datums, initialize_inventory_slots())
 		slot.vis_contents.Cut()
 		return
 
+	// [HORIZON-EDIT] WIDE_HUD
 	slot_item.pixel_x = get_centering_pixel_x(slot_item)
 	slot_item.pixel_y = slot_item.base_pixel_y
+	// [/HORIZON-EDIT]
 
 	if (slot_item in slot.vis_contents)
 		return
 	slot.vis_contents += slot_item
 
+// [HORIZON-ADD] WIDE_HUD
 /datum/inventory_slot/proc/get_centering_pixel_x(obj/item/slot_item)
 	if (!uses_wide_icon)
 		return slot_item.base_pixel_x
@@ -78,11 +83,12 @@ GLOBAL_LIST_INIT(inventory_slot_datums, initialize_inventory_slots())
 		// Fallback: assume a standard 32x32 item if we can't read the icon.
 		return round((WIDE_HUD_ICON_WIDTH - ICON_SIZE_X) / 2)
 	return round((WIDE_HUD_ICON_WIDTH - item_width) / 2)
+// [/HORIZON-ADD]
 
 // Not a real inventory slot, but this is used as a generic abstraction for hand slot UI behaviors
 /datum/inventory_slot/hands
 	slot_id = ITEM_SLOT_HANDS
-	uses_wide_icon = TRUE
+	uses_wide_icon = TRUE // [HORIZON-ADD] WIDE_HUD
 
 /datum/inventory_slot/hands/create_element(datum/hud/hud)
 	CRASH("[hud] attempted to call create_element on a behavior-only hands inventory slot datum!")

@@ -258,11 +258,13 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 	else
 		item_overlay.color = "#00ff00"
 
+	// [HORIZON-ADD] WIDE_HUD
 	var/datum/inventory_slot/inv_slot = hud.inventory_slots[slot_id]
 	item_overlay.pixel_x = inv_slot?.get_centering_pixel_x(holding)
 	if(isnull(item_overlay.pixel_x))
 		item_overlay.pixel_x = holding.base_pixel_x
 	item_overlay.pixel_y = holding.base_pixel_y
+	// [/HORIZON-ADD]
 
 	cut_overlay(object_overlay)
 	object_overlay = item_overlay
@@ -270,8 +272,8 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 
 /atom/movable/screen/inventory/hand
 	var/mutable_appearance/handcuff_overlay
-	var/static/mutable_appearance/blocked_overlay = mutable_appearance('_horizon/icons/ui/screen_gen_wide.dmi', "blocked")
-	var/static/mutable_appearance/shield_overlay = mutable_appearance('_horizon/icons/ui/screen_gen_wide.dmi', "shielding")
+	var/static/mutable_appearance/blocked_overlay = mutable_appearance('_horizon/icons/ui/screen_gen_wide.dmi', "blocked") // [HORIZON-EDIT] WIDE_HUD
+	var/static/mutable_appearance/shield_overlay = mutable_appearance('_horizon/icons/ui/screen_gen_wide.dmi', "shielding") // [/HORIZON-EDIT]
 	var/held_index = 0
 	interaction_flags_atom = NONE //so dragging objects into hands icon don't skip adjacency & other checks
 
@@ -280,8 +282,8 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 
 	if(!handcuff_overlay)
 		var/state = IS_RIGHT_INDEX(held_index) ? "markus" : "gabrielle"
-		handcuff_overlay = mutable_appearance('_horizon/icons/ui/screen_gen_wide.dmi', state)
-		handcuff_overlay.layer += 0.1
+		handcuff_overlay = mutable_appearance('_horizon/icons/ui/screen_gen_wide.dmi', state) // [HORIZON-EDIT] WIDE_HUD
+		handcuff_overlay.layer += 0.1 // [/HORIZON-EDIT]
 
 	if(!hud?.mymob)
 		return
@@ -422,7 +424,7 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 		return
 
 	if(!flashy)
-		flashy = mutable_appearance('_horizon/icons/ui/screen_gen.dmi', "togglefull_flash")
+		flashy = mutable_appearance('_horizon/icons/ui/screen_gen.dmi', "togglefull_flash") // [HORIZON-EDIT] WIDE_HUD
 		flashy.color = "#C62727"
 	. += flashy
 
@@ -476,7 +478,6 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 	vertical = TRUE
 
 /atom/movable/screen/spacesuit
-	icon = '_horizon/icons/ui/screen_gen.dmi'
 	name = "Space suit cell status"
 	icon_state = "spacesuit_0"
 	screen_loc = ui_spacesuit
@@ -1154,9 +1155,8 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 	return ..()
 
 /atom/movable/screen/stamina
-	icon = '_horizon/icons/ui/screen_gen.dmi'
 	name = "stamina"
-	icon_state = "stamina_full"
+	icon_state = "stamina0"
 	screen_loc = ui_stamina
 
 #define HUNGER_STATE_FAT 5

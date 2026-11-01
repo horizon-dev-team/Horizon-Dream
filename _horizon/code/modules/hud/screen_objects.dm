@@ -33,6 +33,12 @@
 /atom/movable/screen/healths/human
 	icon = '_horizon/icons/ui/screen_health_human.dmi'
 
+/atom/movable/screen/spacesuit
+	icon = '_horizon/icons/ui/screen_gen.dmi'
+
+/atom/movable/screen/stamina
+	icon = '_horizon/icons/ui/screen_gen.dmi'
+	icon_state = "stamina_full"
 
 //End gas alerts
 /*

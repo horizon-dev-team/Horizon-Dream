@@ -1,16 +1,16 @@
 /datum/hud/alien
 	ui_style = 'icons/hud/screen_alien.dmi'
-	wide_icon = '_horizon/icons/ui/themed/screen_wide_alien.dmi'
-	progbar_icon = '_horizon/icons/ui/themed/progessbar_alien.dmi'
+	wide_icon = '_horizon/icons/ui/themed/screen_wide_alien.dmi' // [HORIZON-ADD] WIDE_HUD
+	progbar_icon = '_horizon/icons/ui/themed/progessbar_alien.dmi' // [/HORIZON-ADD]
 
 /datum/hud/alien/initialize_screen_objects()
 	. = ..()
 	build_hand_slots()
 
 	var/atom/movable/screen/using
-	using = add_screen_object(/atom/movable/screen/swap_hand, HUD_MOB_SWAPHAND_1, HUD_GROUP_STATIC, wide_icon, ui_swaphand_position(mymob, 1))
+	using = add_screen_object(/atom/movable/screen/swap_hand, HUD_MOB_SWAPHAND_1, HUD_GROUP_STATIC, wide_icon, ui_swaphand_position(mymob, 1)) // [HORIZON-EDIT] WIDE_HUD
 	using.icon_state = "swap_1"
-	using = add_screen_object(/atom/movable/screen/swap_hand, HUD_MOB_SWAPHAND_2, HUD_GROUP_STATIC, wide_icon, ui_swaphand_position(mymob, 2))
+	using = add_screen_object(/atom/movable/screen/swap_hand, HUD_MOB_SWAPHAND_2, HUD_GROUP_STATIC, wide_icon, ui_swaphand_position(mymob, 2)) // [HORIZON-EDIT] WIDE_HUD
 	using.icon_state = "swap_2"
 
 	add_screen_object(/atom/movable/screen/combattoggle/flashy, HUD_MOB_INTENTS, HUD_GROUP_INFO, ui_style)
@@ -26,7 +26,7 @@
 	add_screen_object(/atom/movable/screen/healths/alien, HUD_MOB_HEALTH, HUD_GROUP_INFO)
 	add_screen_object(/atom/movable/screen/alien/plasma_display, HUD_ALIEN_PLASMA_DISPLAY, HUD_GROUP_INFO)
 	add_screen_object(/atom/movable/screen/memories, HUD_MOB_MEMORIES, HUD_GROUP_STATIC, ui_style, ui_alien_memories_menu)
-	add_screen_object(/atom/movable/screen/progbar_container, HUDKEY_MOB_USE_TIMER, HUD_GROUP_STATIC, progbar_icon, ui_progbar_position(mymob))
+	add_screen_object(/atom/movable/screen/progbar_container, HUDKEY_MOB_USE_TIMER, HUD_GROUP_STATIC, progbar_icon, ui_progbar_position(mymob)) // [HORIZON-ADD] WIDE_HUD
 
 	if(isalienhunter(mymob))
 		add_screen_object(/atom/movable/screen/alien/leap, HUD_ALIEN_HUNTER_LEAP, HUD_GROUP_STATIC, ui_style)

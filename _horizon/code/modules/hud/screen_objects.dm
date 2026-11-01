@@ -38,7 +38,7 @@
 
 /atom/movable/screen/stamina
 	icon = '_horizon/icons/ui/screen_gen.dmi'
-	icon_state = "stamina_full"
+	icon_state = "stamina_0"
 
 /atom/movable/screen/alert/fire
 	icon = '_horizon/icons/ui/screen_alert.dmi'

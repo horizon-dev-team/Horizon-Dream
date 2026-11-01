@@ -1466,7 +1466,7 @@ GAME_VERB_PROC(/mob/living, mob_sleep, "Sleep", null)
 	else if(shown_stamina_loss > 0 && maxHealth > 0)
 		stamina.icon_state = "stamina_[ceil(shown_stamina_loss / (maxHealth * 0.2))]"
 	else
-		stamina.icon_state = "stamina_full"
+		stamina.icon_state = "stamina_0"
 
 /mob/living/carbon/alien/update_stamina()
 	return

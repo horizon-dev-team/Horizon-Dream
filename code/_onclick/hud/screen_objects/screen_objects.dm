@@ -512,6 +512,11 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 	astype(wearer.wear_suit, /obj/item/clothing/suit/space)?.update_hud_icon(usr)
 
 /atom/movable/screen/spacesuit/proc/update_spacesuit_hud_icon(cell_state, cell_percent, thermal_on = TRUE)
+	// [HORIZON-ADD] WIDE_HUD
+	var/atom/movable/screen/background_hud/battery/battery = hud?.screen_objects[HUD_HUMAN_EDGE_BATTERY]
+	if(battery)
+		battery.alpha = (cell_state == SPACESUIT_NO_ICON) ? 0 : 255
+	// [/HORIZON-ADD]
 	if(cell_state)
 		switch(cell_state)
 			if(SPACESUIT_NO_ICON)

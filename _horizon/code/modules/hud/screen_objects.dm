@@ -1,27 +1,29 @@
-/atom/movable/screen/human_hud_background
+/atom/movable/screen/background_hud
+	mouse_opacity = MOUSE_OPACITY_TRANSPARENT
+
+/atom/movable/screen/background_hud/human
 	icon = '_horizon/icons/ui/screen_background.dmi'
 	icon_state = "background"
-	mouse_opacity = MOUSE_OPACITY_TRANSPARENT
 	screen_loc = ui_stamina
 
+/atom/movable/screen/background_hud/battery
+	icon_state = "status_battery"
+	screen_loc = ui_spacesuit
+	alpha = 0
+
 /// Decorations so the frame
-/atom/movable/screen/human_hud_edge
-	mouse_opacity = MOUSE_OPACITY_TRANSPARENT
+/atom/movable/screen/background_hud/edge
 	layer = 3.05 // Magic number, but it's fucking simple. Define/undef here is just overkill.
 
-/atom/movable/screen/human_hud_edge/top
+/atom/movable/screen/background_hud/edge/top
 	icon_state = "status_up"
 	screen_loc = ui_healthdoll_edge
 
-/atom/movable/screen/human_hud_edge/bottom
+/atom/movable/screen/background_hud/edge/bottom
 	icon_state = "status_down"
 	screen_loc = ui_stamina
 
-/atom/movable/screen/human_hud_edge/status_battery
-	icon_state = "status_battery"
-	screen_loc = ui_spacesuit
-	layer = 3
-
+// Re-desing style screen HUD icons
 /atom/movable/screen/healthdoll/human
 	icon = '_horizon/icons/ui/screen_gen.dmi'
 

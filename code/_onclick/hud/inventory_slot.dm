@@ -13,7 +13,7 @@ GLOBAL_LIST_INIT(inventory_slot_datums, initialize_inventory_slots())
 	var/name = "error"
 	/// Should the slot inherit HUD's ui_style?
 	var/inherit_style = TRUE
-	var/uses_wide_icon = FALSE
+	var/uses_wide_icon = FALSE // [HORIZON-ADD] WIDE_HUD
 	/// Slot ID of the element
 	var/slot_id = NONE
 	/// Icon state of the element with nothing in it/unassigned icon_full

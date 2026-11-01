@@ -112,7 +112,7 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 
 /atom/movable/screen/swap_hand
 	name = "swap hand"
-	icon_state = "act_swap"
+	icon_state = "act_swap" // [HORIZON-ADD] WIDE_HUD
 	mouse_over_pointer = MOUSE_HAND_POINTER
 
 /atom/movable/screen/swap_hand/Click(location, control, params)

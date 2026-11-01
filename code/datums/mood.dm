@@ -332,17 +332,17 @@
 
 	switch(sanity_level)
 		if (SANITY_LEVEL_GREAT)
-			mood_screen_object.color = "#61cef2"
+			mood_screen_object.color = "#2eeb9a"
 		if (SANITY_LEVEL_NEUTRAL)
-			mood_screen_object.color = "#2973ce"
+			mood_screen_object.color = "#86d656"
 		if (SANITY_LEVEL_DISTURBED)
-			mood_screen_object.color = "#4884cf"
+			mood_screen_object.color = "#4b96c4"
 		if (SANITY_LEVEL_UNSTABLE)
-			mood_screen_object.color = "#cbd562"
+			mood_screen_object.color = "#dfa65b"
 		if (SANITY_LEVEL_CRAZY)
-			mood_screen_object.color = "#d5a862"
+			mood_screen_object.color = "#f38943"
 		if (SANITY_LEVEL_INSANE)
-			mood_screen_object.color = "#f7595a"
+			mood_screen_object.color = "#f15d36"
 
 	if (!conflicting_moodies.len) // there's no special icons, use the normal icon states
 		mood_screen_object.icon_state = "mood[mood_level]"

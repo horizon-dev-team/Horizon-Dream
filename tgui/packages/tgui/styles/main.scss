@@ -57,6 +57,7 @@
 // [HORIZON-ADD]
 @include meta.load-css('./_interfaces_horizon/themes/dark.scss');
 @include meta.load-css('./_interfaces_horizon/spawn.scss');
+@include meta.load-css('./_interfaces_horizon/LogViewer.scss');
 // [/HORIZON-ADD]
 
 // Layouts

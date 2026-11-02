@@ -6,12 +6,14 @@
 	var/update_interval = 5
 	/// Ckey the client has selected in the UI. Only used to keep that player visible in a filtered list.
 	var/pinned_ckey
+	/// When TRUE, list every mob that has (or had) a ckey — including disconnected players and their ghosts
+	var/show_all_mobs = FALSE
 	COOLDOWN_DECLARE(update_cooldown)
 
-ADMIN_VERB(player_panel, R_ADMIN, "Player Panel ", "Updated Player Panel with TGUI. Currently in testing.", ADMIN_CATEGORY_GAME)
+ADMIN_VERB(player_panel, R_ADMIN, "Player Panel", "Updated Player Panel with TGUI. Currently in testing.", ADMIN_CATEGORY_GAME)
 	var/datum/player_panel/tgui = new(user.mob)
 	tgui.ui_interact(user.mob)
-	to_chat(user, span_interface("VUAP has been opened!"), type = MESSAGE_TYPE_ADMINLOG, confidential = TRUE)
+	message_admins("[key_name_admin(user)] has opened VUAP!")
 	BLACKBOX_LOG_ADMIN_VERB("VUAP")
 
 ADMIN_VERB_AND_CONTEXT_MENU(vuap_personal, R_ADMIN, "Open TGUI PP", ADMIN_VERB_NO_DESCRIPTION, ADMIN_CATEGORY_HIDDEN, /mob)
@@ -74,10 +76,10 @@ ADMIN_VERB_AND_CONTEXT_MENU(vuap_personal, R_ADMIN, "Open TGUI PP", ADMIN_VERB_N
 		var/mob/living/carbon/human/human_player = player
 		if(human_player.dna?.species?.name)
 			data["species"] = human_player.dna.species.name
-		data["oxydam"] = round(human_player.oxyloss, 1)
-		data["toxdam"] = round(human_player.toxloss, 1)
-		data["burndam"] = round(human_player.fireloss, 1)
-		data["brutedam"] = round(human_player.bruteloss, 1)
+		data["oxydam"] = round(human_player.get_oxy_loss(), 1)
+		data["toxdam"] = round(human_player.get_tox_loss(), 1)
+		data["burndam"] = round(human_player.get_fire_loss(), 1)
+		data["brutedam"] = round(human_player.get_brute_loss(), 1)
 	else if(isliving(player))
 		var/mob/living/living_player = player
 		data["health"] = living_player.health
@@ -98,7 +100,8 @@ ADMIN_VERB_AND_CONTEXT_MENU(vuap_personal, R_ADMIN, "Open TGUI PP", ADMIN_VERB_N
 /datum/player_panel/ui_data(mob/user)
 	var/client/user_client = user.client
 	var/list/players = list()
-	for(var/mob/player as anything in GLOB.player_list)
+	var/list/mob_source = show_all_mobs ? GLOB.mob_list : GLOB.player_list
+	for(var/mob/player as anything in mob_source)
 		var/list/player_data = player_ui_data(player)
 		if(!player_data)
 			continue
@@ -110,6 +113,7 @@ ADMIN_VERB_AND_CONTEXT_MENU(vuap_personal, R_ADMIN, "Open TGUI PP", ADMIN_VERB_N
 		"players" = players,
 		"search_text" = search_text,
 		"update_interval" = update_interval,
+		"show_all_mobs" = show_all_mobs,
 		"rights" = list(
 			"admin" = check_rights_for(user_client, R_ADMIN),
 			"ban" = check_rights_for(user_client, R_BAN),
@@ -147,6 +151,10 @@ ADMIN_VERB_AND_CONTEXT_MENU(vuap_personal, R_ADMIN, "Open TGUI PP", ADMIN_VERB_N
 		if("set_update_interval")
 			var/new_interval = text2num("[params["value"]]")
 			update_interval = isnum(new_interval) ? clamp(new_interval, 0, 120) : 5
+			push_update(ui)
+			return
+		if("toggle_all_mobs")
+			show_all_mobs = !show_all_mobs
 			push_update(ui)
 			return
 		if("oldPP")
@@ -216,7 +224,8 @@ ADMIN_VERB_AND_CONTEXT_MENU(vuap_personal, R_ADMIN, "Open TGUI PP", ADMIN_VERB_N
 				holder.cmd_show_exp_panel(target_mob.client)
 			return
 		if("openLogs")
-			show_individual_logging_panel(target_mob)
+			var/datum/log_viewer/LV = new(target_mob)
+			LV.ui_interact(usr)
 			return
 		if("openNotes")
 			browse_messages(target_ckey = target_ckey, agegate = FALSE)
@@ -291,7 +300,7 @@ ADMIN_VERB_AND_CONTEXT_MENU(vuap_personal, R_ADMIN, "Open TGUI PP", ADMIN_VERB_N
 			return
 		// Throttle the autoupdate ticks. Explicit refreshes call push_update() instead of relying on this proc.
 		if(!update_interval || !COOLDOWN_FINISHED(src, update_cooldown))
-		return
+			return
 	ui = SStgui.try_update_ui(user, src, ui)
 	if(!ui)
 		ui = new(user, src, "PlayerPanel")

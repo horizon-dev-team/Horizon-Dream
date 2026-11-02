@@ -5,6 +5,7 @@ type Props = {
     canAdminHelp: boolean;
     canSeeNotes: boolean;
     hasTicketNotification: boolean;
+    adminMode?: string | null;
   };
   onNavigate: (page: 'home') => void;
   onAction: (action: string) => void;
@@ -65,6 +66,21 @@ export function AdminPage({
             }}
           >
             See Notes
+          </MenuButton>
+        )}
+        {(serverState.adminMode === 'active' ||
+          serverState.adminMode === 'deadmined') && (
+          <MenuButton
+            onClick={() => {
+              onAction(serverState.adminMode === 'active' ? 'deadmin' : 'readmin');
+            }}
+            tooltip={
+              serverState.adminMode === 'active'
+                ? 'Give up your admin powers until you re-admin yourself'
+                : 'Regain your admin powers'
+            }
+          >
+            {serverState.adminMode === 'active' ? 'Deadmin' : 'Readmin'}
           </MenuButton>
         )}
       </div>

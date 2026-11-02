@@ -39,6 +39,7 @@
 #include "code\game\objects\structures\markings.dm"
 #include "code\modules\admin\autoreply.dm"
 #include "code\modules\admin\check_players.dm"
+#include "code\modules\admin\log_viewer.dm"
 #include "code\modules\admin\mentorhelp.dm"
 #include "code\modules\admin\player_panel.dm"
 #include "code\modules\admin\ticket_panel.dm"

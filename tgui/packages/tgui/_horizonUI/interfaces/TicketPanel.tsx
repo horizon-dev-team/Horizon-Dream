@@ -51,7 +51,6 @@ type Data = {
 
 export const TicketPanel = (props) => {
   const { act, data } = useBackend<Data>();
-  const [ticketUpdateTime, setTicketUpdateTime] = useState(0);
 
   const FONT_SIZE_KEY = 'ticketPanelFontSize';
   const FONT_SIZE_DEFAULT = 12;
@@ -78,17 +77,6 @@ export const TicketPanel = (props) => {
     setFontSize(FONT_SIZE_DEFAULT);
     localStorage.setItem(FONT_SIZE_KEY, String(FONT_SIZE_DEFAULT));
   };
-
-  useEffect(() => {
-    const updateTime = Date.now();
-    setTicketUpdateTime(updateTime);
-  }, [
-    data.admin_open_tickets,
-    data.admin_archived_tickets,
-    data.mentor_open_tickets,
-    data.mentor_archived_tickets,
-    data.selected_ticket,
-  ]);
 
   const [isInitialMessageExpanded, setIsInitialMessageExpanded] =
     useState(false);
@@ -481,15 +469,32 @@ export const TicketPanel = (props) => {
                         buttons={
                           !selectedTicketData.is_archived ? (
                             <>
-                              <Button
-                                icon="user"
-                                tooltip="Open Player Panel"
-                                onClick={() => {
-                                  act('open_player_panel', {
-                                    ticket_id: selectedTicketData.id,
-                                  });
-                                }}
-                              />
+                              {!!data.is_admin && (
+                                <>
+                                  <Button
+                                    icon="user"
+                                    tooltip="Open Player Panel"
+                                    onClick={() => {
+                                      act('open_player_panel', {
+                                        ticket_id: selectedTicketData.id,
+                                      });
+                                    }}
+                                  >
+                                    Player Panel
+                                  </Button>
+                                  <Button
+                                    icon="book"
+                                    tooltip="Open Logs"
+                                    onClick={() => {
+                                      act('open_logs', {
+                                        ticket_id: selectedTicketData.id,
+                                      });
+                                    }}
+                                  >
+                                    Open Logs
+                                  </Button>
+                                </>
+                              )}
                               <Button
                                 icon="pencil-alt"
                                 tooltip="Set Subject"
@@ -703,7 +708,7 @@ export const TicketPanel = (props) => {
                                 fill
                                 scrollable
                                 title="Conversation Log"
-                                key={`ticket-${selectedTicketData.id}-${ticketUpdateTime}`}
+                                key={`ticket-${selectedTicketData.id}-${selectedTicketData.all_responses?.length ?? 0}`}
                               >
                                 <Box
                                   mt={2}

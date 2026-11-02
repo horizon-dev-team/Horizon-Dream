@@ -258,6 +258,7 @@ GLOBAL_DATUM_INIT(ahelp_tickets, /datum/admin_help_tickets, new)
 		MessageNoRecipient(msg_raw, urgent)
 		send_message_to_tgs(msg, urgent)
 	GLOB.ahelp_tickets.active_tickets += src
+	defer_ticket_panel_update() // [HORIZON-ADD] ADMIN-TICKETS
 
 /datum/admin_help/proc/format_embed_discord(message)
 	var/datum/discord_embed/embed = new()
@@ -406,6 +407,7 @@ GLOBAL_DATUM_INIT(ahelp_tickets, /datum/admin_help_tickets, new)
 		player_interactions += "[server_timestamp()]: [formatted_message]"
 	if(plain_text)
 		latest_message = plain_text
+	defer_ticket_panel_update() // [HORIZON-ADD] ADMIN-TICKETS
 
 //Removes the ahelp verb and returns it after 2 minutes
 /datum/admin_help/proc/TimeoutVerb()
@@ -818,6 +820,7 @@ GLOBAL_DATUM_INIT(ahelp_tickets, /datum/admin_help_tickets, new)
 	subject = sanitize(copytext_char(new_subject, 1, 100))
 
 	message_admins("[setter.ckey] set the subject of ticket [id] to: [subject]")
+	defer_ticket_panel_update() // [HORIZON-ADD] ADMIN-TICKETS
 
 	return TRUE
 

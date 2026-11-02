@@ -916,7 +916,9 @@
 			to_chat(usr, "This can only be used on instances of type /mob.", confidential = TRUE)
 			return
 
-		show_individual_logging_panel(M, href_list["log_src"], href_list["log_type"])
+		var/datum/log_viewer/LV = new(M, href_list["log_src"])
+		LV.ui_interact(usr)
+
 	else if(href_list["languagemenu"])
 		if(!check_rights(R_ADMIN))
 			return

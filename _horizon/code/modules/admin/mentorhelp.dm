@@ -83,6 +83,7 @@ GLOBAL_DATUM_INIT(mentorhelp_manager, /datum/mentorhelp_manager, new)
 	id = GLOB.mentorhelp_manager.ticket_counter++
 
 	GLOB.mentorhelp_manager.active_tickets["[id]"] = src
+	defer_ticket_panel_update() // [HORIZON-ADD] ADMIN-TICKETS
 
 /datum/mentorhelp/Destroy()
 	if(open && GLOB.mentorhelp_manager.active_tickets["[id]"] == src)
@@ -208,6 +209,7 @@ GLOBAL_DATUM_INIT(mentorhelp_manager, /datum/mentorhelp_manager, new)
 
 		ticket_interactions[html_message] = structured_data
 		latest_message = plain_text
+		defer_ticket_panel_update() // [HORIZON-ADD] ADMIN-TICKETS
 
 /datum/mentorhelp/proc/notify(text, to_thread_mentor = TRUE, to_mentors = TRUE, to_staff = TRUE, unformatted_text = null)
 	var/list/hitlist = list()
@@ -246,6 +248,7 @@ GLOBAL_DATUM_INIT(mentorhelp_manager, /datum/mentorhelp_manager, new)
 		"islink" = null,
 	)
 	ticket_interactions[html_message] = structured_data
+	defer_ticket_panel_update() // [HORIZON-ADD] ADMIN-TICKETS
 
 /datum/mentorhelp/proc/broadcast_request(client/opener)
 	if(!opener || !open || !check_author())
@@ -653,6 +656,7 @@ GLOBAL_DATUM_INIT(mentorhelp_manager, /datum/mentorhelp_manager, new)
 	if(!is_mentor(responder))
 		return
 	src.subject = sanitize(copytext_char(new_subject, 1, 100))
+	defer_ticket_panel_update() // [HORIZON-ADD] ADMIN-TICKETS
 	return TRUE
 
 /datum/mentorhelp/proc/defer_to_admins(client/deferrer)

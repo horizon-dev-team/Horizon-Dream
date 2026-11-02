@@ -1,4 +1,4 @@
-ADMIN_VERB(cmd_player_panel, R_ADMIN, "Player Panel", "See all players and their Player Panel.", ADMIN_CATEGORY_GAME)
+ADMIN_VERB(cmd_player_panel, R_ADMIN, "Old Player Panel", "See all players and their legacy Player Panel.", ADMIN_CATEGORY_GAME)
 	user.holder.player_panel_new()
 
 ADMIN_VERB_ONLY_CONTEXT_MENU(show_player_panel, R_ADMIN, "Show Player Panel", /mob)

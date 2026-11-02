@@ -26,6 +26,36 @@
 
 	return info
 
+/// [HORIZON-ADD] ADMIN-TICKETS
+/// Resolves the mob of the player the given ticket belongs to, based on the selected tab.
+/datum/ticket_panel/proc/get_ticket_player(ticket_id)
+	switch(selected_tab)
+		if(ADMIN_TAB)
+			var/datum/admin_help/AH = GLOB.ahelp_tickets.TicketByID(ticket_id)
+			return istype(AH) ? AH.initiator?.mob : null
+		if(MENTOR_TAB)
+			var/datum/mentorhelp/MH = mentorhelp_by_id(ticket_id)
+			return istype(MH) ? MH.author?.mob : null
+	return null
+
+/datum/ticket_panel/proc/strip_pm_prefix(message)
+	if(!istext(message) || !message)
+		return message
+	var/static/regex/pm_prefix = regex(@"^(?:Reply )?PM [Ff]rom[ -].+?(?: to[ -].+?)?: ")
+	return pm_prefix.Replace(message, "")
+
+/datum/ticket_panel/proc/instant_update()
+	SStgui.update_uis(src)
+
+/proc/broadcast_ticket_panels()
+	for(var/client/viewer in GLOB.clients)
+		var/datum/ticket_panel/panel = viewer?.ticket_panel
+		if(panel)
+			panel.instant_update()
+
+/proc/defer_ticket_panel_update()
+	addtimer(CALLBACK(GLOBAL_PROC, GLOBAL_PROC_REF(broadcast_ticket_panels)), 1, TIMER_UNIQUE)
+// [/HORIZON-ADD]
 
 /datum/ticket_panel/proc/format_adminhelp_ticket(datum/admin_help/AH, client/viewer = null)
 	var/status = AH.state == AHELP_ACTIVE ? "open" : AH.state == AHELP_RESOLVED ? "resolved" : "closed"
@@ -33,7 +63,9 @@
 	var/list/formatted_responses = list()
 	for(var/key in AH.ticket_interactions)
 		var/list/interaction = AH.ticket_interactions[key]
-		formatted_responses += list(interaction)
+		var/list/stripped = interaction.Copy()
+		stripped["message"] = strip_pm_prefix(stripped["message"])
+		formatted_responses += list(stripped)
 
 	var/list/player_info = get_player_info(AH.initiator)
 
@@ -42,7 +74,7 @@
 		"subject" = AH.subject,
 		"author" = AH.initiator_key_name || "Unknown",
 		"message" = AH.initial_message || "No message",
-		"latest_message" = AH.latest_message,
+		"latest_message" = strip_pm_prefix(AH.latest_message),
 		"status" = status,
 		"timestamp" = AH.time_activity["opened_at"],
 		"closed_at" = AH.time_activity["closed_at"],
@@ -256,33 +288,30 @@
 			return TRUE
 
 		if("open_player_panel")
-			if(!current_client.holder)
+			if(!is_staff(current_client))
 				to_chat(parent_client, span_warning("You don't have permission to open a player panel."), confidential = TRUE)
 				return FALSE
 
-			var/mob/player
-			var/ticket_id = text2num(params["ticket_id"])
-
-			switch(selected_tab)
-				if(ADMIN_TAB)
-					var/datum/admin_help/AH = GLOB.ahelp_tickets.TicketByID(ticket_id)
-					if(!istype(AH))
-						to_chat(current_mob, span_warning("Invalid admin ticket selected."), confidential = TRUE)
-						return FALSE
-					player = AH.initiator.mob
-
-				if(MENTOR_TAB)
-					var/datum/mentorhelp/MH = mentorhelp_by_id(ticket_id)
-					if(!istype(MH))
-						to_chat(current_mob, span_warning("Invalid mentor ticket selected."), confidential = TRUE)
-						return FALSE
-					player = MH.author.mob
-
+			var/mob/player = get_ticket_player(text2num(params["ticket_id"]))
 			if(!player || !player.ckey)
 				to_chat(current_mob, span_warning("Could not find player associated with this ticket."), confidential = TRUE)
 				return FALSE
 
-			SSadmin_verbs.dynamic_invoke_verb(current_client, /datum/admin_verb/show_player_panel, player)
+			SSadmin_verbs.dynamic_invoke_verb(current_client, /datum/admin_verb/vuap_personal, player)
+			return TRUE
+
+		if("open_logs")
+			if(!is_staff(current_client))
+				to_chat(parent_client, span_warning("You don't have permission to open logs."), confidential = TRUE)
+				return FALSE
+
+			var/mob/player = get_ticket_player(text2num(params["ticket_id"]))
+			if(!player)
+				to_chat(current_mob, span_warning("Could not find player associated with this ticket."), confidential = TRUE)
+				return FALSE
+
+			var/datum/log_viewer/LV = new(player)
+			LV.ui_interact(current_mob)
 			return TRUE
 
 		if("autoreply")
@@ -411,7 +440,12 @@
 			if(!ticket_id)
 				return
 
-			var/message = tgui_input_text(current_mob, "Enter your response:", "Reply to Ticket", multiline = TRUE)
+			// Chat composer sends the text inline; the modal stays as a
+			// fallback for callers that don't pass a message.
+			var/message = params["message"]
+			if(!istext(message))
+				message = tgui_input_text(current_mob, "Enter your response:", "Reply to Ticket", multiline = TRUE)
+			message = trim(message)
 			if(!message || !current_mob.client)
 				return
 
@@ -451,6 +485,7 @@
 				if(!new_subject)
 					return
 				MH.set_subject(new_subject, current_mob.client)
+
 			return TRUE
 
 		if("get_author_notes")
@@ -507,10 +542,13 @@
 			return TRUE
 
 /datum/ticket_panel/ui_interact(mob/user, datum/tgui/ui)
+	// No throttle: every SStgui autoupdate tick (~1s) rebuilds ui_data and pushes
+	// it, and ticket events (new message, state change) push immediately through
+	// defer_ticket_panel_update() without waiting for the next tick.
 	ui = SStgui.try_update_ui(user, src, ui)
 	if (!ui)
 		ui = new(user, src, "TicketPanel", "Ticket Panel")
-		ui.set_autoupdate(FALSE)
+		ui.set_autoupdate(TRUE)
 		ui.open()
 
 
@@ -518,9 +556,12 @@
 	return UI_INTERACTIVE
 
 /// Admin verb to open the ticket panel
-ADMIN_VERB(ticket_panel, R_ADMIN, "Ticket Panel", "Allows you to see tickets open for adminhelps and mentorhelps.", ADMIN_CATEGORY_GAME)
+ADMIN_VERB(ticket_panel, R_ADMIN | R_MENTOR, "Ticket Panel", "Allows you to see tickets open for adminhelps and mentorhelps.", ADMIN_CATEGORY_GAME)
 	if(!is_mentor(user) && !is_staff(user))
 		to_chat(user, span_warning("You need to be an admin or mentor in order to access this panel..."), confidential = TRUE)
+		return
+
+	if(!user.mob)
 		return
 
 	var/datum/ticket_panel/ticket_panel = user.ticket_panel
@@ -529,4 +570,4 @@ ADMIN_VERB(ticket_panel, R_ADMIN, "Ticket Panel", "Allows you to see tickets ope
 		ticket_panel = new()
 		user.ticket_panel = ticket_panel
 
-	ticket_panel.ui_interact(user)
+	ticket_panel.ui_interact(user.mob)

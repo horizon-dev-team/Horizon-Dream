@@ -212,10 +212,12 @@
 
 	var/spans_part = ""
 	if(length(spans))
-		spans_part = "(spans:"
+		var/list/named_spans = list()
 		for(var/span in spans)
-			spans_part = "[spans_part] [span]"
-		spans_part = "[spans_part] ) "
+			if(span)
+				named_spans += span
+		if(length(named_spans))
+			spans_part = "(spans: [named_spans.Join(" ")]) "
 
 	var/lang_name = data["language"]
 	var/log_text = "\[[get_radio_name(frequency)]\] [spans_part]\"[message]\" (language: [lang_name])"

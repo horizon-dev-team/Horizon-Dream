@@ -75,7 +75,7 @@ GAME_VERB_HIDDEN(/client, reset_held_keys_verb, "Reset Held Keys")
 		"players" = build_player_list(),
 		"ignoredOffline" = build_ignored_offline(),
 		"uiVolume" = client?.prefs ? calculate_mixed_volume(client, 100, CHANNEL_UI) / 100 : 0.8, // [HORIZON-EDIT] Master_Sounds
-	) + build_ticket_panel_data())
+	) + build_ticket_panel_data() + build_admin_mode_data())
 
 /datum/escape_menu/proc/on_client_qdel()
 	SIGNAL_HANDLER
@@ -152,7 +152,7 @@ GAME_VERB_HIDDEN(/client, reset_held_keys_verb, "Reset Held Keys")
 		"resources" = resources,
 		"suicideIcon" = GLOB.escape_menu_suicide_icon_base64,
 		"uiVolume" = client?.prefs ? calculate_mixed_volume(client, 100, CHANNEL_UI) / 100 : 0.8, // [HORIZON-EDIT] Master_Sounds
-	) + build_ticket_panel_data())
+	) + build_ticket_panel_data() + build_admin_mode_data())
 
 /datum/escape_menu/proc/build_admin_list()
 	var/list/result = list()
@@ -195,10 +195,13 @@ GAME_VERB_HIDDEN(/client, reset_held_keys_verb, "Reset Held Keys")
 	return result
 
 // [HORIZON-ADD] ADMIN-TICKETS
-/// Escape-menu state for the ticket panel button.
-/// Staff get the admin panel + pending ahelp count; mentors get
-/// the mentor panel + pending mhelp count (the TGUI ui_data already
-/// filters which tickets each role can see).
+/datum/escape_menu/proc/build_admin_mode_data()
+	if(client?.holder)
+		return list("adminMode" = "active")
+	if(client && !isnull(GLOB.deadmins[client.ckey]))
+		return list("adminMode" = "deadmined")
+	return list("adminMode" = "none")
+
 /datum/escape_menu/proc/build_ticket_panel_data()
 	if(is_staff(client))
 		return list(
@@ -254,12 +257,22 @@ GAME_VERB_HIDDEN(/client, reset_held_keys_verb, "Reset Held Keys")
 			client?.adminhelp()
 		if("view_ticket")
 			client?.view_latest_ticket()
-		if("open_ticket_panel") // [HORIZON-ADD] ADMIN-TICKETS
+		// [HORIZON-ADD] ADMIN-TICKETS
+		if("open_ticket_panel")
 			if(!is_mentor(client) && !is_staff(client))
 				return TRUE
 			if(!client.ticket_panel)
 				client.ticket_panel = new /datum/ticket_panel()
 			client.ticket_panel.ui_interact(client.mob)
+		if("deadmin")
+			if(!client?.holder)
+				return TRUE
+			SSadmin_verbs.dynamic_invoke_verb(client, /datum/admin_verb/deadmin)
+		if("readmin")
+			if(!client || isnull(GLOB.deadmins[client.ckey]))
+				return TRUE
+			client.readmin()
+		// [/HORIZON-ADD]
 		if("pray")
 			var/datum/keybinding/client/communication/pray/pray_verb = GLOB.keybindings_by_name[/datum/keybinding/client/communication/pray::name]
 			pray_verb.down(client)

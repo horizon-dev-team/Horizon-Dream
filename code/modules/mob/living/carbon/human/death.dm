@@ -31,7 +31,7 @@ GLOBAL_LIST_EMPTY(dead_players_during_shift)
 
 	if(SSticker.HasRoundStarted())
 		SSblackbox.ReportDeath(src)
-		log_message("has died (BRUTE: [src.get_brute_loss()], BURN: [src.get_fire_loss()], TOX: [src.get_tox_loss()], OXY: [src.get_oxy_loss()]", LOG_ATTACK)
+		log_message("has died (BRUTE: [src.get_brute_loss()], BURN: [src.get_fire_loss()], TOX: [src.get_tox_loss()], OXY: [src.get_oxy_loss()])", LOG_ATTACK)
 		if(key) // Prevents log spamming of keyless mob deaths (like xenobio monkeys)
 			investigate_log("has died at [loc_name(src)].<br>\
 				BRUTE: [src.get_brute_loss()] BURN: [src.get_fire_loss()] TOX: [src.get_tox_loss()] OXY: [src.get_oxy_loss()] STAM: [src.get_stamina_loss()]<br>\

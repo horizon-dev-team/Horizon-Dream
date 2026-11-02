@@ -38,6 +38,7 @@ export type ServerState = {
   canOpenTicketPanel?: boolean;
   ticketPanelLabel?: string | null;
   pendingTickets?: number;
+  adminMode?: string | null;
   resources: ResourceLink[];
   admins: PlayerInfo[];
   players: PlayerInfo[];

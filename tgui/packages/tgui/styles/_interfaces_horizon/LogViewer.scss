@@ -1,0 +1,313 @@
+// Colour per log type. Keys match `entry.type.toLowerCase()`.
+$log-type-colors: (
+  attack: #ff5050,
+  say: #4dd0e1,
+  comms: #90a4ae,
+  whisper: #b39ddb,
+  emote: #64b5f6,
+  radioemote: #64b5f6,
+  deadchat: hsl(271.9, 100%, 87.8%),
+  pda: #90a4ae,
+  chat: #90a4ae,
+  comment: #90a4ae,
+  telecomms: #4dd0e1,
+  transport: #b0bec5,
+  ooc: hsl(47.9, 100%, 40%),
+  admin: hsl(0, 100%, 34%),
+  asay: hsl(16.2, 100%, 50%),
+  ownership: #b0bec5,
+  game: #66bb6a,
+  virus: #81c784,
+  mecha: #ffb74d,
+  shuttle: #ffd54f,
+  victim: #ff8a65,
+  economy: #66bb6a,
+  speech: #4dd0e1,
+  misc: #888,
+);
+
+@each $name, $color in $log-type-colors {
+  .LogViewer__type--#{$name} {
+    --type-color: #{$color};
+  }
+}
+
+.LogViewer__label {
+  flex: 0 0 52px;
+  color: var(--color-label);
+  font-size: 11px;
+  font-weight: bold;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.LogViewer__body .Button {
+  margin: 0;
+}
+
+.LogViewer__filter .Button__content::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: 0.35em;
+  border-radius: 50%;
+  background-color: var(--type-color, transparent);
+  vertical-align: middle;
+}
+
+.LogViewer__entry {
+  padding: 0.3em 0.6em 0.35em 0.55em;
+  border-left: 3px solid var(--type-color, #888);
+  border-bottom: 1px solid var(--color-dark-secondary);
+  font-family: var(--font-family-mono);
+  font-size: 12px;
+  line-height: 1.45;
+  margin-bottom: 0.25em;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  &:hover {
+    background-color: hsla(0, 0%, 100%, 0.03);
+  }
+}
+
+.LogViewer__line {
+  align-items: baseline;
+  gap: 0.5em;
+}
+
+.LogViewer__time {
+  flex: 0 0 48px;
+  color: var(--color-text-translucent-light);
+  font-size: 11px;
+  font-weight: bold;
+  font-variant-numeric: tabular-nums;
+}
+
+.LogViewer__type {
+  flex: 0 0 64px;
+  padding-right: 0.5em;
+  overflow: hidden;
+  border-right: 1px solid var(--color-border);
+  color: var(--type-color, #888);
+  font-size: 10px;
+  font-weight: bold;
+  letter-spacing: 0.06em;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.LogViewer__msg {
+  flex: 1 1 auto;
+  min-width: 0;
+  color: var(--color-primary);
+  overflow-wrap: anywhere;
+}
+
+.LogViewer__who {
+  flex: 0 1 auto;
+  max-width: 220px;
+  overflow: hidden;
+  color: var(--color-text-translucent);
+  font-size: 11px;
+  text-align: right;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.LogViewer__state {
+  display: inline-block;
+  margin-right: 0.4em;
+  padding: 0 0.3em;
+  border: 1px solid currentColor;
+  font-size: 9px;
+  font-weight: bold;
+  letter-spacing: 0.06em;
+  vertical-align: middle;
+
+  &--dead {
+    color: hsl(271.9, 100%, 87.8%);
+  }
+
+  &--critical {
+    color: hsl(36, 100%, 65%);
+  }
+}
+
+.LogViewer__freq {
+  display: inline-block;
+  margin-right: 0.45em;
+  padding: 0 0.3em;
+  border: 1px solid hsla(199, 100%, 66%, 0.4);
+  color: #4fc3ff;
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+  vertical-align: baseline;
+}
+
+.LogViewer__lang {
+  display: inline-block;
+  margin-left: 0.45em;
+  padding: 0 0.3em;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-translucent-light);
+  font-size: 10px;
+  vertical-align: baseline;
+}
+
+.LogViewer__chem {
+  display: inline-block;
+  margin-right: 0.45em;
+  padding: 0 0.3em;
+  border: 1px solid hsla(160, 55%, 60%, 0.4);
+  color: hsl(160, 55%, 72%);
+  font-size: 10px;
+  font-weight: bold;
+  letter-spacing: 0.06em;
+  vertical-align: baseline;
+}
+
+.LogViewer__reagent {
+  display: inline-block;
+  margin-left: 0.25em;
+  padding: 0 0.3em;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-translucent-light);
+  font-size: 10px;
+  white-space: nowrap;
+  vertical-align: baseline;
+
+  &:first-child {
+    margin-left: 0;
+  }
+}
+
+.LogViewer__state {
+  display: inline-block;
+  padding: 0 0.3em;
+  border: 1px solid currentColor;
+  font-size: 8px;
+  font-weight: bold;
+  letter-spacing: 0.06em;
+  vertical-align: middle;
+
+  &--critical {
+    color: hsl(36, 100%, 65%);
+  }
+}
+
+.LogViewer__meta {
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.15em 0.75em;
+  margin-top: 0.15em;
+  color: var(--color-text-translucent);
+  font-size: 11px;
+}
+
+.LogViewer__metaItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+  min-width: 0;
+}
+
+.LogViewer__metaIcon {
+  flex-shrink: 0;
+  color: var(--color-text-translucent);
+  font-size: 10px;
+}
+
+.LogViewer__where {
+  flex-shrink: 1;
+  min-width: 0;
+  overflow: hidden;
+  border-bottom: 1px dotted var(--color-border-secondary);
+  color: var(--color-text-translucent-light);
+  cursor: pointer;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  &:hover {
+    border-bottom-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+}
+
+.LogViewer__coords {
+  flex-shrink: 0;
+  color: var(--color-text-translucent);
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+}
+
+.LogViewer__hp {
+  flex-shrink: 0;
+  padding: 0 0.35em;
+  color: var(--color-text-translucent-light);
+  font-size: 10px;
+  font-weight: bold;
+  font-variant-numeric: tabular-nums;
+
+  &--low {
+    color: #ffb74d;
+  }
+
+  &--critical {
+    color: #ff6b6b;
+  }
+}
+
+.LogViewer__target {
+  flex-shrink: 0;
+  margin-left: auto;
+  border-bottom: 1px dotted hsla(199, 100%, 66%, 0.5);
+  color: #4fc3ff;
+  cursor: pointer;
+
+  &:hover {
+    border-bottom-color: currentColor;
+    color: var(--color-white);
+  }
+}
+
+.LogViewer__chips {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.35em;
+  color: var(--color-text-translucent);
+  font-size: 11px;
+}
+
+.LogViewer__chip {
+  padding: 0.05em 0.4em;
+  border: 1px solid transparent;
+  cursor: pointer;
+  font-size: 10px;
+
+  &--yellow {
+    border-color: hsla(45, 100%, 65%, 0.3);
+    color: #ffd54f;
+  }
+
+  &--green {
+    border-color: hsla(122, 39%, 62%, 0.3);
+    color: #81c784;
+  }
+
+  &:hover {
+    border-color: currentColor;
+  }
+}
+
+.LogViewer__empty {
+  padding: 1.5em 0;
+  color: var(--color-text-translucent);
+  font-size: 13px;
+  text-align: center;
+}

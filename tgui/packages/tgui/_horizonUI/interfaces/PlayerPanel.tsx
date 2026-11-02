@@ -56,12 +56,13 @@ type BackendData = {
   players: PlayerData[];
   search_text?: string | null;
   update_interval: number;
+  show_all_mobs: boolean;
   rights: PlayerRights;
   exp_tracking: boolean;
   centcom_enabled: boolean;
 };
 
-type SortKey = 'ckey' | 'name' | 'job' | 'antagonist' | 'playtime';
+type SortKey = 'ckey' | 'name' | 'job' | 'playtime';
 
 const DEFAULT_RIGHTS: PlayerRights = {
   admin: false,
@@ -112,21 +113,17 @@ const PlayerVitals = (props: { player: PlayerData }) => {
   if (player.oxydam !== undefined) {
     return (
       <Box inline>
-        {' '}
-        <Box inline color="blue">
-          {player.oxydam}
-        </Box>{' '}
-        / {' '}
-        <Box inline color="green">
-          {player.toxdam}
-        </Box>{' '}
-        / {' '}
-        <Box inline color="orange">
-          {player.burndam}
-        </Box>{' '}
-        / {' '}
-        <Box inline color="red">
+        <Box inline style={{ color: '#ff3333' }}>
           {player.brutedam}
+        </Box>{' / '}
+        <Box inline style={{ color: '#ff9933' }}>
+          {player.burndam}
+        </Box>{' / '}
+        <Box inline style={{ color: '#00cc66' }}>
+          {player.toxdam}
+        </Box>{' / '}
+        <Box inline style={{ color: '#00cccc' }}>
+          {player.oxydam}
         </Box>
       </Box>
     );
@@ -145,8 +142,6 @@ const comparePlayers = (a: PlayerData, b: PlayerData, key: SortKey): number => {
   switch (key) {
     case 'playtime':
       return (a.living_playtime ?? -1) - (b.living_playtime ?? -1);
-    case 'antagonist':
-      return Number(a.is_antagonist) - Number(b.is_antagonist);
     default: {
       const aValue = (a[key] || '').toLowerCase();
       const bValue = (b[key] || '').toLowerCase();
@@ -172,10 +167,7 @@ const SortableCell = (props: {
     >
       {label}
       {activeKey === sortKey && (
-        <Icon
-          name={direction === 1 ? 'chevron-up' : 'chevron-down'}
-          ml={0.5}
-        />
+        <Icon name={direction === 1 ? 'chevron-up' : 'chevron-down'} ml={0.5} />
       )}
     </Table.Cell>
   );
@@ -209,12 +201,14 @@ const PlayerRowActions = (props: {
         tooltip="Smite"
         onClick={() => act('smite')}
       />
-      <Button
-        compact
-        icon="external-link"
-        tooltip="Advanced player options (PP)"
-        onClick={() => act('openAdditionalPanel')}
-      />
+      {!!player.has_mind && (
+        <Button
+          compact
+          icon="user-secret"
+          tooltip="Traitor panel"
+          onClick={() => act('openTraitorPanel')}
+        />
+      )}
       <Button
         compact
         icon="book"
@@ -229,18 +223,11 @@ const PlayerRowActions = (props: {
       />
       <Button
         compact
-        icon="code"
-        tooltip="View variables"
-        onClick={() => act('openViewVariables')}
+        icon="external-link"
+        tooltip="Advanced player options (PP)"
+        onClick={() => act('openAdditionalPanel')}
       />
-      {!!player.has_mind && (
-        <Button
-          compact
-          icon="user-secret"
-          tooltip="Traitor panel"
-          onClick={() => act('openTraitorPanel')}
-        />
-      )}
+
     </>
   );
 };
@@ -271,22 +258,24 @@ const PlayerRow = (props: {
           compact
           color="transparent"
           content={player.ckey}
-          tooltip="Select player"
+          tooltip={
+            player.connected
+              ? 'Select player'
+              : 'Offline — the player left the server'
+          }
           onClick={() => onSelect(player.ckey)}
         />
+        {!player.connected && (
+          <Box inline color="grey" ml={0.5} fontSize="0.85em">
+            offline
+          </Box>
+        )}
       </Table.Cell>
       <Table.Cell verticalAlign="middle" textAlign="center">
         <TextOrNA text={player.name} />
       </Table.Cell>
       <Table.Cell verticalAlign="middle" textAlign="center">
         <TextOrNA text={player.job} />
-      </Table.Cell>
-      <Table.Cell verticalAlign="middle" textAlign="center">
-        {!!player.is_antagonist ? (
-          <Box color="red">Yes</Box>
-        ) : (
-          <Box color="green">No</Box>
-        )}
       </Table.Cell>
       <Table.Cell verticalAlign="middle" textAlign="center">
         <TextOrNA text={player.position} />
@@ -322,11 +311,13 @@ const PlayerDetails = (props: {
   const { player, data, onOpenOptions, onDeselect } = props;
   const [hideSensitive, setHideSensitive] = useState(true);
 
-  const renderSensitiveValue = (
-    value: string | null | undefined,
-  ) => {
+  const renderSensitiveValue = (value: string | null | undefined) => {
     if (hideSensitive) {
-      return <Box inline color="grey">Hidden</Box>;
+      return (
+        <Box inline color="grey">
+          Hidden
+        </Box>
+      );
     }
     return <TextOrNA text={value} />;
   };
@@ -442,10 +433,7 @@ const PlayerDetailsHeader = (props: {
       <Stack align="baseline">
         <Stack.Item grow>
           <Box bold fontSize="14px">
-            <NameWithReal
-              name={player.name}
-              real_name={player.real_name}
-            />
+            <NameWithReal name={player.name} real_name={player.real_name} />
           </Box>
         </Stack.Item>
         <Stack.Item>
@@ -455,12 +443,7 @@ const PlayerDetailsHeader = (props: {
             tooltip="Open advanced player options (VUAP)"
             onClick={onOpenOptions}
           />
-          <Button
-            icon="times"
-            content="Deselect"
-            ml={1}
-            onClick={onDeselect}
-          />
+          <Button icon="times" content="Deselect" ml={1} onClick={onDeselect} />
         </Stack.Item>
       </Stack>
       <Box color="label" fontSize="11px" mt={0.5}>
@@ -524,12 +507,7 @@ const AdminHelpers = () => {
           content="Toggle Admin AI Interact"
           onClick={() => act('adminaiinteract')}
         />
-        <Button
-          fluid
-          my={0.5}
-          content="Old PP"
-          onClick={() => act('oldPP')}
-        />
+        <Button fluid my={0.5} content="Old PP" onClick={() => act('oldPP')} />
       </Stack.Item>
     </Stack>
   );
@@ -555,10 +533,7 @@ export const PlayerPanel = () => {
     return () => clearTimeout(timer);
   }, [act, searchTerm, selectedCkey]);
 
-  const selectedPlayer = players.find(
-    (player) => player.ckey === selectedCkey,
-  );
-
+  const selectedPlayer = players.find((player) => player.ckey === selectedCkey);
   const sortedPlayers = [...players].sort(
     (a, b) => comparePlayers(a, b, sortKey) * sortDir,
   );
@@ -617,6 +592,16 @@ export const PlayerPanel = () => {
                     />
                   </Stack.Item>
                   <Stack.Item>
+                    <Button
+                      icon="users"
+                      selected={!!data?.show_all_mobs}
+                      tooltip="Show every character that has a ckey, including players who left the server and their bodies"
+                      onClick={() => act('toggle_all_mobs')}
+                    >
+                      All Characters
+                    </Button>
+                  </Stack.Item>
+                  <Stack.Item>
                     <TextArea
                       autoFocus
                       placeholder="Search by name, old name, job, or ckey"
@@ -658,11 +643,6 @@ export const PlayerPanel = () => {
                     {...sortProps}
                   />
                   <SortableCell label="Job" sortKey="job" {...sortProps} />
-                  <SortableCell
-                    label="Antag"
-                    sortKey="antagonist"
-                    {...sortProps}
-                  />
                   <Table.Cell textAlign="center">Location</Table.Cell>
                   {!!data?.exp_tracking && (
                     <SortableCell

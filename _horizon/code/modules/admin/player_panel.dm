@@ -1,13 +1,15 @@
-/**
- * @copyright 2025 Absolucy (https://github.com/Monkestation/Monkestation2.0/issues/6358)
- * @author Original Veth-s + Absolucy
- * @author Changes KOCMOHABT
- */
-/datum/player_panel_veth/ //required for tgui component
-	var/title = "Veth's Ultimate Player Panel"
+/datum/player_panel/ //required for tgui component
+	var/title = "Player Panel"
+	/// Server-side filter text. Matched against ckey, names, job and previous names.
+	var/search_text
+	/// Seconds between automatic updates. 0 disables auto-update.
+	var/update_interval = 5
+	/// Ckey the client has selected in the UI. Only used to keep that player visible in a filtered list.
+	var/pinned_ckey
+	COOLDOWN_DECLARE(update_cooldown)
 
-ADMIN_VERB(player_panel_veth, R_ADMIN, "Player Panel Veth", "Updated Player Panel with TGUI. Currently in testing.", ADMIN_CATEGORY_GAME)
-	var/datum/player_panel_veth/tgui = new(user.mob)
+ADMIN_VERB(player_panel, R_ADMIN, "Player Panel ", "Updated Player Panel with TGUI. Currently in testing.", ADMIN_CATEGORY_GAME)
+	var/datum/player_panel/tgui = new(user.mob)
 	tgui.ui_interact(user.mob)
 	to_chat(user, span_interface("VUAP has been opened!"), type = MESSAGE_TYPE_ADMINLOG, confidential = TRUE)
 	BLACKBOX_LOG_ADMIN_VERB("VUAP")
@@ -33,61 +35,119 @@ ADMIN_VERB_AND_CONTEXT_MENU(vuap_personal, R_ADMIN, "Open TGUI PP", ADMIN_VERB_N
 		tgui.ui_interact(user.mob)
 	BLACKBOX_LOG_ADMIN_VERB("VUAP_personal")
 
-/datum/player_panel_veth/proc/player_ui_data(mob/player)
+/datum/player_panel/proc/player_matches_search(list/player_data)
+	var/search_data = "[player_data["name"]] [player_data["real_name"]] [player_data["ckey"]] [player_data["job"]] [player_data["old_name"]]"
+	return !!findtext(search_data, search_text)
+
+/datum/player_panel/proc/player_ui_data(mob/player)
 #ifndef TESTING
-	if(QDELETED(player) || !player.ckey)
+	if(QDELETED(player) || !length(player.ckey))
 #else
 	if(QDELETED(player) || !player.mind) // if TESTING is enabled, this lets us test with a spawned debug crew
 #endif
 		return
-	var/previous_names = player.persistent_client?.get_played_names()
-	return list(
-		"name" = player.name,
-		"old_name" = previous_names,
-		"job" = player.job,
+	var/client/player_client = player.client
+	var/turf/player_turf = get_turf(player)
+	var/list/data = list(
 		"ckey" = player.ckey,
+		"name" = player.name,
+		"real_name" = player.real_name,
+		"job" = player.job,
+		"mob_type" = "[player.type]",
 		"is_antagonist" = player.is_antag(),
+		"has_mind" = !!player.mind,
+		"is_cyborg" = iscyborg(player),
+		"is_living" = isliving(player),
+		"connected" = !!player_client,
 		"last_ip" = player.lastKnownIP,
-		"ref" = REF(player)
+		"position" = player_turf ? AREACOORD(player_turf) : null,
+		"ref" = REF(player),
 	)
+	if(player.persistent_client)
+		// Played names are stored html-encoded for the legacy HTML panel, but tgui escapes text on its own.
+		var/list/previous_names = list()
+		for(var/previous_name in player.persistent_client.played_names)
+			previous_names += "[html_decode(previous_name)] ([player.persistent_client.played_names[previous_name]])"
+		data["previous_names"] = previous_names
+		data["old_name"] = length(previous_names) ? previous_names.Join("; ") : null
+	if(ishuman(player))
+		var/mob/living/carbon/human/human_player = player
+		if(human_player.dna?.species?.name)
+			data["species"] = human_player.dna.species.name
+		data["oxydam"] = round(human_player.oxyloss, 1)
+		data["toxdam"] = round(human_player.toxloss, 1)
+		data["burndam"] = round(human_player.fireloss, 1)
+		data["brutedam"] = round(human_player.bruteloss, 1)
+	else if(isliving(player))
+		var/mob/living/living_player = player
+		data["health"] = living_player.health
+		data["health_max"] = living_player.getMaxHealth()
+	if(player_client)
+		data["ip"] = player_client.address
+		data["cid"] = player_client.computer_id
+		data["first_seen"] = player_client.player_join_date
+		data["register_date"] = player_client.account_join_date
+		data["related_accounts_ip"] = player_client.related_accounts_ip
+		data["related_accounts_cid"] = player_client.related_accounts_cid
+		if(player_client.byond_version)
+			data["byond_version"] = "[player_client.byond_version].[player_client.byond_build || "xxx"]"
+		if(CONFIG_GET(flag/use_exp_tracking))
+			data["living_playtime"] = round(player_client.get_exp_living(TRUE) / 60, 0.1)
+	return data
 
-/datum/player_panel_veth/ui_data(mob/user)
+/datum/player_panel/ui_data(mob/user)
+	var/client/user_client = user.client
 	var/list/players = list()
-	var/mobs = sort_mobs()
-	for(var/mob/mob as anything in mobs)
-		var/list/mob_data = player_ui_data(mob)
-		if(mob_data)
-			players += list(mob_data)
+	for(var/mob/player as anything in GLOB.player_list)
+		var/list/player_data = player_ui_data(player)
+		if(!player_data)
+			continue
+		// The pinned player is always kept in the payload so the details panel does not lose its data.
+		if(length(search_text) && player.ckey != pinned_ckey && !player_matches_search(player_data))
+			continue
+		players += list(player_data)
 	return list(
-		"Data" = players
+		"players" = players,
+		"search_text" = search_text,
+		"update_interval" = update_interval,
+		"rights" = list(
+			"admin" = check_rights_for(user_client, R_ADMIN),
+			"ban" = check_rights_for(user_client, R_BAN),
+			"fun" = check_rights_for(user_client, R_FUN),
+		),
+		"exp_tracking" = !!CONFIG_GET(flag/use_exp_tracking),
+		"centcom_enabled" = !!CONFIG_GET(string/centcom_ban_db),
 	)
 
-/datum/player_panel_veth/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
+/// Resets the auto-update cooldown and pushes fresh data to the client.
+/datum/player_panel/proc/push_update(datum/tgui/ui)
+	update_cooldown = 0
+	ui?.send_update()
+
+/datum/player_panel/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
 	if(..())
 		return
 	if(!check_rights(R_ADMIN))
 		return
-	var/mob/selected_mob = get_mob_by_ckey(params["selectedPlayerCkey"]) //gets the mob datum from the ckey in client datum which we've saved. if there's a better way to do this please let me know
-	switch(action) //switch for all the actions from the frontend - all of the Topic() calls check rights & log inside themselves.
-		if("sendPrivateMessage")
-			usr.client.cmd_admin_pm(selected_mob.ckey)
-			SSblackbox.record_feedback("tally", "VUAP", 1, "PM")
-			return
-		if("follow")
-			usr.client.holder.Topic(null, list(
-				"adminplayerobservefollow" = REF(selected_mob),
-				"admin_token" = usr.client.holder.href_token
-			))
-			to_chat(usr, "Now following [selected_mob.ckey].", confidential = TRUE)
-			return
-		if("smite")
-			usr.client.holder.Topic(null, list(
-				"adminsmite" = REF(selected_mob),
-				"admin_token" = usr.client.holder.href_token
-			))
-			to_chat(usr, "Smiting [selected_mob.ckey].", confidential = TRUE)
+	var/client/user_client = usr.client
+	var/datum/admins/holder = user_client?.holder
+	if(!holder)
+		return
+
+	// Actions that do not target a specific player.
+	switch(action)
 		if("refresh")
-			ui.send_update()
+			push_update(ui)
+			return
+		if("set_search_text")
+			search_text = params["text"]
+			pinned_ckey = ckey(params["selectedPlayerCkey"])
+			push_update(ui)
+			return
+		if("set_update_interval")
+			var/new_interval = text2num("[params["value"]]")
+			update_interval = isnum(new_interval) ? clamp(new_interval, 0, 120) : 5
+			push_update(ui)
 			return
 		if("oldPP")
 			SSadmin_verbs.dynamic_invoke_verb(usr, /datum/admin_verb/cmd_player_panel) //logs/rightscheck inside the proc
@@ -99,55 +159,147 @@ ADMIN_VERB_AND_CONTEXT_MENU(vuap_personal, R_ADMIN, "Open TGUI PP", ADMIN_VERB_N
 			SSadmin_verbs.dynamic_invoke_verb(usr, /datum/admin_verb/check_antagonists) //logs/rightscheck inside the proc
 			return
 		if("faxPanel")
-			SSadmin_verbs.dynamic_invoke_verb(usr, /datum/admin_verb/fax_panel) //logs/rightscheck inside the proc TODO double check args
+			SSadmin_verbs.dynamic_invoke_verb(usr, /datum/admin_verb/fax_panel) //logs/rightscheck inside the proc
 			return
 		if("gamePanel")
 			SSadmin_verbs.dynamic_invoke_verb(usr, /datum/admin_verb/game_panel) //logs/rightscheck inside the proc
 			return
-		if("comboHUD")
-			SSadmin_verbs.dynamic_invoke_verb(usr, /datum/admin_verb/combo_hud) //logs/rightscheck inside the proc
+		if("allVerbsPanel")
+			SSadmin_verbs.dynamic_invoke_verb(usr, /datum/admin_verb/admin_verb_panel) //logs/rightscheck inside the proc
 			return
-		//if("allVerbsPanel")
-		//	SSadmin_verbs.dynamic_invoke_verb(usr, /datum/admin_verb/show_all_verbs)  //logs/rightscheck inside the proc
-		//	return
-		//if("openAdditionalPanel") //logs/rightscheck inside the proc
-		//	var/mob/target = selected_mob
-		//	SSadmin_verbs.dynamic_invoke_verb(usr, /datum/admin_verb/vuap_personal, target)
-		//	return
 		if("createCommandReport")
 			SSadmin_verbs.dynamic_invoke_verb(usr, /datum/admin_verb/create_command_report) //logs/rightscheck inside the proc
 			return
-		if("logs")
-			usr.client.holder.Topic(null, list(
-				"individuallog" = REF(selected_mob),
-				"admin_token" = usr.client.holder.href_token
-			))
-			return
-		if("notes") //i'm pretty sure this checks rights inside the proc but to be safe
-			browse_messages(target_ckey = selected_mob.ckey)
-			return
-		if("vv") //logs/rightscheck inside the proc
-			usr.client.debug_variables(selected_mob)
-			return
-		if("tp")
-			usr.client.holder.Topic(null, list(
-				"traitor" = REF(selected_mob),
-				"admin_token" = usr.client.holder.href_token
-			))
-			return
 		if("adminaiinteract") //loggin inside the proc
 			SSadmin_verbs.dynamic_invoke_verb(usr, /datum/admin_verb/toggle_ai_interact)
+			return
 
-/datum/player_panel_veth/ui_interact(mob/user, datum/tgui/ui)
+	var/target_ckey = ckey(params["selectedPlayerCkey"])
+	if(!length(target_ckey))
+		return
+	var/mob/target_mob = get_mob_by_ckey(target_ckey)
+	if(!target_mob)
+		to_chat(usr, span_warning("Could not find a mob for [target_ckey]."), confidential = TRUE)
+		return
 
+	// Player-targeted actions. Most of them go through admin verbs or Topic(), which check rights and log on their own.
+	switch(action)
+		if("sendPrivateMessage")
+			user_client.cmd_admin_pm(target_ckey, null)
+			SSblackbox.record_feedback("tally", "VUAP", 1, "PM")
+			return
+		if("subtleMessage")
+			SSadmin_verbs.dynamic_invoke_verb(usr, /datum/admin_verb/cmd_admin_subtle_message, target_mob)
+			return
+		if("headsetMessage")
+			SSadmin_verbs.dynamic_invoke_verb(usr, /datum/admin_verb/cmd_admin_headset_message, target_mob)
+			return
+		if("narrateTo")
+			SSadmin_verbs.dynamic_invoke_verb(usr, /datum/admin_verb/cmd_admin_direct_narrate, target_mob)
+			return
+		if("follow")
+			user_client.admin_follow(target_mob)
+			to_chat(usr, "Now following [target_ckey].", confidential = TRUE)
+			return
+		if("openViewVariables") //logs/rightscheck inside the proc
+			user_client.debug_variables(target_mob)
+			SSblackbox.record_feedback("tally", "VUAP", 1, "VV")
+			return
+		if("openLanguagePanel")
+			target_mob.get_language_holder().open_language_menu(usr)
+			return
+		if("openTraitorPanel")
+			SSadmin_verbs.dynamic_invoke_verb(usr, /datum/admin_verb/show_traitor_panel, target_mob)
+			return
+		if("openHours")
+			if(target_mob.client)
+				holder.cmd_show_exp_panel(target_mob.client)
+			return
+		if("openLogs")
+			show_individual_logging_panel(target_mob)
+			return
+		if("openNotes")
+			browse_messages(target_ckey = target_ckey, agegate = FALSE)
+			return
+		if("openAdditionalPanel")
+			SSadmin_verbs.dynamic_invoke_verb(usr, /datum/admin_verb/vuap_personal, target_mob)
+			return
+		if("openBorgPanel")
+			if(!iscyborg(target_mob))
+				to_chat(usr, span_warning("[target_ckey] is not a cyborg."), confidential = TRUE)
+				return
+			SSadmin_verbs.dynamic_invoke_verb(usr, /datum/admin_verb/borg_panel, target_mob)
+			return
+		if("initMind")
+			if(target_mob.mind)
+				to_chat(usr, span_warning("[target_ckey] already has a mind."), confidential = TRUE)
+				return
+			target_mob.mind_initialize()
+			return
+		if("revive")
+			holder.Topic(null, list(
+				"revive" = REF(target_mob),
+				"admin_token" = holder.href_token
+			))
+			return
+		if("sendToLobby")
+			holder.Topic(null, list(
+				"sendbacktolobby" = REF(target_mob),
+				"admin_token" = holder.href_token
+			))
+			return
+		if("kick")
+			holder.Topic(null, list(
+				"boot2" = REF(target_mob),
+				"admin_token" = holder.href_token
+			))
+			return
+		if("jail")
+			holder.Topic(null, list(
+				"sendtoprison" = REF(target_mob),
+				"admin_token" = holder.href_token
+			))
+			return
+		if("openBan")
+			if(!check_rights(R_BAN))
+				return
+			holder.ban_panel(target_ckey, target_mob.client?.address, target_mob.client?.computer_id)
+			return
+		if("smite")
+			if(!check_rights(R_ADMIN|R_FUN))
+				return
+			if(!isliving(target_mob))
+				to_chat(usr, span_warning("This can only be used on living mobs."), confidential = TRUE)
+				return
+			SSadmin_verbs.dynamic_invoke_verb(usr, /datum/admin_verb/admin_smite, target_mob)
+			return
+		if("centcomBans")
+			if(!CONFIG_GET(string/centcom_ban_db))
+				return
+			holder.Topic(null, list(
+				"centcomlookup" = target_ckey,
+				"admin_token" = holder.href_token
+			))
+			return
+
+/datum/player_panel/ui_interact(mob/user, datum/tgui/ui)
+	if(ui)
+		// Keep the UI state in sync even when the autoupdate tick is throttled away.
+		ui.process_status()
+		if(ui.status <= UI_CLOSE)
+			ui.close()
+			return
+		// Throttle the autoupdate ticks. Explicit refreshes call push_update() instead of relying on this proc.
+		if(!update_interval || !COOLDOWN_FINISHED(src, update_cooldown))
+		return
 	ui = SStgui.try_update_ui(user, src, ui)
-
 	if(!ui)
-		ui = new(user, src, "VethPlayerPanel")
-		ui.set_autoupdate(FALSE)
+		ui = new(user, src, "PlayerPanel")
+		ui.set_autoupdate(TRUE)
 		ui.open()
+	COOLDOWN_START(src, update_cooldown, max(update_interval, 1) SECONDS)
 
-/datum/player_panel_veth/ui_state(mob/user)
+/datum/player_panel/ui_state(mob/user)
 	return ADMIN_STATE(R_ADMIN)
 
 /client //this is needed to hold the selected player ckey for moving to and from pp/vuap
@@ -155,72 +307,28 @@ ADMIN_VERB_AND_CONTEXT_MENU(vuap_personal, R_ADMIN, "Open TGUI PP", ADMIN_VERB_N
 	var/selectedPlayerCkey = ""
 	///this is used to hold the mob of the selected player in case the ckey can't be found (this enables pp'ing soulless mobs)
 	var/VUAP_selected_mob = null
+	///Reusable  player panel datum, so reopening the verb updates the existing window instead of spawning a new one
+	var/datum/player_panel/player_panel
 
 /datum/vuap_personal
 
-/*possible bugs that might occur:
-- Atm, if you receive an admin ticket off of something that has changed mob before you hit the PP button, you'll get the old soulless mob. There is a
-warning dialogue box with the ckey of the previous holder of this mob, however.
-if you know how to fix the above and are smarter than me please let me know and I'll give you a kiss
-I've tried to make it as a simple as possible to add new buttons, most of it should be a copy and paste job.area
-
-
-
-Some (poor) explanation of what's going on -
-player_panel_veth is the new tgui version of the player panel, it also includes some most pressed verbs
-I've tried to comment in as much stuff as possible so it can be changed in the future is necessary
-Vuap_personal is the new tgui version of the options panel. It basically does everything the same way the player panel does
-minus some features that the player panel didn't have I guess.
-the client/var/selectedPlayerCkey is used to hold the selected player ckey for moving to and from pp/vuap
-If you want to add info the player panel:
-- add the appropriate info into the backend in ui_data. This gotta be formatted correctly or tgui will scream
-- add the data to the frontend in VethPlayerPanel.tsx, adding a row onto the following table:
-<Table.Row header>
-	<Table.Cell>Ckey</Table.Cell>
-	<Table.Cell>Char Name</Table.Cell>
-	<Table.Cell>Also Known As</Table.Cell>
-	<Table.Cell>Job</Table.Cell>
-	<Table.Cell>Antagonist</Table.Cell>
-	<Table.Cell>Last IP</Table.Cell>
-	<Table.Cell>Actions</Table.Cell>
-	</Table.Row>
-	{filteredData.map((player) => (
-	<Table.Row key={player.ckey} className="candystripe">
-		<Table.Cell>{player.ckey}</Table.Cell>
-		<Table.Cell>{player.name}</Table.Cell>
-		<Table.Cell>{player.old_name}</Table.Cell>
-		<Table.Cell>{player.job}</Table.Cell>
-		<Table.Cell>
-		{player.is_antagonist ? (
-			<Box color="red">Yes</Box>
-		) : (
-			<Box color="green">No</Box>
-		)}
-		</Table.Cell>
-		<Table.Cell>{player.last_ip}</Table.Cell>
-Same goes for VUAP_personal.tsx, but you gotta add it to the table in there instead :)
-If you want to add a button to the player panel:
-- add the backend instructions for it in /datum/veth_player_panel/ui_act into the action switch (the frontend and backend action names must match, case sensitive)
-- add the button to the frontend. You can basically copy and paste one of the buttons that's in VethPlayerPanel.tsx and add it to a column.
-
-If you want to add a button to the vuap panel:
-- add the backend instructions for it in /datum/vuap_personal/ui_act into the action switch (the frontend and backend action names must match, case sensitive)
-- add the button to the frontend. You can basically copy and paste one of the buttons that's in VUAP_personal.tsx and add it to a section.
-
-Some explanation of the frontend because it's not known by many people:
-<Button
-	fluid  - this allows the interface to place the button where it makes sense and allows it to move
-	icon="refresh" - this is the icon that is shown next to the text on the button
-	content="Refresh" - this is the text on the button
-	onClick={() => handleAction('refresh')} - this is the action handler for tgui. it sends an associated list to the backend of action = "whatevertheactionis"
-	the ui_act handler on the backend then reads the action for the switch, and chooses the appropriate action.
-/>
-
-love, veth
-
-*/
 /datum/vuap_personal/ui_data(mob/user)
 	var/ckey = user.client?.selectedPlayerCkey
+	var/list/admin_rights_tokens = list()
+	if(check_rights(R_ADMIN))
+		admin_rights_tokens += "admin"
+	if(check_rights(R_BAN))
+		admin_rights_tokens += "ban"
+	if(check_rights(R_FUN))
+		admin_rights_tokens += "fun"
+	if(check_rights(R_SOUND))
+		admin_rights_tokens += "sound"
+	if(check_rights(R_SPAWN))
+		admin_rights_tokens += "spawn"
+	if(check_rights(R_DEBUG))
+		admin_rights_tokens += "debug"
+	if(check_rights(R_SERVER))
+		admin_rights_tokens += "server"
 	var/list/player_data = list(
 		"characterName" = "No Character",
 		"ckey" = ckey || "Unknown",
@@ -231,6 +339,7 @@ love, veth
 		"mobType" = "null",
 		"firstSeen" = "Never",
 		"accountRegistered" = "Unknown",
+		"adminRights" = admin_rights_tokens.Join(" "),
 		"muteStates" = list(
 			"ic" = FALSE,
 			"ooc" = FALSE,
@@ -243,17 +352,17 @@ love, veth
 	if(!length(ckey) || ckey[1] == "@")
 		var/mob/player = usr.client.VUAP_selected_mob
 		player_data["characterName"] = player.name || "No Character"
-		player_data["gameState"] = istype(player) ? "Active" : "Unknown"
+		player_data["gameState"] = get_player_state(player)
 		player_data["mobType"] = "[initial(player.type)]" || "null"
 		return list("Data" = player_data)
 	else
 		var/mob/player = get_mob_by_ckey(ckey)
 		var/client/client_info = player?.client
+		player_data["gameState"] = get_player_state(player)
 		if(player && client_info)
 			player_data["characterName"] = player.real_name || "No Character"
 			player_data["ipAddress"] = client_info.address || "0.0.0.0"
 			player_data["CID"] = client_info.computer_id || "NO_CID"
-			player_data["gameState"] = istype(player) ? "Active" : "Unknown"
 			player_data["byondVersion"] = "[client_info.byond_version || 0].[client_info.byond_build || 0]"
 			player_data["mobType"] = "[initial(player.type)]" || "null"
 			player_data["firstSeen"] = client_info.player_join_date || "Never"
@@ -269,6 +378,17 @@ love, veth
 					"webreq" = !isnull(client_info.prefs.muted) && (client_info.prefs.muted & MUTE_INTERNET_REQUEST),
 				)
 		return list("Data" = player_data)
+
+/datum/vuap_personal/proc/get_player_state(mob/player)
+	if(!istype(player))
+		return "Unknown"
+	if(isnewplayer(player))
+		return "Lobby"
+	if(isobserver(player))
+		return "Ghost"
+	if(!player.client)
+		return "No Client"
+	return (player.stat == DEAD) ? "Dead" : "Alive"
 
 /datum/vuap_personal/ui_interact(mob/user, datum/tgui/ui)
 	ui = SStgui.try_update_ui(user, src, ui)
@@ -370,6 +490,18 @@ love, veth
 					"admin_token" = usr.client.holder.href_token,
 				))
 				return
+		if("centcom_reply")
+			usr.client.holder.Topic(null, list(
+				"CentComReply" = REF(selected_mob),
+				"admin_token" = usr.client.holder.href_token,
+			))
+			return
+		if("syndicate_reply")
+			usr.client.holder.Topic(null, list(
+				"SyndicateReply" = REF(selected_mob),
+				"admin_token" = usr.client.holder.href_token,
+			))
+			return
 		if("narrate")
 			usr.client.holder.Topic(null, list(
 				"narrateto" = REF(selected_mob),
@@ -414,9 +546,9 @@ love, veth
 				"admin_token" = usr.client.holder.href_token,
 			))
 			return
-//		if("cryo")
-//			selected_mob.vv_send_cryo()
-//			return
+//              if("cryo")
+//                      selected_mob.vv_send_cryo()
+//                      return
 		// Info Section
 		if("vv") //checks rights inside the proc
 			usr.client.debug_variables(selected_mob)

@@ -29,6 +29,7 @@
 	ui = SStgui.try_update_ui(user, src, ui)
 	if(!ui)
 		ui = new(user, src, "LogViewer", "Log Viewer")
+		ui.set_autoupdate(FALSE)
 		ui.open()
 
 /datum/log_viewer/ui_state(mob/user)
@@ -46,7 +47,7 @@
 		list("name" = "Comms",    "flag" = INDIVIDUAL_COMMS_LOG,  "color" = "#90a4ae"),
 		list("name" = "OOC",      "flag" = INDIVIDUAL_OOC_LOG,    "color" = "#5b9bd5"),
 		list("name" = "Game",     "flag" = INDIVIDUAL_GAME_LOG,   "color" = "#66bb6a"),
-		list("name" = "Показать все", "flag" = INDIVIDUAL_SHOW_ALL_LOG, "color" = "#aaaaaa"),
+		list("name" = "Show All", "flag" = INDIVIDUAL_SHOW_ALL_LOG, "color" = "#aaaaaa"),
 	)
 	.["source_options"] = list(LOGSRC_CKEY, LOGSRC_MOB)
 
@@ -81,9 +82,11 @@
 
 	if(!log_source)
 		.["logs"] = list()
-		.["log_count"] = 0
-		.["log_count_total"] = 0
 		return
+
+	var/find_lower = filter_text ? LOWER_TEXT(filter_text) : null
+	var/target_lower = target_filter ? LOWER_TEXT(target_filter) : null
+	var/zone_lower = zone_filter ? LOWER_TEXT(zone_filter) : null
 
 	var/list/log_entries = list()
 	for(var/log_type_key in log_source)
@@ -98,38 +101,29 @@
 		for(var/list/entry_assoc in entries)
 			if(!islist(entry_assoc))
 				continue
-			var/list/entry_copy = entry_assoc.Copy()
-			if(filter_text && filter_text != "" && entry_copy["time"])
-				var/find_lower = LOWER_TEXT(filter_text)
-				var/what_text = strip_html(entry_copy["what"])
-				var/who_text = entry_copy["who"] ? entry_copy["who"] : ""
-				var/where_text = entry_copy["where"] ? entry_copy["where"] : ""
+			if(find_lower)
+				var/what_text = strip_html(entry_assoc["what"])
+				var/who_text = entry_assoc["who"] ? entry_assoc["who"] : ""
+				var/where_text = entry_assoc["where"] ? entry_assoc["where"] : ""
 				var/found = findtext(LOWER_TEXT(what_text), find_lower) || findtext(LOWER_TEXT(who_text), find_lower) || findtext(LOWER_TEXT(where_text), find_lower)
 				if(!found)
 					continue
-			if(target_filter && target_filter != "")
-				var/target_lower = LOWER_TEXT(target_filter)
-				var/entry_who = entry_copy["who"] ? entry_copy["who"] : ""
-				var/entry_target_name = entry_copy["target_name"] ? entry_copy["target_name"] : ""
-				var/entry_target_key = entry_copy["target_key"] ? entry_copy["target_key"] : ""
+			if(target_lower)
+				var/entry_who = entry_assoc["who"] ? entry_assoc["who"] : ""
+				var/entry_target_name = entry_assoc["target_name"] ? entry_assoc["target_name"] : ""
+				var/entry_target_key = entry_assoc["target_key"] ? entry_assoc["target_key"] : ""
 				if(!findtext(LOWER_TEXT(entry_who), target_lower) && !findtext(LOWER_TEXT(entry_target_name), target_lower) && !findtext(LOWER_TEXT(entry_target_key), target_lower))
 					continue
-			if(zone_filter && zone_filter != "")
-				var/zone_lower = LOWER_TEXT(zone_filter)
-				var/entry_where = entry_copy["where"] ? entry_copy["where"] : ""
+			if(zone_lower)
+				var/entry_where = entry_assoc["where"] ? entry_assoc["where"] : ""
 				var/paren_pos = findtext(entry_where, " (")
 				if(paren_pos)
 					entry_where = copytext(entry_where, 1, paren_pos)
 				if(!findtext(LOWER_TEXT(entry_where), zone_lower))
 					continue
-			log_entries += list(entry_copy)
+			log_entries += list(entry_assoc)
 
-	log_entries = sort_list(log_entries, GLOBAL_PROC_REF(cmp_log_entry_time))
-
-	var/log_total = length(log_entries)
-	.["logs"] = log_entries.Copy()
-	.["log_count"] = log_total
-	.["log_count_total"] = log_total
+	.["logs"] = log_entries
 
 /datum/log_viewer/ui_act(action, params, datum/tgui/ui)
 	if(..())
@@ -137,16 +131,13 @@
 
 	switch(action)
 		if("select_ckey")
-			var/ckey = params["ckey"]
-			if(ckey)
-				target_ckey_stored = ckey
-				var/datum/persistent_client/PC = GLOB.persistent_clients_by_ckey[ckey]
-				if(PC)
-					target_pc = PC
-					target_mob = PC.mob
-				else
-					target_pc = null
-					target_mob = null
+			var/selected_ckey = params["ckey"]
+			var/datum/persistent_client/PC = selected_ckey ? GLOB.persistent_clients_by_ckey[selected_ckey] : null
+			if(!PC)
+				return FALSE
+			target_ckey_stored = selected_ckey
+			target_pc = PC
+			target_mob = PC.mob
 			return TRUE
 
 		if("set_source")
@@ -173,7 +164,6 @@
 			return TRUE
 
 		if("refresh")
-			cached_ckeys = null
 			return TRUE
 
 		if("open_pp")
@@ -194,10 +184,6 @@
 	cached_ckeys = ckeys
 	last_ckey_cache = world.time
 	return ckeys
-
-/// Sort comparator: ascending by world.time of the entry.
-/proc/cmp_log_entry_time(list/a, list/b)
-	return a["timestamp"] - b["timestamp"]
 
 ADMIN_VERB(open_log_viewer, R_ADMIN, "A: Open Log Viewer", "Open the individual log viewer (per-player structured logs).", ADMIN_CATEGORY_GAME)
 	var/datum/log_viewer/LV = new()

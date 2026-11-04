@@ -83,16 +83,9 @@
 	)
 
 	logging[smessage_type] += list(entry)
-	trim_individual_log(logging[smessage_type])
 
 	if(HAS_CONNECTED_PLAYER(src))
 		persistent_client.logging[smessage_type] += list(entry)
-		trim_individual_log(persistent_client.logging[smessage_type])
 
 	..(message, message_type, color, log_globally, data)
-
-/mob/proc/trim_individual_log(list/entries)
-	if(length(entries) <= MOB_INDIVIDUAL_LOG_MAX)
-		return
-	entries.Cut(1, round(MOB_INDIVIDUAL_LOG_MAX / 4) + 1)
 // [HORIZON-EDIT] ADMIN-TICKETS

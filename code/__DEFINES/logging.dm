@@ -64,8 +64,6 @@
 #define LOGSRC_CKEY "Ckey"
 #define LOGSRC_MOB "Mob"
 
-#define MOB_INDIVIDUAL_LOG_MAX 200 // [HORIZON-ADD]
-
 // Log header keys
 #define LOG_HEADER_CATEGORY "cat"
 #define LOG_HEADER_CATEGORY_LIST "cat-list"

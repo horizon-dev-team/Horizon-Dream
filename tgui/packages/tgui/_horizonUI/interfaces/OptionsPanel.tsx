@@ -806,48 +806,72 @@ const TransformPage = ({
   playerData,
   onAction,
   isButtonAllowed,
+  hasCkey,
 }: PageProps) => {
   return (
     <>
       <Section title="Transformation">
         <Stack>
           <Stack.Item grow>
-            <Button
-              fluid
+            <GatedButton
               icon="ghost"
               content="MAKE GHOST"
-              color={isMobType(playerData.mobType, 'ghost') ? 'good' : ''}
-              onClick={() => onAction('makeghost')}
+              action="makeghost"
+              onAction={onAction}
+              isButtonAllowed={isButtonAllowed}
+              hasCkey={hasCkey}
+              requiredRight="spawn"
+              color={
+                isMobType(playerData.mobType, 'ghost') ? 'good' : undefined
+              }
             />
-            <Button
-              fluid
+            <GatedButton
               icon="user"
               content="MAKE HUMAN"
-              color={isMobType(playerData.mobType, 'human') ? 'good' : ''}
-              onClick={() => onAction('makehuman')}
+              action="makehuman"
+              onAction={onAction}
+              isButtonAllowed={isButtonAllowed}
+              hasCkey={hasCkey}
+              requiredRight="spawn"
+              color={
+                isMobType(playerData.mobType, 'human') ? 'good' : undefined
+              }
             />
-            <Button
-              fluid
+            <GatedButton
               icon="paw"
               content="MAKE MONKEY"
-              color={isMobType(playerData.mobType, 'monkey') ? 'good' : ''}
-              onClick={() => onAction('makemonkey')}
+              action="makemonkey"
+              onAction={onAction}
+              isButtonAllowed={isButtonAllowed}
+              hasCkey={hasCkey}
+              requiredRight="spawn"
+              color={
+                isMobType(playerData.mobType, 'monkey') ? 'good' : undefined
+              }
             />
           </Stack.Item>
           <Stack.Item grow>
-            <Button
-              fluid
+            <GatedButton
               icon="robot"
               content="MAKE CYBORG"
-              color={isMobType(playerData.mobType, 'cyborg') ? 'good' : ''}
-              onClick={() => onAction('makeborg')}
+              action="makeborg"
+              onAction={onAction}
+              isButtonAllowed={isButtonAllowed}
+              hasCkey={hasCkey}
+              requiredRight="spawn"
+              color={
+                isMobType(playerData.mobType, 'cyborg') ? 'good' : undefined
+              }
             />
-            <Button
-              fluid
+            <GatedButton
               icon="microchip"
               content="MAKE AI"
-              color={isMobType(playerData.mobType, 'ai') ? 'good' : ''}
-              onClick={() => onAction('makeai')}
+              action="makeai"
+              onAction={onAction}
+              isButtonAllowed={isButtonAllowed}
+              hasCkey={hasCkey}
+              requiredRight="spawn"
+              color={isMobType(playerData.mobType, 'ai') ? 'good' : undefined}
             />
           </Stack.Item>
         </Stack>
@@ -856,23 +880,27 @@ const TransformPage = ({
       <Section title="Health">
         <Stack>
           <Stack.Item grow>
-            <Button
-              fluid
+            <GatedButton
               icon="heart"
               content="HEALTHSCAN"
-              onClick={() => onAction('healthscan')}
+              action="healthscan"
+              onAction={onAction}
+              isButtonAllowed={isButtonAllowed}
+              hasCkey={hasCkey}
             />
-            <Button
-              fluid
+            <GatedButton
               content="CHEMSCAN"
-              onClick={() => onAction('chemscan')}
+              action="chemscan"
+              onAction={onAction}
+              isButtonAllowed={isButtonAllowed}
+              hasCkey={hasCkey}
             />
             <GatedButton
               content="CURE ALL BAD DISEASES"
               action="cureAllDiseases"
               onAction={onAction}
               isButtonAllowed={isButtonAllowed}
-              hasCkey={() => true}
+              hasCkey={hasCkey}
               requiredRight="admin"
             />
           </Stack.Item>
@@ -883,7 +911,7 @@ const TransformPage = ({
               action="aheal"
               onAction={onAction}
               isButtonAllowed={isButtonAllowed}
-              hasCkey={() => true}
+              hasCkey={hasCkey}
               requiredRight="admin"
             />
             <GatedButton
@@ -891,7 +919,7 @@ const TransformPage = ({
               action="modifytraits"
               onAction={onAction}
               isButtonAllowed={isButtonAllowed}
-              hasCkey={() => true}
+              hasCkey={hasCkey}
               requiredRight="admin"
             />
             <GatedButton
@@ -899,7 +927,7 @@ const TransformPage = ({
               action="giveDisease"
               onAction={onAction}
               isButtonAllowed={isButtonAllowed}
-              hasCkey={() => true}
+              hasCkey={hasCkey}
               requiredRight="admin"
             />
           </Stack.Item>

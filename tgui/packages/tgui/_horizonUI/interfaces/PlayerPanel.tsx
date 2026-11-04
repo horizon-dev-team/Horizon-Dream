@@ -194,13 +194,15 @@ const PlayerRowActions = (props: {
         tooltip="Follow"
         onClick={() => act('follow')}
       />
-      <Button
-        compact
-        icon="bolt"
-        color="red"
-        tooltip="Smite"
-        onClick={() => act('smite')}
-      />
+      {!!rights.fun && (
+        <Button
+          compact
+          icon="bolt"
+          color="red"
+          tooltip="Smite"
+          onClick={() => act('smite')}
+        />
+      )}
       {!!player.has_mind && (
         <Button
           compact
@@ -302,9 +304,7 @@ const PlayerRow = (props: {
 
 const PlayerDetails = (props: {
   player: PlayerData;
-  rights: PlayerRights;
   data: BackendData;
-  onAction: (action: string, ckey?: string) => void;
   onOpenOptions: () => void;
   onDeselect: () => void;
 }) => {
@@ -674,9 +674,7 @@ export const PlayerPanel = () => {
               <Section fill>
                 <PlayerDetails
                   player={selectedPlayer}
-                  rights={rights}
                   data={data}
-                  onAction={handleAction}
                   onOpenOptions={() =>
                     handleAction('openAdditionalPanel', selectedPlayer.ckey)
                   }

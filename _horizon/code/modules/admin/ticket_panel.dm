@@ -26,7 +26,6 @@
 
 	return info
 
-/// [HORIZON-ADD] ADMIN-TICKETS
 /// Resolves the mob of the player the given ticket belongs to, based on the selected tab.
 /datum/ticket_panel/proc/get_ticket_player(ticket_id)
 	switch(selected_tab)
@@ -55,7 +54,6 @@
 
 /proc/defer_ticket_panel_update()
 	addtimer(CALLBACK(GLOBAL_PROC, GLOBAL_PROC_REF(broadcast_ticket_panels)), 1, TIMER_UNIQUE)
-// [/HORIZON-ADD]
 
 /datum/ticket_panel/proc/format_adminhelp_ticket(datum/admin_help/AH, client/viewer = null)
 	var/status = AH.state == AHELP_ACTIVE ? "open" : AH.state == AHELP_RESOLVED ? "resolved" : "closed"
@@ -92,9 +90,7 @@
 		viewer = usr.client
 
 	var/status = MH.open ? (MH.mentor ? "claimed" : "open") : "closed"
-
 	var/list/player_info = get_player_info(MH.author)
-
 	var/ic_name = (player_info ? player_info["ic_name"] : null) || MH.get_author_ic_name()
 	var/faction = (player_info ? player_info["faction"] : null)
 	var/role = (player_info ? player_info["role"] : null) || MH.get_author_role()
@@ -357,7 +353,6 @@
 					return FALSE
 
 				MH.reopen()
-
 				return TRUE
 
 		if("close_ticket")
@@ -440,8 +435,7 @@
 			if(!ticket_id)
 				return
 
-			// Chat composer sends the text inline; the modal stays as a
-			// fallback for callers that don't pass a message.
+			// Chat composer sends the text inline; the modal stays as a fallback for callers that don't pass a message.
 			var/message = params["message"]
 			if(!istext(message))
 				message = tgui_input_text(current_mob, "Enter your response:", "Reply to Ticket", multiline = TRUE)
@@ -507,7 +501,6 @@
 				to_chat(current_mob, span_warning("Unable to find mob."), confidential = TRUE)
 				return FALSE
 
-			// Use the existing notes/messages system via topic href
 			usr << browse("byond://?_src_=holder;[HrefToken()];showmessageckey=[AH.initiator.ckey]", "window=notes_[AH.initiator.ckey];size=1000x600")
 			return TRUE
 
@@ -536,15 +529,11 @@
 				to_chat(current_mob, span_warning("Unable to find player to ban."), confidential = TRUE)
 				return FALSE
 
-			// Use the existing ban panel system
 			current_client.holder.ban_panel(player_key = banned_mob.ckey, player_ip = banned_mob.client?.address, player_cid = banned_mob.client?.computer_id, role = "Server", duration = BAN_PANEL_PERMANENT)
 
 			return TRUE
 
 /datum/ticket_panel/ui_interact(mob/user, datum/tgui/ui)
-	// No throttle: every SStgui autoupdate tick (~1s) rebuilds ui_data and pushes
-	// it, and ticket events (new message, state change) push immediately through
-	// defer_ticket_panel_update() without waiting for the next tick.
 	ui = SStgui.try_update_ui(user, src, ui)
 	if (!ui)
 		ui = new(user, src, "TicketPanel", "Ticket Panel")

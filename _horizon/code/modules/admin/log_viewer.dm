@@ -100,27 +100,27 @@
 				continue
 			var/list/entry_copy = entry_assoc.Copy()
 			if(filter_text && filter_text != "" && entry_copy["time"])
-				var/find_lower = lowertext(filter_text)
+				var/find_lower = LOWER_TEXT(filter_text)
 				var/what_text = strip_html(entry_copy["what"])
 				var/who_text = entry_copy["who"] ? entry_copy["who"] : ""
 				var/where_text = entry_copy["where"] ? entry_copy["where"] : ""
-				var/found = findtext(lowertext(what_text), find_lower) || findtext(lowertext(who_text), find_lower) || findtext(lowertext(where_text), find_lower)
+				var/found = findtext(LOWER_TEXT(what_text), find_lower) || findtext(LOWER_TEXT(who_text), find_lower) || findtext(LOWER_TEXT(where_text), find_lower)
 				if(!found)
 					continue
 			if(target_filter && target_filter != "")
-				var/target_lower = lowertext(target_filter)
+				var/target_lower = LOWER_TEXT(target_filter)
 				var/entry_who = entry_copy["who"] ? entry_copy["who"] : ""
 				var/entry_target_name = entry_copy["target_name"] ? entry_copy["target_name"] : ""
 				var/entry_target_key = entry_copy["target_key"] ? entry_copy["target_key"] : ""
-				if(!findtext(lowertext(entry_who), target_lower) && !findtext(lowertext(entry_target_name), target_lower) && !findtext(lowertext(entry_target_key), target_lower))
+				if(!findtext(LOWER_TEXT(entry_who), target_lower) && !findtext(LOWER_TEXT(entry_target_name), target_lower) && !findtext(LOWER_TEXT(entry_target_key), target_lower))
 					continue
 			if(zone_filter && zone_filter != "")
-				var/zone_lower = lowertext(zone_filter)
+				var/zone_lower = LOWER_TEXT(zone_filter)
 				var/entry_where = entry_copy["where"] ? entry_copy["where"] : ""
 				var/paren_pos = findtext(entry_where, " (")
 				if(paren_pos)
 					entry_where = copytext(entry_where, 1, paren_pos)
-				if(!findtext(lowertext(entry_where), zone_lower))
+				if(!findtext(LOWER_TEXT(entry_where), zone_lower))
 					continue
 			log_entries += list(entry_copy)
 

@@ -297,7 +297,7 @@
 				to_chat(current_mob, span_warning("Could not find player associated with this ticket."), confidential = TRUE)
 				return FALSE
 
-			SSadmin_verbs.dynamic_invoke_verb(current_client, /datum/admin_verb/vuap_personal, player)
+			SSadmin_verbs.dynamic_invoke_verb(current_client, /datum/admin_verb/options_panel, player)
 			return TRUE
 
 		if("open_logs")

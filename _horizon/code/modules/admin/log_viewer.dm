@@ -178,7 +178,7 @@
 
 		if("open_pp")
 			if(target_mob)
-				SSadmin_verbs.dynamic_invoke_verb(usr, /datum/admin_verb/vuap_personal, target_mob)
+				SSadmin_verbs.dynamic_invoke_verb(usr, /datum/admin_verb/options_panel, target_mob)
 			return TRUE
 
 /// Build the ckey dropdown. Cached for 5 seconds (50 ticks) so opening

@@ -224,7 +224,7 @@ const PlayerRowActions = (props: {
       <Button
         compact
         icon="external-link"
-        tooltip="Advanced player options (PP)"
+        tooltip="Player Options Panel"
         onClick={() => act('openAdditionalPanel')}
       />
 
@@ -440,7 +440,7 @@ const PlayerDetailsHeader = (props: {
           <Button
             icon="external-link"
             content="Options Panel"
-            tooltip="Open advanced player options (VUAP)"
+            tooltip="Open player options panel"
             onClick={onOpenOptions}
           />
           <Button icon="times" content="Deselect" ml={1} onClick={onDeselect} />

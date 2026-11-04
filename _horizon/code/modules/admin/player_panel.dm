@@ -16,7 +16,7 @@ ADMIN_VERB(player_panel, R_ADMIN, "Player Panel", "Updated Player Panel with TGU
 	message_admins("[key_name_admin(user)] has opened VUAP!")
 	BLACKBOX_LOG_ADMIN_VERB("VUAP")
 
-ADMIN_VERB_AND_CONTEXT_MENU(vuap_personal, R_ADMIN, "Open TGUI PP", ADMIN_VERB_NO_DESCRIPTION, ADMIN_CATEGORY_HIDDEN, /mob)
+ADMIN_VERB_AND_CONTEXT_MENU(options_panel, R_ADMIN, "Open Options Panel", ADMIN_VERB_NO_DESCRIPTION, ADMIN_CATEGORY_HIDDEN, /mob)
 	VERB_ARG_TYPED(target, VERB_ARG_TYPE_MOB, VERB_ARG_SOURCE_WORLD, /mob)
 	if(!target)
 		to_chat(user, span_warning("Could not find desired target mob!"), type = MESSAGE_TYPE_ADMINLOG, confidential = TRUE)
@@ -27,15 +27,15 @@ ADMIN_VERB_AND_CONTEXT_MENU(vuap_personal, R_ADMIN, "Open TGUI PP", ADMIN_VERB_N
 		var/player_mind_ckey = ckey(player_mind?.key)
 		user.selectedPlayerCkey = player_mind_ckey
 		user.VUAP_selected_mob = target
-		var/datum/vuap_personal/tgui = new(user.mob)
+		var/datum/options_panel/tgui = new(user.mob)
 		tgui.ui_interact(user.mob)
 		tgui_alert(user, "WARNING! This mob has no associated Mind! Most actions will not work. Last ckey to control this mob is [player_mind_ckey].", "No Mind!")
 	else
 		user.selectedPlayerCkey = target.ckey
 		user.VUAP_selected_mob = target
-		var/datum/vuap_personal/tgui = new(user.mob)
+		var/datum/options_panel/tgui = new(user.mob)
 		tgui.ui_interact(user.mob)
-	BLACKBOX_LOG_ADMIN_VERB("VUAP_personal")
+	BLACKBOX_LOG_ADMIN_VERB("OptionsPanel")
 
 /datum/player_panel/proc/player_matches_search(list/player_data)
 	var/search_data = "[player_data["name"]] [player_data["real_name"]] [player_data["ckey"]] [player_data["job"]] [player_data["old_name"]]"
@@ -231,7 +231,7 @@ ADMIN_VERB_AND_CONTEXT_MENU(vuap_personal, R_ADMIN, "Open TGUI PP", ADMIN_VERB_N
 			browse_messages(target_ckey = target_ckey, agegate = FALSE)
 			return
 		if("openAdditionalPanel")
-			SSadmin_verbs.dynamic_invoke_verb(usr, /datum/admin_verb/vuap_personal, target_mob)
+			SSadmin_verbs.dynamic_invoke_verb(usr, /datum/admin_verb/options_panel, target_mob)
 			return
 		if("openBorgPanel")
 			if(!iscyborg(target_mob))
@@ -319,9 +319,9 @@ ADMIN_VERB_AND_CONTEXT_MENU(vuap_personal, R_ADMIN, "Open TGUI PP", ADMIN_VERB_N
 	///Reusable  player panel datum, so reopening the verb updates the existing window instead of spawning a new one
 	var/datum/player_panel/player_panel
 
-/datum/vuap_personal
+/datum/options_panel
 
-/datum/vuap_personal/ui_data(mob/user)
+/datum/options_panel/ui_data(mob/user)
 	var/ckey = user.client?.selectedPlayerCkey
 	var/list/admin_rights_tokens = list()
 	if(check_rights(R_ADMIN))
@@ -388,7 +388,7 @@ ADMIN_VERB_AND_CONTEXT_MENU(vuap_personal, R_ADMIN, "Open TGUI PP", ADMIN_VERB_N
 				)
 		return list("Data" = player_data)
 
-/datum/vuap_personal/proc/get_player_state(mob/player)
+/datum/options_panel/proc/get_player_state(mob/player)
 	if(!istype(player))
 		return "Unknown"
 	if(isnewplayer(player))
@@ -399,14 +399,14 @@ ADMIN_VERB_AND_CONTEXT_MENU(vuap_personal, R_ADMIN, "Open TGUI PP", ADMIN_VERB_N
 		return "No Client"
 	return (player.stat == DEAD) ? "Dead" : "Alive"
 
-/datum/vuap_personal/ui_interact(mob/user, datum/tgui/ui)
+/datum/options_panel/ui_interact(mob/user, datum/tgui/ui)
 	ui = SStgui.try_update_ui(user, src, ui)
 	if(!ui)
-		ui = new(user, src, "VUAP_personal")
+		ui = new(user, src, "OptionsPanel")
 		ui.set_autoupdate(FALSE)
 		ui.open()
 
-/datum/vuap_personal/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
+/datum/options_panel/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
 	if(..())
 		return
 	if(!check_rights(R_ADMIN))
@@ -752,5 +752,5 @@ ADMIN_VERB_AND_CONTEXT_MENU(vuap_personal, R_ADMIN, "Open TGUI PP", ADMIN_VERB_N
 			ui.send_update()
 			return
 
-/datum/vuap_personal/ui_state(mob/user)
+/datum/options_panel/ui_state(mob/user)
 	return ADMIN_STATE(R_ADMIN)

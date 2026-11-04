@@ -138,7 +138,7 @@ type PageProps = {
 };
 
 // Main component
-export const VUAP_personal = (_props: unknown) => {
+export const OptionsPanel = (_props: unknown) => {
   const { data, act } = useBackend<BackendData>();
   const [pageIndex, setPageIndex] = useState(0);
 
@@ -981,4 +981,4 @@ const FunPage = ({
   );
 };
 
-export default VUAP_personal;
+export default OptionsPanel;

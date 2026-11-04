@@ -1102,22 +1102,6 @@ h2.alert {
   font-weight: bold;
 }
 
-.mentorhelp {
-  color: hsl(270, 50%, 65%);
-  font-weight: bold;
-}
-
-.mentor {
-  color: hsl(270, 50%, 65%);
-  font-weight: bold;
-}
-
-.mentornotice {
-  color: hsl(270, 50%, 65%);
-  font-weight: bold;
-  font-style: italic;
-}
-
 .unconscious {
   color: hsl(213.6, 37.9%, 74.1%);
   font-weight: bold;
@@ -1942,5 +1926,21 @@ $border-width-px: $border-width * 1px;
   font-family: trebuchet-ms;
   font-weight: bold;
   font-size: 125%;
+}
+
+.mentorhelp {
+  color: hsl(270, 50%, 65%);
+  font-weight: bold;
+}
+
+.mentor {
+  color: hsl(270, 50%, 65%);
+  font-weight: bold;
+}
+
+.mentornotice {
+  color: hsl(270, 50%, 65%);
+  font-weight: bold;
+  font-style: italic;
 }
 // [/HORIZON-ADD]

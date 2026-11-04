@@ -210,6 +210,7 @@
 	if(length(receive))
 		SSblackbox.LogBroadcast(frequency)
 
+	// [HORIZON-ADD] ADMIN-TICKETS
 	var/spans_part = ""
 	if(length(spans))
 		var/list/named_spans = list()
@@ -218,6 +219,7 @@
 				named_spans += span
 		if(length(named_spans))
 			spans_part = "(spans: [named_spans.Join(" ")]) "
+	// [/HORIZON-ADD]
 
 	var/lang_name = data["language"]
 	var/log_text = "\[[get_radio_name(frequency)]\] [spans_part]\"[message]\" (language: [lang_name])"

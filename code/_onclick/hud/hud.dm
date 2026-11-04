@@ -7,22 +7,25 @@
 // [HORIZON-EDIT] WIDE_HUD
 // The default UI style is the first one in the list
 GLOBAL_LIST_INIT(available_ui_styles, list(
-	"Atomic" = '_horizon/icons/ui/themed/screen_atomic.dmi',
-	"Expanse" = '_horizon/icons/ui/themed/screen_expanse.dmi',
-	"Belter" = '_horizon/icons/ui/themed/screen_belter.dmi',
+    "Atomic" = '_horizon/icons/ui/themed/screen_atomic.dmi',
+    "Expanse" = '_horizon/icons/ui/themed/screen_expanse.dmi',
+    "Belter" = '_horizon/icons/ui/themed/screen_belter.dmi',
+    "Sunset" = '_horizon/icons/ui/themed/screen_reddawn.dmi',
 ))
 
 // Mapping of UI styles to their corresponding 48x32 wide HUD icons (hands, back, belt, suit storage)
 GLOBAL_LIST_INIT(available_wide_icons, list(
-	"Atomic" = '_horizon/icons/ui/themed/screen_wide_atomic.dmi',
-	"Expanse" = '_horizon/icons/ui/themed/screen_wide_expanse.dmi',
-	"Belter" = '_horizon/icons/ui/themed/screen_wide_belter.dmi',
+    "Atomic" = '_horizon/icons/ui/themed/screen_wide_atomic.dmi',
+    "Expanse" = '_horizon/icons/ui/themed/screen_wide_expanse.dmi',
+    "Belter" = '_horizon/icons/ui/themed/screen_wide_belter.dmi',
+    "Sunset" = '_horizon/icons/ui/themed/screen_wide_reddawn.dmi',
 ))
 
 GLOBAL_LIST_INIT(available_progbar_icons, list(
-	"Atomic" = '_horizon/icons/ui/themed/progessbar_atomic.dmi',
-	"Expanse" = '_horizon/icons/ui/themed/progessbar_expanse.dmi',
-	"Belter" = '_horizon/icons/ui/themed/progessbar_belter.dmi',
+    "Atomic" = '_horizon/icons/ui/themed/progessbar_atomic.dmi',
+    "Expanse" = '_horizon/icons/ui/themed/progessbar_expanse.dmi',
+    "Belter" = '_horizon/icons/ui/themed/progessbar_belter.dmi',
+    "Sunset" = '_horizon/icons/ui/themed/progessbar_reddawn.dmi',
 ))
 
 /proc/ui_style2icon(ui_style)

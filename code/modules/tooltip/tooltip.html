@@ -78,6 +78,9 @@
 
       .belter .wrap {border-color: #373f4b;}
       .belter .content {color: #59cf93; border-color: #707a79; background-color: #1e1d21;}
+
+      .sunset .wrap {border-color: #2b1d22;}
+      .sunset .content {color: #e73a3a; border-color: #4a4045; background-color: #1a1618;}
     </style>
   </head>
   <body>
@@ -95,15 +98,15 @@
         text: "",
         theme: "",
         padding: 2,
-        init: function (tileSize, control) {
+        init: (tileSize, control) => {
           tooltip.tileSize = parseInt(tileSize);
           tooltip.control = control;
         },
-        hide: function () {
+        hide: () => {
           window.location =
             "byond://winset?id=" + tooltip.control + ";is-visible=false";
         },
-        updateCallback: function (map) {
+        updateCallback: (map) => {
           if (typeof map === "undefined" || !map) {
             return false;
           }
@@ -279,11 +282,11 @@
             posY +
             ";is-visible=true";
 
-          $content.on("mouseover", function () {
+          $content.on("mouseover", () => {
             tooltip.hide();
           });
         },
-        update: function (params, client_vw, clien_vh, text, theme, special) {
+        update: (params, client_vw, clien_vh, text, theme, special) => {
           //Assign our global object
           tooltip.params = $.parseJSON(params);
           tooltip.client_view_w = parseInt(client_vw);

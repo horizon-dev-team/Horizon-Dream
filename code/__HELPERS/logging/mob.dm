@@ -11,7 +11,7 @@
 
 
 /// Logs a message in a mob's individual log, and in the global logs as well if log_globally is true. target — optional atom stored for LogViewer filtering.
-/mob/log_message(message, message_type, color = null, log_globally = TRUE, list/data, atom/target = null)
+/mob/log_message(message, message_type, color = null, log_globally = TRUE, list/data, atom/target = null) // [HORIZON-EDIT] ADMIN-TICKETS
 	if(!LAZYLEN(message))
 		stack_trace("Empty message")
 		return
@@ -26,6 +26,7 @@
 	if(!islist(logging[smessage_type]))
 		logging[smessage_type] = list()
 
+	// [HORIZON-ADD] ADMIN-TICKETS
 	var/log_time = server_timestamp("hh:mm:ss")
 	var/log_who = key_name_and_tag(src)
 	var/log_where = loc_name(src)
@@ -41,6 +42,7 @@
 			log_state = "critical"
 		if(DEAD)
 			log_state = "dead"
+	// [/HORIZON-ADD]
 
 	var/colored_message = message
 	if(color)
@@ -62,6 +64,7 @@
 		if(LOG_RADIO_EMOTE)
 			colored_message = "(RADIOEMOTE) [colored_message]"
 
+// [HORIZON-EDIT] ADMIN-TICKETS
 	var/list/entry = list(
 		"time" = log_time,
 		"timestamp" = world.time,
@@ -92,3 +95,4 @@
 	if(length(entries) <= MOB_INDIVIDUAL_LOG_MAX)
 		return
 	entries.Cut(1, round(MOB_INDIVIDUAL_LOG_MAX / 4) + 1)
+// [HORIZON-EDIT] ADMIN-TICKETS

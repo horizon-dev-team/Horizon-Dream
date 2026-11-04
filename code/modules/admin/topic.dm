@@ -916,7 +916,7 @@
 			to_chat(usr, "This can only be used on instances of type /mob.", confidential = TRUE)
 			return
 
-		var/datum/log_viewer/LV = new(M, href_list["log_src"])
+		var/datum/log_viewer/LV = new(M, href_list["log_src"]) // [HORIZON-EDIT] ADMIN-TICKETS
 		LV.ui_interact(usr)
 
 	else if(href_list["languagemenu"])

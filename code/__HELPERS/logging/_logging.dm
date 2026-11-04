@@ -1,4 +1,4 @@
-// [HORIZON-ADD]
+// [HORIZON-EDIT] ADMIN-TICKETS
 /proc/log_type_to_name(message_type)
 	switch(message_type)
 		if(LOG_ATTACK)
@@ -149,7 +149,7 @@ GLOBAL_LIST_INIT(testing_global_profiler, list("_PROFILE_NAME" = "Global"))
  * * data - additional structured data for the logger
  * * target - optional atom the action was aimed at, stored for LogViewer filtering
  */
-/atom/proc/log_message(message, message_type, color = null, log_globally = TRUE, list/data, atom/target = null)
+/atom/proc/log_message(message, message_type, color = null, log_globally = TRUE, list/data, atom/target = null) // [HORIZON-EDIT] ADMIN-TICKETS
 	if(!log_globally)
 		return
 

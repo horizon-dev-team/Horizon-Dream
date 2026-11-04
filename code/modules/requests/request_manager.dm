@@ -205,7 +205,7 @@ GLOBAL_DATUM_INIT(requests, /datum/request_manager, new)
 			if(!ismob(M))
 				to_chat(usr, "This can only be used on instances of type /mob.", confidential = TRUE)
 				return TRUE
-			var/datum/log_viewer/LV = new(M)
+			var/datum/log_viewer/LV = new(M) // [HORIZON-EDIT] ADMIN-TICKETS
 			LV.ui_interact(usr)
 			return TRUE
 

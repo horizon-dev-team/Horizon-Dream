@@ -2,10 +2,11 @@
 	if(!M || !ismob(M))
 		return
 
+// [HORIZON-EDIT] ADMIN-TICKETS
 	var/datum/log_viewer/LV = new(M)
 	if(source)
 		LV.source_type = source
 	if(type)
 		LV.viewing_type = text2num(type)
 	LV.ui_interact(usr)
-
+// [/HORIZON-EDIT]

@@ -117,14 +117,14 @@ GLOBAL_DATUM_INIT(ahelp_tickets, /datum/admin_help_tickets, new)
 	C.current_ticket = CKey2ActiveTicket(C.ckey)
 	if(C.current_ticket)
 		C.current_ticket.initiator = C
-		C.current_ticket.AddInteraction("Client reconnected.", message_type = "system")
+		C.current_ticket.AddInteraction("Client reconnected.", message_type = "system") // [HORIZON-EDIT] ADMIN-TICKETS
 		SSblackbox.LogAhelp(C.current_ticket.id, "Reconnected", "Client reconnected", C.ckey)
 
 //Dissasociate ticket
 /datum/admin_help_tickets/proc/ClientLogout(client/C)
 	if(C.current_ticket)
 		var/datum/admin_help/T = C.current_ticket
-		T.AddInteraction("Client disconnected.", message_type = "system")
+		T.AddInteraction("Client disconnected.", message_type = "system") // [HORIZON-EDIT] ADMIN-TICKETS
 		//Gotta async this cause clients only logout on destroy, and sleeping in destroy is disgusting
 		INVOKE_ASYNC(SSblackbox, TYPE_PROC_REF(/datum/controller/subsystem/blackbox, LogAhelp), T.id, "Disconnected", "Client disconnected", C.ckey)
 		T.initiator = null
@@ -147,6 +147,7 @@ GLOBAL_DATUM_INIT(ahelp_tickets, /datum/admin_help_tickets, new)
 	. = ..()
 	current_state = state
 
+// [HORIZON-EDIT] ADMIN-TICKETS
 /obj/effect/statclick/ticket_list/Click()
 	if (!check_rights_for(usr.client, R_ADMIN))
 		message_admins("[key_name_admin(usr)] non-holder clicked on a ticket list statclick! ([src])")
@@ -157,7 +158,9 @@ GLOBAL_DATUM_INIT(ahelp_tickets, /datum/admin_help_tickets, new)
 	if(usr.client.holder)
 		SSadmin_verbs.dynamic_invoke_verb(usr, /datum/admin_verb/ticket_panel)
 		to_chat(usr, span_notice("Accessing Ticket Panel... (Click <A href='byond://?_src_=admin_holder;[HrefToken()];ahelp_tickets=[current_state]'>here</A> for legacy view)"))
+// [/HORIZON-EDIT]
 
+//called by admin topic
 /obj/effect/statclick/ticket_list/proc/Action()
 	Click()
 
@@ -173,8 +176,6 @@ GLOBAL_DATUM_INIT(ahelp_tickets, /datum/admin_help_tickets, new)
 	var/id
 	/// The current name of the ticket
 	var/name
-	/// The current subject of the ticket
-	var/subject = ""
 	/// The current state of the ticket
 	var/state = AHELP_ACTIVE
 	/// The time at which the ticket was opened
@@ -203,16 +204,20 @@ GLOBAL_DATUM_INIT(ahelp_tickets, /datum/admin_help_tickets, new)
 	var/list/player_interactions
 	/// List of admin ckeys that are involved, like through responding
 	var/list/admins_involved = list()
-	/// Which admin has marked this ahelp?
-	var/marked_admin
 	/// Has the player replied to this ticket yet?
 	var/player_replied = FALSE
+	// [HORIZON-ADD] ADMIN-TICKETS
+	/// The current subject of the ticket
+	var/subject = ""
+	/// Which admin has marked this ahelp?
+	var/marked_admin
 	/// What was the first message sent by the player?
 	var/initial_message = ""
 	/// What was the latest message sent by the player?
 	var/latest_message = ""
 	/// Time activity tracking for the ticket panel
 	var/list/time_activity = list("opened_at" = null, "closed_at" = null)
+	// [/HORIZON-ADD]
 
 /**
  * Call this on its own to create a ticket, don't manually assign current_ticket
@@ -230,17 +235,17 @@ GLOBAL_DATUM_INIT(ahelp_tickets, /datum/admin_help_tickets, new)
 
 	id = ++ticket_counter
 	opened_at = world.time
-	time_activity["opened_at"] = round_timestamp(wtime = opened_at)
+	time_activity["opened_at"] = round_timestamp(wtime = opened_at) // [HORIZON-EDIT] ADMIN-TICKETS
 
 	name = copytext_char(msg, 1, 100)
-	initial_message = msg
+	initial_message = msg // [HORIZON-EDIT] ADMIN-TICKETS
 
 	initiator = C
 	initiator_ckey = initiator.ckey
 	initiator_key_name = key_name(initiator, FALSE, TRUE)
 	if(initiator.current_ticket) //This is a bug
 		stack_trace("Multiple ahelp current_tickets")
-		initiator.current_ticket.AddInteraction("Ticket erroneously left open by code", message_type = "system")
+		initiator.current_ticket.AddInteraction("Ticket erroneously left open by code", message_type = "system") // [HORIZON-EDIT] ADMIN-TICKETS
 		initiator.current_ticket.Close()
 	initiator.current_ticket = src
 
@@ -250,11 +255,11 @@ GLOBAL_DATUM_INIT(ahelp_tickets, /datum/admin_help_tickets, new)
 	ticket_interactions = list()
 	player_interactions = list()
 
-	if(is_bwoink)
+	if(is_bwoink) // [HORIZON-EDIT] ADMIN-TICKETS
 		AddInteraction(span_blue("[key_name_admin(usr)] PM'd [LinkedReplyName()]"),
 		plain_message = "[initiator.ckey] PM'd [initiator_key_name]")
 		message_admins(span_blue("Ticket [TicketHref("#[id]")] created"))
-	else
+	else // [/HORIZON-EDIT]
 		MessageNoRecipient(msg_raw, urgent)
 		send_message_to_tgs(msg, urgent)
 	GLOB.ahelp_tickets.active_tickets += src
@@ -365,6 +370,7 @@ GLOBAL_DATUM_INIT(ahelp_tickets, /datum/admin_help_tickets, new)
 	GLOB.ahelp_tickets.resolved_tickets -= src
 	return ..()
 
+// [HORIZON-EDIT] ADMIN-TICKETS
 /datum/admin_help/proc/AddInteraction(formatted_message, plain_message = null, message_type = "admin", link_data = null)
 	var/ckey_to_use = null
 
@@ -439,6 +445,7 @@ GLOBAL_DATUM_INIT(ahelp_tickets, /datum/admin_help_tickets, new)
 	. += " (<A href='byond://?_src_=holder;[HrefToken(forceGlobal = TRUE)];ahelp=[ref_src];ahelp_action=autoreply'>AUTO</A>)"
 	. += " (<A href='byond://?_src_=holder;[HrefToken(forceGlobal = TRUE)];ahelp=[ref_src];ahelp_action=close'>CLOSE</A>)"
 	. += " (<A href='byond://?_src_=holder;[HrefToken(forceGlobal = TRUE)];ahelp=[ref_src];ahelp_action=resolve'>RSLVE</A>)"
+// [/HORIZON-EDIT]
 
 //private
 /datum/admin_help/proc/LinkedReplyName(ref_src)
@@ -452,6 +459,7 @@ GLOBAL_DATUM_INIT(ahelp_tickets, /datum/admin_help_tickets, new)
 		ref_src = "[REF(src)]"
 	return "<A href='byond://?_src_=holder;[HrefToken(forceGlobal = TRUE)];ahelp=[ref_src];ahelp_action=[action]'>[msg]</A>"
 
+// [HORIZON-EDIT] ADMIN-TICKETS
 //message from the initiator without a target, all admins will see this
 //won't bug irc/discord
 /datum/admin_help/proc/MessageNoRecipient(msg, urgent = FALSE)
@@ -483,6 +491,7 @@ GLOBAL_DATUM_INIT(ahelp_tickets, /datum/admin_help_tickets, new)
 	//show it to the person adminhelping too
 	reply_to_admins_notification(msg)
 	SSblackbox.LogAhelp(id, "Ticket Opened", msg, null, initiator.ckey, urgent = urgent)
+// [/HORIZON-EDIT]
 
 /// Sends a message to the player that they are replying to admins.
 /datum/admin_help/proc/reply_to_admins_notification(message)
@@ -501,6 +510,7 @@ GLOBAL_DATUM_INIT(ahelp_tickets, /datum/admin_help_tickets, new)
 		to_chat(usr, span_warning("This ticket is already open."), confidential = TRUE)
 		return
 
+	// [HORIZON-EDIT] ADMIN-TICKETS
 	var/datum/admin_help/existing_ticket = GLOB.ahelp_tickets.CKey2ActiveTicket(initiator_ckey)
 	if(existing_ticket && existing_ticket != src)
 		if(tgui_alert(usr, "[initiator_ckey] already has an active adminhelp ticket. Would you like to close it and reopen this one?", "Existing Adminhelp Found", list("Yes", "No")) == "Yes")
@@ -508,6 +518,7 @@ GLOBAL_DATUM_INIT(ahelp_tickets, /datum/admin_help_tickets, new)
 		else
 			to_chat(usr, span_notice("Using the existing adminhelp thread for [initiator_ckey]."), confidential = TRUE)
 			return FALSE
+	// [HORIZON-EDIT]
 
 	statclick = new(null, src)
 	GLOB.ahelp_tickets.active_tickets += src
@@ -515,12 +526,11 @@ GLOBAL_DATUM_INIT(ahelp_tickets, /datum/admin_help_tickets, new)
 	GLOB.ahelp_tickets.resolved_tickets -= src
 	state = AHELP_ACTIVE
 	closed_at = null
-	time_activity["closed_at"] = null
+	time_activity["closed_at"] = null // [HORIZON-EDIT] ADMIN-TICKETS
 	if(initiator)
 		initiator.current_ticket = src
 
-	AddInteraction(span_purple("Reopened by [key_name_admin(usr)]"),
-	plain_message = "Reopened by [usr.key]", message_type = "system")
+	AddInteraction(span_purple("Reopened by [key_name_admin(usr)]"), plain_message = "Reopened by [usr.key]", message_type = "system") // [HORIZON-EDIT] ADMIN-TICKETS
 	var/msg = span_adminhelp("Ticket [TicketHref("#[id]")] reopened by [key_name_admin(usr)].")
 	message_admins(msg)
 	log_admin_private(msg)
@@ -533,7 +543,7 @@ GLOBAL_DATUM_INIT(ahelp_tickets, /datum/admin_help_tickets, new)
 	if(state != AHELP_ACTIVE)
 		return
 	closed_at = world.time
-	time_activity["closed_at"] = round_timestamp(wtime = closed_at)
+	time_activity["closed_at"] = round_timestamp(wtime = closed_at) // [HORIZON-EDIT] ADMIN-TICKETS
 	QDEL_NULL(statclick)
 	GLOB.ahelp_tickets.active_tickets -= src
 	if(initiator && initiator.current_ticket == src)
@@ -610,8 +620,7 @@ GLOBAL_DATUM_INIT(ahelp_tickets, /datum/admin_help_tickets, new)
 	var/msg = "Ticket [TicketHref("#[id]")] rejected by [key_name]"
 	message_admins(msg)
 	log_admin_private(msg)
-	AddInteraction("Rejected by [key_name].",
-		plain_message = "Rejected by [usr.key]", message_type = "system")
+	AddInteraction("Rejected by [key_name].", plain_message = "Rejected by [usr.key]", message_type = "system") // [HORIZON-EDIT] ADMIN-TICKETS
 	SSblackbox.LogAhelp(id, "Rejected", "Rejected by [usr.key]", null, usr.ckey)
 	Close(silent = TRUE)
 
@@ -630,10 +639,12 @@ GLOBAL_DATUM_INIT(ahelp_tickets, /datum/admin_help_tickets, new)
 	msg = "Ticket [TicketHref("#[id]")] marked as IC by [key_name]"
 	message_admins(msg)
 	log_admin_private(msg)
-	AddInteraction("Marked as IC issue by [key_name]", plain_message = "Marked as IC issue!", message_type = "system")
+	AddInteraction("Marked as IC issue by [key_name]", plain_message = "Marked as IC issue!", message_type = "system") // [HORIZON-EDIT] ADMIN-TICKETS
 	SSblackbox.LogAhelp(id, "IC Issue", "Marked as IC issue by [usr.key]", null,  usr.ckey)
 	Resolve(silent = TRUE)
 
+// [HORIZON-EDIT] ADMIN-TICKETS
+//Show the ticket panel
 /datum/admin_help/proc/defer_to_mentors()
 	if(state != AHELP_ACTIVE || !initial_message)
 		return
@@ -747,9 +758,6 @@ GLOBAL_DATUM_INIT(ahelp_tickets, /datum/admin_help_tickets, new)
 	if(response.closer)
 		Resolve(silent = TRUE)
 
-// [HORIZON-ADD] ADMIN-TICKET
-// Opens this ticket in the TGUI admin/mentor ticket panel.
-// Use this instead of the legacy browse() TicketPanel() below.
 /datum/admin_help/proc/OpenInTicketPanel()
 	var/client/C = usr.client
 	if(!C?.holder)
@@ -813,6 +821,7 @@ GLOBAL_DATUM_INIT(ahelp_tickets, /datum/admin_help_tickets, new)
 			stack_trace("Invalid ticket state: [state]")
 			return "INVALID, CALL A CODER"
 
+// [HORIZON-EDIT] ADMIN-TICKETS
 /datum/admin_help/proc/set_subject(new_subject, client/setter)
 	if(!new_subject || !setter)
 		return FALSE
@@ -820,12 +829,13 @@ GLOBAL_DATUM_INIT(ahelp_tickets, /datum/admin_help_tickets, new)
 	subject = sanitize(copytext_char(new_subject, 1, 100))
 
 	message_admins("[setter.ckey] set the subject of ticket [id] to: [subject]")
-	defer_ticket_panel_update() // [HORIZON-ADD] ADMIN-TICKETS
+	defer_ticket_panel_update()
 
 	return TRUE
+// [/HORIZON-EDIT]
 
 /datum/admin_help/proc/Retitle()
-	var/new_title = tgui_input_text(usr, "Enter a title for the ticket", "Rename Ticket", name)
+	var/new_title = tgui_input_text(usr, "Enter a title for the ticket", "Rename Ticket", name) // [HORIZON-EDIT] ADMIN-TICKETS
 	if(new_title)
 		name = new_title
 		//not saying the original name cause it could be a long ass message
@@ -848,6 +858,7 @@ GLOBAL_DATUM_INIT(ahelp_tickets, /datum/admin_help_tickets, new)
 		if(webhook_sent == WEBHOOK_NON_URGENT || CONFIG_GET(string/regular_adminhelp_webhook_url) != CONFIG_GET(string/urgent_adminhelp_webhook_url))
 			send2adminchat_webhook(embed, urgent = FALSE)
 		webhook_sent = WEBHOOK_NONE
+	// [HORIZON-EDIT] ADMIN-TICKETS
 	switch(action)
 		if("ticket")
 			OpenInTicketPanel()
@@ -869,6 +880,7 @@ GLOBAL_DATUM_INIT(ahelp_tickets, /datum/admin_help_tickets, new)
 			Reopen()
 		if("defer")
 			defer_to_mentors()
+	// [/HORIZON-EDIT]
 
 /datum/admin_help/proc/player_ticket_panel()
 	var/list/dat = list("<html><head><meta http-equiv='Content-Type' content='text/html; charset=UTF-8'><title>Player Ticket</title></head>")
@@ -916,6 +928,7 @@ GLOBAL_DATUM_INIT(ahelp_tickets, /datum/admin_help_tickets, new)
 		usr.log_message("non-holder clicked on an ahelp statclick! ([src])", LOG_ADMIN)
 		return
 
+	// [HORIZON-EDIT] ADMIN-TICKETS
 	// Open the TGUI ticket panel
 	if(usr.client.holder)
 		if(!usr.client.ticket_panel)
@@ -924,6 +937,7 @@ GLOBAL_DATUM_INIT(ahelp_tickets, /datum/admin_help_tickets, new)
 		usr.client.ticket_panel.selected_ticket = ahelp_datum.id
 		SSadmin_verbs.dynamic_invoke_verb(usr, /datum/admin_verb/ticket_panel)
 		to_chat(usr, span_notice("Accessing Ticket Panel... (Click <A href='byond://?_src_=holder;[HrefToken()];ahelp=[REF(ahelp_datum)];ahelp_action=ticket'>here</A> for legacy view)"), confidential = TRUE)
+	// [/HORIZON-EDIT]
 
 /obj/effect/statclick/ahelp/Destroy()
 	ahelp_datum = null
@@ -1029,6 +1043,7 @@ GAME_VERB(/client, adminhelp, "Adminhelp", "Admin")
 	GLOB.admin_help_ui_handler.ui_interact(mob)
 	to_chat(src, span_boldnotice("Adminhelp failing to open or work? <a href='byond://?src=[REF(src)];tguiless_adminhelp=1'>Click here</a>"))
 
+// [HORIZON-EDIT] ADMIN-TICKETS
 GAME_VERB(/client, mentorhelp, "Mentorhelp", "Admin")
 	execute_mentorhelp()
 
@@ -1041,6 +1056,7 @@ GAME_VERB(/client, mentorhelp, "Mentorhelp", "Admin")
 	current_mhelp = new(src)
 	if(!current_mhelp.broadcast_request(src))
 		QDEL_NULL(current_mhelp)
+// [/HORIZON-EDIT]
 
 GAME_VERB(/client, view_latest_ticket, "View Latest Ticket", "Admin")
 	if(!current_ticket)

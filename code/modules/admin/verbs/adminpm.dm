@@ -43,7 +43,7 @@ ADMIN_VERB(cmd_admin_pm_panel, R_NONE, "Admin PM", "Show a list of clients to PM
 			nametag = "[real_mob_name](as [mob_name])"
 		targets["[nametag] - [client]"] = client
 
-	var/target = tgui_input_list(src, "To whom shall we send a message?", "Admin PM", sort_list(targets))
+	var/target = tgui_input_list(src, "To whom shall we send a message?", "Admin PM", sort_list(targets)) // [HORIZON-EDIT] ADMIN-TICKETS
 	if (isnull(target))
 		return
 	user.cmd_admin_pm(targets[target], null)
@@ -115,7 +115,7 @@ ADMIN_VERB(cmd_admin_pm_panel, R_NONE, "Admin PM", "Show a list of clients to PM
 	else
 		request = "[request] [formatted_recipient_ckey]."
 
-	var/message = tgui_input_text(src.mob, message_prompt, request, null, , TRUE)
+	var/message = tgui_input_text(src.mob, message_prompt, request, null, , TRUE) // [HORIZON-EDIT] ADMIN-TICKETS
 
 	if(recipient_ticket)
 		LAZYREMOVE(recipient_ticket.opening_responders, src)
@@ -248,7 +248,7 @@ ADMIN_VERB(cmd_admin_pm_panel, R_NONE, "Admin PM", "Show a list of clients to PM
 		else
 			request = "[request] [recipient_print_key]."
 		//get message text, limit its length.and clean/escape html
-		msg = tgui_input_text(src.mob, "Message:", request, null, , TRUE)
+		msg = tgui_input_text(src.mob, "Message:", request, null, , TRUE) // [HORIZON-EDIT] ADMIN-TICKETS
 		msg = trim(msg)
 
 	if(!msg)
@@ -312,7 +312,7 @@ ADMIN_VERB(cmd_admin_pm_panel, R_NONE, "Admin PM", "Show a list of clients to PM
 	if(ambiguious_recipient == EXTERNAL_PM_USER)
 		var/datum/admin_help/new_admin_help = admin_ticket_log(src,
 			"<font color='red'>Reply PM from-<b>[name_key_with_link]</b> to <i>External</i>: [keyword_parsed_msg]</font>",
-			player_message = "Reply PM from-[key_name(src, FALSE, TRUE)] to External: [send_message]")
+			player_message = "Reply PM from-[key_name(src, FALSE, TRUE)] to External: [send_message]") // [HORIZON-EDIT] ADMIN-TICKETS
 
 		new_admin_help.reply_to_admins_notification(raw_message)
 
@@ -344,8 +344,6 @@ ADMIN_VERB(cmd_admin_pm_panel, R_NONE, "Admin PM", "Show a list of clients to PM
 	var/their_name_with_link = key_name(recipient, TRUE, TRUE)
 	// Stores a bit of html with our ckey highlighted as a reply link
 	var/link_to_us = key_name(src, TRUE, FALSE)
-	// Stores a bit of html with outhe ckey of the recipientr highlighted as a reply link
-	//var/link_to_their = key_name(recipient, TRUE, FALSE)
 	// Our ckey
 	var/our_ckey = ckey
 	// Recipient ckey
@@ -401,7 +399,7 @@ ADMIN_VERB(cmd_admin_pm_panel, R_NONE, "Admin PM", "Show a list of clients to PM
 		admin_ticket_log(recipient,
 			"<font color='purple'>PM From [name_key_with_link]: [keyword_parsed_msg]</font>",
 			log_in_blackbox = FALSE,
-			player_message = "PM From [key_name(src, FALSE, TRUE)]: [send_message]")
+			player_message = "PM From [key_name(src, FALSE, TRUE)]: [send_message]") // [HORIZON-EDIT] ADMIN-TICKETS
 
 		if(!already_logged) //Reply to an existing ticket
 			SSblackbox.LogAhelp(recipient_ticket_id, "Reply", send_message, recip_ckey, our_ckey)
@@ -463,7 +461,7 @@ ADMIN_VERB(cmd_admin_pm_panel, R_NONE, "Admin PM", "Show a list of clients to PM
 
 		//omg this is dumb, just fill in both their logs
 		var/interaction_message = "<font color='purple'>PM from-<b>[name_key_with_link]</b> to-<b>[their_name_with_link]</b>: [keyword_parsed_msg]</font>"
-		var/player_interaction_message = "PM from-[key_name(src, FALSE, TRUE)] to-[key_name(recipient, FALSE, TRUE)]: [send_message]"
+		var/player_interaction_message = "PM from-[key_name(src, FALSE, TRUE)] to-[key_name(recipient, FALSE, TRUE)]: [send_message]" // [HORIZON-EDIT] ADMIN-TICKETS
 		admin_ticket_log(src,
 			interaction_message,
 			log_in_blackbox = FALSE,
@@ -479,7 +477,7 @@ ADMIN_VERB(cmd_admin_pm_panel, R_NONE, "Admin PM", "Show a list of clients to PM
 
 	// This is us (a player) trying to talk to the recipient (an admin)
 	var/replymsg = "Reply PM from-<b>[name_key_with_link]</b>: [span_linkify(keyword_parsed_msg)]"
-	var/player_replymsg = "Reply PM from-[key_name(src, FALSE, TRUE)]: [send_message]"
+	var/player_replymsg = "Reply PM from-[key_name(src, FALSE, TRUE)]: [send_message]" // [HORIZON-EDIT] ADMIN-TICKETS
 	admin_ticket_log(src,
 		"<font color='red'>[replymsg]</font>",
 		log_in_blackbox = FALSE,
@@ -704,7 +702,7 @@ ADMIN_VERB(cmd_admin_pm_panel, R_NONE, "Admin PM", "Show a list of clients to PM
 		message,
 	)
 
-	admin_ticket_log(recipient, "<font color='purple'>PM From [tgs_tagged]: [message]</font>", log_in_blackbox = FALSE, player_message = "PM From [tgs_tagged]: [message]")
+	admin_ticket_log(recipient, "<font color='purple'>PM From [tgs_tagged]: [message]</font>", log_in_blackbox = FALSE, player_message = "PM From [tgs_tagged]: [message]") // [HORIZON-EDIT] ADMIN-TICKETS
 
 	window_flash(recipient, ignorepref = TRUE)
 	// Nullcheck because we run a winset in window flash and I do not trust byond

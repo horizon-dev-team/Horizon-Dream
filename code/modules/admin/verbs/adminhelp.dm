@@ -481,7 +481,7 @@ GLOBAL_DATUM_INIT(ahelp_tickets, /datum/admin_help_tickets, new)
 		if(!is_staff(X))
 			continue
 		if(X.prefs.toggles & SOUND_ADMINHELP)
-			X.mob.playsound_local(null, 'sound/effects/adminhelp.ogg', 100, vary = FALSE, channel = CHANNEL_ADMIN, pressure_affected = FALSE, use_reverb = FALSE) // [HORIZON-EDIT] Master_Sounds
+			X.mob.playsound_local(null, '_horizon/sound/adminhelp_new.ogg', 100, vary = FALSE, channel = CHANNEL_ADMIN, pressure_affected = FALSE, use_reverb = FALSE) // [HORIZON-EDIT] ADMIN-TICKETS
 		window_flash(X, ignorepref = TRUE)
 		to_chat(X,
 			type = MESSAGE_TYPE_ADMINPM,
@@ -557,6 +557,7 @@ GLOBAL_DATUM_INIT(ahelp_tickets, /datum/admin_help_tickets, new)
 		return
 
 	if(marked_admin && marked_admin != usr.ckey)
+		SEND_SOUND(usr, sound('_horizon/sound/adminhelp-error.ogg', volume = 30)) // [HORIZON-EDIT] ADMIN-TICKETS
 		to_chat(usr, span_warning("This ticket is currently marked by [marked_admin]. Please override their mark to interact with this ticket!"), confidential = TRUE)
 		return
 
@@ -578,6 +579,7 @@ GLOBAL_DATUM_INIT(ahelp_tickets, /datum/admin_help_tickets, new)
 		return
 
 	if(marked_admin && marked_admin != usr.ckey)
+		SEND_SOUND(usr, sound('_horizon/sound/adminhelp-error.ogg', volume = 30)) // [HORIZON-EDIT] ADMIN-TICKETS
 		to_chat(usr, span_warning("This ticket is currently marked by [marked_admin]. Please override their mark to interact with this ticket!"), confidential = TRUE)
 		return
 
@@ -604,13 +606,14 @@ GLOBAL_DATUM_INIT(ahelp_tickets, /datum/admin_help_tickets, new)
 		return
 
 	if(marked_admin && ckey(marked_admin) != usr.ckey)
+		SEND_SOUND(usr, sound('_horizon/sound/adminhelp-error.ogg', volume = 30)) // [HORIZON-EDIT] ADMIN-TICKETS
 		to_chat(usr, span_warning("This ticket is currently marked by [marked_admin]. Please override their mark to interact with this ticket!"), confidential = TRUE)
 		return
 
 	if(initiator)
 		initiator.giveadminhelpverb()
 
-		SEND_SOUND(initiator, sound('sound/effects/adminhelp.ogg'))
+		SEND_SOUND(initiator, sound('_horizon/sound/adminhelp-error.ogg')) // [HORIZON-EDIT] ADMIN-TICKETS
 
 		to_chat(initiator, span_boldwarning("- AdminHelp Rejected! -"), confidential = TRUE)
 		to_chat(initiator, span_warning("<b>Your admin help was rejected.</b> The adminhelp verb has been returned to you so that you may try again."), confidential = TRUE)
@@ -650,6 +653,7 @@ GLOBAL_DATUM_INIT(ahelp_tickets, /datum/admin_help_tickets, new)
 		return
 
 	if(marked_admin && marked_admin != usr.ckey)
+		SEND_SOUND(usr, sound('_horizon/sound/adminhelp-error.ogg', volume = 30)) // [HORIZON-EDIT] ADMIN-TICKETS
 		to_chat(usr, span_warning("This ticket is currently marked by [marked_admin]. Please override their mark to interact with this ticket!"), confidential = TRUE)
 		return
 
@@ -733,6 +737,7 @@ GLOBAL_DATUM_INIT(ahelp_tickets, /datum/admin_help_tickets, new)
 
 	if(marked_admin != usr.ckey)
 		if(marked_admin)
+			SEND_SOUND(usr, sound('_horizon/sound/adminhelp-error.ogg', volume = 30)) // [HORIZON-EDIT] ADMIN-TICKETS
 			to_chat(usr, span_warning("This ticket is currently marked by [marked_admin]. Please override their mark to interact with this ticket!"), confidential = TRUE)
 			return
 		else

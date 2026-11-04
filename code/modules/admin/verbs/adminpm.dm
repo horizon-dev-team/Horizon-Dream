@@ -104,7 +104,7 @@ ADMIN_VERB(cmd_admin_pm_panel, R_NONE, "Admin PM", "Show a list of clients to PM
 		if(length(recipient_interactions) == 1)
 			if(length(opening_interactions)) // Inform the admin that they aren't the first
 				var/printable_interators = english_list(opening_interactions)
-				SEND_SOUND(src, sound('sound/machines/buzz/buzz-sigh.ogg', volume=30))
+				SEND_SOUND(src, sound('_horizon/sound/adminhelp-error.ogg', volume=30)) // [HORIZON-EDIT] ADMIN-TICKETS
 				message_prompt += "\n\n**This ticket is already being responded to by: [printable_interators]**"
 			// add the admin who is currently responding to the list of people responding
 			LAZYADD(recipient_ticket.opening_responders, src)
@@ -405,7 +405,7 @@ ADMIN_VERB(cmd_admin_pm_panel, R_NONE, "Admin PM", "Show a list of clients to PM
 			SSblackbox.LogAhelp(recipient_ticket_id, "Reply", send_message, recip_ckey, our_ckey)
 
 		//always play non-admin recipients the adminhelp sound
-		SEND_SOUND(recipient, sound('sound/effects/adminhelp.ogg'))
+		SEND_SOUND(recipient, sound('_horizon/sound/adminhelp-reply.ogg')) // [HORIZON-EDIT] ADMIN-TICKETS
 		return TRUE
 
 	// Ok if we're here, either this message is for an admin, or someone somehow figured out how to send a new message as a player
@@ -442,7 +442,7 @@ ADMIN_VERB(cmd_admin_pm_panel, R_NONE, "Admin PM", "Show a list of clients to PM
 
 	// Let's play some music for the admin, only if they want it tho
 	if(sound_prefs & SOUND_ADMINHELP)
-		recipient.mob.playsound_local(null, 'sound/effects/adminhelp.ogg', 100, vary = FALSE, channel = CHANNEL_ADMIN_SOUNDS, pressure_affected = FALSE, use_reverb = FALSE) // [HORIZON-EDIT] Master_Sounds
+		recipient.mob.playsound_local(null, '_horizon/sound/adminhelp-reply.ogg', 100, vary = FALSE, channel = CHANNEL_ADMIN_SOUNDS, pressure_affected = FALSE, use_reverb = FALSE) // [HORIZON-EDIT] ADMIN-TICKETS
 
 	SEND_SIGNAL(ticket, COMSIG_ADMIN_HELP_REPLIED)
 
@@ -708,7 +708,7 @@ ADMIN_VERB(cmd_admin_pm_panel, R_NONE, "Admin PM", "Show a list of clients to PM
 	// Nullcheck because we run a winset in window flash and I do not trust byond
 	if(recipient)
 		//always play non-admin recipients the adminhelp sound
-		SEND_SOUND(recipient, 'sound/effects/adminhelp.ogg')
+		SEND_SOUND(recipient, sound('_horizon/sound/adminhelp-reply.ogg')) // [HORIZON-EDIT] ADMIN-TICKETS
 
 		recipient.externalreplyamount = EXTERNALREPLYCOUNT
 	return "Message Successful"

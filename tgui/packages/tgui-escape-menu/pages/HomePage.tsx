@@ -8,10 +8,10 @@ type ServerState = {
   canLeaveBody: boolean;
   canAdminHelp: boolean;
   hasTicketNotification: boolean;
+  resources: ResourceLink[];
   canOpenTicketPanel?: boolean;
   ticketPanelLabel?: string | null;
   pendingTickets?: number;
-  resources: ResourceLink[];
 };
 
 type Props = {

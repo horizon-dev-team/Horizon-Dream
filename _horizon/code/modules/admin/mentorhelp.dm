@@ -159,7 +159,7 @@ GLOBAL_DATUM_INIT(mentorhelp_manager, /datum/mentorhelp_manager, new)
 
 	if(!subject_key || ckey(subject_key) == ckey(author_key))
 		if(viewer && is_staff(viewer))
-			return author_key ? "[author_key]/([author_ic_name || "Unknown"])" : "Unknown"
+			return author_key || "Unknown"
 		return author_ic_name || "Unknown"
 
 	if(!subject_ic && mentor_key && ckey(subject_key) == ckey(mentor_key))
@@ -231,7 +231,7 @@ GLOBAL_DATUM_INIT(mentorhelp_manager, /datum/mentorhelp_manager, new)
 				if(author_key)
 					msg_to_send = replacetext(msg_to_send, author_key, get_author_ic_name())
 			var/displaymsg = "[span_mentorhelp("<span class='prefix'>MENTOR LOG:</span> <span class='message'>[msg_to_send]</span>")]"
-			to_chat(receiver, displaymsg, confidential = TRUE)
+			to_chat(receiver, displaymsg, type = MESSAGE_TYPE_MENTORPM, confidential = TRUE)
 
 	if(!to_mentors)
 		if(author_key)
@@ -250,13 +250,15 @@ GLOBAL_DATUM_INIT(mentorhelp_manager, /datum/mentorhelp_manager, new)
 	ticket_interactions[html_message] = structured_data
 	defer_ticket_panel_update()
 
-/datum/mentorhelp/proc/broadcast_request(client/opener)
+/datum/mentorhelp/proc/broadcast_request(client/opener, message = null)
 	if(!opener || !open || !check_author())
 		return FALSE
 	if(mentor)
 		return TRUE
 
-	var/message = strip_html(html_decode(
+	// A pre-sanitized message passed by the caller skips the input prompt
+	if(!message)
+		message = strip_html(html_decode(
 			tgui_input_text(opener.mob, "Please enter your message:", "MentorHelp", null, 500, TRUE)
 		))
 	if(!message)
@@ -296,13 +298,13 @@ GLOBAL_DATUM_INIT(mentorhelp_manager, /datum/mentorhelp_manager, new)
 		feedback_recipient_text = "<a href='byond://?src=[REF(src)];action=message'>[display_text]</a>"
 	else
 		feedback_recipient_text = "mentors"
-	to_chat(sender, "[span_mentorhelp("<span class='prefix'>MentorHelp:</span> Message to [feedback_recipient_text]:")] [span_mentor(msg)]", confidential = TRUE)
+	to_chat(sender, "[span_mentorhelp("<span class='prefix'>MentorHelp:</span> Message to [feedback_recipient_text]:")] [span_mentor(msg)]", type = MESSAGE_TYPE_MENTORPM, confidential = TRUE)
 
 	// Recipient direct message
 	if(recipient)
 		if(with_sound && (recipient.prefs?.toggles & SOUND_ADMINHELP))
 			SEND_SOUND(recipient, sound('_horizon/sound/mhelp.ogg'))
-		to_chat(recipient, wrap_message(msg, sender, recipient), confidential = TRUE)
+		to_chat(recipient, wrap_message(msg, sender, recipient), type = MESSAGE_TYPE_MENTORPM, confidential = TRUE)
 
 	for(var/client/admin_client in GLOB.admins)
 		var/formatted = msg
@@ -328,7 +330,7 @@ GLOBAL_DATUM_INIT(mentorhelp_manager, /datum/mentorhelp_manager, new)
 
 		if(soundfile && with_sound && (admin_client.prefs?.toggles & SOUND_ADMINHELP))
 			SEND_SOUND(admin_client, soundfile)
-		to_chat(admin_client, formatted, confidential = TRUE)
+		to_chat(admin_client, formatted, type = MESSAGE_TYPE_MENTORPM, confidential = TRUE)
 	return
 
 /datum/mentorhelp/proc/input_message(client/sender)
@@ -358,25 +360,25 @@ GLOBAL_DATUM_INIT(mentorhelp_manager, /datum/mentorhelp_manager, new)
 		message_handlers(message, sender, target)
 	return
 
-/// Sanitizes and wraps the message with some info and links
+/// Sanitizes and wraps the message with some info and links.
 /datum/mentorhelp/proc/wrap_message(message, client/sender, client/recipient = null)
-	var/message_title = "MentorPM"
-	var/message_sender_key = ""
-	var/message_sender_options = ""
+	var/message_title = sender == author ? "MentorHelp" : "MentorPM"
+	var/display_text = get_display_name(recipient, sender)
+	var/message_sender_key = "<a href='byond://?src=[REF(src)];action=message'>[display_text]</a>"
 
+	var/message_body = "<b>[message_sender_key]</b>"
 	if(sender == author)
-		message_title = "MentorHelp"
-		var/display_text = get_display_name(recipient, sender)
-		message_sender_key = "<a href='byond://?src=[REF(src)];action=message'>[display_text]</a>"
-		message_sender_options = " (<a class='button' href='byond://?src=[REF(src)];action=mark'>Mark/Unmark</a>"
-		message_sender_options += " | <a class='button' href='byond://?src=[REF(src)];action=close'>Close</a> | <a class='button' href='byond://?src=[REF(src)];action=autorespond'>AutoResponse</a>)"
-	else
-		var/display_text = get_display_name(recipient, sender)
-		message_sender_key = "<a href='byond://?src=[REF(src)];action=message'>[display_text]</a>"
+		message_body += " (<a class='button' href='byond://?src=[REF(src)];action=mark'>Mark/Unmark</a>"
+		message_body += " | <a class='button' href='byond://?src=[REF(src)];action=close'>Close</a>"
+		message_body += " | <a class='button' href='byond://?src=[REF(src)];action=autorespond'>AutoResponse</a>)"
+	message_body += "\n\n[span_mentor("<span class='message'>[message]</span>")]"
+	if(recipient == author)
+		message_body += "\n\n<i>Click on the mentor's name to reply.</i>"
 
-	var/message_header = span_mentorhelp("<span class='prefix'>[message_title] from [message_sender_key]:</span> <span class='message'>[message_sender_options]</span><br>")
-	var/message_body = "&emsp;[span_mentor("<span class='message'>[message]</span>")]<br>"
-	return (message_header + message_body)
+	return fieldset_block(
+		span_mentorhelp("<span class='prefix'>[message_title] from [display_text]:</span>"),
+		message_body,
+		"boxed_message blue_box")
 
 /*
  * Marking
@@ -551,6 +553,34 @@ GLOBAL_DATUM_INIT(mentorhelp_manager, /datum/mentorhelp_manager, new)
 
 	if(author && author.current_mhelp == src)
 		author.current_mhelp = null
+
+/datum/mentorhelp/proc/player_ticket_panel()
+	var/list/dat = list("<html><head><meta http-equiv='Content-Type' content='text/html; charset=UTF-8'><title>Ticket Panel</title></head>")
+	dat += "<b>State: "
+	if(open)
+		dat += "<font color='red'>[mentor ? "CLAIMED" : "OPEN"]</font></b>"
+	else
+		dat += "CLOSED</b>"
+	dat += "\n[FOURSPACES]<A href='byond://?_src_=usr;tguiless_ticket_panel=1'>Refresh</A>"
+	dat += "<br><br>Opened at: [time_activity["opened_at"]] (Approx [DisplayTimeText(world.time - opened_at)] ago)"
+	if(closed_at)
+		dat += "<br>Closed at: [time_activity["closed_at"]] (Approx [DisplayTimeText(world.time - closed_at)] ago)"
+	dat += "<br><br>"
+	dat += "<br><b>Log:</b><br><br>"
+	for(var/interaction_key in ticket_interactions)
+		var/list/interaction = ticket_interactions[interaction_key]
+		var/author_name = interaction["author"]
+		if(author_name && ckey(author_name) == ckey(author_key))
+			author_name = "You"
+		else if(!istext(author_name))
+			author_name = "System"
+		else
+			author_name = get_display_name(usr.client, author_name)
+		dat += "[interaction["timestamp"]] [author_name]: [replacetext(interaction["message"], "\n", "<br>")]<br>"
+
+	var/datum/browser/player_panel = new(usr, "mhelp[id]", 0, 620, 480)
+	player_panel.set_content(dat.Join())
+	player_panel.open()
 
 /datum/mentorhelp/proc/Respond(msg, client/responder)
 	if(!check_author())

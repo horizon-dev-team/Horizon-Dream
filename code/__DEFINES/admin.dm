@@ -7,6 +7,7 @@
 #define MUTE_ADMINHELP (1<<3)
 #define MUTE_DEADCHAT (1<<4)
 #define MUTE_INTERNET_REQUEST (1<<5)
+#define MUTE_MHELP (1<<6) // [HORIZON-ADD] ADMIN-TICKETS
 #define MUTE_ALL ALL
 
 //Some constants for DB_Ban

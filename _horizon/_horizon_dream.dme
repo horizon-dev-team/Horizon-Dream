@@ -42,6 +42,7 @@
 #include "code\modules\admin\log_viewer.dm"
 #include "code\modules\admin\mentorhelp.dm"
 #include "code\modules\admin\player_panel.dm"
+#include "code\modules\admin\player_ticket_panel.dm"
 #include "code\modules\admin\ticket_panel.dm"
 #include "code\modules\buildmode\building_options.dm"
 #include "code\modules\buildmode\buildmode_assets.dm"

@@ -40,7 +40,7 @@ export function AdminPage({
               : undefined
           }
         >
-          View Latest Ticket
+          Ticket Panel
         </MenuButton>
         <MenuButton
           onClick={() => {

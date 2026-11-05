@@ -383,6 +383,7 @@ ADMIN_VERB_AND_CONTEXT_MENU(options_panel, R_ADMIN, "Open Options Panel", ADMIN_
 					"ooc" = !isnull(client_info.prefs.muted) && (client_info.prefs.muted & MUTE_OOC),
 					"pray" = !isnull(client_info.prefs.muted) && (client_info.prefs.muted & MUTE_PRAY),
 					"adminhelp" = !isnull(client_info.prefs.muted) && (client_info.prefs.muted & MUTE_ADMINHELP),
+					"mentorhelp" = !isnull(client_info.prefs.muted) && (client_info.prefs.muted & MUTE_MHELP),
 					"deadchat" = !isnull(client_info.prefs.muted) && (client_info.prefs.muted & MUTE_DEADCHAT),
 					"webreq" = !isnull(client_info.prefs.muted) && (client_info.prefs.muted & MUTE_INTERNET_REQUEST),
 				)
@@ -735,6 +736,10 @@ ADMIN_VERB_AND_CONTEXT_MENU(options_panel, R_ADMIN, "Open Options Panel", ADMIN_
 					return
 				if("adminhelp")
 					cmd_admin_mute(usr.client.selectedPlayerCkey, MUTE_ADMINHELP)
+					ui.send_update()
+					return
+				if("mentorhelp")
+					cmd_admin_mute(usr.client.selectedPlayerCkey, MUTE_MHELP)
 					ui.send_update()
 					return
 				if("deadchat")

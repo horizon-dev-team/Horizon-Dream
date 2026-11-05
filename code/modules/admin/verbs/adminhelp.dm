@@ -573,6 +573,31 @@ GLOBAL_DATUM_INIT(ahelp_tickets, /datum/admin_help_tickets, new)
 		SSblackbox.LogAhelp(id, "Closed", "Closed by [usr.key]", null, usr.ckey)
 		log_admin_private(msg)
 
+// [HORIZON-ADD] ADMIN-TICKETS
+/datum/admin_help/proc/player_close(client/C)
+	if(state != AHELP_ACTIVE)
+		return
+	if(!C || ckey(C.key) != initiator_ckey)
+		return
+	if(initiator != C)
+		// The initiator reconnected; reattach so state cleanup works
+		initiator = C
+
+	marked_admin = null
+	RemoveActive()
+	state = AHELP_CLOSED
+	GLOB.ahelp_tickets.ListInsert(src)
+
+	AddInteraction(span_red("Closed by [key_name_admin(C)]."), plain_message = "Closed by [C.key]", message_type = "system")
+
+	to_chat(C, span_notice("You have closed your admin ticket."), confidential = TRUE)
+	SSblackbox.record_feedback("tally", "ahelp_stats", 1, "closed")
+	var/msg = "Ticket [TicketHref("#[id]")] closed by [key_name(C)]."
+	message_admins(msg)
+	SSblackbox.LogAhelp(id, "Closed", "Closed by [C.key]", null, C.ckey)
+	log_admin_private(msg)
+// [/HORIZON-ADD]
+
 //Mark open ticket as resolved/legitimate, returns ahelp verb
 /datum/admin_help/proc/Resolve(key_name = key_name_admin(usr), silent = FALSE)
 	if(state != AHELP_ACTIVE)
@@ -888,7 +913,7 @@ GLOBAL_DATUM_INIT(ahelp_tickets, /datum/admin_help_tickets, new)
 	// [/HORIZON-EDIT]
 
 /datum/admin_help/proc/player_ticket_panel()
-	var/list/dat = list("<html><head><meta http-equiv='Content-Type' content='text/html; charset=UTF-8'><title>Player Ticket</title></head>")
+	var/list/dat = list("<html><head><meta http-equiv='Content-Type' content='text/html; charset=UTF-8'><title>Ticket Panel</title></head>")
 	dat += "<b>State: "
 	switch(state)
 		if(AHELP_ACTIVE)
@@ -899,7 +924,7 @@ GLOBAL_DATUM_INIT(ahelp_tickets, /datum/admin_help_tickets, new)
 			dat += "CLOSED</b>"
 		else
 			dat += "UNKNOWN</b>"
-	dat += "\n[FOURSPACES]<A href='byond://?_src_=usr;player_ticket_panel=1'>Refresh</A>"
+	dat += "\n[FOURSPACES]<A href='byond://?_src_=usr;tguiless_ticket_panel=1'>Refresh</A>"
 	dat += "<br><br>Opened at: [round_timestamp("hh:mm:ss", opened_at)] (Approx [DisplayTimeText(world.time - opened_at)] ago)"
 	if(closed_at)
 		dat += "<br>Closed at: [round_timestamp("hh:mm:ss", closed_at)] (Approx [DisplayTimeText(world.time - closed_at)] ago)"
@@ -991,6 +1016,14 @@ GLOBAL_DATUM_INIT(admin_help_ui_handler, /datum/admin_help_ui_handler, new)
 		return
 	var/client/user_client = usr.client
 	var/message = sanitize_text(trim(params["message"]))
+
+	// [HORIZON-EDIT] ADMIN-TICKETS
+	if(params["recipient"] == "mentor")
+		perform_mentorhelp(user_client, message)
+		ui.close()
+		return
+	// [/HORIZON-EDIT]
+
 	var/urgent = !!params["urgent"]
 	var/list/admins = get_admin_counts(R_BAN)
 	if(length(admins["present"]) != 0 || is_banned_from(user_client.ckey, "Urgent Adminhelp"))
@@ -1035,6 +1068,35 @@ GLOBAL_DATUM_INIT(admin_help_ui_handler, /datum/admin_help_ui_handler, new)
 
 	new /datum/admin_help(message, user_client, FALSE, urgent)
 
+// [HORIZON-EDIT] ADMIN-TICKETS
+/datum/admin_help_ui_handler/proc/perform_mentorhelp(client/user_client, message)
+	if(GLOB.say_disabled)
+		to_chat(user_client, span_danger("Speech is currently admin-disabled."), confidential = TRUE)
+		return
+
+	if(!message)
+		return
+
+	if(user_client.prefs.muted & MUTE_MHELP)
+		to_chat(user_client, span_danger("Error: Mentor-PM: You cannot send mentorhelps (Muted)."), confidential = TRUE)
+		return
+	if(user_client.handle_spam_prevention(message, MUTE_MHELP))
+		return
+
+	BLACKBOX_LOG_ADMIN_VERB("Mentorhelp")
+
+	message = strip_html(html_decode(trim(message)))
+
+	if(user_client.current_mhelp && user_client.current_mhelp.open)
+		var/datum/mentorhelp/open_mhelp = user_client.current_mhelp
+		open_mhelp.message_handlers(message, user_client, open_mhelp.mentor)
+		return
+
+	user_client.current_mhelp = new(user_client)
+	if(!user_client.current_mhelp.broadcast_request(user_client, message))
+		QDEL_NULL(user_client.current_mhelp)
+// [/HORIZON-EDIT]
+
 GAME_VERB_HIDDEN(/client, no_tgui_adminhelp, "NoTguiAdminhelp")
 	VERB_ARG(message, VERB_ARG_TYPE_MESSAGE, VERB_ARG_SOURCE_INPUT)
 	if(adminhelptimerid)
@@ -1044,49 +1106,67 @@ GAME_VERB_HIDDEN(/client, no_tgui_adminhelp, "NoTguiAdminhelp")
 
 	GLOB.admin_help_ui_handler.perform_adminhelp(src, message, FALSE)
 
+// [HORIZON-EDIT] ADMIN-TICKETS
 GAME_VERB(/client, adminhelp, "Adminhelp", "Admin")
+	if(current_ticket || (current_mhelp && current_mhelp.open))
+		view_latest_ticket()
+		return
 	GLOB.admin_help_ui_handler.ui_interact(mob)
 	to_chat(src, span_boldnotice("Adminhelp failing to open or work? <a href='byond://?src=[REF(src)];tguiless_adminhelp=1'>Click here</a>"))
 
-// [HORIZON-EDIT] ADMIN-TICKETS
 GAME_VERB(/client, mentorhelp, "Mentorhelp", "Admin")
-	execute_mentorhelp()
-
-/client/proc/execute_mentorhelp()
 	if(current_mhelp && current_mhelp.open)
-		if(tgui_alert(src, "You already have a mentorhelp thread open, would you like to close it?", "Mentor Help", list("Yes", "No")) == "Yes")
-			current_mhelp.close(src)
+		view_latest_ticket()
+		return
+	GLOB.admin_help_ui_handler.ui_interact(mob)
+
+// Opens the TGUI player ticket panel listing the player's own tickets.
+GAME_VERB(/client, view_latest_ticket, "Ticket Panel", "Admin")
+	if(!player_ticket_panel)
+		player_ticket_panel = new /datum/player_ticket_panel()
+	player_ticket_panel.open_for(src)
+	to_chat(src, span_boldnotice("Ticket panel failing to open or work? <a href='byond://?src=[REF(src)];tguiless_ticket_panel=1'>Click here</a>"))
+
+/client/proc/legacy_player_ticket_panel()
+	if(current_ticket)
+		current_ticket.player_ticket_panel()
 		return
 
-	current_mhelp = new(src)
-	if(!current_mhelp.broadcast_request(src))
-		QDEL_NULL(current_mhelp)
+	// No open admin ticket: fall back to the player's open mentorhelp thread
+	if(current_mhelp && current_mhelp.open)
+		current_mhelp.player_ticket_panel()
+		return
+
+	// Check if the client had previous tickets, and show the latest one
+	var/list/prev_tickets = list()
+	var/datum/admin_help/last_ticket
+	// Check all resolved tickets for this player
+	for(var/datum/admin_help/resolved_ticket in GLOB.ahelp_tickets.resolved_tickets)
+		if(resolved_ticket.initiator_ckey == ckey) // Initiator is a misnomer, it's always the non-admin player even if an admin bwoinks first
+			prev_tickets += resolved_ticket
+	// Check all closed tickets for this player
+	for(var/datum/admin_help/closed_ticket in GLOB.ahelp_tickets.closed_tickets)
+		if(closed_ticket.initiator_ckey == ckey)
+			prev_tickets += closed_ticket
+	// Take the most recent entry of prev_tickets and open the panel on it
+	if(LAZYLEN(prev_tickets))
+		last_ticket = prev_tickets[prev_tickets.len]
+		last_ticket.player_ticket_panel()
+		return
+
+	// Fall back to the player's most recent archived mentorhelp thread
+	var/datum/mentorhelp/last_mhelp
+	for(var/mhelp_id in GLOB.mentorhelp_manager.archived_tickets)
+		var/datum/mentorhelp/archived_mhelp = GLOB.mentorhelp_manager.archived_tickets[mhelp_id]
+		if(archived_mhelp && ckey(archived_mhelp.author_key) == ckey)
+			last_mhelp = archived_mhelp
+	if(last_mhelp)
+		last_mhelp.player_ticket_panel()
+		return
+
+	// client had no tickets this round
+	to_chat(src, span_warning("You have not had any tickets this round."))
 // [/HORIZON-EDIT]
-
-GAME_VERB(/client, view_latest_ticket, "View Latest Ticket", "Admin")
-	if(!current_ticket)
-		// Check if the client had previous tickets, and show the latest one
-		var/list/prev_tickets = list()
-		var/datum/admin_help/last_ticket
-		// Check all resolved tickets for this player
-		for(var/datum/admin_help/resolved_ticket in GLOB.ahelp_tickets.resolved_tickets)
-			if(resolved_ticket.initiator_ckey == ckey) // Initiator is a misnomer, it's always the non-admin player even if an admin bwoinks first
-				prev_tickets += resolved_ticket
-		// Check all closed tickets for this player
-		for(var/datum/admin_help/closed_ticket in GLOB.ahelp_tickets.closed_tickets)
-			if(closed_ticket.initiator_ckey == ckey)
-				prev_tickets += closed_ticket
-		// Take the most recent entry of prev_tickets and open the panel on it
-		if(LAZYLEN(prev_tickets))
-			last_ticket = pop(prev_tickets)
-			last_ticket.player_ticket_panel()
-			return
-
-		// client had no tickets this round
-		to_chat(src, span_warning("You have not had an ahelp ticket this round."))
-		return
-
-	current_ticket.player_ticket_panel()
 
 //
 // LOGGING

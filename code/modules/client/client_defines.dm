@@ -46,6 +46,8 @@
 	var/datum/mentorhelp/current_mhelp = null
 	/// Holds the client's ticket panel datum for the TGUI ticket panel
 	var/datum/ticket_panel/ticket_panel = null
+	/// Holds the client's player ticket panel datum for the TGUI player ticket panel
+	var/datum/player_ticket_panel/player_ticket_panel = null
 	// [/HORIZON-ADD]
 	///Needs to implement InterceptClickOn(user,params,atom) proc
 	var/datum/click_intercept = null

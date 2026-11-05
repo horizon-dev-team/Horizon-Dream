@@ -37,7 +37,7 @@
 			return istype(MH) ? MH.author?.mob : null
 	return null
 
-/datum/ticket_panel/proc/strip_pm_prefix(message)
+/proc/strip_pm_prefix(message)
 	if(!istext(message) || !message)
 		return message
 	var/static/regex/pm_prefix = regex(@"^(?:Reply )?PM [Ff]rom[ -].+?(?: to[ -].+?)?: ")
@@ -48,9 +48,10 @@
 
 /proc/broadcast_ticket_panels()
 	for(var/client/viewer in GLOB.clients)
-		var/datum/ticket_panel/panel = viewer?.ticket_panel
-		if(panel)
-			panel.instant_update()
+		if(viewer?.ticket_panel)
+			viewer.ticket_panel.instant_update()
+		if(viewer?.player_ticket_panel)
+			viewer.player_ticket_panel.instant_update()
 
 /proc/defer_ticket_panel_update()
 	addtimer(CALLBACK(GLOBAL_PROC, GLOBAL_PROC_REF(broadcast_ticket_panels)), 1, TIMER_UNIQUE)

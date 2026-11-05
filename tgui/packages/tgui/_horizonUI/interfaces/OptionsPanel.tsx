@@ -16,6 +16,7 @@ interface MuteStates {
   ooc: boolean;
   pray: boolean;
   adminhelp: boolean;
+  mentorhelp: boolean;
   deadchat: boolean;
   webreq: boolean;
 }
@@ -60,6 +61,7 @@ const DEFAULT_PLAYER_DATA: PlayerData = {
     ooc: false,
     pray: false,
     adminhelp: false,
+    mentorhelp: false,
     deadchat: false,
     webreq: false,
   },
@@ -710,6 +712,13 @@ const MuteGrid = ({
           onClick={() => toggleMute('adminhelp')}
           content="ADMINHELP"
           color={!m.adminhelp ? 'green' : 'red'}
+        />
+        <Button.Checkbox
+          fluid
+          checked={m.mentorhelp}
+          onClick={() => toggleMute('mentorhelp')}
+          content="MENTORHELP"
+          color={!m.mentorhelp ? 'green' : 'red'}
         />
         <Button.Checkbox
           fluid

@@ -11,17 +11,18 @@
  * * tag - tag that indicates the type of text(announcement, telepathy, etc)
  * * log_globally - boolean checking whether or not we write this log to the log file
  * * forced_by - source that forced the dialogue if any
+ * * language - the language the message was spoken in, if known
  */
-/atom/proc/log_sayverb_talk(message, list/message_mods = list(), tag = null, log_globally = TRUE, forced_by = null)
+/atom/proc/log_sayverb_talk(message, list/message_mods = list(), tag = null, log_globally = TRUE, forced_by = null, datum/language/language = null) // [HORIZON-EDIT] ADMIN-TICKETS
 	// If it's just the custom say verb, log it to emotes.
 	if(message_mods[MODE_CUSTOM_SAY_ERASE_INPUT])
 		log_talk(message_mods[MODE_CUSTOM_SAY_EMOTE], LOG_RADIO_EMOTE, tag, log_globally, forced_by)
 		return
 
 	if(message_mods[WHISPER_MODE])
-		log_talk(message, LOG_WHISPER, tag, log_globally, forced_by, message_mods[MODE_CUSTOM_SAY_EMOTE])
+		log_talk(message, LOG_WHISPER, tag, log_globally, forced_by, message_mods[MODE_CUSTOM_SAY_EMOTE], language) // [HORIZON-EDIT] ADMIN-TICKETS
 	else
-		log_talk(message, LOG_SAY, tag, log_globally, forced_by, message_mods[MODE_CUSTOM_SAY_EMOTE])
+		log_talk(message, LOG_SAY, tag, log_globally, forced_by, message_mods[MODE_CUSTOM_SAY_EMOTE], language) // [HORIZON-EDIT] ADMIN-TICKETS
 
 /**
  * Helper for logging chat messages or other logs with arbitrary inputs (e.g. announcements)
@@ -35,10 +36,23 @@
  * * tag - tag that indicates the type of text(announcement, telepathy, etc)
  * * log_globally - boolean checking whether or not we write this log to the log file
  * * forced_by - source that forced the dialogue if any
+ * * custom_say_emote - custom say verb replacing the speech verb, if any
+ * * language - the language the message was spoken in, if known
  */
-/atom/proc/log_talk(message, message_type, tag = null, log_globally = TRUE, forced_by = null, custom_say_emote = null)
+/atom/proc/log_talk(message, message_type, tag = null, log_globally = TRUE, forced_by = null, custom_say_emote = null, datum/language/language = null) // [HORIZON-EDIT] ADMIN-TICKETS
 	var/prefix = tag ? "([tag]) " : ""
 	var/suffix = forced_by ? " FORCED by [forced_by]" : ""
+
+	// [HORIZON-EDIT] ADMIN-TICKETS
+	// Only non-standard languages are worth marking; Common is the assumed default.
+	if(language)
+		var/datum/language/spoken = GLOB.language_datum_instances[language]
+		if(!spoken && istype(language))
+			spoken = language
+		if(spoken && !istype(spoken, /datum/language/common))
+			suffix += " (language: [spoken.name])"
+	// [/HORIZON-EDIT]
+
 	log_message("[prefix][custom_say_emote ? "*[custom_say_emote]*, " : ""]\"[message]\"[suffix]", message_type, log_globally = log_globally)
 
 /// Logging for generic spoken messages

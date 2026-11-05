@@ -51,7 +51,7 @@
 	. = ..()
 	if(.)
 		return
-	user.holder.player_panel_new()
+	SSadmin_verbs.dynamic_invoke_verb(user, /datum/admin_verb/player_panel) // [HORIZON-EDIT] ADMIN-TICKETS
 	return TRUE
 
 /datum/keybinding/admin/toggle_buildmode_self

@@ -43,7 +43,7 @@ ADMIN_VERB(cmd_admin_pm_panel, R_NONE, "Admin PM", "Show a list of clients to PM
 			nametag = "[real_mob_name](as [mob_name])"
 		targets["[nametag] - [client]"] = client
 
-	var/target = input(src,"To whom shall we send a message?", "Admin PM", null) as null|anything in sort_list(targets)
+	var/target = tgui_input_list(src, "To whom shall we send a message?", "Admin PM", sort_list(targets)) // [HORIZON-EDIT] ADMIN-TICKETS
 	if (isnull(target))
 		return
 	user.cmd_admin_pm(targets[target], null)
@@ -104,7 +104,7 @@ ADMIN_VERB(cmd_admin_pm_panel, R_NONE, "Admin PM", "Show a list of clients to PM
 		if(length(recipient_interactions) == 1)
 			if(length(opening_interactions)) // Inform the admin that they aren't the first
 				var/printable_interators = english_list(opening_interactions)
-				SEND_SOUND(src, sound('sound/machines/buzz/buzz-sigh.ogg', volume=30))
+				SEND_SOUND(src, sound('_horizon/sound/adminhelp-error.ogg', volume=30)) // [HORIZON-EDIT] ADMIN-TICKETS
 				message_prompt += "\n\n**This ticket is already being responded to by: [printable_interators]**"
 			// add the admin who is currently responding to the list of people responding
 			LAZYADD(recipient_ticket.opening_responders, src)
@@ -115,7 +115,7 @@ ADMIN_VERB(cmd_admin_pm_panel, R_NONE, "Admin PM", "Show a list of clients to PM
 	else
 		request = "[request] [formatted_recipient_ckey]."
 
-	var/message = input(src, message_prompt, request) as message|null
+	var/message = tgui_input_text(src.mob, message_prompt, request, null, , TRUE) // [HORIZON-EDIT] ADMIN-TICKETS
 
 	if(recipient_ticket)
 		LAZYREMOVE(recipient_ticket.opening_responders, src)
@@ -248,7 +248,7 @@ ADMIN_VERB(cmd_admin_pm_panel, R_NONE, "Admin PM", "Show a list of clients to PM
 		else
 			request = "[request] [recipient_print_key]."
 		//get message text, limit its length.and clean/escape html
-		msg = input(src,"Message:", request) as message|null
+		msg = tgui_input_text(src.mob, "Message:", request, null, , TRUE) // [HORIZON-EDIT] ADMIN-TICKETS
 		msg = trim(msg)
 
 	if(!msg)
@@ -312,7 +312,7 @@ ADMIN_VERB(cmd_admin_pm_panel, R_NONE, "Admin PM", "Show a list of clients to PM
 	if(ambiguious_recipient == EXTERNAL_PM_USER)
 		var/datum/admin_help/new_admin_help = admin_ticket_log(src,
 			"<font color='red'>Reply PM from-<b>[name_key_with_link]</b> to <i>External</i>: [keyword_parsed_msg]</font>",
-			player_message = "<font color='red'>Reply PM from-<b>[name_key_with_link]</b> to <i>External</i>: [send_message]</font>")
+			player_message = "Reply PM from-[key_name(src, FALSE, TRUE)] to External: [send_message]") // [HORIZON-EDIT] ADMIN-TICKETS
 
 		new_admin_help.reply_to_admins_notification(raw_message)
 
@@ -344,8 +344,6 @@ ADMIN_VERB(cmd_admin_pm_panel, R_NONE, "Admin PM", "Show a list of clients to PM
 	var/their_name_with_link = key_name(recipient, TRUE, TRUE)
 	// Stores a bit of html with our ckey highlighted as a reply link
 	var/link_to_us = key_name(src, TRUE, FALSE)
-	// Stores a bit of html with outhe ckey of the recipientr highlighted as a reply link
-	var/link_to_their = key_name(recipient, TRUE, FALSE)
 	// Our ckey
 	var/our_ckey = ckey
 	// Recipient ckey
@@ -401,13 +399,13 @@ ADMIN_VERB(cmd_admin_pm_panel, R_NONE, "Admin PM", "Show a list of clients to PM
 		admin_ticket_log(recipient,
 			"<font color='purple'>PM From [name_key_with_link]: [keyword_parsed_msg]</font>",
 			log_in_blackbox = FALSE,
-			player_message = "<font color='purple'>PM From [link_to_us]: [send_message]</font>")
+			player_message = "PM From [key_name(src, FALSE, TRUE)]: [send_message]") // [HORIZON-EDIT] ADMIN-TICKETS
 
 		if(!already_logged) //Reply to an existing ticket
 			SSblackbox.LogAhelp(recipient_ticket_id, "Reply", send_message, recip_ckey, our_ckey)
 
 		//always play non-admin recipients the adminhelp sound
-		SEND_SOUND(recipient, sound('sound/effects/adminhelp.ogg'))
+		SEND_SOUND(recipient, sound('_horizon/sound/adminhelp-reply.ogg')) // [HORIZON-EDIT] ADMIN-TICKETS
 		return TRUE
 
 	// Ok if we're here, either this message is for an admin, or someone somehow figured out how to send a new message as a player
@@ -444,7 +442,7 @@ ADMIN_VERB(cmd_admin_pm_panel, R_NONE, "Admin PM", "Show a list of clients to PM
 
 	// Let's play some music for the admin, only if they want it tho
 	if(sound_prefs & SOUND_ADMINHELP)
-		recipient.mob.playsound_local(null, 'sound/effects/adminhelp.ogg', 100, vary = FALSE, channel = CHANNEL_ADMIN_SOUNDS, pressure_affected = FALSE, use_reverb = FALSE) // [HORIZON-EDIT] Master_Sounds
+		recipient.mob.playsound_local(null, '_horizon/sound/adminhelp-reply.ogg', 100, vary = FALSE, channel = CHANNEL_ADMIN_SOUNDS, pressure_affected = FALSE, use_reverb = FALSE) // [HORIZON-EDIT] ADMIN-TICKETS
 
 	SEND_SIGNAL(ticket, COMSIG_ADMIN_HELP_REPLIED)
 
@@ -463,7 +461,7 @@ ADMIN_VERB(cmd_admin_pm_panel, R_NONE, "Admin PM", "Show a list of clients to PM
 
 		//omg this is dumb, just fill in both their logs
 		var/interaction_message = "<font color='purple'>PM from-<b>[name_key_with_link]</b> to-<b>[their_name_with_link]</b>: [keyword_parsed_msg]</font>"
-		var/player_interaction_message = "<font color='purple'>PM from-<b>[link_to_us]</b> to-<b>[link_to_their]</b>: [send_message]</font>"
+		var/player_interaction_message = "PM from-[key_name(src, FALSE, TRUE)] to-[key_name(recipient, FALSE, TRUE)]: [send_message]" // [HORIZON-EDIT] ADMIN-TICKETS
 		admin_ticket_log(src,
 			interaction_message,
 			log_in_blackbox = FALSE,
@@ -479,7 +477,7 @@ ADMIN_VERB(cmd_admin_pm_panel, R_NONE, "Admin PM", "Show a list of clients to PM
 
 	// This is us (a player) trying to talk to the recipient (an admin)
 	var/replymsg = "Reply PM from-<b>[name_key_with_link]</b>: [span_linkify(keyword_parsed_msg)]"
-	var/player_replymsg = "Reply PM from-<b>[link_to_us]</b>: [span_linkify(send_message)]"
+	var/player_replymsg = "Reply PM from-[key_name(src, FALSE, TRUE)]: [send_message]" // [HORIZON-EDIT] ADMIN-TICKETS
 	admin_ticket_log(src,
 		"<font color='red'>[replymsg]</font>",
 		log_in_blackbox = FALSE,
@@ -704,13 +702,13 @@ ADMIN_VERB(cmd_admin_pm_panel, R_NONE, "Admin PM", "Show a list of clients to PM
 		message,
 	)
 
-	admin_ticket_log(recipient, "<font color='purple'>PM From [tgs_tagged]: [message]</font>", log_in_blackbox = FALSE)
+	admin_ticket_log(recipient, "<font color='purple'>PM From [tgs_tagged]: [message]</font>", log_in_blackbox = FALSE, player_message = "PM From [tgs_tagged]: [message]") // [HORIZON-EDIT] ADMIN-TICKETS
 
 	window_flash(recipient, ignorepref = TRUE)
 	// Nullcheck because we run a winset in window flash and I do not trust byond
 	if(recipient)
 		//always play non-admin recipients the adminhelp sound
-		SEND_SOUND(recipient, 'sound/effects/adminhelp.ogg')
+		SEND_SOUND(recipient, sound('_horizon/sound/adminhelp-reply.ogg')) // [HORIZON-EDIT] ADMIN-TICKETS
 
 		recipient.externalreplyamount = EXTERNALREPLYCOUNT
 	return "Message Successful"

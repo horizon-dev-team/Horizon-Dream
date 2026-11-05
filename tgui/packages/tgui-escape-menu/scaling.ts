@@ -1,5 +1,5 @@
 const ICON_SCALE_BASE_WIDTH = 800;
-const REM_BASE_DIVISOR = 100;
+const REM_BASE_DIVISOR = 130;
 
 export function updateScaling() {
   const width = window.innerWidth;

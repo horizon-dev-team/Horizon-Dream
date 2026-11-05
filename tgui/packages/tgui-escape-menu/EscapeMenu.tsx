@@ -40,6 +40,10 @@ export type ServerState = {
   players: PlayerInfo[];
   ignoredOffline: string[];
   suicideIcon: string | null;
+  canOpenTicketPanel?: boolean;
+  ticketPanelLabel?: string | null;
+  pendingTickets?: number;
+  adminMode?: string | null;
   uiVolume?: number;
 };
 

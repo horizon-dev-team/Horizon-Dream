@@ -10,8 +10,8 @@
 	logger.Log(LOG_CATEGORY_SILICON, text, data)
 
 
-/// Logs a message in a mob's individual log, and in the global logs as well if log_globally is true
-/mob/log_message(message, message_type, color = null, log_globally = TRUE, list/data)
+/// Logs a message in a mob's individual log, and in the global logs as well if log_globally is true. target — optional atom stored for LogViewer filtering.
+/mob/log_message(message, message_type, color = null, log_globally = TRUE, list/data, atom/target = null) // [HORIZON-EDIT] ADMIN-TICKETS
 	if(!LAZYLEN(message))
 		stack_trace("Empty message")
 		return
@@ -25,6 +25,24 @@
 
 	if(!islist(logging[smessage_type]))
 		logging[smessage_type] = list()
+
+	// [HORIZON-ADD] ADMIN-TICKETS
+	var/log_time = server_timestamp("hh:mm:ss")
+	var/log_who = key_name_and_tag(src)
+	var/log_where = loc_name(src)
+	var/log_type_name = log_type_to_name(message_type)
+	var/mob/living/L = src
+	var/log_health = null
+	if(istype(L) && (message_type == LOG_ATTACK || message_type == LOG_VICTIM))
+		log_health = "[L.health]"
+
+	var/log_state = "alive"
+	switch(src.stat)
+		if(SOFT_CRIT, HARD_CRIT)
+			log_state = "critical"
+		if(DEAD)
+			log_state = "dead"
+	// [/HORIZON-ADD]
 
 	var/colored_message = message
 	if(color)
@@ -46,11 +64,28 @@
 		if(LOG_RADIO_EMOTE)
 			colored_message = "(RADIOEMOTE) [colored_message]"
 
-	var/list/timestamped_message = list("\[[server_timestamp(format = "YYYY-MM-DD hh:mm:ss")]\] [key_name_and_tag(src)] [loc_name(src)] (Event #[LAZYLEN(logging[smessage_type])])" = colored_message)
+// [HORIZON-EDIT] ADMIN-TICKETS
+	var/list/entry = list(
+		"time" = log_time,
+		"timestamp" = world.time,
+		"who" = log_who,
+		"what" = colored_message,
+		"where" = log_where,
+		"type" = log_type_name,
+		"type_flag" = message_type,
+		"state" = log_state,
+		"ckey" = ckey,
+		"color" = color,
+		"health" = log_health,
+		"target_name" = target?.name,
+		"target_key" = ismob(target) ? target:ckey : null,
+		"target_ref" = target ? REF(target) : null,
+	)
 
-	logging[smessage_type] += timestamped_message
+	logging[smessage_type] += list(entry)
 
 	if(HAS_CONNECTED_PLAYER(src))
-		persistent_client.logging[smessage_type] += timestamped_message
+		persistent_client.logging[smessage_type] += list(entry)
 
-	..()
+	..(message, message_type, color, log_globally, data)
+// [HORIZON-EDIT] ADMIN-TICKETS

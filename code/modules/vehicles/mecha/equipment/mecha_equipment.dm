@@ -250,7 +250,7 @@
 /obj/item/mecha_parts/mecha_equipment/proc/set_active(active)
 	src.active = active
 
-/obj/item/mecha_parts/mecha_equipment/log_message(message, message_type=LOG_GAME, color=null, log_globally, list/data)
+/obj/item/mecha_parts/mecha_equipment/log_message(message, message_type=LOG_GAME, color=null, log_globally, list/data, atom/target = null) // [HORIZON-EDIT] ADMIN-TICKETS
 	if(chassis)
 		return chassis.log_message("ATTACHMENT: [src] [message]", message_type, color)
 	return ..()

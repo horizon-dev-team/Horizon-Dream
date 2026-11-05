@@ -183,7 +183,7 @@ GLOBAL_LIST_INIT(message_modes_stat_limits, list(
 				message_mods[WHISPER_MODE] = MODE_WHISPER_CRIT
 				succumbed = TRUE
 
-	log_sayverb_talk(message, message_mods, forced_by = forced)
+	log_sayverb_talk(message, message_mods, forced_by = forced, language = language) // [HORIZON-EDIT] ADMIN-TICKETS
 
 #ifdef UNIT_TESTS
 	// Saves a ref() to our arglist specifically.

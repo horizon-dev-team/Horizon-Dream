@@ -41,6 +41,14 @@
 	show_verb_panel = FALSE
 	///Contains admin info. Null if client is not an admin.
 	var/datum/admins/holder = null
+	// [HORIZON-ADD] ADMIN-TICKETS
+	/// Holds the client's current mentorhelp thread
+	var/datum/mentorhelp/current_mhelp = null
+	/// Holds the client's ticket panel datum for the TGUI ticket panel
+	var/datum/ticket_panel/ticket_panel = null
+	/// Holds the client's player ticket panel datum for the TGUI player ticket panel
+	var/datum/player_ticket_panel/player_ticket_panel = null
+	// [/HORIZON-ADD]
 	///Needs to implement InterceptClickOn(user,params,atom) proc
 	var/datum/click_intercept = null
 	///Time when the click was intercepted

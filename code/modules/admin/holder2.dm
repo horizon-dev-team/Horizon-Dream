@@ -520,3 +520,11 @@ you will have to do something like if(client.rights & R_ADMIN) yourself.
 
 #undef RESULT_2FA_VALID
 #undef RESULT_2FA_ID
+
+// [HORIZON-ADD] ADMIN-TICKETS
+/proc/is_staff(client/C)
+	return C?.holder && check_rights_for(C, R_ADMIN)
+
+/proc/is_mentor(client/C)
+	return C?.holder && (check_rights_for(C, R_MENTOR) || check_rights_for(C, R_ADMIN))
+// [/HORIZON-ADD]

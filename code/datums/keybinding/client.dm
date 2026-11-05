@@ -7,7 +7,7 @@
 	hotkey_keys = list("F1")
 	name = "admin_help"
 	full_name = "Admin Help"
-	description = "Ask an admin for help."
+	description = "Ask an admin or a mentor for help." // [HORIZON-EDIT] ADMIN-TICKETS
 	keybind_signal = COMSIG_KB_CLIENT_GETHELP_DOWN
 
 /datum/keybinding/client/admin_help/down(client/user, turf/target, mousepos_x, mousepos_y)

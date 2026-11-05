@@ -109,6 +109,11 @@ GLOBAL_LIST_INIT(unrecommended_builds, list(
 	if (href_list["player_ticket_panel"])
 		view_latest_ticket()
 		return
+	// [HORIZON-EDIT] ADMIN-TICKETS: tgui-less player ticket panel fallback
+	if (href_list["tguiless_ticket_panel"])
+		legacy_player_ticket_panel()
+		return
+	// [/HORIZON-EDIT]
 	// Admin message
 	if(href_list["messageread"])
 		var/message_id = round(text2num(href_list["messageread"]), 1)

@@ -1,0 +1,17 @@
+@font-face {
+	font-family: "ChakraPetch";
+	src:
+		url("chakrapetch-regular.woff2") format("woff2"),
+		url("chakrapetch-regular.ttf") format("truetype");
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: "ChakraPetch";
+	src:
+		url("chakrapetch-bold.woff2") format("woff2"),
+		url("chakrapetch-bold.ttf") format("truetype");
+	font-weight: bold;
+	font-style: normal;
+}

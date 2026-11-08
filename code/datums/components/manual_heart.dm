@@ -90,7 +90,7 @@
 /// Worker proc that checks logic for if a pump can happen, and applies effects from doing so
 /datum/component/manual_heart/proc/on_pump(mob/owner)
 	COOLDOWN_START(src, heart_timer, pump_delay)
-	playsound(owner,'sound/effects/singlebeat.ogg', 40, TRUE)
+	playsound(owner,'sound/effects/singlebeat.ogg', 40, TRUE, mixer_channel = CHANNEL_UI) // [HORIZON-EDIT] Master_Sounds
 
 	var/mob/living/carbon/carbon_owner = owner
 

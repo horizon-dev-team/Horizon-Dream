@@ -20,6 +20,8 @@
 	var/list/stored_ammo = list()
 	///type that the magazine will be searching for, rejects if not a subtype of
 	var/ammo_type = /obj/item/ammo_casing
+	///type that the magazine will never accept. Allows for blacklisting some ammo types that share calibers, for instance.
+	var/refused_type
 	/// wording used for individual units of ammo, e.g. cartridges (regular ammo), shells (shotgun shells)
 	var/casing_phrasing = "round"
 	///maximum amount of ammo in the magazine
@@ -116,7 +118,7 @@
 		load_type = ammo_type
 
 	var/obj/item/ammo_casing/round_check = load_type
-	if(!starting && !(caliber ? (caliber == initial(round_check.caliber)) : (ammo_type == load_type)))
+	if(!starting && (!(caliber ? (caliber == initial(round_check.caliber)) : (ammo_type == load_type)) || refused_type && refused_type == ammo_type))
 		stack_trace("Tried loading unsupported ammocasing type [load_type] into ammo box [type].")
 		return
 
@@ -190,7 +192,7 @@
 	return FALSE
 
 /obj/item/ammo_box/proc/is_compatible_round(obj/item/ammo_casing/new_round)
-	if(!new_round || !(caliber ? (caliber == new_round.caliber) : (ammo_type == new_round.type)))
+	if(!new_round || !(caliber ? (caliber == new_round.caliber) : (ammo_type == new_round.type)) || refused_type && refused_type == new_round.type)
 		return FALSE
 	return TRUE
 
@@ -262,7 +264,7 @@
 
 	A.forceMove(drop_location())
 	if(!user.is_holding(src) || !user.put_in_hands(A)) //incase they're using TK
-		A.bounce_away(bounce_angle = rand(0, 360), spread_multiplier = 0.75, still_warm = FALSE, sound_delay = 0) // [HORIZON-EDIT] PHYSICS
+		A.bounce_away(bounce_angle = null, spread_multiplier = 0.75, still_warm = FALSE, sound_delay = 0) // [HORIZON-EDIT] PHYSICS
 	playsound(src, 'sound/items/weapons/gun/general/mag_bullet_insert.ogg', 60, TRUE)
 	to_chat(user, span_notice("You remove a [casing_phrasing] from [src]!"))
 	update_appearance()

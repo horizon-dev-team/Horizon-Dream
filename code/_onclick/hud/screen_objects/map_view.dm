@@ -85,6 +85,8 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen/map_view)
 	UnregisterSignal(window, COMSIG_TGUI_WINDOW_VISIBLE)
 
 /atom/movable/screen/map_view/proc/display_to_client(client/show_to)
+	if(!show_to) // [HORIZON-ADD] LOBBY
+		return
 	show_to.register_map_obj(src)
 	// We need to add planesmasters to the popup, otherwise
 	// blending fucks up massively. Any planesmaster on the main screen does

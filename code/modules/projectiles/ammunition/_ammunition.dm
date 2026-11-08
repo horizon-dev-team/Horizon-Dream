@@ -37,17 +37,18 @@
 	/// How much force is applied when fired in zero-G
 	var/newtonian_force = 1
 
-	///If set to true or false, this ammunition can or cannot misfire, regardless the gun can_misfire setting
-	var/can_misfire = null
-	///This is how much misfire probability is added to the gun when it fires this casing.
-	var/misfire_increment = 0
-	///If set, this casing will damage any gun it's fired from by the specified amount
-	var/integrity_damage = 0
+	///Determines the pressure created by this casing. Most casings are AMMO_CASING_PRESSURE_MEDIUM. If the gun firing the casing has a lower pressure threshold, we start damaging the gun.
+	var/casing_pressure = AMMO_CASING_PRESSURE_MEDIUM
+	///This is how much misfire probability is added to the gun when it fires this casing if it is above the guns pressure threshold.
+	var/misfire_increment = 5
 
 	/// Set when this casing is fired. Only used for checking if it should burn a user's hand when caught from an ejection port.
 	var/shot_timestamp = 0
 
-	item_flags = NO_ROTATE_RANDOM_THROW // [HORIZON-ADD] - Rotate_Item
+// [HORIZON-ADD] - Rotate_Item
+	var/auto_rotate = TRUE
+	item_flags = NO_ROTATE_RANDOM_THROW
+// [/HORIZON-ADD]
 
 /obj/item/ammo_casing/spent
 	name = "spent bullet casing"
@@ -60,6 +61,8 @@
 	pixel_x = base_pixel_x + rand(-10, 10)
 	pixel_y = base_pixel_y + rand(-10, 10)
 	setDir(pick(GLOB.alldirs))
+	if(auto_rotate)
+		transform = transform.Turn(round(45 * rand(0, 32) / 2)) // [HORIZON-ADD]
 	update_appearance()
 
 /obj/item/ammo_casing/Destroy()
@@ -88,6 +91,15 @@
 	if(!ispath(exam_proj) || pellets == 0)
 		return
 
+	var/pressure_readout = "an indescribable"
+	switch(casing_pressure)
+		if(-INFINITY to AMMO_CASING_PRESSURE_LOW)
+			pressure_readout = "a low"
+		if(AMMO_CASING_PRESSURE_MEDIUM)
+			pressure_readout = "a standard"
+		if(AMMO_CASING_PRESSURE_EXTREME to INFINITY)
+			pressure_readout = "an extreme"
+
 	// are we in an ammo box?
 	if(isammobox(loc))
 		var/obj/item/ammo_box/our_box = loc
@@ -102,6 +114,7 @@
 		// grab the damage multiplier.
 		proj_damage_mult = our_gun.projectile_damage_multiplier
 	var/list/readout = list()
+	readout += "This round exerts [pressure_readout] amount of chamber pressure when fired."
 	if(proj_damage_mult <= 0 || (initial_damage <= 0 && initial_stamina <= 0))
 		return "Our legal team has determined the offensive nature of these [span_warning(caliber)] rounds to be esoteric."
 	// No dividing by 0
@@ -176,7 +189,6 @@
 	if(pixel_mess)
 		pixel_x = base_pixel_x + rand(-world.icon_size/4, world.icon_size/4)
 		pixel_y = base_pixel_y + rand(-world.icon_size/4, world.icon_size/4)
-	SpinAnimation(speed = 10, loops = 1)
 	if(!isnull(bounce_angle))
 		//cool awesome physics this is so sick tbh
 		AddComponent(/datum/component/movable_physics, \

@@ -12,8 +12,8 @@
 	dog_fashion = /datum/dog_fashion/back
 	interaction_flags_atom = parent_type::interaction_flags_atom | INTERACT_ATOM_ALLOW_USER_LOCATION | INTERACT_ATOM_IGNORE_MOBILITY
 	sound_vary = TRUE
-	pickup_sound = SFX_GENERIC_DEVICE_PICKUP
-	drop_sound = SFX_GENERIC_DEVICE_DROP
+	pickup_sound = /datum/sound_effect/generic_device_pickup
+	drop_sound = /datum/sound_effect/generic_device_drop
 
 	obj_flags = CONDUCTS_ELECTRICITY
 	slot_flags = ITEM_SLOT_BELT
@@ -43,6 +43,8 @@
 
 	/// Both the range around the radio in which mobs can hear what it receives and the range the radio can hear
 	var/canhear_range = 3
+	/// Runechat above the radio
+	var/runechat_on_receive = FALSE
 	/// Tracks the number of EMPs currently stacked.
 	var/emped = 0
 
@@ -368,10 +370,11 @@
 
 	if(isliving(talking_movable))
 		var/mob/living/talking_living = talking_movable
-		var/volume_modifier = (talking_living.client?.prefs.read_preference(/datum/preference/numeric/volume/sound_radio_noise))
+		var/datum/preferences/talking_prefs = talking_living.client?.prefs
+		var/volume_modifier = talking_prefs?.channel_volume?["[CHANNEL_RADIO]"]
 		if(radio_noise && !HAS_TRAIT(talking_living, TRAIT_DEAF) && volume_modifier && signal.frequency != FREQ_COMMON && !LAZYACCESS(message_mods, MODE_SEQUENTIAL) && COOLDOWN_FINISHED(src, audio_cooldown))
 			COOLDOWN_START(src, audio_cooldown, 0.5 SECONDS)
-			var/sound/radio_noise = sound('sound/items/radio/radio_talk.ogg', volume = volume_modifier)
+			var/sound/radio_noise = sound('sound/items/radio/radio_talk.ogg', volume = calculate_mixed_volume(talking_living.client, 100, CHANNEL_RADIO))
 			radio_noise.frequency = get_rand_frequency_low_range()
 			SEND_SOUND(talking_living, radio_noise)
 
@@ -444,27 +447,30 @@
 				return TRUE
 	return FALSE
 
+// [HORIZON-EDIT]
 /obj/item/radio/proc/on_receive_message(list/data)
 	SEND_SIGNAL(src, COMSIG_RADIO_RECEIVE_MESSAGE, data)
 	if(!isliving(loc))
 		return
 
 	var/mob/living/holder = loc
-	var/volume_modifier = (holder.client?.prefs.read_preference(/datum/preference/numeric/volume/sound_radio_noise))
-
-	if(!radio_noise || HAS_TRAIT(holder, TRAIT_DEAF) || !holder.client?.prefs.read_preference(/datum/preference/numeric/volume/sound_radio_noise))
+	var/datum/preferences/holder_prefs = holder.client?.prefs
+	// [HORIZON-EDIT] Master_Sounds: gate on the radio mixer channel,
+	// applying master -> category -> channel volume in one place.
+	if(!radio_noise || HAS_TRAIT(holder, TRAIT_DEAF) || !holder_prefs?.channel_volume?["[CHANNEL_RADIO]"])
 		return
 	var/list/spans = data["spans"]
 	if(COOLDOWN_FINISHED(src, audio_cooldown))
 		COOLDOWN_START(src, audio_cooldown, 0.5 SECONDS)
-		var/sound/radio_receive = sound('sound/items/radio/radio_receive.ogg', volume = volume_modifier)
+		var/sound/radio_receive = sound('sound/items/radio/radio_receive.ogg', volume = calculate_mixed_volume(holder.client, 100, CHANNEL_RADIO))
 		radio_receive.frequency = get_rand_frequency_low_range()
 		SEND_SOUND(holder, radio_receive)
 	if((SPAN_COMMAND in spans) && COOLDOWN_FINISHED(src, important_audio_cooldown))
 		COOLDOWN_START(src, important_audio_cooldown, 0.5 SECONDS)
-		var/sound/radio_important = sound('sound/items/radio/radio_important.ogg', volume = volume_modifier)
+		var/sound/radio_important = sound('sound/items/radio/radio_important.ogg', volume = calculate_mixed_volume(holder.client, 100, CHANNEL_RADIO))
 		radio_important.frequency = get_rand_frequency_low_range()
 		SEND_SOUND(holder, radio_important)
+// [/HORIZON-EDIT]
 
 /obj/item/radio/ui_state(mob/user)
 	return GLOB.inventory_state
@@ -725,6 +731,7 @@
 /obj/item/radio/entertainment/speakers // Used inside of the entertainment monitors, not to be used as a actual item
 	should_be_listening = TRUE
 	should_be_broadcasting = FALSE
+	runechat_on_receive = TRUE
 
 /obj/item/radio/entertainment/speakers/proc/toggle_mute()
 	should_be_listening = !should_be_listening
@@ -736,7 +743,7 @@
 	wires?.cut(WIRE_TX)
 
 /obj/item/radio/entertainment/speakers/on_receive_message(list/data)
-	playsound(src, SFX_MUFFLED_SPEECH, 60, TRUE, -4, ignore_walls = FALSE, volume_preference = /datum/preference/numeric/volume/sound_radio_noise)
+	playsound(src, /datum/sound_effect/muffled_speech, 60, TRUE, -4, ignore_walls = FALSE, mixer_channel = CHANNEL_RADIO)
 
 	return ..()
 
@@ -749,6 +756,7 @@
 	overlay_speaker_idle = "radio_s_idle"
 	overlay_mic_idle = "radio_m_idle"
 	overlay_mic_active = "radio_m_active"
+	runechat_on_receive = FALSE
 
 /obj/item/radio/entertainment/microphone // Used inside of a broadcast camera, not to be used as a actual item
 	should_be_listening = FALSE

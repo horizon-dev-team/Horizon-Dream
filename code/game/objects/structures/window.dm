@@ -28,7 +28,7 @@
 	var/glass_type = /obj/item/stack/sheet/glass
 	var/glass_amount = 1
 	var/real_explosion_block //ignore this, just use explosion_block
-	var/break_sound = SFX_SHATTER
+	var/break_sound = /datum/sound_effect/shatter
 	var/knock_sound = 'sound/effects/glass/glassknock.ogg'
 	var/bash_sound = 'sound/effects/glass/glassbash.ogg'
 	var/hit_sound = 'sound/effects/glass/glasshit.ogg'
@@ -46,6 +46,7 @@
 
 /obj/structure/window/Initialize(mapload, direct)
 	AddElement(/datum/element/blocks_explosives)
+	AddElement(/datum/element/cutting_tool_target) // [HORIZON-ADD] SALVAGE_TOOL
 	. = ..()
 	if(direct)
 		setDir(direct)
@@ -224,6 +225,23 @@
 		repair_damage(max_integrity)
 		to_chat(user, span_notice("You repair [src]."))
 	return ITEM_INTERACT_SUCCESS
+
+// [HORIZON-ADD] SALVAGE_TOOL
+/obj/structure/window/deconstruct_act(mob/living/user, obj/item/I)
+	. = ..() // INDESTRUCTIBLE check
+	if(.)
+		return
+	if(!I.tool_start_check(user, amount = 1))
+		return ITEM_INTERACT_BLOCKING
+	user.visible_message(span_notice("[user] starts slicing through [src] with [I]."),
+		span_notice("You start slicing through [src]..."))
+	if(!I.use_tool(src, user, 4 SECONDS, volume = 50, amount = 1))
+		return ITEM_INTERACT_BLOCKING
+	user.visible_message(span_notice("[user] slices through [src], shattering it!"),
+		span_notice("You slice through [src], and it shatters into pieces."))
+	deconstruct(FALSE)
+	return ITEM_INTERACT_SUCCESS
+// [/HORIZON-ADD]
 
 /obj/structure/window/screwdriver_act(mob/living/user, obj/item/tool)
 
@@ -1030,7 +1048,7 @@ MAPPING_DIRECTIONAL_HELPERS(/obj/structure/window/reinforced/survival_pod/spawne
 	can_atmos_pass = ATMOS_PASS_YES
 	resistance_flags = FLAMMABLE
 	armor_type = /datum/armor/none
-	knock_sound = SFX_PAGE_TURN
+	knock_sound = /datum/sound_effect/page_turn
 	bash_sound = 'sound/items/weapons/slashmiss.ogg'
 	break_sound = 'sound/items/poster/poster_ripped.ogg'
 	hit_sound = 'sound/items/weapons/slashmiss.ogg'

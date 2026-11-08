@@ -4,21 +4,42 @@
 	including inventories and item quick actions.
 */
 
+// [HORIZON-EDIT] WIDE_HUD
 // The default UI style is the first one in the list
 GLOBAL_LIST_INIT(available_ui_styles, list(
-	"Midnight" = 'icons/hud/screen_midnight.dmi',
-	"Retro" = 'icons/hud/screen_retro.dmi',
-	"Plasmafire" = 'icons/hud/screen_plasmafire.dmi',
-	"Slimecore" = 'icons/hud/screen_slimecore.dmi',
-	"Operative" = 'icons/hud/screen_operative.dmi',
-	"Clockwork" = 'icons/hud/screen_clockwork.dmi',
-	"Glass" = 'icons/hud/screen_glass.dmi',
-	"Trasen-Knox" = 'icons/hud/screen_trasenknox.dmi',
-	"Detective" = 'icons/hud/screen_detective.dmi',
+	"Atomic" = '_horizon/icons/ui/themed/screen_atomic.dmi',
+	"Expanse" = '_horizon/icons/ui/themed/screen_expanse.dmi',
+	"Belter" = '_horizon/icons/ui/themed/screen_belter.dmi',
+))
+
+// Mapping of UI styles to their corresponding 48x32 wide HUD icons (hands, back, belt, suit storage)
+GLOBAL_LIST_INIT(available_wide_icons, list(
+	"Atomic" = '_horizon/icons/ui/themed/screen_wide_atomic.dmi',
+	"Expanse" = '_horizon/icons/ui/themed/screen_wide_expanse.dmi',
+	"Belter" = '_horizon/icons/ui/themed/screen_wide_belter.dmi',
+))
+
+GLOBAL_LIST_INIT(available_progbar_icons, list(
+	"Atomic" = '_horizon/icons/ui/themed/progessbar_atomic.dmi',
+	"Expanse" = '_horizon/icons/ui/themed/progessbar_expanse.dmi',
+	"Belter" = '_horizon/icons/ui/themed/progessbar_belter.dmi',
 ))
 
 /proc/ui_style2icon(ui_style)
 	return GLOB.available_ui_styles[ui_style] || GLOB.available_ui_styles[GLOB.available_ui_styles[1]]
+
+/proc/ui_style2wide_icon(ui_style)
+	return GLOB.available_wide_icons[ui_style] || GLOB.available_wide_icons[GLOB.available_wide_icons[1]]
+
+/proc/ui_style2progbar_icon(ui_style)
+	return GLOB.available_progbar_icons[ui_style] || GLOB.available_progbar_icons[GLOB.available_progbar_icons[1]]
+
+/proc/ui_icon2style_name(ui_icon)
+	for(var/style_name in GLOB.available_ui_styles)
+		if (GLOB.available_ui_styles[style_name] == ui_icon)
+			return style_name
+	return null
+// [/HORIZON-EDIT]
 
 /datum/hud
 	var/mob/mymob
@@ -64,6 +85,12 @@ GLOBAL_LIST_INIT(available_ui_styles, list(
 
 	/// Subtypes can override this to force a specific UI style
 	var/ui_style = null
+	// [HORIZON-ADD] WIDE_HUD
+	/// Current wide HUD icon file (48x32 format), shared by hands and wide inventory slots
+	var/wide_icon = null
+	/// Current swing-cooldown progress bar icon file (96x16), matched to ui_style
+	var/progbar_icon = null
+	// [/HORIZON-EDIT]
 	/// Assoc list of all screen objects we hold by their key
 	var/list/atom/movable/screen/screen_objects = list()
 	/// List of screen objects by their screen group
@@ -85,9 +112,14 @@ GLOBAL_LIST_INIT(available_ui_styles, list(
 /datum/hud/New(mob/owner)
 	mymob = owner
 
-	if (!ui_style)
-		// will fall back to the default if any of these are null
-		ui_style = ui_style2icon(owner.client?.prefs?.read_preference(/datum/preference/choiced/ui_style))
+	// will fall back to the default if any of these are null
+	ui_style ||= ui_style2icon(owner.client?.prefs?.read_preference(/datum/preference/choiced/ui_style))
+	// [HORIZON-ADD] WIDE_HUD
+	// Wide (48x32) HUD atlas and progress bar icons follow the effective UI style
+	var/effective_style_name = ui_icon2style_name(ui_style)
+	wide_icon ||= ui_style2wide_icon(effective_style_name)
+	progbar_icon ||= ui_style2progbar_icon(effective_style_name)
+	// [/HORIZON-ADD]
 
 	add_screen_object(/atom/movable/screen/button_palette, HUD_MOB_TOGGLE_PALETTE)
 	add_screen_object(/atom/movable/screen/palette_scroll/down, HUD_MOB_PALETTE_DOWN)
@@ -97,9 +129,10 @@ GLOBAL_LIST_INIT(available_ui_styles, list(
 	main_group.attach_to(src)
 
 	var/datum/preferences/preferences = owner?.client?.prefs
-	screentip_color = preferences?.read_preference(/datum/preference/color/screentip_color)
-	screentips_enabled = preferences?.read_preference(/datum/preference/choiced/enable_screentips)
-	screentip_images = preferences?.read_preference(/datum/preference/toggle/screentip_images)
+	if(preferences)
+		screentip_color = preferences.read_preference(/datum/preference/color/screentip_color)
+		screentips_enabled = preferences.read_preference(/datum/preference/choiced/enable_screentips)
+		screentip_images = preferences.read_preference(/datum/preference/toggle/screentip_images)
 	screentip_text = add_screen_object(/atom/movable/screen/screentip, HUD_MOB_SCREENTIP)
 
 	for(var/mytype in subtypesof(/atom/movable/plane_master_controller))
@@ -220,8 +253,8 @@ GLOBAL_LIST_INIT(available_ui_styles, list(
 	if(should_sight_scale(new_sight) == should_sight_scale(old_sight))
 		return
 
-	for(var/group_key in master_groups)
-		var/datum/plane_master_group/group = master_groups[group_key]
+	for(var/group_key, _group in master_groups)
+		var/datum/plane_master_group/group = _group
 		group.refresh_planes_offset()
 
 /datum/hud/proc/should_use_scale()
@@ -245,30 +278,29 @@ GLOBAL_LIST_INIT(available_ui_styles, list(
 
 /// Creates the required plane masters to fill out new z layers (because each "level" of multiz gets its own plane master set)
 /datum/hud/proc/build_plane_groups(starting_offset, ending_offset)
-	for(var/group_key in master_groups)
-		var/datum/plane_master_group/group = master_groups[group_key]
+	for(var/group_key, _group in master_groups)
+		var/datum/plane_master_group/group = _group
 		group.build_plane_masters(starting_offset, ending_offset)
 
 /// Returns the plane master that matches the input plane from the passed in group
-/datum/hud/proc/get_plane_master(plane, group_key = PLANE_GROUP_MAIN)
-	var/plane_key = "[plane]"
+/datum/hud/proc/get_plane_master(plane, group_key = PLANE_GROUP_MAIN) as /atom/movable/screen/plane_master
 	var/datum/plane_master_group/group = master_groups[group_key]
-	return group.plane_masters[plane_key]
+	return group.plane_masters[plane]
 
 /// Returns a list of all plane masters that match the input true plane, drawn from the passed in group (ignores z layer offsets)
-/datum/hud/proc/get_true_plane_masters(true_plane, group_key = PLANE_GROUP_MAIN)
+/datum/hud/proc/get_true_plane_masters(true_plane, group_key = PLANE_GROUP_MAIN) as /list
 	var/list/atom/movable/screen/plane_master/masters = list()
 	for(var/plane in TRUE_PLANE_TO_OFFSETS(true_plane))
 		masters += get_plane_master(plane, group_key)
 	return masters
 
 /// Returns all the planes belonging to the passed in group key
-/datum/hud/proc/get_planes_from(group_key)
+/datum/hud/proc/get_planes_from(group_key) as /alist
 	var/datum/plane_master_group/group = master_groups[group_key]
 	return group.plane_masters
 
 /// Returns the corresponding plane group datum if one exists
-/datum/hud/proc/get_plane_group(key)
+/datum/hud/proc/get_plane_group(key) as /datum/plane_master_group
 	return master_groups[key]
 
 ///Creates the mob's visible HUD, returns FALSE if it can't, TRUE if it did.
@@ -283,7 +315,6 @@ GLOBAL_LIST_INIT(available_ui_styles, list(
 /mob/proc/set_hud_used(datum/hud/new_hud)
 	hud_used = new_hud
 	new_hud.build_action_groups()
-
 
 /**
  * Shows this hud's hud to some mob
@@ -357,7 +388,7 @@ GLOBAL_LIST_INIT(available_ui_styles, list(
 				screenmob.client.screen += group_info
 
 			// Hands are apart of the static group but still should be presetn in the reduced mode
-			for (var/i in 1 to length(mymob.held_items))
+			for (var/i in 1 to mymob.get_num_hand_slots())
 				var/atom/movable/screen/hand = screen_objects[HUD_KEY_HAND_SLOT(i)]
 				if (hand)
 					screenmob.client.screen += hand
@@ -393,8 +424,8 @@ GLOBAL_LIST_INIT(available_ui_styles, list(
 	return TRUE
 
 /datum/hud/proc/plane_masters_update()
-	for(var/group_key in master_groups)
-		var/datum/plane_master_group/group = master_groups[group_key]
+	for(var/group_key, _group in master_groups)
+		var/datum/plane_master_group/group = _group
 		// Plane masters are always shown to OUR mob, never to observers
 		group.refresh_hud()
 
@@ -409,8 +440,8 @@ GLOBAL_LIST_INIT(available_ui_styles, list(
 	if (isnull(mymob))
 		return
 
-	for (var/slot_id in inventory_slots)
-		var/datum/inventory_slot/slot = inventory_slots[slot_id]
+	for (var/slot_id, _slot in inventory_slots)
+		var/datum/inventory_slot/slot = _slot
 		if (!isnull(slot))
 			slot.update_inventory_slot(src, mymob)
 
@@ -427,10 +458,28 @@ GLOBAL_LIST_INIT(available_ui_styles, list(
 	if (initial(ui_style) || ui_style == new_ui_style)
 		return
 
+	// [HORIZON-EDIT] WIDE_HUD
+	var/new_style_name = ui_icon2style_name(new_ui_style)
+	wide_icon = ui_style2wide_icon(new_style_name)
+	progbar_icon = ui_style2progbar_icon(new_style_name)
+
 	for(var/hud_key in screen_objects)
 		var/atom/item = screen_objects[hud_key]
-		if (item?.icon == ui_style)
+		var/datum/inventory_slot/inv_slot = null
+		var/atom/movable/screen/inventory/inv_item = item
+		if (istype(inv_item) && inv_item.slot_id)
+			inv_slot = inventory_slots[inv_item.slot_id]
+		var/is_hand_slot = istype(inv_item, /atom/movable/screen/inventory/hand)
+		if (inv_slot?.uses_wide_icon || is_hand_slot)
+			item.icon = wide_icon
+		else if (item?.icon == ui_style)
 			item.icon = new_ui_style
+
+	var/atom/movable/screen/progbar_container/progbar_obj = screen_objects[HUDKEY_MOB_USE_TIMER]
+	if(progbar_obj?.progbar?.bar)
+		progbar_obj.icon = progbar_icon
+		progbar_obj.progbar.bar.icon = progbar_icon
+	// [/HORIZON-EDIT]
 
 	ui_style = new_ui_style
 	build_hand_slots(update_hud = TRUE)
@@ -457,8 +506,8 @@ GLOBAL_LIST_INIT(available_ui_styles, list(
 	for (var/atom/movable/screen/inventory/hand/hand in screen_groups[HUD_GROUP_STATIC])
 		remove_screen_object(hand, FALSE)
 
-	for(var/i in 1 to length(mymob.held_items))
-		var/atom/movable/screen/inventory/hand/hand_box = add_screen_object(/atom/movable/screen/inventory/hand, HUD_KEY_HAND_SLOT(i), HUD_GROUP_STATIC, ui_style, ui_hand_position(i))
+	for(var/i in 1 to mymob.get_num_hand_slots())
+		var/atom/movable/screen/inventory/hand/hand_box = add_screen_object(/atom/movable/screen/inventory/hand, HUD_KEY_HAND_SLOT(i), HUD_GROUP_STATIC, wide_icon, ui_hand_position(i)) // [HORIZON-EDIT] WIDE_HUD
 		hand_box.name = mymob.get_held_index_name(i)
 		hand_box.icon_state = "hand_[mymob.held_index_to_dir(i)]"
 		hand_box.held_index = i
@@ -484,6 +533,12 @@ GLOBAL_LIST_INIT(available_ui_styles, list(
 			hand_ind = IS_LEFT_INDEX(hand_num) ? LEFT_HANDS : RIGHT_HANDS
 		swap_hands.screen_loc = ui_swaphand_position(mymob, hand_ind)
 		hand_num += 1
+
+	// [HORIZON-ADD] WIDE_HUD
+	var/atom/movable/screen/progbar_container/progbar = screen_objects[HUDKEY_MOB_USE_TIMER]
+	if(progbar)
+		progbar.screen_loc = ui_progbar_position(mymob)
+	// [/HORIZON-ADD]
 
 	if(update_hud && mymob?.hud_used == src)
 		show_hud(hud_version)
@@ -630,7 +685,7 @@ GLOBAL_LIST_INIT(available_ui_styles, list(
 	palette_actions = new(src)
 	floating_actions = list()
 	for(var/datum/action/action as anything in mymob.actions)
-		var/atom/movable/screen/movable/action_button/button = action.viewers[src]
+		var/atom/movable/screen/movable/action_button/button = LAZYACCESS(action.viewers, src)
 		if(!button)
 			action.ShowTo(mymob)
 		else

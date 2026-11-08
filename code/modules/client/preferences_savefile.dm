@@ -13,7 +13,7 @@
 /// You do not need to raise this if you are adding new values that have sane defaults.
 /// Only raise this value when changing the meaning/format/name/layout of an existing value
 /// where you would want the updater procs below to run
-#define SAVEFILE_VERSION_MAX 52
+#define SAVEFILE_VERSION_MAX 54
 
 #define IS_DATA_OBSOLETE(version) (version == SAVE_DATA_OBSOLETE)
 #define SHOULD_UPDATE_DATA(version) (version >= SAVE_DATA_NO_ERROR && version < SAVEFILE_VERSION_MAX)
@@ -107,15 +107,21 @@ SAVEFILE UPDATING/VERSIONING - 'Simplified', or rather, more coder-friendly ~Car
 	if (current_version < 44)
 		update_tts_blip_prefs()
 
+	if(current_version < 53)
+		if("swap_hands" in key_bindings)
+			var/keys = key_bindings["swap_hands"]
+			key_bindings -= "swap_hands"
+			key_bindings["swap_hands_row"] = keys
+
 /datum/preferences/proc/update_character(current_version, list/save_data)
+	if(current_version < 54)
+		migrate_legacy_loadout_items(save_data)
+
 	if (current_version < 41)
 		migrate_character_to_tgui_prefs_menu()
 
 	if (current_version < 42)
 		migrate_body_types(save_data)
-
-	if (current_version < 43)
-		migrate_legacy_sound_toggles(savefile)
 
 	if (current_version < 45)
 		migrate_quirk_to_loadout(
@@ -123,10 +129,6 @@ SAVEFILE UPDATING/VERSIONING - 'Simplified', or rather, more coder-friendly ~Car
 			new_typepath = /obj/item/clothing/accessory/pride,
 			data_to_migrate = list(INFO_RESKIN = save_data?["pride_pin"]),
 		)
-	if (current_version < 46)
-		migrate_boolean_sound_prefs_to_default_volume()
-	if (current_version < 47)
-		migrate_boolean_sound_prefs_to_default_volume_v2()
 	if (current_version < 48)
 		migrate_quirk_to_loadout(
 			quirk_to_migrate = "Colorist",
@@ -264,6 +266,11 @@ SAVEFILE UPDATING/VERSIONING - 'Simplified', or rather, more coder-friendly ~Car
 	// Custom hotkeys
 	key_bindings = savefile.get_entry("key_bindings", key_bindings)
 
+	// [HORIZON-ADD] Master_Sounds
+	channel_volume = savefile.get_entry("channel_volume", channel_volume)
+	channel_volume = SANITIZE_LIST(channel_volume)
+	// [/HORIZON-ADD]
+
 	//try to fix any outdated data if necessary
 	if(SHOULD_UPDATE_DATA(data_validity_integer))
 		var/bacpath = PREFS_BACKUP_PATH(path) //todo: if the savefile version is higher then the server, check the backup, and give the player a prompt to load the backup
@@ -337,6 +344,7 @@ SAVEFILE UPDATING/VERSIONING - 'Simplified', or rather, more coder-friendly ~Car
 	savefile.set_entry("hearted_until", (hearted_until > world.realtime ? hearted_until : null))
 	savefile.set_entry("favorite_outfits", favorite_outfits)
 	savefile.set_entry("job_assigned_profiles", job_assigned_profiles)
+	savefile.set_entry("channel_volume", channel_volume) // [HORIZON-ADD] Master_Sounds
 	savefile.save()
 	return TRUE
 
@@ -398,6 +406,10 @@ SAVEFILE UPDATING/VERSIONING - 'Simplified', or rather, more coder-friendly ~Car
 
 	all_quirks = SSquirks.filter_invalid_quirks(SANITIZE_LIST(all_quirks))
 	validate_quirks()
+
+	if(isnewplayer(parent?.mob))
+		var/mob/dead/new_player/lobbyguy = parent?.mob
+		lobbyguy.update_ready_report()
 
 	return TRUE
 

@@ -34,13 +34,14 @@
 
 #endif
 
+// [HORIZON-EDIT] LOBBY
 /datum/asset/simple/namespaced/escape_menu_font
 	assets = list(
 		"Pixellari.ttf" = file("interface/fonts/Pixellari.ttf"),
 		"Grand9K_Pixel.ttf" = file("interface/fonts/Grand9K_Pixel.ttf"),
 	)
 	parents = list(
-		"fonts.css" = file("tgui/packages/tgui-escape-menu/styles/fonts.css"),
+		"escape-fonts.css" = file("tgui/packages/tgui-escape-menu/styles/fonts.css"),
 	)
 
 /datum/asset/simple/namespaced/escape_menu_sounds
@@ -60,6 +61,25 @@
 	var/icon/icons_large = 'icons/hud/escape_menu_leave_body.dmi'
 	for(var/state in icon_states(icons_large))
 		Insert("leave-[state]", icons_large, icon_state = state)
+
+/datum/asset/simple/namespaced/lobby_menu_font
+	assets = list(
+		"chakrapetch-regular.woff2" = file("tgui/packages/chakrapetch/chakrapetch-regular.woff2"),
+		"chakrapetch-regular.ttf" = file("tgui/packages/chakrapetch/chakrapetch-regular.ttf"),
+		"chakrapetch-bold.woff2" = file("tgui/packages/chakrapetch/chakrapetch-bold.woff2"),
+		"chakrapetch-bold.ttf" = file("tgui/packages/chakrapetch/chakrapetch-bold.ttf"),
+	)
+	parents = list(
+		"lobby-fonts.css" = file("tgui/packages/tgui-lobby/styles/fonts.css"),
+	)
+
+
+/datum/asset/simple/namespaced/lobby_menu_sounds
+	assets = list(
+		"ui_select1.ogg" = file("sound/misc/menu/ui_select1.ogg"),
+		"load.mp3" = file("sound/lobby/lobby_load.mp3"),
+	)
+// [/HORIZON-EDIT]
 
 /datum/asset/simple/chat_dark
 	keep_local_name = FALSE

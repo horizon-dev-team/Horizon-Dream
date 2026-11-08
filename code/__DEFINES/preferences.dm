@@ -85,6 +85,12 @@
 
 #define DEFAULT_CYBORG_NAME "Default Cyborg Name"
 
+// [HORIZON-ADD] UI
+#define TGPANEL_ONMAP "onmap"
+#define TGPANEL_PANEL "panel"
+#define TGPANEL_WINDOW "window"
+// [/HORIZON-ADD]
+
 // Choose grid or list TGUI layouts for UI's, when possible.
 /// Force grid layout, even if default is a list.
 #define TGUI_LAYOUT_GRID "grid"
@@ -181,6 +187,9 @@
 #define UPPER_LIP "Upper"
 #define MIDDLE_LIP "Middle"
 #define LOWER_LIP "Lower"
+
+// Plaque description
+#define INFO_DESCRIPTION "description"
 
 // Job greyscale colors for loadout items
 #define COLOR_JOB_ASSISTANT /obj/item/clothing/under/color/grey::greyscale_colors

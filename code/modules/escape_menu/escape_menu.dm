@@ -74,6 +74,7 @@ GAME_VERB_HIDDEN(/client, reset_held_keys_verb, "Reset Held Keys")
 		"admins" = build_admin_list(),
 		"players" = build_player_list(),
 		"ignoredOffline" = build_ignored_offline(),
+		"uiVolume" = client?.prefs ? calculate_mixed_volume(client, 100, CHANNEL_UI) / 100 : 0.8, // [HORIZON-EDIT] Master_Sounds
 	))
 
 /datum/escape_menu/proc/on_client_qdel()
@@ -150,11 +151,14 @@ GAME_VERB_HIDDEN(/client, reset_held_keys_verb, "Reset Held Keys")
 		"ignoredOffline" = build_ignored_offline(),
 		"resources" = resources,
 		"suicideIcon" = GLOB.escape_menu_suicide_icon_base64,
+		"uiVolume" = client?.prefs ? calculate_mixed_volume(client, 100, CHANNEL_UI) / 100 : 0.8, // [HORIZON-EDIT] Master_Sounds
 	))
 
 /datum/escape_menu/proc/build_admin_list()
 	var/list/result = list()
 	for(var/client/admin as anything in GLOB.admins)
+		if(admin.holder?.fakekey && !client?.holder)
+			continue
 		result += list(list(
 			"ckey" = admin.ckey,
 			"displayName" = admin.holder?.fakekey || admin.ckey,
@@ -168,12 +172,16 @@ GAME_VERB_HIDDEN(/client, reset_held_keys_verb, "Reset Held Keys")
 
 /datum/escape_menu/proc/build_player_list()
 	var/list/result = list()
-	for(var/client/player as anything in GLOB.clients - GLOB.admins)
+	for(var/client/player as anything in GLOB.clients)
+		var/fakekey = player.holder?.fakekey
+		if(player.holder && !(fakekey && !client?.holder))
+			continue
+		var/shown_key = fakekey || player.ckey
 		result += list(list(
-			"ckey" = player.ckey,
-			"displayName" = player.ckey,
+			"ckey" = shown_key,
+			"displayName" = shown_key,
 			"ping" = round(player.avgping, 1),
-			"ignored" = (player.ckey in client?.prefs?.ignoring),
+			"ignored" = (shown_key in client?.prefs?.ignoring),
 			"isSelf" = (player.ckey == client?.ckey),
 		))
 	return result

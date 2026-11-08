@@ -25,12 +25,13 @@ export function useSettings() {
         startSettingsMigration(storedSettings);
       } catch (error) {
         console.error('Failed to load panel settings:', error);
+      } finally {
+        setLoaded(true);
       }
     }
 
     fetchSettings();
     setDisplayScaling();
-    setLoaded(true);
   }, []);
 
   function storeSettings(update: SettingsState): void {

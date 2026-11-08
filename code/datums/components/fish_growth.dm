@@ -77,7 +77,7 @@
 		result = new result_type (location)
 		if(location != source.loc)
 			result.visible_message(span_boldnotice("\A [result] jumps out of [source.loc]!"))
-			playsound(result, 'sound/effects/fish_splash.ogg', 60)
+			playsound(result, 'sound/effects/fish_splash.ogg', 60, mixer_channel = CHANNEL_MOB_SOUNDS) // [HORIZON-EDIT] Master_Sounds
 		if(isbasicmob(result))
 			for(var/trait_type in source.fish_traits)
 				var/datum/fish_trait/trait = GLOB.fish_traits[trait_type]

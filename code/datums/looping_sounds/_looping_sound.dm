@@ -188,36 +188,45 @@
  * * soundfile - The soundfile we want to play.
  * * volume_override - The volume we want to play the sound at, overriding the `volume` variable.
  * * repeat_sound - Whether the sound should loop natively via sound.repeat (token path only).
- * * delete_when_finished - Whether a freshly created sound token should self-delete once the sound ends (token path only).
+ * * delete_when_finished - Whether to play the sound on a one-shot token that deletes itself once the sound ends, instead of on our own token (token path only).
  */
 /datum/looping_sound/proc/play(soundfile, volume_override, repeat_sound = FALSE, delete_when_finished = FALSE)
 
 	if(use_sound_tokens)
+		if(delete_when_finished) // Not kept as our token, or we'd keep reusing it after it deletes itself
+			playsoundtoken(parent, soundfile, volume_override || volume, SOUND_RANGE + extra_range, falloff_exponent, falloff_distance)
+			return
 		if(sound_token_instance)
 			sound_token_instance.set_volume(volume_override || volume, FALSE) // Don't update, we'll do that after
 			sound_token_instance.update_sound(soundfile, TRUE, repeat_sound)
 		else
-			sound_token_instance = new /datum/sound_token(parent, soundfile, SOUND_RANGE + extra_range, volume_override || volume, falloff_exponent, falloff_distance, _delete_on_end = delete_when_finished, _repeating = repeat_sound)
+			sound_token_instance = new /datum/sound_token(parent, soundfile, SOUND_RANGE + extra_range, volume_override || volume, falloff_exponent, falloff_distance, _repeating = repeat_sound)
 		return
+	// [HORIZON-EDIT] Master_Sounds
 	var/sound/sound_to_play = sound(soundfile)
-	sound_to_play.channel = sound_channel || SSsounds.random_available_channel()
-	sound_to_play.volume = volume_override || volume //Use volume as fallback if theres no override
 	if(direct)
-		SEND_SOUND(parent, sound_to_play)
+		var/mob/mob_parent = parent
+		if(!mob_parent?.client)
+			return
+		sound_to_play.channel = sound_channel || guess_mixer_channel(soundfile) || SSsounds.random_available_channel()
+		sound_to_play.volume = calculate_mixed_volume(mob_parent.client, volume_override || volume, sound_to_play.channel)
+		SEND_SOUND(mob_parent, sound_to_play)
 	else
 		playsound(
 			parent,
 			sound_to_play,
-			volume,
+			volume_override || volume,
 			vary,
 			extra_range,
 			falloff_exponent = falloff_exponent,
-			channel = sound_to_play.channel,
+			channel = sound_channel,
 			pressure_affected = pressure_affected,
 			ignore_walls = ignore_walls,
 			falloff_distance = falloff_distance,
 			use_reverb = use_reverb,
+			mixer_channel = sound_channel,
 		)
+	// [/HORIZON-EDIT]
 
 /// Returns the sound we should now be playing.
 /datum/looping_sound/proc/get_sound(_mid_sounds)

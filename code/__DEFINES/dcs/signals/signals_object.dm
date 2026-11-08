@@ -106,10 +106,15 @@
 // /obj access signals
 #define COMSIG_AIRLOCK_SHELL_ALLOWED "airlock_shell_try_allowed"
 
+//from /obj/machinery/door/open(): (forced)
+#define COMSIG_MOB_OPENED_DOOR "mob_opened_door"
+
 // /obj/machinery/door/airlock signals
 
 //from /obj/machinery/door/airlock/open(): (forced)
 #define COMSIG_AIRLOCK_OPEN "airlock_open"
+//from /obj/machinery/door/airlock/open(): (forced)
+#define COMSIG_MOB_OPENED_AIRLOCK "mob_opened_airlock"
 //from /obj/machinery/door/airlock/close(): (forced)
 #define COMSIG_AIRLOCK_CLOSE "airlock_close"
 ///from /obj/machinery/door/airlock/set_bolt():
@@ -377,9 +382,16 @@
 
 ///called in /obj/item/gun/try_fire_gun (user, src, target, flag, params)
 #define COMSIG_MOB_TRYING_TO_FIRE_GUN "mob_trying_to_fire_gun"
+	#define COMPONENT_CANCEL_GUN_FIRE (1<<0)
 ///called in /obj/item/gun/fire_gun (user, target, flag, params)
 #define COMSIG_GUN_TRY_FIRE "gun_try_fire"
-	#define COMPONENT_CANCEL_GUN_FIRE (1<<0) /// Also returned to cancel COMSIG_MOB_TRYING_TO_FIRE_GUN
+	// COMPONENT_CANCEL_GUN_FIRE
+///called in /obj/item/gun/on_autofire_start (user)
+#define COMSIG_GUN_TRY_AUTO_FIRE "gun_try_auto_fire"
+	// COMPONENT_CANCEL_GUN_FIRE
+///called in /obj/item/gun/can_shoot() to determine if the gun is able to fire: ()
+#define COMSIG_GUN_CAN_SHOOT "gun_can_shoot"
+	// COMPONENT_CANCEL_GUN_FIRE
 ///called in /obj/item/gun/process_fire (src, target, params, zone_override, bonus_spread_values)
 #define COMSIG_MOB_FIRED_GUN "mob_fired_gun"
 	#define MIN_BONUS_SPREAD_INDEX 1

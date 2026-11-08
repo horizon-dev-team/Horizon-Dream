@@ -40,7 +40,7 @@
 	STOP_PROCESSING(SSobj, src)
 
 /obj/item/gun/chem/can_shoot()
-	return syringes_left
+	return ..() && syringes_left > 0
 
 /obj/item/gun/chem/handle_chamber(mob/living/user, empty_chamber = TRUE, from_firing = TRUE, chamber_next_round = TRUE)	// [HORIZON-EDIT] PHYSICS
 	if(chambered && !chambered.loaded_projectile && syringes_left)

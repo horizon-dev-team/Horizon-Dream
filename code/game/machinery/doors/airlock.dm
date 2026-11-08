@@ -113,7 +113,7 @@
 	/// Cyclelinking for airlocks that aren't on the same x or y coord as the target.
 	var/closeOtherId
 	var/obj/machinery/door/airlock/closeOther
-	var/list/obj/machinery/door/airlock/close_others = list()
+	var/list/obj/machinery/door/airlock/close_others
 	var/obj/item/electronics/airlock/electronics
 	COOLDOWN_DECLARE(shockCooldown)
 	/// Any papers pinned to the airlock
@@ -216,10 +216,8 @@
 /obj/machinery/door/airlock/proc/update_other_id()
 	for(var/obj/machinery/door/airlock/Airlock as anything in SSmachines.get_machines_by_type_and_subtypes(/obj/machinery/door/airlock))
 		if(Airlock.closeOtherId == closeOtherId && Airlock != src)
-			if(!(Airlock in close_others))
-				close_others += Airlock
-			if(!(src in Airlock.close_others))
-				Airlock.close_others += src
+			LAZYOR(close_others, Airlock)
+			LAZYOR(Airlock.close_others, src)
 
 /obj/machinery/door/airlock/proc/cyclelinkairlock()
 	if (cyclelinkedairlock)
@@ -309,8 +307,8 @@
 	if(close_others) //remove this airlock from the list of every linked airlock
 		closeOtherId = null
 		for(var/obj/machinery/door/airlock/otherlock as anything in close_others)
-			otherlock.close_others -= src
-		close_others.Cut()
+			LAZYREMOVE(otherlock.close_others, src)
+		LAZYNULL(close_others)
 	QDEL_NULL(note)
 	QDEL_NULL(seal)
 	var/datum/atom_hud/data/diagnostic/diag_hud = GLOB.huds[DATA_HUD_DIAGNOSTIC]
@@ -787,7 +785,7 @@
 
 			return CONTEXTUAL_SCREENTIP_SET
 		if (TOOL_WELDER)
-			context[SCREENTIP_CONTEXT_RMB] = "Weld shut"
+			context[SCREENTIP_CONTEXT_RMB] = welded ? "Unweld" : "Weld shut"
 
 			if (panel_open)
 				switch (security_level)
@@ -1283,7 +1281,7 @@
 			to_chat(user, span_warning("You need to be wielding [tool] to do that!"))
 			return
 
-		INVOKE_ASYNC(src, density ? PROC_REF(open) : PROC_REF(close), BYPASS_DOOR_CHECKS)
+		INVOKE_ASYNC(src, density ? PROC_REF(open) : PROC_REF(close), BYPASS_DOOR_CHECKS, user)
 		return
 
 	if(!forced)
@@ -1318,12 +1316,12 @@
 	if(check_electrified && shock(user, 100))
 		return
 
-	open(BYPASS_DOOR_CHECKS)
+	open(BYPASS_DOOR_CHECKS, user)
 	take_damage(AIRLOCK_PRY_DAMAGE, BRUTE, 0, 0) // Enough to sometimes spark
-	if(density && !open(BYPASS_DOOR_CHECKS))
+	if(density && !open(BYPASS_DOOR_CHECKS, user))
 		to_chat(user, span_warning("Despite your attempts, [src] refuses to open."))
 
-/obj/machinery/door/airlock/open(forced = DEFAULT_DOOR_CHECKS)
+/obj/machinery/door/airlock/open(forced = DEFAULT_DOOR_CHECKS, mob/living/opener)
 	if(cycle_pump && !operating && !welded && !seal && locked && density)
 		cycle_pump.airlock_act(src)
 		return FALSE // The rest will be handled by the pump
@@ -1360,6 +1358,8 @@
 				addtimer(CALLBACK(cyclelinkedairlock, PROC_REF(close)), BYPASS_DOOR_CHECKS)
 
 	SEND_SIGNAL(src, COMSIG_AIRLOCK_OPEN, forced)
+	if (opener)
+		SEND_SIGNAL(opener, COMSIG_MOB_OPENED_AIRLOCK, forced)
 	set_airlock_state(AIRLOCK_OPENING, animated = TRUE, force_type = forced)
 	var/transparent_delay = animation_segment_delay(AIRLOCK_OPENING_TRANSPARENT)
 	sleep(transparent_delay)
@@ -1877,7 +1877,7 @@
 	else if(!density)
 		close()
 	else
-		open()
+		open(opener = user)
 
 /**
  * Generates the airlock's wire layout based on the current area the airlock resides in.
@@ -2491,7 +2491,7 @@
 			new /obj/effect/temp_visual/cult/sac(loc)
 			var/atom/throwtarget
 			throwtarget = get_edge_target_turf(src, get_dir(src, get_step_away(L, src)))
-			SEND_SOUND(L, sound(SFX_HALLUCINATION_TURN_AROUND,0,1,50))
+			SEND_SOUND(L, sound(/datum/sound_effect/hallucination_turn_around,0,1,50))
 			flash_color(L, flash_color=COLOR_CULT_RED, flash_time=20)
 			L.Paralyze(40)
 			L.throw_at(throwtarget, 5, 1)
@@ -2616,8 +2616,10 @@
 
 // set_density on both open and close procs has a check and return builtin.
 
-/obj/machinery/door/airlock/instant/open(forced = DEFAULT_DOOR_CHECKS)
+/obj/machinery/door/airlock/instant/open(forced = DEFAULT_DOOR_CHECKS, mob/living/opener)
 	SEND_SIGNAL(src, COMSIG_AIRLOCK_OPEN, forced)
+	if (opener)
+		SEND_SIGNAL(opener, COMSIG_MOB_OPENED_AIRLOCK, forced)
 	operating = TRUE
 	set_density(FALSE)
 	set_airlock_state(AIRLOCK_OPEN, animated = FALSE)

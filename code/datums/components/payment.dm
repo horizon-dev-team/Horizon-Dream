@@ -122,7 +122,7 @@
 			user.pulling = holochange
 	log_econ("[total_cost] [MONEY_NAME] were spent on [parent] by [user].")
 	to_chat(user, span_notice("Purchase completed with held [MONEY_NAME]."))
-	playsound(user, 'sound/effects/cashregister.ogg', 20, TRUE)
+	playsound(user, 'sound/effects/cashregister.ogg', 20, TRUE, mixer_channel = CHANNEL_UI) // [HORIZON-EDIT] Master_Sounds
 	return TRUE
 
 /**
@@ -167,7 +167,7 @@
 	target_acc.transfer_money(idcard.registered_account, total_cost, "Nanotrasen: Usage of Corporate Machinery")
 	log_econ("[total_cost] [MONEY_NAME] were spent on [parent] by [user] via [idcard.registered_account.account_holder]'s card.")
 	idcard.registered_account.bank_card_talk("[total_cost] [MONEY_NAME] deducted from your account.")
-	playsound(src, 'sound/effects/cashregister.ogg', 20, TRUE)
+	playsound(src, 'sound/effects/cashregister.ogg', 20, TRUE, mixer_channel = CHANNEL_UI) // [HORIZON-EDIT] Master_Sounds
 	SSeconomy.add_audit_entry(idcard.registered_account, total_cost, parent)
 	return TRUE
 

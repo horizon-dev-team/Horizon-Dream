@@ -33,19 +33,26 @@
 	preferences.update_preference(GLOB.preference_entries[/datum/preference/loadout], null)
 	return TRUE
 
+// [HORIZON-EDIT] LOBBY
 /datum/preference_middleware/loadout/proc/action_toggle_job_outfit(list/params, mob/user)
 	PRIVATE_PROC(TRUE)
-	preferences.character_preview_view.show_job_clothes = !preferences.character_preview_view.show_job_clothes
-	preferences.character_preview_view.update_body()
+	var/atom/movable/screen/map_view/char_preview/preview_view = preferences?.character_preview_view
+	if (isnull(preview_view))
+		return TRUE
+	preview_view.show_job_clothes = !preview_view.show_job_clothes
+	preview_view.update_body()
 	return TRUE
 
 /datum/preference_middleware/loadout/proc/action_rotate_model_dir(list/params, mob/user)
 	PRIVATE_PROC(TRUE)
+	var/atom/movable/screen/map_view/char_preview/preview_view = preferences?.character_preview_view
+	if (isnull(preview_view))
+		return
 	switch(params["dir"])
 		if("left")
-			preferences.character_preview_view.setDir(turn(preferences.character_preview_view.dir, -90))
+			preview_view.setDir(turn(preview_view.dir, -90))
 		if("right")
-			preferences.character_preview_view.setDir(turn(preferences.character_preview_view.dir, 90))
+			preview_view.setDir(turn(preview_view.dir, 90))
 
 /datum/preference_middleware/loadout/proc/action_pass_to_loadout_item(list/params, mob/user)
 	PRIVATE_PROC(TRUE)
@@ -56,7 +63,7 @@
 		return TRUE // update
 
 	if(interacted_item.handle_loadout_action(src, user, params["subaction"], params))
-		preferences.character_preview_view.update_body()
+		preferences?.character_preview_view?.update_body()
 		return TRUE
 
 	return FALSE
@@ -93,13 +100,14 @@
 
 /datum/preference_middleware/loadout/get_ui_data(mob/user)
 	var/list/data = list()
-	data["job_clothes"] = preferences.character_preview_view.show_job_clothes
+	data["job_clothes"] = preferences?.character_preview_view?.show_job_clothes
 	return data
 
 /datum/preference_middleware/loadout/get_ui_static_data(mob/user)
 	var/list/data = list()
-	data["loadout_preview_view"] = preferences.character_preview_view.assigned_map
+	data["loadout_preview_view"] = preferences?.character_preview_view?.assigned_map
 	return data
+// [/HORIZON-EDIT]
 
 /datum/preference_middleware/loadout/get_constant_data()
 	var/list/data = list()

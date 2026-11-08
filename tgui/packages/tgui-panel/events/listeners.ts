@@ -18,6 +18,7 @@ import {
   handleVerbsInit,
 } from '../verbs/handlers';
 import { handleLoadAssets } from './handlers/assets';
+import { panelLayoutChanged } from './handlers/layout';
 import { playerSet } from './handlers/player';
 import { roundrestart } from './handlers/roundrestart';
 
@@ -31,6 +32,7 @@ const listeners = {
   'verbs/hotkey_mode': handleHotkeyMode,
   'asset/stylesheet': loadStyleSheet,
   'asset/mappings': handleLoadAssets,
+  'panel/layout': panelLayoutChanged,
   'audio/playMusic': playMusic,
   'audio/stopMusic': stopMusic,
   'chat/message': chatMessage,

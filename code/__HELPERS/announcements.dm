@@ -50,17 +50,23 @@
 	if(islist(players))
 		for(var/mob/target in players)
 			to_chat(target, finalized_announcement)
-			if(play_sound && target.client?.prefs.read_preference(/datum/preference/toggle/sound_announcements))
-				SEND_SOUND(target, sound(sound_override))
+			// [HORIZON-EDIT] Master_Sounds
+			var/mixed_volume = calculate_mixed_volume(target.client, 100, CHANNEL_ANNOUNCEMENTS)
+			if(play_sound && mixed_volume > 0)
+				SEND_SOUND(target, sound(sound_override, channel = CHANNEL_ANNOUNCEMENTS, volume = mixed_volume))
+			// [/HORIZON-EDIT]
 	else
 		to_chat(world, finalized_announcement)
 
 		if(!play_sound)
 			return
 
+		// [HORIZON-EDIT] Master_Sounds
 		for(var/mob/player in GLOB.player_list)
-			if(player.client?.prefs.read_preference(/datum/preference/toggle/sound_announcements))
-				SEND_SOUND(player, sound(sound_override))
+			var/mixed_volume = calculate_mixed_volume(player.client, 100, CHANNEL_ANNOUNCEMENTS)
+			if(mixed_volume > 0)
+				SEND_SOUND(player, sound(sound_override, channel = CHANNEL_ANNOUNCEMENTS, volume = mixed_volume))
+		// [/HORIZON-EDIT]
 
 /**
  * Inserts a span styled message into an alert box div

@@ -247,6 +247,7 @@ GLOBAL_LIST_INIT(unrecommended_builds, list(
 	///////////
 
 /client/New(TopicData)
+	new_started = TRUE
 	var/tdata = TopicData //save this for later use
 	TopicData = null //Prevent calls to client.Topic from connect
 
@@ -263,15 +264,13 @@ GLOBAL_LIST_INIT(unrecommended_builds, list(
 	else
 		persistent_client = new(ckey)
 	persistent_client.set_client(src)
+	connection_handed_off = TRUE // [HORIZON-ADD] LOBBY
 
 	winset(src, null, list("browser-options" = "find,refresh"))
 
 	// Instantiate stat panel
 	stat_panel = new(src, "statbrowser")
 	stat_panel.subscribe(src, PROC_REF(on_stat_panel_message))
-
-	// Instantiate tgui panel
-	tgui_panel = new(src, "browseroutput")
 
 	tgui_say = new(src, "tgui_say")
 
@@ -293,6 +292,11 @@ GLOBAL_LIST_INIT(unrecommended_builds, list(
 		GLOB.preferences_datums[ckey] = prefs
 	prefs.last_ip = address //these are gonna be used for banning
 	prefs.last_id = computer_id //these are gonna be used for banning
+
+	// [HORIZON-ADD] UI
+	tgui_panel = new(src, "browseroutput")
+	tgui_panel.create_browser(prefs.read_preference(/datum/preference/choiced/tgpanel_layout))
+	// [/HORIZON-ADD]
 
 	if(fexists(roundend_report_file()))
 		ASSIGN_GAME_VERB(src, /client, show_previous_roundend_report)
@@ -429,6 +433,7 @@ GLOBAL_LIST_INIT(unrecommended_builds, list(
 	tgui_say.initialize()
 
 	initialize_escape_menu()
+	initialize_lobby_menu()
 
 	if(alert_mob_dupe_login && !holder)
 		// Notify admins if the connecting player's CID is configured to be ignored by stickybans
@@ -572,7 +577,7 @@ GLOBAL_LIST_INIT(unrecommended_builds, list(
 	if(!winexists(src, "asset_cache_browser")) // The client is using a custom skin, tell them.
 		to_chat(src, span_warning("Unable to access asset cache browser, if you are using a custom skin file, please allow DS to download the updated version, if you are not, then make a bug report. This is not a critical issue but can cause issues with resource downloading, as it is impossible to know when extra resources arrived to you."))
 
-	update_ambience_pref(prefs.read_preference(/datum/preference/numeric/volume/sound_ambience_volume))
+	update_ambience_pref() // [HORIZON-EDIT] Master_Sounds
 	check_ip_intel()
 
 	//This is down here because of the browse() calls in tooltip/New()
@@ -607,7 +612,12 @@ GLOBAL_LIST_INIT(unrecommended_builds, list(
 	return ..()
 
 /client/Destroy()
+	if(!new_started)
+		..()
+		return QDEL_HINT_HARDDEL_NOW
+
 	SSdebugview.stop_processing(src) // [HORIZON-ADD]
+
 	if(mob)
 		var/stealth_admin = mob.client?.holder?.fakekey
 		var/announce_join = mob.client?.prefs?.read_preference(/datum/preference/toggle/broadcast_login_logout)
@@ -619,7 +629,7 @@ GLOBAL_LIST_INIT(unrecommended_builds, list(
 	GLOB.directory -= ckey
 	if(persistent_client)
 		persistent_client.set_client(null)
-	else
+	else if(connection_handed_off) // [HORIZON-ADD] LOBBY
 		stack_trace("A client was Del()'d without a persistent_client! This should not be happening.")
 
 	log_access("Logout: [key_name(src)]")
@@ -1050,6 +1060,7 @@ GLOBAL_LIST_INIT(unrecommended_builds, list(
 					else
 						winset(src, "default-[REF(key)]", "parent=default;name=[key];command=")
 	calculate_move_dir()
+	SEND_SIGNAL(mob, COMSIG_MOB_HOTKEYS_UPDATED)
 
 /client/proc/change_view(new_size)
 	if (isnull(new_size))
@@ -1147,7 +1158,10 @@ GLOBAL_LIST_INIT(unrecommended_builds, list(
 	for(var/procpath/verb_to_init as anything in verbstoprocess)
 		if(!verb_to_init || verb_to_init.hidden)
 			continue
-		if(!SSverbs.verbs_by_verb_path[verb_to_init] && !SSadmin_verbs.admin_verbs_by_verb_path[verb_to_init])
+		var/datum/verb_metadata/meta = SSverbs.verbs_by_verb_path[verb_to_init]
+		if(!meta && !SSadmin_verbs.admin_verbs_by_verb_path[verb_to_init])
+			continue
+		if(meta?.src_based)
 			continue
 		panel_verbs += list(SSverbs.serialize_verb(verb_to_init))
 	tgui_panel?.window?.send_message("verbs/init", list("verbs" = panel_verbs))
@@ -1178,13 +1192,15 @@ GLOBAL_LIST_INIT(unrecommended_builds, list(
 		winset(src, SKIN_DEFAULT_SHIFT, "is-disabled=true")
 		winset(src, SKIN_DEFAULT_SHIFTUP, "is-disabled=true")
 
-/client/proc/update_ambience_pref(value)
-	if(value)
+// [HORIZON-EDIT] Master_Sounds
+/client/proc/update_ambience_pref()
+	if(calculate_mixed_volume(src, 100, CHANNEL_AMBIENCE) > 0)
 		if(SSambience.ambience_listening_clients[src] > world.time)
 			return // If already properly set we don't want to reset the timer.
 		SSambience.ambience_listening_clients[src] = world.time + 10 SECONDS //Just wait 10 seconds before the next one aight mate? cheers.
 	else
 		SSambience.remove_ambience_client(src)
+// [/HORIZON-EDIT]
 
 /**
  * Handles incoming messages from the stat-panel TGUI.

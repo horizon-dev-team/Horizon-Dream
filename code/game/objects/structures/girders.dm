@@ -33,6 +33,7 @@
 /obj/structure/girder/Initialize(mapload)
 	. = ..()
 	AddElement(/datum/element/uses_girder_wall_recipes)
+	AddElement(/datum/element/cutting_tool_target) // [HORIZON-ADD] SALVAGE_TOOL
 
 /obj/structure/girder/examine(mob/user)
 	. = ..()
@@ -263,3 +264,46 @@
 	stack_amount = 1
 	always_drop_stack = TRUE
 	can_weld_apart = TRUE
+
+// [HORIZON-ADD] SALVAGE_TOOL
+/obj/structure/girder/deconstruct_act(mob/living/user, obj/item/I)
+	. = ..() // INDESTRUCTIBLE check
+	if(.)
+		return
+	if(!I.tool_start_check(user, amount = 1))
+		return ITEM_INTERACT_BLOCKING
+	user.visible_message(span_notice("[user] starts slicing through [src] with [I]."),
+		span_notice("You start slicing through [src]..."))
+	if(!I.use_tool(src, user, 4 SECONDS, volume = 50, amount = 1))
+		return ITEM_INTERACT_BLOCKING
+	user.visible_message(span_warning("[user] slices [src] apart!"),
+		span_notice("You slice [src] apart."))
+	deconstruct(TRUE) // disassembled → stack
+	return ITEM_INTERACT_SUCCESS
+
+/obj/structure/girder/reinforced/deconstruct_act(mob/living/user, obj/item/I)
+	if(resistance_flags & INDESTRUCTIBLE)
+		to_chat(user, span_warning("[src] cannot be deconstructed!"))
+		return ITEM_INTERACT_BLOCKING
+	if(!I.tool_start_check(user, amount = 1))
+		return ITEM_INTERACT_BLOCKING
+	switch(state)
+		if(GIRDER_REINF)
+			user.visible_message(span_notice("[user] begins slicing through the support struts of [src]..."),
+				span_notice("You begin slicing through the support struts..."))
+			if(!I.use_tool(src, user, 4 SECONDS, volume = 50, amount = 1))
+				return ITEM_INTERACT_BLOCKING
+			state = GIRDER_REINF_STRUTS
+			to_chat(user, span_notice("You slice through the support struts, weakening the reinforced frame."))
+			return ITEM_INTERACT_SUCCESS
+		if(GIRDER_REINF_STRUTS)
+			user.visible_message(span_notice("[user] begins slicing off the inner grille of [src]..."),
+				span_notice("You begin slicing off the inner grille..."))
+			if(!I.use_tool(src, user, 4 SECONDS, volume = 50, amount = 1))
+				return ITEM_INTERACT_BLOCKING
+			new /obj/item/stack/sheet/plasteel(drop_location(), 1)
+			to_chat(user, span_notice("You slice off the inner grille. The reinforced girder is now a regular girder."))
+			replace_girder(/obj/structure/girder)
+			return ITEM_INTERACT_SUCCESS
+	return ITEM_INTERACT_BLOCKING
+// [/HORIZON-ADD]

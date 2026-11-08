@@ -7,7 +7,7 @@
 	client.view_size?.setDefault(VIEWPORT_USE_PREF)
 
 /datum/preference/toggle/fullscreen_mode
-	default_value = FALSE
+	default_value = TRUE
 	category = PREFERENCE_CATEGORY_GAME_PREFERENCES
 	savefile_key = "fullscreen_mode"
 	savefile_identifier = PREFERENCE_PLAYER

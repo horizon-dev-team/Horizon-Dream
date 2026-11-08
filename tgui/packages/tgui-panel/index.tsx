@@ -45,17 +45,6 @@ function setupApp() {
     wsSend({ type, payload });
   });
 
-  // Unhide the panel
-  Byond.winset('output_selector.legacy_output_selector', {
-    left: 'output_browser',
-  });
-
-  Byond.winget('output_browser').then((output: { size: string }) => {
-    Byond.winset('browseroutput', {
-      size: output.size,
-    });
-  });
-
   // Enable hot module reloading
   if (import.meta.webpackHot) {
     setupHotReloading();

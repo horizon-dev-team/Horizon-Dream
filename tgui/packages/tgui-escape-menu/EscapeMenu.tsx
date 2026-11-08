@@ -2,7 +2,7 @@ import './styles/main.scss';
 
 import { useEffect, useReducer, useRef } from 'react';
 
-import { playCloseSounds, playOpenSounds } from './audio';
+import { playCloseSounds, playOpenSounds, setUiVolume } from './audio';
 import { AdminPage } from './pages/AdminPage';
 import { HomePage } from './pages/HomePage';
 import { LeaveBodyPage } from './pages/LeaveBodyPage';
@@ -40,6 +40,7 @@ export type ServerState = {
   players: PlayerInfo[];
   ignoredOffline: string[];
   suicideIcon: string | null;
+  uiVolume?: number;
 };
 
 export type ResourceLink = {
@@ -122,10 +123,16 @@ export function EscapeMenu() {
 
   useEffect(() => {
     Byond.subscribeTo('init', (data: ServerState) => {
+      if (data.uiVolume !== undefined) {
+        setUiVolume(data.uiVolume);
+      }
       dispatch({ type: 'serverUpdate', state: data });
     });
 
     Byond.subscribeTo('state', (data: Partial<ServerState>) => {
+      if (data.uiVolume !== undefined) {
+        setUiVolume(data.uiVolume);
+      }
       dispatch({ type: 'serverUpdate', state: data });
     });
 

@@ -112,21 +112,23 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 
 /atom/movable/screen/swap_hand
 	name = "swap hand"
+	icon_state = "act_swap" // [HORIZON-ADD] WIDE_HUD
 	mouse_over_pointer = MOUSE_HAND_POINTER
 
-/atom/movable/screen/swap_hand/Click()
+/atom/movable/screen/swap_hand/Click(location, control, params)
 	// At this point in client Click() code we have passed the 1/10 sec check and little else
 	// We don't even know if it's a middle click
-	if(world.time <= usr.next_move)
-		return 1
+	. = TRUE // but we're definitely handling this click
 
-	if(usr.incapacitated)
-		return 1
+	if(!ismob(usr))
+		return
 
-	if(ismob(usr))
-		var/mob/M = usr
-		M.swap_hand()
-	return 1
+	if(world.time <= usr.next_move || usr.incapacitated)
+		return
+
+	var/list/modifiers = params2list(params)
+	var/cycle_dir = modifiers[SHIFT_CLICK] ? NORTH : WEST
+	usr.cycle_hand(cycle_dir, FALSE)
 
 /atom/movable/screen/navigate
 	name = "navigate"
@@ -256,13 +258,22 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 	else
 		item_overlay.color = "#00ff00"
 
+	// [HORIZON-ADD] WIDE_HUD
+	var/datum/inventory_slot/inv_slot = hud.inventory_slots[slot_id]
+	item_overlay.pixel_x = inv_slot?.get_centering_pixel_x(holding)
+	if(isnull(item_overlay.pixel_x))
+		item_overlay.pixel_x = holding.base_pixel_x
+	item_overlay.pixel_y = holding.base_pixel_y
+	// [/HORIZON-ADD]
+
 	cut_overlay(object_overlay)
 	object_overlay = item_overlay
 	add_overlay(object_overlay)
 
 /atom/movable/screen/inventory/hand
 	var/mutable_appearance/handcuff_overlay
-	var/static/mutable_appearance/blocked_overlay = mutable_appearance('icons/hud/screen_gen.dmi', "blocked")
+	var/static/mutable_appearance/blocked_overlay = mutable_appearance('_horizon/icons/ui/screen_gen_wide.dmi', "blocked") // [HORIZON-EDIT] WIDE_HUD
+	var/static/mutable_appearance/shield_overlay = mutable_appearance('_horizon/icons/ui/screen_gen_wide.dmi', "shielding") // [/HORIZON-EDIT]
 	var/held_index = 0
 	interaction_flags_atom = NONE //so dragging objects into hands icon don't skip adjacency & other checks
 
@@ -271,22 +282,31 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 
 	if(!handcuff_overlay)
 		var/state = IS_RIGHT_INDEX(held_index) ? "markus" : "gabrielle"
-		handcuff_overlay = mutable_appearance('icons/hud/screen_gen.dmi', state)
+		handcuff_overlay = mutable_appearance('_horizon/icons/ui/screen_gen_wide.dmi', state) // [HORIZON-EDIT] WIDE_HUD
+		handcuff_overlay.layer += 0.1 // [/HORIZON-EDIT]
 
 	if(!hud?.mymob)
 		return
+
+	if(!held_index)
+		return // ?
+
+	if(held_index == hud.mymob.active_hand_index || held_index == hud.mymob.get_inactive_hand_index())
+		if(held_index == hud.mymob.active_hand_index)
+			. += IS_LEFT_INDEX(held_index) ? "lhandactive" : "rhandactive"
+
+		// Display that this item is blocking attacks
+		var/obj/item/held_item = hud.mymob.get_item_for_held_index(held_index)
+		if(!isclothing(held_item) && held_item?.block_chance)
+			. += shield_overlay
 
 	if(iscarbon(hud.mymob))
 		var/mob/living/carbon/C = hud.mymob
 		if(C.handcuffed)
 			. += handcuff_overlay
 
-		if(held_index)
-			if(!C.has_hand_for_held_index(held_index))
-				. += blocked_overlay
-
-	if(held_index == hud.mymob.active_hand_index)
-		. += IS_LEFT_INDEX(held_index) ? "lhandactive" : "rhandactive"
+		if(!C.has_hand_for_held_index(held_index))
+			. += blocked_overlay
 
 /atom/movable/screen/inventory/hand/Click(location, control, params)
 	// At this point in client Click() code we have passed the 1/10 sec check and little else
@@ -404,7 +424,7 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 		return
 
 	if(!flashy)
-		flashy = mutable_appearance('icons/hud/screen_gen.dmi', "togglefull_flash")
+		flashy = mutable_appearance('_horizon/icons/ui/screen_gen.dmi', "togglefull_flash") // [HORIZON-EDIT] WIDE_HUD
 		flashy.color = "#C62727"
 	. += flashy
 
@@ -493,6 +513,11 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 	astype(wearer.wear_suit, /obj/item/clothing/suit/space)?.update_hud_icon(usr)
 
 /atom/movable/screen/spacesuit/proc/update_spacesuit_hud_icon(cell_state, cell_percent, thermal_on = TRUE)
+	// [HORIZON-ADD] WIDE_HUD
+	var/atom/movable/screen/background_hud/battery/battery = hud?.screen_objects[HUD_HUMAN_EDGE_BATTERY]
+	if(battery)
+		battery.alpha = (cell_state == SPACESUIT_NO_ICON) ? 0 : 255
+	// [/HORIZON-ADD]
 	if(cell_state)
 		switch(cell_state)
 			if(SPACESUIT_NO_ICON)
@@ -1055,7 +1080,7 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 	var/client/holder
 
 
-/atom/movable/screen/splash/Initialize(mapload, datum/hud/hud_owner, client/C, visible, use_previous_title)
+/atom/movable/screen/splash/Initialize(mapload, datum/hud/hud_owner, client/C, visible) // [HORIZON-EDIT] LOBBY
 	. = ..()
 	if(!istype(C))
 		return
@@ -1064,14 +1089,6 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 
 	if(!visible)
 		alpha = 0
-
-	if(!use_previous_title)
-		if(SStitle.icon)
-			icon = SStitle.icon
-	else
-		if(!SStitle.previous_icon)
-			return INITIALIZE_HINT_QDEL
-		icon = SStitle.previous_icon
 
 	holder.screen += src
 

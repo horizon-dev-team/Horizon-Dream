@@ -32,8 +32,8 @@
 	equip_sound = 'sound/items/handling/helmet/helmet_equip1.ogg'
 	pickup_sound = 'sound/items/handling/helmet/helmet_pickup1.ogg'
 	drop_sound = 'sound/items/handling/helmet/helmet_drop1.ogg'
-	visor_toggle_up_sound = SFX_VISOR_UP
-	visor_toggle_down_sound = SFX_VISOR_DOWN
+	visor_toggle_up_sound = /datum/sound_effect/visor_up
+	visor_toggle_down_sound = /datum/sound_effect/visor_down
 	actions_types = list(/datum/action/item_action/adjust_visor)
 	toggle_message = "You pull your helmet's visor down."
 	alt_toggle_message = "You pull your helmet's visor up."
@@ -98,6 +98,7 @@
 	slowdown = 1
 	armor_type = /datum/armor/suit_space
 	flags_inv = HIDEGLOVES|HIDESHOES|HIDEJUMPSUIT
+	cerulean_flipper_palette = FLIPPERS
 	cold_protection = CHEST | GROIN | LEGS | FEET | ARMS | HANDS
 	min_cold_protection_temperature = SPACE_SUIT_MIN_TEMP_PROTECT_OFF
 	heat_protection = CHEST|GROIN|LEGS|FEET|ARMS|HANDS
@@ -334,7 +335,7 @@
 	if (user)
 		balloon_alert(user, "thermal regulator restrictions overridden")
 		user.log_message("emagged [src], overwriting thermal regulator restrictions.", LOG_GAME)
-	playsound(src, SFX_SPARKS, 50, TRUE, SHORT_RANGE_SOUND_EXTRARANGE)
+	playsound(src, /datum/sound_effect/sparks, 50, TRUE, SHORT_RANGE_SOUND_EXTRARANGE)
 	return TRUE
 
 // update the HUD icon
@@ -358,15 +359,17 @@
 	if(cell.charge < THERMAL_REGULATOR_COST)
 		spacesuit_hud.update_spacesuit_hud_icon(SPACESUIT_CELL_EMPTY, cell_percent, thermal_on)
 		return
+	// [HORIZON-ADD] WIDE_HUD
 	switch(cell_percent)
-		if(0 to 20)
+		if(0 to 24)
 			spacesuit_hud.update_spacesuit_hud_icon(SPACESUIT_CELL_VERY_LOW, cell_percent, thermal_on)
-		if(21 to 40)
+		if(25 to 50)
 			spacesuit_hud.update_spacesuit_hud_icon(SPACESUIT_CELL_LOW, cell_percent, thermal_on)
-		if(41 to 60)
+		if(51 to 75)
 			spacesuit_hud.update_spacesuit_hud_icon(SPACESUIT_CELL_MID, cell_percent, thermal_on)
-		if(61 to 100)
+		if(76 to 100)
 			spacesuit_hud.update_spacesuit_hud_icon(SPACESUIT_CELL_HIGH, cell_percent, thermal_on)
+	// [/HORIZON-ADD]
 
 // zap the cell if we get hit with an emp
 /obj/item/clothing/suit/space/emp_act(severity)

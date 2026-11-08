@@ -77,11 +77,10 @@
 			return FALSE
 		balloon_alert(user, "already deployed!")
 		playsound(src, 'sound/machines/scanner/scanbuzz.ogg', 25, TRUE, SILENCED_SOUND_EXTRARANGE)
-	if(part_datum.can_overslot)
-		var/obj/item/overslot = wearer.get_item_by_slot(part.slot_flags)
-		if(isclothing(overslot))
+	var/obj/item/overslot = wearer.get_item_by_slot(part.slot_flags)
+	if(overslot?.item_flags & CAN_BE_OVERSLOT)
+		if(transfer_part_to_loc(overslot, part, force = TRUE, preserve_suit_storage = can_preserve_suit_storage(part, wearer.s_store)))
 			part_datum.overslotting = overslot
-			transfer_part_to_loc(overslot, part, force = TRUE, preserve_suit_storage = can_preserve_suit_storage(part, wearer.s_store))
 			RegisterSignal(part, COMSIG_ATOM_EXITED, PROC_REF(on_overslot_exit))
 	if(wearer.equip_to_slot_if_possible(part, part.slot_flags, qdel_on_fail = FALSE, disable_warning = TRUE))
 		ADD_TRAIT(part, TRAIT_NODROP, MOD_TRAIT)
@@ -102,10 +101,8 @@
 		balloon_alert(user, "can't seal, retracting!")
 		retract(user, part, instant = TRUE)
 	else
-		if(part_datum.overslotting)
-			var/obj/item/overslot = part_datum.overslotting
-			if(!wearer.equip_to_slot_if_possible(overslot, overslot.slot_flags, qdel_on_fail = FALSE, disable_warning = TRUE))
-				wearer.dropItemToGround(overslot, force = TRUE, silent = TRUE)
+		if(part_datum.overslotting && !wearer.equip_to_slot_if_possible(part_datum.overslotting, part_datum.overslotting.slot_flags, qdel_on_fail = FALSE, disable_warning = TRUE))
+			wearer.dropItemToGround(part_datum.overslotting, force = TRUE, silent = TRUE)
 		if(!user)
 			return FALSE
 		balloon_alert(user, "bodypart clothed!")
@@ -253,7 +250,7 @@
 /obj/item/mod/control/proc/delayed_seal_part(obj/item/clothing/part)
 	. = FALSE
 	var/datum/mod_part/part_datum = get_part_datum(part)
-	if(do_after(wearer, activation_step_time, wearer, MOD_ACTIVATION_STEP_FLAGS, extra_checks = CALLBACK(src, PROC_REF(get_wearer)), cog_icon = null))
+	if(do_after(wearer, activation_step_time, wearer, MOD_ACTIVATION_STEP_FLAGS, extra_checks = CALLBACK(src, PROC_REF(get_wearer)), timed_action_flags = HIDE_INTERACTION))
 		to_chat(wearer, span_notice("[part] [!part_datum.sealed ? part_datum.sealed_message : part_datum.unsealed_message]."))
 		playsound(src, 'sound/vehicles/mecha/mechmove03.ogg', 25, TRUE, SHORT_RANGE_SOUND_EXTRARANGE)
 		seal_part(part, is_sealed = !part_datum.sealed)
@@ -261,7 +258,7 @@
 
 /obj/item/mod/control/proc/delayed_activation()
 	. = FALSE
-	if(do_after(wearer, activation_step_time, wearer, MOD_ACTIVATION_STEP_FLAGS, extra_checks = CALLBACK(src, PROC_REF(get_wearer)), cog_icon = null))
+	if(do_after(wearer, activation_step_time, wearer, MOD_ACTIVATION_STEP_FLAGS, extra_checks = CALLBACK(src, PROC_REF(get_wearer)), timed_action_flags = HIDE_INTERACTION))
 		control_activation(is_on = !active)
 		return TRUE
 

@@ -91,6 +91,12 @@ export function GamePreferencesPage(props) {
 
     const category = feature?.category || 'ERROR';
 
+    // [HORIZON-EDIT] Master_Sounds
+    if (category === 'SOUND') {
+      continue;
+    }
+    // [/HORIZON-EDIT]
+
     gamePreferences[category] = binaryInsertPreference(
       gamePreferences[category] || [],
       entry,

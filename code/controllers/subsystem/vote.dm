@@ -134,6 +134,10 @@ SUBSYSTEM_DEF(vote)
 	if(CONFIG_GET(flag/no_dead_vote) && voter.stat == DEAD && !voter.client?.holder)
 		return
 
+	if(!(their_vote in current_vote.choices))
+		message_admins("POSSIBLE EXPLOIT: [key_name(voter)] tried to submit a vote for an option that didn't exist. They tried to call a vote for the following option: [sanitize(their_vote)]")
+		return
+
 	// If user has already voted, remove their specific vote
 	if(voter.ckey in current_vote.choices_by_ckey)
 		var/their_old_vote = current_vote.choices_by_ckey[voter.ckey]
@@ -160,6 +164,10 @@ SUBSYSTEM_DEF(vote)
 
 	else
 		voted += voter.ckey
+
+	if(!(their_vote in current_vote.choices))
+		message_admins("POSSIBLE EXPLOIT: [key_name(voter)] tried to submit a vote for an option that didn't exist. They tried to call a vote for the following option: [sanitize(their_vote)]")
+		return
 
 	if(current_vote.choices_by_ckey[voter.ckey + their_vote] == 1)
 		current_vote.choices_by_ckey[voter.ckey + their_vote] = 0
@@ -241,8 +249,11 @@ SUBSYSTEM_DEF(vote)
 
 		new_voter.persistent_client.player_actions += voting_action
 		generated_actions += voting_action
-		if(current_vote.vote_sound && new_voter.prefs.read_preference(/datum/preference/toggle/sound_announcements))
-			SEND_SOUND(new_voter, sound(current_vote.vote_sound))
+		// [HORIZON-EDIT] Master_Sounds
+		var/mixed_volume = calculate_mixed_volume(new_voter, 100, CHANNEL_ANNOUNCEMENTS)
+		if(current_vote.vote_sound && mixed_volume > 0)
+			SEND_SOUND(new_voter, sound(current_vote.vote_sound, channel = CHANNEL_ANNOUNCEMENTS, volume = mixed_volume))
+		// [/HORIZON-EDIT]
 
 	return TRUE
 

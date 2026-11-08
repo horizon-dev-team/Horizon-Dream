@@ -21,6 +21,8 @@
 #define TOOL_ROLLINGPIN "rolling pin"
 /// Can be used to scrape rust off an any atom; which will result in the Rust Component being qdel'd
 #define TOOL_RUSTSCRAPER "rustscraper"
+/// Plasmacutter - call atom/deconstruct_act in target. // [HORIZON-ADD] SALVAGE_TOOL
+#define TOOL_DECONSTRUCT "deconstruct"
 
 // Used by the tool_blocker element, to block the primary or secondary tool action (or both)
 /// e.g. crowbar_act()

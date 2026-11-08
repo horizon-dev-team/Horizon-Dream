@@ -327,7 +327,7 @@
 		addtimer(TRAIT_CALLBACK_REMOVE(owner, TRAIT_DISCOORDINATED_TOOL_USER, TRAUMA_TRAIT), 10 SECONDS)
 		addtimer(CALLBACK(owner, TYPE_PROC_REF(/atom, balloon_alert), owner, "dexterity regained!"), 10 SECONDS)
 	if(prob(15))
-		playsound(owner,'sound/mobs/humanoids/human/hiccup/sf_hiccup_male_01.ogg', 50)
+		playsound(owner,'sound/mobs/humanoids/human/hiccup/sf_hiccup_male_01.ogg', 50, mixer_channel = CHANNEL_MOB_EMOTES) // [HORIZON-EDIT] Master_Sounds
 		owner.emote("hiccup")
 	//too drunk to feel anything
 	//if they're to this point, they're likely dying of liver damage

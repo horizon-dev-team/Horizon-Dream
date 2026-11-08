@@ -66,7 +66,7 @@ GLOBAL_LIST_INIT(available_progbar_icons, list(
 	/// This is updated by the preference for cheaper reads than would be
 	/// had with a proc call, especially on one of the hottest procs in the
 	/// game (MouseEntered).
-	var/screentips_enabled = SCREENTIP_PREFERENCE_ENABLED
+	var/screentips_enabled = SCREENTIP_PREFERENCE_CONTEXT_ONLY // [HORIZON-EDIT]
 	/// Whether to use text or images for click hints.
 	/// Same behavior as `screentips_enabled`--very hot, updated when the preference is updated.
 	var/screentip_images = TRUE

@@ -887,6 +887,12 @@
 		active_hud.screentip_text.maptext = ""
 		return
 
+	// [HORIZON-ADD]
+	if(isliving(user) && !wall_fov_room_visible(user, src))
+		active_hud.screentip_text.maptext = ""
+		return
+	// [/HORIZON-ADD]
+
 	var/lmb_rmb_line = ""
 	var/ctrl_lmb_ctrl_rmb_line = ""
 	var/alt_lmb_alt_rmb_line = ""

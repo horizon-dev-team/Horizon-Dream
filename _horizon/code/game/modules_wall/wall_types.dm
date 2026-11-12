@@ -52,6 +52,14 @@
 
 /turf/closed/wall/mineral/titanium
 	icon = '_horizon/icons/turf/walls/modules_wall/shuttle.dmi'
+	diagonal = FALSE
+
+/turf/closed/wall/mineral/titanium/nodiagonal
+	diagonal = TRUE
+
+/turf/closed/wall/mineral/titanium/overspace
+	diagonal = TRUE
+	fixed_underlay = list("space" = TRUE)
 
 /turf/closed/wall/mineral/snow
 	icon = '_horizon/icons/turf/walls/modules_wall/snow.dmi'

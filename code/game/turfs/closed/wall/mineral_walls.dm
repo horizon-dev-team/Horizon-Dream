@@ -229,14 +229,16 @@
 	return ..()
 
 /turf/closed/wall/mineral/titanium/nodiagonal
-	icon = MAP_SWITCH('icons/turf/walls/shuttle_wall.dmi', 'icons/turf/walls/misc_wall.dmi')
-	icon_state = MAP_SWITCH("shuttle_wall-0", "shuttle_nd")
-	smoothing_flags = SMOOTH_BITMASK
 
 /turf/closed/wall/mineral/titanium/overspace
-	icon = MAP_SWITCH('icons/turf/walls/shuttle_wall.dmi', 'icons/turf/walls/misc_wall.dmi')
-	icon_state = MAP_SWITCH("shuttle_wall-0", "shuttle_overspace")
-	fixed_underlay = list("space" = TRUE)
+	//icon = MAP_SWITCH('icons/turf/walls/shuttle_wall.dmi', 'icons/turf/walls/misc_wall.dmi')
+	//icon_state = MAP_SWITCH("shuttle_wall-0", "shuttle_nd")
+	//smoothing_flags = SMOOTH_BITMASK
+
+/turf/closed/wall/mineral/titanium/overspace
+	//icon = MAP_SWITCH('icons/turf/walls/shuttle_wall.dmi', 'icons/turf/walls/misc_wall.dmi')
+	//icon_state = MAP_SWITCH("shuttle_wall-0", "shuttle_overspace")
+	//fixed_underlay = list("space" = TRUE)
 
 /turf/closed/wall/mineral/titanium/interior/copyTurf(turf/copy_to_turf, copy_air = FALSE, flags = null)
 	. = ..()

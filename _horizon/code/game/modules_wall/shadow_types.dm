@@ -5,6 +5,10 @@
 	plane = ATOMS_FOV_SHADOWS_PLANE
 	mouse_opacity = MOUSE_OPACITY_TRANSPARENT
 
+/// The owner (door setDir / wall smoothing) controls our direction, the shuttle must not rotate us a second time
+/atom/movable/atom_shadow/shuttleRotate(rotation, params)
+	return
+
 // MARK: Door Airlock
 /atom/movable/atom_shadow/door
 	icon = '_horizon/icons/obj/airlock_mask.dmi'

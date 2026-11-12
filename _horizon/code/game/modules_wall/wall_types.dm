@@ -25,6 +25,12 @@
 	..()
 	QUEUE_SMOOTH(src)
 
+/// A shuttle recreates the wall (and its shadow) on the new turf, so the corners must be recalculated once everything has arrived
+/turf/closed/afterShuttleMove(turf/oldT, rotation)
+	. = ..()
+	QUEUE_SMOOTH(src)
+	QUEUE_SMOOTH_NEIGHBORS(src)
+
 // MARK: Types
 /turf/closed/wall/r_wall
 	icon = '_horizon/icons/turf/walls/modules_wall/reinforce.dmi'

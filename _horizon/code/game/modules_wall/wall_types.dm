@@ -13,15 +13,15 @@
 	smoothing_groups = null
 	canSmoothWith = null
 
-/turf/closed/wall/Initialize(mapload)
+/turf/closed/Initialize(mapload)
 	. = ..()
 	shadow = new(src)
 
-/turf/closed/wall/Destroy()
+/turf/closed/Destroy()
 	qdel(shadow)
 	return ..()
 
-/turf/closed/wall/setDir(newDir)
+/turf/closed/setDir(newDir)
 	..()
 	QUEUE_SMOOTH(src)
 

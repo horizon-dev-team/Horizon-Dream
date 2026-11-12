@@ -5,7 +5,6 @@
 
 /turf/closed/mineral //wall piece
 	name = "rock"
-	icon = MAP_SWITCH('icons/turf/smoothrocks.dmi', 'icons/turf/mining.dmi')
 	baseturfs = /turf/open/misc/asteroid/airless
 	initial_gas_mix = AIRLESS_ATMOS
 	opacity = TRUE
@@ -14,11 +13,6 @@
 	// Otherwise we'll draw under shit in weird ways
 	plane = GAME_PLANE
 	layer = EDGED_TURF_LAYER
-
-	// This is static
-	// Done like this to avoid needing to make it dynamic and save cpu time
-	// 4 to the left, 4 down
-	transform = MAP_SWITCH(TRANSLATE_MATRIX(-4, -4), matrix())
 
 	temperature = TCMB
 	var/turf/turf_type = /turf/open/misc/asteroid/airless
@@ -606,8 +600,6 @@
 
 /turf/closed/mineral/random/volcanic/red_rock
 	name = "siderite"
-	icon = MAP_SWITCH('icons/turf/walls/red_rock.dmi', 'icons/turf/mining.dmi')
-	transform = MAP_SWITCH(TRANSLATE_MATRIX(-8, -8), matrix())
 	tool_mine_speed = 5 SECONDS // 25% harder than basalt
 	hand_mine_speed = 17 SECONDS
 	mineral_chance = 8 // N% functionally, 6.67% default, accounts for ~22% turfs
@@ -631,8 +623,6 @@
 
 /turf/closed/mineral/random/volcanic/shale
 	name = "shale"
-	icon = MAP_SWITCH('icons/turf/walls/shale.dmi', 'icons/turf/mining.dmi')
-	transform = MAP_SWITCH(TRANSLATE_MATRIX(-8, -8), matrix())
 	tool_mine_speed = 7 SECONDS // 75% harder than basalt
 	hand_mine_speed = 20 SECONDS
 	mineral_chance = 8 // N% functionally, 7.01% default, accounts for ~13% turfs
@@ -1000,15 +990,11 @@
 
 /turf/closed/mineral/asteroid
 	name = "iron rock"
-	icon = MAP_SWITCH('icons/turf/walls/red_rock.dmi', 'icons/turf/mining.dmi')
 	layer = EDGED_TURF_LOWER_LAYER
-	transform = MAP_SWITCH(TRANSLATE_MATRIX(-8, -8), matrix())
 	wall_icon_state = "red_rock"
 
 /turf/closed/mineral/random/stationside/asteroid
 	name = "iron rock"
-	icon = MAP_SWITCH('icons/turf/walls/red_rock.dmi', 'icons/turf/mining.dmi')
-	transform = MAP_SWITCH(TRANSLATE_MATRIX(-8, -8), matrix())
 	wall_icon_state = "red_rock"
 
 /turf/closed/mineral/random/stationside/asteroid/porus
@@ -1145,16 +1131,12 @@
 
 /turf/closed/mineral/gibtonite/volcanic/red_rock
 	name = "siderite"
-	icon = MAP_SWITCH('icons/turf/walls/red_rock.dmi', 'icons/turf/mining.dmi')
-	transform = MAP_SWITCH(TRANSLATE_MATRIX(-8, -8), matrix())
 	tool_mine_speed = 5 SECONDS // 25% harder than basalt
 	hand_mine_speed = 17 SECONDS
 	wall_icon_state = "red_rock"
 
 /turf/closed/mineral/gibtonite/volcanic/shale
 	name = "shale"
-	icon = MAP_SWITCH('icons/turf/walls/shale.dmi', 'icons/turf/mining.dmi')
-	transform = MAP_SWITCH(TRANSLATE_MATRIX(-8, -8), matrix())
 	tool_mine_speed = 7 SECONDS // 75% harder than basalt
 	hand_mine_speed = 20 SECONDS
 	wall_icon_state = "shale"

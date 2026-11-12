@@ -21,6 +21,12 @@
 	for(var/i in 1 to 4)
 		A.overlays += get_wall_object(A.icon, corner_icon_state(wall_connections[i], diagonal), 1<<(i-1), plane = plane, offset_spokesman = A)
 
+/turf/closed/proc/build_wall_sprite(plane)
+	var/mutable_appearance/frill/sprite = new()
+	for(var/i in 1 to 4)
+		sprite.overlays += get_wall_object(icon, corner_icon_state(wall_connections[i], diagonal), 1<<(i-1), plane = plane, offset_spokesman = src)
+	return sprite
+
 /proc/scan_blend_dirs(atom/source, list/blend_turfs, list/noblend_turfs, list/blend_objects, list/noblend_objects, list/see_through)
 	var/list/wall_dirs = list()
 	for(var/direction in GLOB.alldirs)
@@ -114,9 +120,16 @@
 
 	overlays.Cut()
 	icon_state = "blank"
+	overlays += build_wall_sprite(WALL_PLANE)
 
-	for(var/i in 1 to 4)
-		overlays += get_wall_object(icon, corner_icon_state(wall_connections[i], diagonal), 1<<(i-1), plane = WALL_PLANE, offset_spokesman = src)
+/turf/closed/mineral/update_icon()
+	if(!special_icon)
+		return ..()
+
+	overlays.Cut()
+	icon_state = "blank"
+	overlays += build_wall_sprite(WALL_PLANE)
+	overlays += build_wall_sprite(ABOVE_GAME_PLANE)
 
 /turf/closed/proc/update_connections()
 	var/list/glass = list()

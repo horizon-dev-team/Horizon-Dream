@@ -2,7 +2,6 @@
 	name = "mineral wall"
 	desc = "This shouldn't exist"
 	abstract_type = /turf/closed/wall/mineral
-	icon = '_horizon/icons/turf/walls/modules_wall/stone2.dmi'
 	blend_turfs = list(/turf/closed/mineral)
 	noblend_turfs = list()
 	rcd_memory = null

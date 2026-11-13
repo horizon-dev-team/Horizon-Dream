@@ -295,7 +295,7 @@
 /// Generates a space underlay for a turf
 /// This provides proper lighting support alongside just looking nice
 /// Accepts the appearance to make "spaceish", and the turf we're doing this for
-/proc/generate_space_underlay(mutable_appearance/underlay_appearance, turf/generate_for)
+/proc/generate_space_underlay(mutable_appearance/underlay_appearance, turf/generate_for, mutable_appearance/mask_source)
 	underlay_appearance.icon = 'icons/turf/space.dmi'
 	underlay_appearance.icon_state = "space"
 	SET_PLANE(underlay_appearance, PLANE_SPACE, generate_for)
@@ -315,7 +315,7 @@
 	light.appearance_flags |= KEEP_TOGETHER
 	// Now apply a copy of the turf, set to multiply
 	// This will multiply against our light, so we only light up the bits that aren't "on" the wall
-	var/mutable_appearance/mask = new(generate_for.appearance)
+	var/mutable_appearance/mask = new(mask_source || generate_for.appearance) // mask_source: for turfs whose own appearance is not one flat sprite
 	mask.blend_mode = BLEND_MULTIPLY
 	mask.render_target = ""
 	mask.pixel_x = 0

@@ -19,7 +19,7 @@
 
 // BEGIN_INCLUDE
 #include "code\SSdebugview.dm"
-#include "code\__HELPERS\light.dm"
+#include "code\__HELPERS\map_dir_helpers.dm"
 #include "code\__HELPERS\size_icons.dm"
 #include "code\datums\datums\storage\subtypes.dm"
 #include "code\datums\ekements\cutting_tool_target.dm"

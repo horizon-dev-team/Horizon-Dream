@@ -633,6 +633,30 @@
 	plane = MOB_PLANE
 	render_relay_planes = list(RENDER_PLANE_MASKED_WORLD)
 
+/atom/movable/screen/plane_master/mobs/show_to(mob/mymob)
+	. = ..()
+	if(!. || !mymob)
+		return
+	RegisterSignal(mymob, SIGNAL_ADDTRAIT(TRAIT_THERMAL_VISION), PROC_REF(update_thermals), override = TRUE)
+	RegisterSignal(mymob, SIGNAL_REMOVETRAIT(TRAIT_THERMAL_VISION), PROC_REF(update_thermals), override = TRUE)
+	update_thermals(mymob)
+
+/atom/movable/screen/plane_master/mobs/proc/update_thermals(mob/source)
+	SIGNAL_HANDLER
+	var/thermal_plane = GET_NEW_PLANE(RENDER_PLANE_GAME, offset)
+	if(!HAS_TRAIT(source, TRAIT_THERMAL_VISION))
+		remove_relay_from(thermal_plane)
+		return
+	if(get_relay_to(thermal_plane))
+		return
+	add_relay_to(thermal_plane, relay_layer = WALLS_FOV_PLANE_16 + abs(LOWEST_EVER_PLANE * 30) + 1)
+	var/atom/movable/render_plane_relay/relay = get_relay_to(thermal_plane)
+
+	// No MASK_INVERSE: the hub already shows the clear part. This relay is only the cut-out part.
+	relay.add_filter("thermal_wall_mask", 1, alpha_mask_filter(render_source = OFFSET_RENDER_TARGET(WALLS_FOV_PLANE_15_RENDER_TARGET, offset)))
+	relay.mouse_opacity = MOUSE_OPACITY_TRANSPARENT
+	relay.color = list(1,0,0,0, 0,0.35,0,0, 0,0,0.35,0, 0,0,0,1, 0,0,0,0)
+
 /atom/movable/screen/plane_master/above_floor
 	name = "Above Floor Plane"
 	plane = ABOVE_FLOOR_PLANE

@@ -191,25 +191,18 @@
 	return FALSE
 
 // We don't react to smoothing changing here because this else exists only to "revert" intact changes
-/turf/closed/wall/r_wall/update_icon_state()
-	if(d_state != INTACT)
-		base_icon_state = "reinforced_wall"
-		switch(d_state)
-			if(SUPPORT_LINES, COVER)
-				icon = '_horizon/icons/turf/walls/modules_wall/rstates/reinforce2.dmi'
-				return ..()
-			if(CUT_COVER)
-				icon = '_horizon/icons/turf/walls/modules_wall/rstates/reinforce3.dmi'
-				return ..()
-			if(ANCHOR_BOLTS, SUPPORT_RODS)
-				icon = '_horizon/icons/turf/walls/modules_wall/rstates/reinforce4.dmi'
-				return ..()
-			if(SHEATH)
-				icon = '_horizon/icons/turf/walls/modules_wall/rstates/reinforce5.dmi'
-				return ..()
-	else
-		icon = initial(icon)
-		icon_state = "[base_icon_state]-[smoothing_junction]"
+/turf/closed/wall/r_wall/update_icon()
+	switch(d_state)
+		if(SUPPORT_LINES, COVER)
+			icon = '_horizon/icons/turf/walls/modules_wall/rstates/reinforce2.dmi'
+		if(CUT_COVER)
+			icon = '_horizon/icons/turf/walls/modules_wall/rstates/reinforce3.dmi'
+		if(ANCHOR_BOLTS, SUPPORT_RODS)
+			icon = '_horizon/icons/turf/walls/modules_wall/rstates/reinforce4.dmi'
+		if(SHEATH)
+			icon = '_horizon/icons/turf/walls/modules_wall/rstates/reinforce5.dmi'
+		else
+			icon = initial(icon)
 	return ..()
 
 /turf/closed/wall/r_wall/wall_singularity_pull(current_size)

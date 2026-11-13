@@ -24,16 +24,18 @@ MAPPING_DIRECTIONAL_HELPERS(/obj/structure/sign/departments/med_alt, 32)
 	name = "\improper Medbay sign"
 	sign_change_name = "Generic Medical"
 	desc = "The intergalactic symbol of medical institutions. You'll probably get help here."
+	icon = '_horizon/icons/obj/signs.dmi'
 	icon_state = "bluecross"
 
-MAPPING_DIRECTIONAL_HELPERS(/obj/structure/sign/departments/medbay, 32)
+MAPPING_DIRECTIONAL_HELPERS(/obj/structure/sign/departments/medbay, 22)
 
 /obj/structure/sign/departments/medbay/alt
 	name = "\improper Medbay sign"
 	sign_change_name = "Generic Medical Alt"
+	icon = '_horizon/icons/obj/signs.dmi'
 	icon_state = "bluecross2"
 
-MAPPING_DIRECTIONAL_HELPERS(/obj/structure/sign/departments/medbay/alt, 32)
+MAPPING_DIRECTIONAL_HELPERS(/obj/structure/sign/departments/medbay/alt, 22)
 
 /obj/structure/sign/departments/exam_room
 	name = "\improper Exam Room sign"

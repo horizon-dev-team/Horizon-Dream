@@ -2,7 +2,7 @@
 	name = "mineral wall"
 	desc = "This shouldn't exist"
 	abstract_type = /turf/closed/wall/mineral
-	blend_turfs = list(/turf/closed/mineral)
+	blend_turfs = list(/turf/closed/wall/mineral)
 	noblend_turfs = list()
 	rcd_memory = null
 	material_flags = MATERIAL_EFFECTS

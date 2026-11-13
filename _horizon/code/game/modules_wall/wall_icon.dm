@@ -236,6 +236,7 @@
 	if(!special_icon)
 		return ..()
 	render_corner_frames(src, wall_connections, ABOVE_WALL_PLANE)
+	add_overlay(update_overlays(~UPDATE_SMOOTHING))
 
 /obj/structure/window/proc/update_connections()
 	wall_connections = dirs_to_corner_states(scan_blend_dirs(src, blend_turfs, noblend_turfs, blend_objects, noblend_objects))

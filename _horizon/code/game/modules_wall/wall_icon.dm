@@ -15,11 +15,13 @@
 		vis.plane = plane
 	return make_mutable_appearance_directional(vis, dir)
 
-/atom/proc/render_corner_frames(atom/A, list/wall_connections, plane, diagonal = FALSE)
+/atom/proc/render_corner_frames(atom/A, list/wall_connections, plane, diagonal = FALSE, icon_file)
 	A.overlays.Cut()
 	A.icon_state = "blank"
+	if(!icon_file)
+		icon_file = A.icon
 	for(var/i in 1 to 4)
-		A.overlays += get_wall_object(A.icon, corner_icon_state(wall_connections[i], diagonal), 1<<(i-1), plane = plane, offset_spokesman = A)
+		A.overlays += get_wall_object(icon_file, corner_icon_state(wall_connections[i], diagonal), 1<<(i-1), plane = plane, offset_spokesman = A)
 
 /turf/closed/proc/build_wall_sprite(plane)
 	var/mutable_appearance/frill/sprite = new()
@@ -281,6 +283,14 @@
 /obj/structure/grille/update_icon()
 	if(!special_icon)
 		return ..()
+	overlays.Cut()
+	icon_state = "blank"
+	if(broken)
+		overlays += get_wall_object('_horizon/icons/obj/smooth_structures/grille_broken.dmi', "brokengrille", plane = WALL_PLANE, offset_spokesman = src)
+		return
+	if(atom_integrity / max_integrity <= 0.5)
+		render_corner_frames(src, wall_connections, WALL_PLANE, icon_file = '_horizon/icons/obj/smooth_structures/grille_damaged.dmi')
+		return
 	render_corner_frames(src, wall_connections, WALL_PLANE)
 
 /obj/structure/grille/proc/update_connections()

@@ -102,7 +102,7 @@
 	. = ..()
 	if (!has_buckled_mobs())
 		return
-	var/mutable_appearance/armrest = mutable_appearance(icon, "[icon_state]_armrest", ABOVE_MOB_LAYER, src, appearance_flags = KEEP_APART)
+	var/mutable_appearance/armrest = mutable_appearance(icon, "[icon_state]_armrest", ABOVE_MOB_LAYER, src, MOB_PLANE, appearance_flags = KEEP_APART)
 	var/mutable_appearance/armrest_blocker = emissive_blocker(icon, "[icon_state]_armrest", src, ABOVE_MOB_LAYER)
 	if (cached_color_filter)
 		armrest = filter_appearance_recursive(armrest, cached_color_filter)
@@ -150,8 +150,10 @@
 /obj/structure/chair/proc/handle_layer()
 	if(has_buckled_mobs() && dir == NORTH)
 		layer = ABOVE_MOB_LAYER
+		SET_PLANE_IMPLICIT(src, MOB_PLANE)
 	else
 		layer = OBJ_LAYER
+		SET_PLANE_IMPLICIT(src, initial(plane))
 
 /obj/structure/chair/post_buckle_mob(mob/living/M)
 	. = ..()
@@ -278,8 +280,8 @@
 /obj/structure/chair/comfy/shuttle/update_overlays()
 	. = ..()
 	if(has_buckled_mobs())
-		. += mutable_appearance(icon, "[icon_state]_down_front", ABOVE_MOB_LAYER + 0.01)
-		. += mutable_appearance(icon, "[icon_state]_down_behind", src.layer + 0.01)
+		. += mutable_appearance(icon, "[icon_state]_down_front", ABOVE_MOB_LAYER + 0.01, src, MOB_PLANE)
+		. += mutable_appearance(icon, "[icon_state]_down_behind", src.layer + 0.01, src, MOB_PLANE)
 	else
 		. += mutable_appearance(icon, "[icon_state]_up", src.layer + 0.01)
 

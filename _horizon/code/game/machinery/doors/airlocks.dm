@@ -77,6 +77,14 @@
 	icon = '_horizon/icons/obj/doors/airlocks/external/external.dmi'
 	overlays_file = '_horizon/icons/obj/doors/airlocks/external/overlays.dmi'
 
+/obj/machinery/door/airlock/shuttle
+	icon = '_horizon/icons/obj/doors/airlocks/hatch/titan.dmi'
+	overlays_file = '_horizon/icons/obj/doors/airlocks/hatch/overlays.dmi'
+
+/obj/machinery/door/airlock/titanium
+	icon = '_horizon/icons/obj/doors/airlocks/hatch/titan.dmi'
+	overlays_file = '_horizon/icons/obj/doors/airlocks/hatch/overlays.dmi'
+
 // MARK: Другое
 /obj/machinery/door/poddoor
 	icon = '_horizon/icons/obj/doors/airlocks/blastdoor.dmi'

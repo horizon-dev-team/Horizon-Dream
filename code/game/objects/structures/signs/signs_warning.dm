@@ -10,34 +10,34 @@
 	icon_state = "securearea"
 	is_editable = TRUE
 
-MAPPING_DIRECTIONAL_HELPERS(/obj/structure/sign/warning, 22)
-//MAPPING_DIAGONAL_HELPERS(/obj/structure/sign/warning, 22)
+MAPPING_DIRECTIONAL_HELPERS(/obj/structure/sign/warning, 22) // [HORIZON-EDIT] Shadow-Render
+MAPPING_DIAGONAL_HELPERS(/obj/structure/sign/warning, 22) // [HORIZON-EDIT] Shadow-Render
 
 /obj/structure/sign/warning/secure_area
 	name = "\improper SECURE AREA sign"
 	sign_change_name = "Warning - Secure Area"
 	desc = "A warning sign which reads 'SECURE AREA'."
-	icon = '_horizon/icons/obj/signs.dmi'
+	icon = '_horizon/icons/obj/signs.dmi' // [HORIZON-ADD] Shadow-Render
 
-MAPPING_DIRECTIONAL_HELPERS(/obj/structure/sign/warning/secure_area, 22)
-//MAPPING_DIAGONAL_HELPERS(/obj/structure/sign/warning/secure_area, 22)
+MAPPING_DIRECTIONAL_HELPERS(/obj/structure/sign/warning/secure_area, 22) // [HORIZON-EDIT] Shadow-Render
+MAPPING_DIAGONAL_HELPERS(/obj/structure/sign/warning/secure_area, 22) // [HORIZON-EDIT] Shadow-Render
 
 /obj/structure/sign/warning/docking
 	name = "\improper KEEP CLEAR: DOCKING AREA sign"
 	sign_change_name = "Warning - Docking Area"
 	desc = "A warning sign which reads 'KEEP CLEAR OF DOCKING AREA'."
-	icon = '_horizon/icons/obj/signs.dmi'
+	icon = '_horizon/icons/obj/signs.dmi' // [HORIZON-ADD] Shadow-Render
 
-MAPPING_DIRECTIONAL_HELPERS(/obj/structure/sign/warning/docking, 22)
+MAPPING_DIRECTIONAL_HELPERS(/obj/structure/sign/warning/docking, 22) // [HORIZON-EDIT] Shadow-Render
 
 /obj/structure/sign/warning/biohazard
 	name = "\improper BIOHAZARD sign"
 	sign_change_name = "Warning - Biohazard"
 	desc = "A warning sign which reads 'BIOHAZARD'."
-	icon = '_horizon/icons/obj/signs.dmi'
+	icon = '_horizon/icons/obj/signs.dmi' // [HORIZON-ADD] Shadow-Render
 	icon_state = "bio"
 
-MAPPING_DIRECTIONAL_HELPERS(/obj/structure/sign/warning/biohazard, 22)
+MAPPING_DIRECTIONAL_HELPERS(/obj/structure/sign/warning/biohazard, 22) // [HORIZON-EDIT] Shadow-Render
 
 /obj/structure/sign/warning/electric_shock
 	name = "\improper HIGH VOLTAGE sign"
@@ -45,7 +45,7 @@ MAPPING_DIRECTIONAL_HELPERS(/obj/structure/sign/warning/biohazard, 22)
 	desc = "A warning sign which reads 'HIGH VOLTAGE'."
 	icon_state = "shock"
 
-MAPPING_DIRECTIONAL_HELPERS(/obj/structure/sign/warning/electric_shock, 22)
+MAPPING_DIRECTIONAL_HELPERS(/obj/structure/sign/warning/electric_shock, 22) // [HORIZON-EDIT] Shadow-Render
 
 /obj/structure/sign/warning/vacuum
 	name = "\improper HARD VACUUM AHEAD sign"
@@ -67,10 +67,10 @@ MAPPING_DIRECTIONAL_HELPERS(/obj/structure/sign/warning/vacuum/external, 32)
 	name = "\improper DISPOSAL: LEADS TO SPACE sign"
 	sign_change_name = "Warning - Disposals: Leads to Space"
 	desc = "A warning sign which reads 'DISPOSAL: LEADS TO SPACE'."
-	icon = '_horizon/icons/obj/signs.dmi'
+	icon = '_horizon/icons/obj/signs.dmi' // [HORIZON-ADD] Shadow-Render
 	icon_state = "deathsposal"
 
-MAPPING_DIRECTIONAL_HELPERS(/obj/structure/sign/warning/deathsposal, 22)
+MAPPING_DIRECTIONAL_HELPERS(/obj/structure/sign/warning/deathsposal, 22) // [HORIZON-EDIT] Shadow-Render
 
 /obj/structure/sign/warning/bodysposal
 	name = "\improper DISPOSAL: LEADS TO MORGUE sign"
@@ -84,62 +84,67 @@ MAPPING_DIRECTIONAL_HELPERS(/obj/structure/sign/warning/bodysposal, 32)
 	name = "\improper DANGER: FIRE sign"
 	sign_change_name = "Warning - Fire Hazard"
 	desc = "A warning sign which reads 'DANGER: FIRE'."
-	icon = '_horizon/icons/obj/signs.dmi'
+	icon = '_horizon/icons/obj/signs.dmi' // [HORIZON-ADD] Shadow-Render
 	icon_state = "fire"
 	resistance_flags = FIRE_PROOF
 
-MAPPING_DIRECTIONAL_HELPERS(/obj/structure/sign/warning/fire, 22)
+MAPPING_DIRECTIONAL_HELPERS(/obj/structure/sign/warning/fire, 22) // [HORIZON-EDIT] Shadow-Render
 
 /obj/structure/sign/warning/no_smoking
 	name = "\improper NO SMOKING sign"
 	sign_change_name = "Warning - No Smoking"
 	desc = "A warning sign which reads 'NO SMOKING'."
-	icon = '_horizon/icons/obj/signs.dmi'
+	icon = '_horizon/icons/obj/signs.dmi' // [HORIZON-ADD] Shadow-Render
 	icon_state = "nosmoking2"
 	resistance_flags = FLAMMABLE
 
-MAPPING_DIRECTIONAL_HELPERS(/obj/structure/sign/warning/no_smoking, 22)
+MAPPING_DIRECTIONAL_HELPERS(/obj/structure/sign/warning/no_smoking, 22) // [HORIZON-EDIT] Shadow-Render
 
+// [HORIZON-ADD] Shadow-Render
 /obj/structure/sign/warning/no_smoking/alt
+	name = "\improper NO SMOKING sign"
+	sign_change_name = "Warning - No Smoking Burnt"
+	desc = "A warning sign with reads 'NO SMOKING'. It seems a bit seared."
 	icon = '_horizon/icons/obj/signs.dmi'
 	icon_state = "nosmoking2_b"
 
 MAPPING_DIRECTIONAL_HELPERS(/obj/structure/sign/warning/no_smoking/alt, 22)
+// [/HORIZON-ADD]
 
 /obj/structure/sign/warning/no_smoking/circle
 	name = "\improper NO SMOKING sign"
 	sign_change_name = "Warning - No Smoking Alt"
 	desc = "A warning sign which reads 'NO SMOKING'."
-	icon = '_horizon/icons/obj/signs.dmi'
+	icon = '_horizon/icons/obj/signs.dmi' // [HORIZON-ADD] Shadow-Render
 	icon_state = "nosmoking"
 
-MAPPING_DIRECTIONAL_HELPERS(/obj/structure/sign/warning/no_smoking/circle, 22)
+MAPPING_DIRECTIONAL_HELPERS(/obj/structure/sign/warning/no_smoking/circle, 22) // [HORIZON-EDIT] Shadow-Render
 
 /obj/structure/sign/warning/yes_smoking/circle
 	name = "\improper YES SMOKING sign"
 	sign_change_name = "Warning - Yes Smoking"
 	desc = "A warning sign which reads 'YES SMOKING'."
-	icon = '_horizon/icons/obj/signs.dmi'
+	icon = '_horizon/icons/obj/signs.dmi' // [HORIZON-ADD] Shadow-Render
 	icon_state = "yessmoking"
 
-MAPPING_DIRECTIONAL_HELPERS(/obj/structure/sign/warning/yes_smoking/circle, 22)
+MAPPING_DIRECTIONAL_HELPERS(/obj/structure/sign/warning/yes_smoking/circle, 22) // [HORIZON-EDIT] Shadow-Render
 
 /obj/structure/sign/warning/radiation
 	name = "\improper HAZARDOUS RADIATION sign"
 	sign_change_name = "Warning - Radiation"
 	desc = "A warning sign alerting the user of potential radiation hazards."
-	icon = '_horizon/icons/obj/signs.dmi'
+	icon = '_horizon/icons/obj/signs.dmi' // [HORIZON-ADD] Shadow-Render
 	icon_state = "radiation"
 
-MAPPING_DIRECTIONAL_HELPERS(/obj/structure/sign/warning/radiation, 22)
+MAPPING_DIRECTIONAL_HELPERS(/obj/structure/sign/warning/radiation, 22) // [HORIZON-EDIT] Shadow-Render
 
 /obj/structure/sign/warning/radiation/rad_area
 	name = "\improper RADIOACTIVE AREA sign"
 	sign_change_name = "Warning - Radioactive Area"
 	desc = "A warning sign which reads 'RADIOACTIVE AREA'."
-	icon = '_horizon/icons/obj/signs.dmi'
+	icon = '_horizon/icons/obj/signs.dmi' // [HORIZON-ADD] Shadow-Render
 
-MAPPING_DIRECTIONAL_HELPERS(/obj/structure/sign/warning/radiation/rad_area, 22)
+MAPPING_DIRECTIONAL_HELPERS(/obj/structure/sign/warning/radiation/rad_area, 22) // [HORIZON-EDIT] Shadow-Render
 
 /obj/structure/sign/warning/xeno_mining
 	name = "\improper DANGEROUS ALIEN LIFE sign"
@@ -161,19 +166,19 @@ MAPPING_DIRECTIONAL_HELPERS(/obj/structure/sign/warning/engine_safety, 32)
 	name = "\improper HIGH EXPLOSIVES sign"
 	sign_change_name = "Warning - Explosives"
 	desc = "A warning sign which reads 'HIGH EXPLOSIVES'."
-	icon = '_horizon/icons/obj/signs.dmi'
+	icon = '_horizon/icons/obj/signs.dmi' // [HORIZON-ADD] Shadow-Render
 	icon_state = "explosives"
 
-MAPPING_DIRECTIONAL_HELPERS(/obj/structure/sign/warning/explosives, 22)
+MAPPING_DIRECTIONAL_HELPERS(/obj/structure/sign/warning/explosives, 22) // [HORIZON-EDIT] Shadow-Render
 
 /obj/structure/sign/warning/explosives/alt
 	name = "\improper HIGH EXPLOSIVES sign"
 	sign_change_name = "Warning - Explosives Alt"
 	desc = "A warning sign which reads 'HIGH EXPLOSIVES'."
-	icon = '_horizon/icons/obj/signs.dmi'
+	icon = '_horizon/icons/obj/signs.dmi' // [HORIZON-ADD] Shadow-Render
 	icon_state = "explosives2"
 
-MAPPING_DIRECTIONAL_HELPERS(/obj/structure/sign/warning/explosives/alt, 22)
+MAPPING_DIRECTIONAL_HELPERS(/obj/structure/sign/warning/explosives/alt, 22) // [HORIZON-EDIT] Shadow-Render
 
 /obj/structure/sign/warning/test_chamber
 	name = "\improper TESTING AREA sign"
@@ -219,10 +224,10 @@ MAPPING_DIRECTIONAL_HELPERS(/obj/structure/sign/warning/gas_mask, 32)
 	name = "\improper REACTIVE CHEMICALS sign"
 	sign_change_name = "Warning - Hazardous Chemicals sign"
 	desc = "A sign that warns of potentially reactive chemicals nearby, be they explosive, flammable, or acidic."
-	icon = '_horizon/icons/obj/signs.dmi'
+	icon = '_horizon/icons/obj/signs.dmi' // [HORIZON-ADD] Shadow-Render
 	icon_state = "chemdiamond"
 
-MAPPING_DIRECTIONAL_HELPERS(/obj/structure/sign/warning/chem_diamond, 22)
+MAPPING_DIRECTIONAL_HELPERS(/obj/structure/sign/warning/chem_diamond, 22) // [HORIZON-EDIT] Shadow-Render
 
 /obj/structure/sign/warning/doors
 	name = "\improper BLAST DOORS sign"

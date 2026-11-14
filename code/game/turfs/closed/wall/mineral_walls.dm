@@ -229,15 +229,9 @@
 	return ..()
 
 /turf/closed/wall/mineral/titanium/nodiagonal
-
-/turf/closed/wall/mineral/titanium/overspace
-	//icon = MAP_SWITCH('icons/turf/walls/shuttle_wall.dmi', 'icons/turf/walls/misc_wall.dmi')
-	//icon_state = MAP_SWITCH("shuttle_wall-0", "shuttle_nd")
 	//smoothing_flags = SMOOTH_BITMASK
 
 /turf/closed/wall/mineral/titanium/overspace
-	//icon = MAP_SWITCH('icons/turf/walls/shuttle_wall.dmi', 'icons/turf/walls/misc_wall.dmi')
-	//icon_state = MAP_SWITCH("shuttle_wall-0", "shuttle_overspace")
 	//fixed_underlay = list("space" = TRUE)
 
 /turf/closed/wall/mineral/titanium/interior/copyTurf(turf/copy_to_turf, copy_air = FALSE, flags = null)
@@ -292,8 +286,12 @@
 	sheet_amount = 1
 	rust_resistance = RUST_RESISTANCE_TITANIUM
 
-/turf/closed/wall/mineral/plastitanium/survival/nodiagonal //Понабирают всяких долбаёбав
+/turf/closed/wall/mineral/plastitanium/survival/nodiagonal
+	//smoothing_flags = SMOOTH_BITMASK
+
 /turf/closed/wall/mineral/plastitanium/survival/pod
+	//smoothing_groups = SMOOTH_GROUP_SURVIVAL_TITANIUM_POD + SMOOTH_GROUP_TITANIUM_WALLS + SMOOTH_GROUP_WALLS + SMOOTH_GROUP_CLOSED_TURFS
+	//canSmoothWith = SMOOTH_GROUP_SURVIVAL_TITANIUM_POD
 
 /turf/closed/wall/mineral/plastitanium/rust_turf(magic = FALSE)
 	if(HAS_TRAIT(src, TRAIT_RUSTY))

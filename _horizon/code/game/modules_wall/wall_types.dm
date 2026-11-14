@@ -38,8 +38,32 @@
 /turf/closed/wall/r_wall/plastitanium
 	icon = '_horizon/icons/turf/walls/modules_wall/pidopod.dmi'
 
+/*
+/turf/closed/wall/mineral/bananium
+	icon = 'icons/turf/walls/bananium_wall.dmi'
+
+/turf/closed/wall/mineral/bamboo
+	icon = 'icons/turf/walls/bamboo_wall.dmi'
+
+/turf/closed/wall/mineral/abductor
+	icon = 'icons/turf/walls/abductor_wall.dmi'
+*/
+
+// MARK: Mineral
+/turf/closed/wall/mineral
+	blend_turfs = list(/turf/closed/wall/mineral)
+	noblend_turfs = list()
+
 /turf/closed/wall/mineral/plastitanium
 	icon = '_horizon/icons/turf/walls/modules_wall/plastitanium.dmi'
+
+/turf/closed/wall/mineral/plastitanium/nodiagonal
+//	icon = MAP_SWITCH('_horizon/icons/turf/walls/plastitanium_wall.dmi', 'icons/turf/walls/misc_wall.dmi')
+//	icon_state = MAP_SWITCH("plastitanium_wall-0", "plastitanium_nd")
+
+/turf/closed/wall/mineral/plastitanium/overspace
+//	icon = MAP_SWITCH('_horizon/icons/turf/walls/plastitanium_wall.dmi', 'icons/turf/walls/misc_wall.dmi')
+//	icon_state = MAP_SWITCH("plastitanium_wall-0", "plastitanium_overspace")
 
 /turf/closed/wall/mineral/plastitanium/survival
 	icon = '_horizon/icons/turf/walls/modules_wall/EvaWall.dmi'
@@ -61,6 +85,16 @@
 	diagonal = TRUE
 	fixed_underlay = list("space" = TRUE)
 
+/*
+// MARK: Titan
+/turf/closed/wall/mineral/titanium/survival
+	icon = '_horizon/icons/turf/walls/survival_pod_walls.dmi'
+
+/turf/closed/wall/mineral/titanium/survival/nodiagonal
+	icon = '_horizon/icons/turf/walls/survival_pod_walls.dmi'
+*/
+
+// MARK: Generic Walls
 /turf/closed/wall/mineral/snow
 	icon = '_horizon/icons/turf/walls/modules_wall/snow.dmi'
 
@@ -87,3 +121,13 @@
 
 /turf/closed/wall/mineral/plasma
 	icon = '_horizon/icons/turf/walls/modules_wall/plasma.dmi'
+
+/*
+/turf/closed/indestructible/riveted
+	icon = '_horizon/icons/turf/walls/riveted.dmi'
+	smoothing_groups = SMOOTH_GROUP_WALLS + SMOOTH_GROUP_CLOSED_TURFS + SMOOTH_GROUP_SYNDICATE_WALLS
+	canSmoothWith = SMOOTH_GROUP_SHUTTLE_PARTS + SMOOTH_GROUP_AIRLOCK + SMOOTH_GROUP_WINDOW_FULLTILE + SMOOTH_GROUP_PLASTITANIUM_WALLS + SMOOTH_GROUP_SYNDICATE_WALLS
+
+/turf/closed/indestructible/riveted/boss
+	icon = '_horizon/icons/turf/walls/boss_wall.dmi'
+*/

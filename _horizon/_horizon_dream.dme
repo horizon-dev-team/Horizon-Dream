@@ -26,7 +26,6 @@
 #include "code\datums\particles\leaves.dm"
 #include "code\elements\directional_attack.dm"
 #include "code\game\aesthetics\item.dm"
-#include "code\game\aesthetics\mineral_walls.dm"
 #include "code\game\aesthetics\minerals.dm"
 #include "code\game\aesthetics\structure.dm"
 #include "code\game\aesthetics\wallmounts.dm"

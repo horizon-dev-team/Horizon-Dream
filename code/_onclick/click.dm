@@ -408,7 +408,7 @@
 		return
 	if(user.client)
 		if(!isobserver(user) && !can_see(user, src, 7))
-			src.balloon_alert(user, "сan't see, get closer")
+			src.balloon_alert(user, "can't see, get closer")
 			return
 		user.examinate(src)
 

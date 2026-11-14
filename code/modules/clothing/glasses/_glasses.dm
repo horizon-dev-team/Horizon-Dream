@@ -100,7 +100,6 @@
 	equip_sound = /datum/sound_effect/goggles_equip
 	custom_materials = list(/datum/material/iron = HALF_SHEET_MATERIAL_AMOUNT, /datum/material/glass = HALF_SHEET_MATERIAL_AMOUNT)
 
-
 /obj/item/clothing/glasses/meson/suicide_act(mob/living/user)
 	user.visible_message(span_suicide("[user] is putting \the [src] to [user.p_their()] eyes and overloading the brightness! It looks like [user.p_theyre()] trying to commit suicide!"))
 	return BRUTELOSS

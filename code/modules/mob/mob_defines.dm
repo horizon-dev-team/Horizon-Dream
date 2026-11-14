@@ -17,7 +17,6 @@
 	throwforce = 10
 	blocks_emissive = EMISSIVE_BLOCK_GENERIC
 	pass_flags_self = PASSMOB
-	plane = MOB_PLANE
 	// we never want to hide a turf because it's not lit
 	// We can rely on the lighting plane to handle that for us
 	see_in_dark = 1e6
@@ -221,6 +220,3 @@
 	/// Sound tokens currently playing for this mob.
 	/// Managed by /datum/sound_token and the soundtoken subsystem
 	var/list/datum/sound_token/sound_tokens
-
-	// [HORIZON-ADD] - Wallening Testmerge
-	sight = SEE_MOBS|SEE_OBJS|SEE_TURFS

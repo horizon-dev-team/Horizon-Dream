@@ -229,8 +229,6 @@
 /obj/structure/door_assembly/door_assembly_wood
 	icon = '_horizon/icons/obj/doors/airlocks/station/wood.dmi'
 
-
-
 /obj/structure/door_assembly/door_assembly_material
 	greyscale_config = /datum/greyscale_config/material_airlock
 

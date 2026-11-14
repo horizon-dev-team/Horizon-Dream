@@ -45,6 +45,7 @@
 	// Don't display us if we're below everything else yeah?
 	AddComponent(/datum/component/plane_hide_highest_offset)
 	color = list(0.9,0,0,0, 0,0.9,0,0, 0,0,0.9,0, 0,0,0,1, 0,0,0,0)
+	transform = matrix(1, 0, 0, 0, 1, -12) // [HORIZON-ADD] Shadow-Render
 
 ///Contains most things in the game world
 /atom/movable/screen/plane_master/rendering_plate/game_world
@@ -362,7 +363,7 @@
 	if(new_cutoffs ~= light_cutoffs)
 		return
 
-	remove_filter(list("light_cutdown", "light_cutup"))
+	remove_filter(list("light_cutdown", "light_cutup", "shadow"))
 
 	var/ratio = light_cutoff/100
 	if(!color_cutoffs)
@@ -371,6 +372,7 @@
 	var/red = color_cutoffs[1] / 100
 	var/green = color_cutoffs[2] / 100
 	var/blue = color_cutoffs[3] / 100
+	add_filter("shadow", 1, alpha_mask_filter(render_source = OFFSET_RENDER_TARGET(RENDER_PLANE_LIGHTING, offset), flags = MASK_INVERSE))
 	add_filter("light_cutdown", 3, color_matrix_filter(list(1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1, -(ratio + red),-(ratio+green),-(ratio+blue),0)))
 	add_filter("light_cutup", 4, color_matrix_filter(list(1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1, ratio+red,ratio+green,ratio+blue,0)))
 

@@ -407,6 +407,11 @@
 	if(shiftclick_flags & COMSIG_MOB_CANCEL_CLICKON)
 		return
 	if(user.client)
+	// [HORIZON-ADD] Shadow-Render
+		if(!isobserver(user) && !can_see(user, src, 7))
+			src.balloon_alert(user, "can't see, get closer")
+			return
+	// [/HORIZON-ADD]
 		user.examinate(src)
 
 /mob/proc/TurfAdjacent(turf/tile)

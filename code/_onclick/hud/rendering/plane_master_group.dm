@@ -157,11 +157,15 @@
 // It's hard, and potentially expensive. be careful
 /datum/plane_master_group/proc/build_planes_offset(new_offset)
 	// Check if this feature is disabled for the client, in which case don't use scale.
+	// [HORIZON-EDIT] Shadow-Render
 	var/mob/our_mob = our_hud?.mymob
 	var/use_scale = should_scale()
+	/*
 	if(use_scale && !our_mob?.client?.prefs?.read_preference(/datum/preference/toggle/multiz_parallax))
 		use_scale = FALSE
-
+	*/
+	use_scale = FALSE
+	// [/HORIZON-EDIT]
 	// No offset? piss off
 	if(!SSmapping.max_plane_offset)
 		return

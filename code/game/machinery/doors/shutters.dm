@@ -13,23 +13,25 @@
 	animation_sound = 'sound/machines/shutter.ogg'
 	show_nav_computer_icon = FALSE
 
+// [HORIZON-EDIT] Shadow-Render
 /obj/machinery/door/poddoor/shutters/animation_length(animation)
 	switch(animation)
 		if(DOOR_OPENING_ANIMATION)
-			return 1.388 SECONDS
+			return 0.83 SECONDS
 		if(DOOR_CLOSING_ANIMATION)
-			return 1.388 SECONDS
+			return 0.83 SECONDS
 
 /obj/machinery/door/poddoor/shutters/animation_segment_delay(animation)
 	switch(animation)
 		if(DOOR_OPENING_PASSABLE)
-			return 0.76 SECONDS
+			return 0.6 SECONDS
 		if(DOOR_OPENING_FINISHED)
-			return 1.388 SECONDS
+			return 0.83 SECONDS
 		if(DOOR_CLOSING_UNPASSABLE)
-			return 0.152 SECONDS
+			return 0.23 SECONDS
 		if(DOOR_CLOSING_FINISHED)
-			return 1.388 SECONDS
+			return 0.83 SECONDS
+// [/HORIZON-EDIT]
 
 /obj/machinery/door/poddoor/shutters/preopen
 	icon_state = "open"

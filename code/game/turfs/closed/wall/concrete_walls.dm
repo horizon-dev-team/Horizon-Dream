@@ -1,16 +1,10 @@
 /turf/closed/wall/concrete
 	name = "concrete wall"
 	desc = "A thick wall made of concrete, poured around steel supports."
-	icon = 'icons/turf/walls/concrete.dmi'
-	icon_state = "concrete-0"
-	base_icon_state = "concrete"
 	explosive_resistance = 2
 	rad_insulation = RAD_MEDIUM_INSULATION
 	rust_resistance = RUST_RESISTANCE_REINFORCED
 
-	smoothing_flags = SMOOTH_BITMASK
-	smoothing_groups = SMOOTH_GROUP_CONCRETE_WALLS + SMOOTH_GROUP_WALLS + SMOOTH_GROUP_CLOSED_TURFS
-	canSmoothWith = SMOOTH_GROUP_CONCRETE_WALLS
 	hardness = 30
 
 	sheet_type = /obj/item/stack/ore/glass/concrete_powder

@@ -112,6 +112,7 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 
 /atom/movable/screen/swap_hand
 	name = "swap hand"
+	icon_state = "act_swap" // [HORIZON-ADD] WIDE_HUD
 	mouse_over_pointer = MOUSE_HAND_POINTER
 
 /atom/movable/screen/swap_hand/Click(location, control, params)
@@ -257,14 +258,22 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 	else
 		item_overlay.color = "#00ff00"
 
+	// [HORIZON-ADD] WIDE_HUD
+	var/datum/inventory_slot/inv_slot = hud.inventory_slots[slot_id]
+	item_overlay.pixel_x = inv_slot?.get_centering_pixel_x(holding)
+	if(isnull(item_overlay.pixel_x))
+		item_overlay.pixel_x = holding.base_pixel_x
+	item_overlay.pixel_y = holding.base_pixel_y
+	// [/HORIZON-ADD]
+
 	cut_overlay(object_overlay)
 	object_overlay = item_overlay
 	add_overlay(object_overlay)
 
 /atom/movable/screen/inventory/hand
 	var/mutable_appearance/handcuff_overlay
-	var/static/mutable_appearance/blocked_overlay = mutable_appearance('icons/hud/screen_gen.dmi', "blocked")
-	var/static/mutable_appearance/shield_overlay = mutable_appearance('icons/hud/screen_gen.dmi', "shielding")
+	var/static/mutable_appearance/blocked_overlay = mutable_appearance('_horizon/icons/ui/screen_gen_wide.dmi', "blocked") // [HORIZON-EDIT] WIDE_HUD
+	var/static/mutable_appearance/shield_overlay = mutable_appearance('_horizon/icons/ui/screen_gen_wide.dmi', "shielding") // [/HORIZON-EDIT]
 	var/held_index = 0
 	interaction_flags_atom = NONE //so dragging objects into hands icon don't skip adjacency & other checks
 
@@ -273,7 +282,8 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 
 	if(!handcuff_overlay)
 		var/state = IS_RIGHT_INDEX(held_index) ? "markus" : "gabrielle"
-		handcuff_overlay = mutable_appearance('icons/hud/screen_gen.dmi', state)
+		handcuff_overlay = mutable_appearance('_horizon/icons/ui/screen_gen_wide.dmi', state) // [HORIZON-EDIT] WIDE_HUD
+		handcuff_overlay.layer += 0.1 // [/HORIZON-EDIT]
 
 	if(!hud?.mymob)
 		return
@@ -414,7 +424,7 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 		return
 
 	if(!flashy)
-		flashy = mutable_appearance('icons/hud/screen_gen.dmi', "togglefull_flash")
+		flashy = mutable_appearance('_horizon/icons/ui/screen_gen.dmi', "togglefull_flash") // [HORIZON-EDIT] WIDE_HUD
 		flashy.color = "#C62727"
 	. += flashy
 
@@ -503,6 +513,11 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 	astype(wearer.wear_suit, /obj/item/clothing/suit/space)?.update_hud_icon(usr)
 
 /atom/movable/screen/spacesuit/proc/update_spacesuit_hud_icon(cell_state, cell_percent, thermal_on = TRUE)
+	// [HORIZON-ADD] WIDE_HUD
+	var/atom/movable/screen/background_hud/battery/battery = hud?.screen_objects[HUD_HUMAN_EDGE_BATTERY]
+	if(battery)
+		battery.alpha = (cell_state == SPACESUIT_NO_ICON) ? 0 : 255
+	// [/HORIZON-ADD]
 	if(cell_state)
 		switch(cell_state)
 			if(SPACESUIT_NO_ICON)

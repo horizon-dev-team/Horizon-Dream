@@ -41,6 +41,7 @@
 #include "code\modules\buildmode\tgui_browser.dm"
 #include "code\modules\buildmode\submodes\builder.dm"
 #include "code\modules\client\preferences\directional_attack.dm"
+#include "code\modules\hud\screen_objects.dm"
 #include "code\modules\mob\living\living.dm"
 #include "code\modules\physics\atom_movables.dm"
 #include "code\modules\physics\physics_component.dm"
@@ -50,4 +51,6 @@
 #include "code\modules\visual_changes\debris_additions.dm"
 #include "code\modules\visual_changes\gun_smoke.dm"
 #include "code\modules\visual_changes\shockwave.dm"
+#include "code\progress_bar\screen_objects.dm"
+#include "code\progress_bar\world_progressbar.dm"
 // END_INCLUDE

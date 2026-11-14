@@ -1,12 +1,18 @@
+// [HORIZON-EDIT] WIDE_HUD
 /proc/ui_hand_position(i) //values based on old hand ui positions (CENTER:-/+16,SOUTH:5)
-	var/x_off = IS_LEFT_INDEX(i) ? 0 : -1
+	var/x_off = IS_LEFT_INDEX(i) ? 0 : -1.5
 	var/y_off = round((i-1) / 2)
 	return"CENTER+[x_off]:16,SOUTH+[y_off]:5"
 
 /proc/ui_swaphand_position(mob/M, which = LEFT_HANDS) //values based on old swaphand ui positions (CENTER: +/-16,SOUTH+1:5)
-	var/x_off = (which == LEFT_HANDS) ? -1 : null
+	var/x_off = (which == LEFT_HANDS) ? -1.5 : 0.5
 	var/y_off = round((M.get_num_hand_slots()-1) / 2)
-	return "CENTER[x_off]:16,SOUTH+[y_off+1]:5"
+	return "CENTER+[x_off]:16,SOUTH+[y_off+1]:5"
+
+/proc/ui_progbar_position(mob/M) //values based on the old hardcoded progbar position (CENTER-1,SOUTH+1); pushed above the topmost hand row like ui_swaphand_position
+	var/y_off = round((M.get_num_hand_slots()-1) / 2)
+	return "CENTER-1:0,SOUTH+[y_off+1]:5"
+// [/HORIZON-EDIT]
 
 /proc/ui_perk_position(perk_count)
 	var/y_off = perk_count < 1 ? 0 : perk_count/2

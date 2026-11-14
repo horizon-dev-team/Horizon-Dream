@@ -42,6 +42,7 @@ GLOBAL_LIST_EMPTY(buildmode_appearance_cache) // [HORIZON-ADD]
 	// Pixel positioning mode
 	var/pixel_positioning_mode = FALSE
 	var/atom/movable/buildmode_pixel_dummy/pixel_positioning_dummy = null
+	var/saved_popup_menus
 // [/HORIZON-ADD]
 
 /datum/buildmode/New(client/c)
@@ -50,6 +51,7 @@ GLOBAL_LIST_EMPTY(buildmode_appearance_cache) // [HORIZON-ADD]
 	buttons = list()
 	li_cb = CALLBACK(src, PROC_REF(post_login))
 	holder.persistent_client.post_login_callbacks += li_cb
+	saved_popup_menus = holder.show_popup_menus // [HORIZON-ADD] Shadow-Render
 	holder.show_popup_menus = FALSE
 	create_buttons()
 	holder.screen += buttons
@@ -62,6 +64,7 @@ GLOBAL_LIST_EMPTY(buildmode_appearance_cache) // [HORIZON-ADD]
 	mode.exit_mode(src)
 	holder.screen -= buttons
 	holder.click_intercept = null
+	holder.show_popup_menus = saved_popup_menus // [HORIZON-EDIT] Shadow-Render
 	// [HORIZON-ADD]
 	clear_preview()
 	if(item_browser)

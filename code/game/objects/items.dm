@@ -897,6 +897,8 @@ GAME_VERB_SRC(/obj/item, verb_pickup, oview(1), "Pick up", null)
 /obj/item/proc/after_throw(datum/callback/callback)
 	if (callback) //call the original callback
 		. = callback.Invoke()
+	if(!isturf(loc)) // caught, stays centered in the hand
+		return .
 	if(!pixel_y && !pixel_x && !(item_flags & NO_PIXEL_RANDOM_DROP) && !ismob(loc)) // [HORIZON-EDIT] - Rotate_Item
 		pixel_x = rand(-8,8)
 		pixel_y = rand(-8,8)
@@ -1515,7 +1517,7 @@ GAME_VERB_SRC(/obj/item, verb_pickup, oview(1), "Pick up", null)
 		return TRUE
 	if(SEND_SIGNAL(src, COMSIG_ITEM_OFFERING, offerer) & COMPONENT_OFFER_INTERRUPT)
 		return TRUE
-		
+
 	return FALSE
 
 /**

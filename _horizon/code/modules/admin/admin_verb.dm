@@ -9,7 +9,7 @@ ADMIN_VERB(toggle_rightclickmenu, R_NONE, "Toggle Right Click Context Menu", "Al
 		return
 
 	if(!check_rights_for(src, R_VAREDIT))
-		to_chat(src, span_warning("Only niggas with var edit perms can use the right clicking menu."))
+		to_chat(src, span_warning("Only admins with var edit perms can use the right clicking menu."))
 		return FALSE
 
 	show_popup_menus = !show_popup_menus

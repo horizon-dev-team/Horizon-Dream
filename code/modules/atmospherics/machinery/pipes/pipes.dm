@@ -13,7 +13,7 @@
 	var/datum/pipeline/parent = null
 
 	paintable = TRUE
-	plane = WALL_PLANE // [HORIZON-ADD]
+	plane = WALL_PLANE // [HORIZON-ADD] Shadow-Render
 
 	/// Determines if this pipe will be given gas visuals
 	var/has_gas_visuals = TRUE

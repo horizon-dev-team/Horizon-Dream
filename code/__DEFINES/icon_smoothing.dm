@@ -22,9 +22,9 @@
 /// standard bitmask (e.g. _horizon connector walls, shadows, grilles). The bit only
 /// buys entry into the SSicon_smooth queue and the UPDATE_SMOOTHING re-queue hooks;
 /// types carrying it MUST override smooth_icon() or the base proc will CRASH on them.
-#define SMOOTH_CONNECTOR (1<<8)
+#define SMOOTH_CONNECTOR (1<<8) // [HORIZON-ADD] Shadow-Render
 
-#define USES_SMOOTHING (SMOOTH_BITMASK|SMOOTH_BITMASK_CARDINALS|SMOOTH_CONNECTOR)
+#define USES_SMOOTHING (SMOOTH_BITMASK|SMOOTH_BITMASK_CARDINALS|SMOOTH_CONNECTOR) // [HORIZON-EDIT] Shadow-Render
 
 DEFINE_BITFIELD(smoothing_flags, list(
 	"SMOOTH_BITMASK" = SMOOTH_BITMASK,
@@ -35,7 +35,7 @@ DEFINE_BITFIELD(smoothing_flags, list(
 	"SMOOTH_OBJ" = SMOOTH_OBJ,
 	"SMOOTH_BORDER_OBJECT" = SMOOTH_BORDER_OBJECT,
 	"SMOOTH_CONNECTOR" = SMOOTH_CONNECTOR,
-))
+)) // [HORIZON-EDIT] Shadow-Render
 
 /// Components of a smoothing junction
 /// Redefinitions of the diagonal directions so they can be stored in one var without conflicts

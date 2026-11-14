@@ -1,3 +1,4 @@
+// [HORIZON-EDIT] WTF MASS SPAM
 GLOBAL_LIST_INIT(cardinals, list(NORTH, SOUTH, EAST, WEST,))
 GLOBAL_LIST_INIT(cardinals_multiz, list(NORTH, SOUTH, EAST, WEST, UP, DOWN,))
 GLOBAL_LIST_INIT(diagonals, list(NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST))
@@ -35,6 +36,7 @@ GLOBAL_LIST_INIT(alldirs, list(NORTH, SOUTH, EAST, WEST, NORTHEAST, NORTHWEST, S
 GLOBAL_LIST_INIT(alldirs_dmi_order, list(SOUTH, NORTH, EAST, WEST, SOUTHEAST, SOUTHWEST, NORTHEAST, NORTHWEST))
 
 GLOBAL_LIST_INIT(cardinal_angles, list("[NORTH]" = 0, "[SOUTH]" = 180, "[EAST]" = 90, "[WEST]" = 270))
+// [/HORIZON-EDIT]
 
 /// list of all landmarks created
 GLOBAL_LIST_EMPTY(landmarks_list)
@@ -95,4 +97,4 @@ GLOBAL_LIST_INIT(megafauna_spawn_list, list(
 ))
 
 /// List of how many ore vents spawned, and of what size.
-GLOBAL_LIST_INIT(ore_vent_sizes, list(LARGE_VENT_TYPE = 0, MEDIUM_VENT_TYPE = 0, SMALL_VENT_TYPE = 0))
+GLOBAL_LIST_INIT(ore_vent_sizes, list(LARGE_VENT_TYPE = 0, MEDIUM_VENT_TYPE = 0, SMALL_VENT_TYPE = 0)) // [HORIZON-EDIT] WTF MASS SPAM

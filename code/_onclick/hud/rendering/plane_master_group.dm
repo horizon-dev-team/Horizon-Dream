@@ -157,7 +157,7 @@
 // It's hard, and potentially expensive. be careful
 /datum/plane_master_group/proc/build_planes_offset(new_offset)
 	// Check if this feature is disabled for the client, in which case don't use scale.
-	// [HORIZON-EDIT]
+	// [HORIZON-EDIT] Shadow-Render
 	var/mob/our_mob = our_hud?.mymob
 	var/use_scale = should_scale()
 	/*

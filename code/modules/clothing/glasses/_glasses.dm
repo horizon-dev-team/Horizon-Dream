@@ -100,22 +100,6 @@
 	equip_sound = /datum/sound_effect/goggles_equip
 	custom_materials = list(/datum/material/iron = HALF_SHEET_MATERIAL_AMOUNT, /datum/material/glass = HALF_SHEET_MATERIAL_AMOUNT)
 
-// [HORIZON-ADD] - Wall mask FOV
-/obj/item/clothing/glasses/meson/equipped(mob/living/user, slot)
-	. = ..()
-	if(!(slot & ITEM_SLOT_EYES))
-		return
-	ADD_TRAIT(user, TRAIT_MESON_VISION, CLOTHING_TRAIT)
-	user.update_sight()
-
-/obj/item/clothing/glasses/meson/dropped(mob/living/user)
-	. = ..()
-	if(ishuman(user))
-		var/mob/living/carbon/human/H = user
-		if(H.glasses == src)
-			REMOVE_TRAIT(user, TRAIT_MESON_VISION, CLOTHING_TRAIT)
-			user.update_sight()
-// [/HORIZON-ADD]
 
 /obj/item/clothing/glasses/meson/suicide_act(mob/living/user)
 	user.visible_message(span_suicide("[user] is putting \the [src] to [user.p_their()] eyes and overloading the brightness! It looks like [user.p_theyre()] trying to commit suicide!"))

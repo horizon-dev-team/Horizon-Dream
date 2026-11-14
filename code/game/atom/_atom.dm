@@ -887,7 +887,7 @@
 		active_hud.screentip_text.maptext = ""
 		return
 
-	// [HORIZON-ADD]
+	// [HORIZON-ADD] Shadow-Render
 	if(isliving(user) && !wall_fov_room_visible(user, src))
 		active_hud.screentip_text.maptext = ""
 		return

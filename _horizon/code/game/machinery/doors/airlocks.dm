@@ -165,6 +165,14 @@
 	icon = '_horizon/icons/obj/doors/airlocks/hatch/maintenance.dmi'
 	overlays_file = '_horizon/icons/obj/doors/airlocks/hatch/overlays.dmi'
 
+/obj/structure/door_assembly/door_assembly_shuttle
+	icon = '_horizon/icons/obj/doors/airlocks/hatch/titan.dmi'
+	overlays_file = '_horizon/icons/obj/doors/airlocks/hatch/overlays.dmi'
+
+/obj/structure/door_assembly/door_assembly_titanium
+	icon = '_horizon/icons/obj/doors/airlocks/hatch/titan.dmi'
+	overlays_file = '_horizon/icons/obj/doors/airlocks/hatch/overlays.dmi'
+
 /*
 // MARK: Нету
 /obj/structure/door_assembly/door_assembly_highsecurity
@@ -174,10 +182,6 @@
 /obj/structure/door_assembly/door_assembly_vault
 	icon = 'icons/obj/doors/airlocks/vault/vault.dmi'
 	overlays_file = 'icons/obj/doors/airlocks/vault/overlays.dmi'
-
-/obj/structure/door_assembly/door_assembly_shuttle
-	icon = 'icons/obj/doors/airlocks/shuttle/shuttle.dmi'
-	overlays_file = 'icons/obj/doors/airlocks/shuttle/overlays.dmi'
 
 /obj/structure/door_assembly/door_assembly_cult
 	icon = 'icons/obj/doors/airlocks/cult/runed/cult.dmi'
@@ -234,10 +238,6 @@
 
 /*
 // MARK: Нету
-/obj/structure/door_assembly/door_assembly_titanium
-	icon = 'icons/obj/doors/airlocks/shuttle/shuttle.dmi'
-	overlays_file = 'icons/obj/doors/airlocks/shuttle/overlays.dmi'
-
 /obj/structure/door_assembly/door_assembly_bronze
 	icon = 'icons/obj/doors/airlocks/clockwork/pinion_airlock.dmi'
 

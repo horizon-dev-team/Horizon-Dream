@@ -283,22 +283,17 @@
 	. = ..()
 	add_relay_to(GET_NEW_PLANE(RENDER_PLANE_EMISSIVE, offset), relay_layer = EMISSIVE_WALL_LAYER, relay_color = GLOB.em_block_color)
 
-/atom/movable/screen/plane_master/wall_above
-	name = "Above Wall"
-	plane = ABOVE_WALL_PLANE
-	render_relay_planes = list(RENDER_PLANE_GAME_WORLD)
-
 /atom/movable/screen/plane_master/game
 	name = "Game"
 	documentation = "Holds most non floor/wall things. Anything on this plane \"wants\" to interlayer depending on position."
 	plane = GAME_PLANE
-	render_relay_planes = list(RENDER_PLANE_MASKED_WORLD)
+	render_relay_planes = list(RENDER_PLANE_MASKED_WORLD) // [HORIZON-EDIT] Shadow-Render
 
 /atom/movable/screen/plane_master/game_world_above
 	name = "Upper Game"
 	documentation = "For stuff you want to draw like the game plane, but not ever below its contents"
 	plane = ABOVE_GAME_PLANE
-	render_relay_planes = list(RENDER_PLANE_MASKED_WORLD)
+	render_relay_planes = list(RENDER_PLANE_MASKED_WORLD) // [HORIZON-EDIT] Shadow-Render
 
 /atom/movable/screen/plane_master/seethrough
 	name = "Seethrough"
@@ -394,9 +389,11 @@
 	plane = POINT_PLANE
 	mouse_opacity = MOUSE_OPACITY_TRANSPARENT
 
+// [HORIZON-ADD] Shadow-Render
 /atom/movable/screen/plane_master/point/Initialize(mapload, datum/hud/hud_owner, datum/plane_master_group/home, offset)
 	. = ..()
 	add_filter("wall_fov_mask", 1, alpha_mask_filter(render_source = OFFSET_RENDER_TARGET(WALLS_FOV_PLANE_15_RENDER_TARGET, offset), flags = MASK_INVERSE))
+// [/HORIZON-ADD]
 
 ///Contains all turf lighting
 /atom/movable/screen/plane_master/turf_lighting
@@ -468,7 +465,7 @@
 	// Blue channel is dedicated to specular, i.e. our bootleg implementation of shiny objects
 	// We map it onto alpha so we can use the mask plate in an alpha mask filter to cut out only the shiny bits
 	add_relay_to(GET_NEW_PLANE(RENDER_PLANE_SPECULAR_MASK, offset), relay_color = list(0,0,0,0, 0,0,0,0, 0,0,0,1, 0,0,0,0, 1,1,1,0))
-	add_filter("wall_fov_mask", 1, alpha_mask_filter(render_source = OFFSET_RENDER_TARGET(WALLS_FOV_PLANE_15_RENDER_TARGET, offset), flags = MASK_INVERSE))
+	add_filter("wall_fov_mask", 1, alpha_mask_filter(render_source = OFFSET_RENDER_TARGET(WALLS_FOV_PLANE_15_RENDER_TARGET, offset), flags = MASK_INVERSE)) // [HORIZON-EDIT] Shadow-Render
 
 /atom/movable/screen/plane_master/pipecrawl
 	name = "Pipecrawl"
@@ -624,7 +621,7 @@
 	var/mob/our_mob = home?.our_hud?.mymob
 	hide_plane(our_mob)
 
-// [HORIZON-ADD]
+// [HORIZON-ADD] Shadow-Render
 // MARK: Wall mask FOV
 #define FOV_WALL_ICON '_horizon/icons/walls_fov_ultra_wide.dmi'
 
@@ -632,6 +629,11 @@
 	name = "Mobs Plane"
 	plane = MOB_PLANE
 	render_relay_planes = list(RENDER_PLANE_MASKED_WORLD)
+
+/atom/movable/screen/plane_master/wall_above
+	name = "Above Wall"
+	plane = ABOVE_WALL_PLANE
+	render_relay_planes = list(RENDER_PLANE_GAME_WORLD)
 
 /atom/movable/screen/plane_master/mobs/show_to(mob/mymob)
 	. = ..()

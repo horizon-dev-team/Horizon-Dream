@@ -1,6 +1,6 @@
 ///Used to allow reaching the maximum offset range without exiting the boundaries of the game screen.
 #define MOUSE_POINTER_OFFSET_MULT 1.1
-#define ALL_WALLS_FOV_PLANES list(WALLS_FOV_PLANE_0, WALLS_FOV_PLANE_1, WALLS_FOV_PLANE_2, WALLS_FOV_PLANE_3, WALLS_FOV_PLANE_4,  WALLS_FOV_PLANE_5, WALLS_FOV_PLANE_6,  WALLS_FOV_PLANE_7,  WALLS_FOV_PLANE_8, WALLS_FOV_PLANE_9,  WALLS_FOV_PLANE_10, WALLS_FOV_PLANE_11, WALLS_FOV_PLANE_12, WALLS_FOV_PLANE_13, WALLS_FOV_PLANE_14, WALLS_FOV_PLANE_15, WALLS_FOV_PLANE_16)
+#define ALL_WALLS_FOV_PLANES list(WALLS_FOV_PLANE_0, WALLS_FOV_PLANE_1, WALLS_FOV_PLANE_2, WALLS_FOV_PLANE_3, WALLS_FOV_PLANE_4,  WALLS_FOV_PLANE_5, WALLS_FOV_PLANE_6,  WALLS_FOV_PLANE_7,  WALLS_FOV_PLANE_8, WALLS_FOV_PLANE_9,  WALLS_FOV_PLANE_10, WALLS_FOV_PLANE_11, WALLS_FOV_PLANE_12, WALLS_FOV_PLANE_13, WALLS_FOV_PLANE_14, WALLS_FOV_PLANE_15, WALLS_FOV_PLANE_16) // [HORIZON-ADD] Shadow-Render
 
 ///A component that allows players to use the item to zoom out. Mainly intended for firearms, but now works with other items too.
 /datum/component/scope
@@ -69,10 +69,10 @@
 		user_mob.face_atom(tracker.given_turf)
 	animate(user_client, world.tick_lag, pixel_x = tracker.given_x, pixel_y = tracker.given_y)
 
-// [HORIZON]
+// [HORIZON-ADD] Shadow-Render
 	for(var/atom/movable/screen/plane_master/wall_fov/PM in wall_fov_planes_cache)
 		PM.set_displace_offset(-tracker.given_x, -tracker.given_y, world.tick_lag)
-// [/HORIZON]
+// [/HORIZON-ADD]
 
 /datum/component/scope/proc/on_move(atom/movable/source, atom/oldloc, dir, forced)
 	SIGNAL_HANDLER
@@ -189,7 +189,7 @@
 		RegisterSignals(user, capacity_signals, PROC_REF(on_incapacitated))
 	START_PROCESSING(SSprojectiles, src)
 	ADD_TRAIT(user, TRAIT_USER_SCOPED, REF(src))
-// [HORIZON]
+// [HORIZON-ADD] Shadow-Render
 	var/datum/hud/hud = user.hud_used
 	wall_fov_planes_cache.Cut()
 	if(hud)
@@ -197,7 +197,7 @@
 			var/atom/movable/screen/plane_master/wall_fov/PM = hud.get_plane_master(plane_id)
 			if(PM)
 				wall_fov_planes_cache += PM
-// [/HORIZON]
+// [/HORIZON-ADD]
 	return TRUE
 
 ///Stop scoping if the `newloc` we move to is not a turf
@@ -250,10 +250,10 @@
 	if(user.client)
 		animate(user.client, 0.2 SECONDS, pixel_x = 0, pixel_y = 0)
 
-// [HORIZON]
+// [HORIZON-ADD] Shadow-Render
 	for(var/atom/movable/screen/plane_master/wall_fov/PM in wall_fov_planes_cache)
 		PM.set_displace_offset(0, 0, 0.2 SECONDS)
-// [/HORIZON]
+// [/HORIZON-ADD]
 
 	tracker = null
 	tracker_owner_ckey = null
@@ -292,5 +292,5 @@
 	given_y = clamp(uncapped_y, -y_cap, y_cap)
 	given_turf = locate(owner.x+round(given_x/ICON_SIZE_X, 1),owner.y+round(given_y/ICON_SIZE_Y, 1),owner.z)
 
-#undef ALL_WALLS_FOV_PLANES
+#undef ALL_WALLS_FOV_PLANES // [HORIZON-ADD] Shadow-Render
 #undef MOUSE_POINTER_OFFSET_MULT

@@ -64,7 +64,7 @@
 		add_appearance_flags = APPEARANCE_UI_IGNORE_ALPHA,
 		unique = TRUE,
 		alpha = 0,
-	)
+	) // [HORIZON-EDIT] Shadow-Render
 	if(isnull(cog)) // Users being deleted get no vis overlays
 		return
 	cog.pixel_y = ICON_SIZE_Y + offset_y
@@ -74,7 +74,7 @@
 		return
 
 	blank = image('icons/blanks/32x32.dmi', cog, "nothing")
-	SET_PLANE_EXPLICIT(blank, POINT_PLANE, user)
+	SET_PLANE_EXPLICIT(blank, POINT_PLANE, user) // [HORIZON-EDIT] Shadow-Render
 	blank.appearance_flags = APPEARANCE_UI_IGNORE_ALPHA
 	blank.override = TRUE
 

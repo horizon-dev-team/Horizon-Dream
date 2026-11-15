@@ -9,6 +9,7 @@ const SOUND_OPTIONS = [
   'sound_achievement',
   'sound_ghost_poll_prompt',
   'sound_ghost_poll_prompt_volume',
+  'sound_ambience_mute_during_music',
   'sound_tts',
   'sound_tts_radio',
   'sound_tts_hear_self_radio',

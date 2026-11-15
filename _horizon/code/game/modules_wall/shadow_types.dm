@@ -48,6 +48,7 @@
 /obj/machinery/door/Destroy()
 	QUEUE_SMOOTH_NEIGHBORS(src) //walls around need to close their junctions once we're gone
 	qdel(shadow)
+	shadow = null
 	return ..()
 
 /obj/machinery/door/poddoor/update_icon(updates = ALL)

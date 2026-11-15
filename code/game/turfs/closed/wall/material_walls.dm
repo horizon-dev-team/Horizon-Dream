@@ -1,7 +1,7 @@
 /turf/closed/wall/material
 	name = "wall"
 	desc = "A huge chunk of material used to separate rooms."
-	icon = 'icons/turf/walls/material_wall.dmi'
+
 	rcd_memory = null
 	material_flags = MATERIAL_EFFECTS | MATERIAL_ADD_PREFIX | MATERIAL_COLOR | MATERIAL_AFFECT_STATISTICS
 	rust_resistance = RUST_RESISTANCE_BASIC

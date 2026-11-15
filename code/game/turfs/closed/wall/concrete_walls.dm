@@ -91,9 +91,6 @@
 /turf/closed/wall/concrete/reinforced
 	name = "hexacrete wall"
 	desc = "A thick wall made of steel-reinforced hexacrete. Sturdier than a normal concrete wall."
-	icon = 'icons/turf/walls/hexacrete.dmi'
-	icon_state = "hexacrete-0"
-	base_icon_state = "hexacrete"
 
 	hardness = 15
 	explosive_resistance = 3

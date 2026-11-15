@@ -47,7 +47,7 @@
 
 /obj/machinery/door/Destroy()
 	QUEUE_SMOOTH_NEIGHBORS(src) //walls around need to close their junctions once we're gone
-	qdel(shadow)
+	qdel(shadow, force = TRUE)
 	shadow = null
 	return ..()
 

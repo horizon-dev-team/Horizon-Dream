@@ -18,7 +18,7 @@
 	shadow = new(src)
 
 /turf/closed/Destroy()
-	qdel(shadow)
+	qdel(shadow, force = TRUE)
 	shadow = null
 	return ..()
 

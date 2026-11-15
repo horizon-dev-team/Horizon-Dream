@@ -1,6 +1,5 @@
 ///Cooldown for the Reset Lobby Menu HUD verb
 /mob/dead/new_player
-	flags_1 = NONE
 	invisibility = INVISIBILITY_ABSTRACT
 	density = FALSE
 	stat = DEAD

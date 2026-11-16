@@ -68,6 +68,12 @@
 /turf/closed/wall/mineral/plastitanium/survival
 	icon = '_horizon/icons/turf/walls/modules_wall/EvaWall.dmi'
 
+/turf/closed/wall/mineral/plastitanium/darkpod
+	icon = '_horizon/icons/turf/walls/modules_wall/plastitanium_black.dmi'
+
+/turf/closed/wall/mineral/plastitanium/redpod
+	icon = '_horizon/icons/turf/walls/modules_wall/plastitanium_red.dmi'
+
 /turf/closed/wall/concrete
 	icon = '_horizon/icons/turf/walls/modules_wall/concrete.dmi'
 

@@ -259,7 +259,6 @@
 	desc = "An easily-compressible wall used for temporary shelter."
 	sheet_type = /obj/item/stack/wall_filling/plastitanium/pod
 	sheet_amount = 1
-	icon = 'icons/turf/walls/dark_pod.dmi'
 	rust_resistance = RUST_RESISTANCE_TITANIUM
 
 /turf/closed/wall/mineral/plastitanium/redpod
@@ -267,7 +266,6 @@
 	desc = "An easily-compressible wall used for temporary shelter."
 	sheet_type = /obj/item/stack/wall_filling/plastitanium/redpod
 	sheet_amount = 1
-	icon = 'icons/turf/walls/red_pod.dmi'
 	rust_resistance = RUST_RESISTANCE_TITANIUM
 
 /turf/closed/wall/mineral/plastitanium/survival

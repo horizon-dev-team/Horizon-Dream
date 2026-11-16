@@ -430,6 +430,7 @@
 
 /obj/structure/grille/broken // Pre-broken grilles for map placement
 	icon = '_horizon/icons/obj/smooth_structures/grille_broken.dmi'
+	icon_state = "brokengrille"
 	density = FALSE
 	broken = TRUE
 	rods_amount = 1

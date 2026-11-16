@@ -11,7 +11,7 @@
 
 /atom/movable/atom_shadow/Destroy(force)
 	var/turf/closed/owner = loc
-	if(!force && !isnull(affected_turf))
+	if(!force && !isnull(owner))
 		return QDEL_HINT_LETMELIVE
 	if(istype(owner) && owner.shadow == src)
 		owner.shadow = null

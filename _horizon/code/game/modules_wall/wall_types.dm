@@ -18,7 +18,7 @@
 	shadow = new(src)
 
 /turf/closed/Destroy()
-	qdel(shadow, force = TRUE)
+	qdel(shadow)
 	return ..()
 
 /turf/closed/setDir(newDir)

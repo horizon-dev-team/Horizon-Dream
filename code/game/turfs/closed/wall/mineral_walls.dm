@@ -112,8 +112,6 @@
 /turf/closed/wall/mineral/plasma
 	name = "plasma wall"
 	desc = "A wall with plasma plating. This is definitely a bad idea."
-	icon_state = "plasma_wall-0"
-	base_icon_state = "plasma_wall"
 	sheet_type = /obj/item/stack/sheet/mineral/plasma
 	hardness = 70 // I'll tentatively compare it to Bismuth
 	thermal_conductivity = 0.04
@@ -166,8 +164,6 @@
 /turf/closed/wall/mineral/iron
 	name = "rough iron wall"
 	desc = "A wall with rough iron plating."
-	icon_state = "iron_wall-0"
-	base_icon_state = "iron_wall"
 	sheet_type = /obj/item/stack/rods
 	hardness = 60
 	sheet_amount = 5
@@ -177,9 +173,6 @@
 /turf/closed/wall/mineral/snow
 	name = "packed snow wall"
 	desc = "A wall made of densely packed snow blocks."
-	icon = 'icons/turf/walls/snow_wall.dmi'
-	icon_state = "snow_wall-0"
-	base_icon_state = "snow_wall"
 	hardness = 80
 	explosive_resistance = 0
 	slicing_duration = 30

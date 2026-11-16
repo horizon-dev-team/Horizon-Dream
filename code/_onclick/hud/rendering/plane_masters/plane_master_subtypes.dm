@@ -933,6 +933,8 @@
 	var/turf/eye_turf = get_turf(eye)
 	if(!eye_turf)
 		eye_turf = get_turf(our_mob)
+	if(!eye_turf)
+		return
 	var/viewed_z_offset = GET_Z_PLANE_OFFSET(eye_turf.z)
 	var/mob_z_offset = GET_Z_PLANE_OFFSET(our_mob.z)
 	if(offset == mob_z_offset || offset == viewed_z_offset)

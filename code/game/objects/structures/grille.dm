@@ -429,7 +429,7 @@
 	return !!powernet.get_electrocute_damage()
 
 /obj/structure/grille/broken // Pre-broken grilles for map placement
-	icon_state = "brokengrille"
+	icon = '_horizon/icons/obj/smooth_structures/grille_broken.dmi'
 	density = FALSE
 	broken = TRUE
 	rods_amount = 1

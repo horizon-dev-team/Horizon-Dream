@@ -9,6 +9,14 @@
 /atom/movable/atom_shadow/shuttleRotate(rotation, params)
 	return
 
+/atom/movable/atom_shadow/Destroy(force)
+	var/turf/closed/owner = loc
+	if(!force && !isnull(affected_turf))
+		return QDEL_HINT_LETMELIVE
+	if(istype(owner) && owner.shadow == src)
+		owner.shadow = null
+	return ..()
+
 // MARK: Door Airlock
 /atom/movable/atom_shadow/door
 	icon = '_horizon/icons/obj/airlock_mask.dmi'
@@ -48,7 +56,6 @@
 /obj/machinery/door/Destroy()
 	QUEUE_SMOOTH_NEIGHBORS(src) //walls around need to close their junctions once we're gone
 	qdel(shadow, force = TRUE)
-	shadow = null
 	return ..()
 
 /obj/machinery/door/poddoor/update_icon(updates = ALL)

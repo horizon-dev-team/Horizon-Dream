@@ -19,7 +19,6 @@
 
 /turf/closed/Destroy()
 	qdel(shadow, force = TRUE)
-	shadow = null
 	return ..()
 
 /turf/closed/setDir(newDir)

@@ -22,7 +22,7 @@
 #include "code\__HELPERS\map_dir_helpers.dm"
 #include "code\__HELPERS\size_icons.dm"
 #include "code\datums\datums\storage\subtypes.dm"
-#include "code\datums\ekements\cutting_tool_target.dm"
+#include "code\datums\elements\cutting_tool_target.dm"
 #include "code\datums\particles\leaves.dm"
 #include "code\elements\directional_attack.dm"
 #include "code\game\aesthetics\item.dm"

@@ -185,47 +185,6 @@
 	if(shadow)
 		shadow.diag_connections = glass
 
-// MARK: Shadow
-/atom/movable/atom_shadow/wall
-	icon = '_horizon/icons/obj/modular_shadow.dmi'
-	icon_state = "wall"
-	var/list/shadow_connections = list("0", "0", "0", "0")
-	var/list/diag_connections = list()
-
-/atom/movable/atom_shadow/wall/update_icon()
-	. = ..()
-
-	overlays.Cut()
-	icon_state = "blank"
-
-	var/static/list/corner_dirs = list(NORTHWEST, SOUTHEAST, NORTHEAST, SOUTHWEST)
-	for(var/i in 1 to 4)
-		var/frame = 1<<(i-1)
-		overlays += get_wall_object(icon, "wall[shadow_connections[i]]", frame, plane = ATOMS_FOV_SHADOWS_PLANE, offset_spokesman = src)
-		if(corner_dirs[i] in diag_connections) // the glass diagonal: a wall2 pipe on top of the base corner
-			overlays += get_wall_object(icon, "wall2", frame, plane = ATOMS_FOV_SHADOWS_PLANE, offset_spokesman = src)
-
-/atom/movable/atom_shadow/wall/proc/update_diagonals()
-	if(!istype(loc, /turf/closed))
-		return
-	for(var/dir in diag_connections)
-		var/diag = turn(dir, 45)
-		if(!(diag in diag_connections) && mask_at(diag))
-			diag_connections += diag
-		diag = turn(dir, -45)
-		if(!(diag in diag_connections) && mask_at(diag))
-			diag_connections += diag
-
-/// Does the tile on that side of us hold a mask the shadow could link with?
-/atom/movable/atom_shadow/wall/proc/mask_at(dir)
-	var/turf/current_turf = get_step(src, dir)
-	if(istype(current_turf, /turf/closed))
-		var/turf/closed/current_wall = current_turf
-		if(current_wall.shadow) // walls own one, bare closed turfs don't
-			return TRUE
-	var/obj/machinery/door/current_door = locate(/obj/machinery/door) in current_turf
-	return current_door && current_door.shadow // solid doors own one, glass doors stay empty
-
 // MARK: Window
 /obj/structure/window/smooth_icon()
 	if(!special_icon)

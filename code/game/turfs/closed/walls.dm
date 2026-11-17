@@ -1,8 +1,6 @@
 /turf/closed/wall
 	name = "wall"
 	desc = "A huge chunk of iron used to separate rooms."
-	icon = '_horizon/icons/turf/walls/modules_wall/metal.dmi'
-	icon_state = "wall"
 	base_icon_state = "wall"
 	explosive_resistance = 1
 	rust_resistance = RUST_RESISTANCE_BASIC

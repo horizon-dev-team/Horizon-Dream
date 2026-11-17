@@ -645,7 +645,6 @@
 
 /turf/closed/mineral/random/snow
 	name = "snowy mountainside"
-	icon = MAP_SWITCH('icons/turf/walls/mountain_wall.dmi', 'icons/turf/mining.dmi')
 	defer_change = TRUE
 	turf_type = /turf/open/misc/asteroid/snow/icemoon
 	baseturfs = /turf/open/misc/asteroid/snow/icemoon
@@ -771,8 +770,6 @@
 	defer_change = TRUE
 
 /turf/closed/mineral/iron/ice
-	icon_state = "icerock_iron"
-	icon = MAP_SWITCH('icons/turf/walls/icerock_wall.dmi', 'icons/turf/mining.dmi')
 	turf_type = /turf/open/misc/asteroid/snow/ice
 	baseturfs = /turf/open/misc/asteroid/snow/ice
 	initial_gas_mix = FROZEN_ATMOS

@@ -1,4 +1,3 @@
-
 /mob
 	plane = MOB_PLANE
 

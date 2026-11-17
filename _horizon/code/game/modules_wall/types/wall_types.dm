@@ -4,7 +4,7 @@
 	var/list/wall_connections = list("0", "0", "0", "0")
 	var/list/blend_turfs = list(/turf/closed, /turf/closed/wall/mineral/plastitanium)
 	var/list/noblend_turfs = list(/turf/closed/mineral, /turf/closed/wall/mineral/titanium)
-	var/list/blend_objects = list(/obj/structure/grille, /obj/structure/window/fulltile, /obj/structure/window/reinforced/fulltile, /obj/structure/window/reinforced/shuttle, /obj/structure/window/reinforced/plasma/plastitanium, /obj/structure/window/plasma/fulltile, /obj/structure/window/reinforced/plasma/fulltile, /obj/structure/window/framed, /obj/structure/window_frame, /obj/machinery/door)
+	var/list/blend_objects = list(/obj/structure/falsewall, /obj/structure/grille, /obj/structure/window/fulltile, /obj/structure/window/reinforced/fulltile, /obj/structure/window/reinforced/shuttle, /obj/structure/window/reinforced/plasma/plastitanium, /obj/structure/window/plasma/fulltile, /obj/structure/window/reinforced/plasma/fulltile, /obj/structure/window/framed, /obj/structure/window_frame, /obj/machinery/door)
 	var/list/noblend_objects = list()
 
 	var/special_icon = TRUE
@@ -32,6 +32,10 @@
 	QUEUE_SMOOTH_NEIGHBORS(src)
 
 // MARK: Types
+/turf/closed/wall
+	icon = '_horizon/icons/turf/walls/modules_wall/metal.dmi'
+	icon_state = "wall"
+
 /turf/closed/wall/r_wall
 	icon = '_horizon/icons/turf/walls/modules_wall/reinforce.dmi'
 

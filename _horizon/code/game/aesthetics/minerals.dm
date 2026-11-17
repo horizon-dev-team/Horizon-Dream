@@ -1,7 +1,12 @@
 /turf/closed/mineral/random
 	icon = '_horizon/icons/turf/walls/modules_wall/rock/generic_rock.dmi'
 	transform = TRANSLATE_MATRIX(-4, -4)
-	blend_turfs = list(/turf/closed/mineral/random)
+	blend_turfs = list(/turf/closed/mineral/random, /turf/closed/mineral/gibtonite)
+	noblend_turfs = list()
+
+/turf/closed/mineral/gibtonite
+	transform = TRANSLATE_MATRIX(-4, -4)
+	blend_turfs = list(/turf/closed/mineral/random, /turf/closed/mineral/gibtonite)
 	noblend_turfs = list()
 
 /turf/closed/mineral/random/low_chance

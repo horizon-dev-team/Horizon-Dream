@@ -37,7 +37,7 @@
 			overlays += get_wall_object(icon, "wall2", frame, plane = ATOMS_FOV_SHADOWS_PLANE, offset_spokesman = src)
 
 /atom/movable/atom_shadow/wall/proc/update_diagonals()
-	if(!istype(loc, /turf/closed))
+	if(!isturf(loc))
 		return
 	for(var/dir in diag_connections)
 		var/diag = turn(dir, 45)
@@ -55,7 +55,10 @@
 		if(current_wall.shadow) // walls own one, bare closed turfs don't
 			return TRUE
 	var/obj/machinery/door/current_door = locate(/obj/machinery/door) in current_turf
-	return current_door && current_door.shadow // solid doors own one, glass doors stay empty
+	if(current_door.shadow) // solid doors own one, glass doors stay empty
+		return TRUE
+	var/obj/structure/falsewall/current_falsewall = locate(/obj/structure/falsewall) in current_turf
+	return current_falsewall?.shadow?.visible_shadow // open and see-through fake walls keep their mask hidden
 
 // MARK: Door Airlock
 /atom/movable/atom_shadow/door
@@ -101,3 +104,31 @@
 /obj/machinery/door/poddoor/update_icon(updates = ALL)
 	. = ..()
 	shadow?.icon_state = density ? "closed" : "open"
+
+// MARK: False Wall
+/atom/movable/atom_shadow/wall/falsewall
+	var/obj/structure/falsewall/owner
+	var/visible_shadow = TRUE
+
+/atom/movable/atom_shadow/wall/falsewall/Initialize(mapload, obj/structure/falsewall/new_owner)
+	. = ..()
+	owner = new_owner
+
+/atom/movable/atom_shadow/wall/falsewall/proc/set_visible(opacity)
+	if(visible_shadow == opacity)
+		return
+	visible_shadow = opacity
+	update_icon()
+
+/atom/movable/atom_shadow/wall/falsewall/update_icon()
+	if(!visible_shadow)
+		overlays.Cut()
+		icon_state = "blank"
+		return NONE
+	return ..()
+
+/atom/movable/atom_shadow/wall/falsewall/Destroy()
+	if(!QDELETED(owner) && owner.shadow == src)
+		owner.shadow = null
+	owner = null
+	return ..()

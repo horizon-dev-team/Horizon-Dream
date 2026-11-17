@@ -36,6 +36,7 @@
 #include "code\game\modules_wall\open_turf.dm"
 #include "code\game\modules_wall\wall_fov_visibility.dm"
 #include "code\game\modules_wall\wall_icon.dm"
+#include "code\game\modules_wall\types\falsewall.dm"
 #include "code\game\modules_wall\types\shadow_types.dm"
 #include "code\game\modules_wall\types\wall_types.dm"
 #include "code\game\objects\debug_stuff.dm"

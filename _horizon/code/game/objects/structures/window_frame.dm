@@ -66,7 +66,7 @@
 	var/list/wall_connections = list("0", "0", "0", "0")
 	var/list/blend_turfs = list(/turf/closed)
 	var/list/noblend_turfs = list(/turf/closed/mineral)
-	var/list/blend_objects = list(/obj/structure/window/reinforced/fulltile, /obj/structure/window/framed, /obj/structure/window_frame, /obj/machinery/door)
+	var/list/blend_objects = list(/obj/structure/falsewall, /obj/structure/window/reinforced/fulltile, /obj/structure/window/framed, /obj/structure/window_frame, /obj/machinery/door)
 	var/list/noblend_objects = list()
 	/// The window built back into the frame once it is fed glass.
 	var/window_type = /obj/structure/window/framed

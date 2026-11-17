@@ -1,12 +1,10 @@
 /turf/closed
 	var/atom/movable/atom_shadow/wall/shadow
-
 	var/list/wall_connections = list("0", "0", "0", "0")
 	var/list/blend_turfs = list(/turf/closed, /turf/closed/wall/mineral/plastitanium)
 	var/list/noblend_turfs = list(/turf/closed/mineral, /turf/closed/wall/mineral/titanium)
 	var/list/blend_objects = list(/obj/structure/falsewall, /obj/structure/grille, /obj/structure/window/fulltile, /obj/structure/window/reinforced/fulltile, /obj/structure/window/reinforced/shuttle, /obj/structure/window/reinforced/plasma/plastitanium, /obj/structure/window/plasma/fulltile, /obj/structure/window/reinforced/plasma/fulltile, /obj/structure/window/framed, /obj/structure/window_frame, /obj/machinery/door)
 	var/list/noblend_objects = list()
-
 	var/special_icon = TRUE
 	var/diagonal = FALSE /// Special wall0-diagonal and wall5-diagonal states
 	smoothing_flags = SMOOTH_CONNECTOR
@@ -141,80 +139,3 @@
 /turf/closed/indestructible/riveted/boss
 	icon = '_horizon/icons/turf/walls/boss_wall.dmi'
 */
-
-// MARK: False Wall
-/obj/structure/falsewall
-	icon = '_horizon/icons/turf/walls/modules_wall/false_walls.dmi'
-	fake_icon = '_horizon/icons/turf/walls/modules_wall/metal.dmi'
-	icon_state = "wall"
-
-	var/special_icon = FALSE
-	var/list/wall_connections = list("0", "0", "0", "0")
-	var/list/blend_turfs = list(/turf/closed, /turf/closed/wall/mineral/plastitanium)
-	var/list/noblend_turfs = list(/turf/closed/mineral, /turf/closed/wall/mineral/titanium)
-	var/list/blend_objects = list(/obj/structure/falsewall, /obj/structure/grille, /obj/structure/window/fulltile, /obj/structure/window/reinforced/fulltile, /obj/structure/window/reinforced/shuttle, /obj/structure/window/reinforced/plasma/plastitanium, /obj/structure/window/plasma/fulltile, /obj/structure/window/reinforced/plasma/fulltile, /obj/structure/window/framed, /obj/structure/window_frame, /obj/machinery/door)
-	var/list/noblend_objects = list()
-
-	smoothing_flags = SMOOTH_CONNECTOR
-	smoothing_groups = null
-	canSmoothWith = null
-
-/obj/structure/falsewall/update_icon()
-	if(!special_icon)
-		return ..()
-	overlays.Cut()
-	icon_state = "blank"
-
-	render_corner_frames(src, wall_connections, WALL_PLANE)
-
-/obj/structure/falsewall/reinforced
-	fake_icon = '_horizon/icons/turf/walls/modules_wall/reinforce.dmi'
-
-/obj/structure/falsewall/uranium
-	fake_icon = '_horizon/icons/turf/walls/modules_wall/uranium.dmi'
-
-/obj/structure/falsewall/gold
-	fake_icon = '_horizon/icons/turf/walls/modules_wall/gold.dmi'
-
-/obj/structure/falsewall/silver
-	fake_icon = '_horizon/icons/turf/walls/modules_wall/silver.dmi'
-
-/obj/structure/falsewall/diamond
-	fake_icon = '_horizon/icons/turf/walls/modules_wall/diamond.dmi'
-
-/obj/structure/falsewall/plasma
-	fake_icon = '_horizon/icons/turf/walls/modules_wall/plasma.dmi'
-
-// /obj/structure/falsewall/bananium
-
-/obj/structure/falsewall/sandstone
-	fake_icon = '_horizon/icons/turf/walls/modules_wall/sandstone.dmi'
-
-/obj/structure/falsewall/wood
-	fake_icon = '_horizon/icons/turf/walls/modules_wall/wood.dmi'
-
-/obj/structure/falsewall/bamboo
-	fake_icon = '_horizon/icons/turf/walls/modules_wall/wood.dmi'
-
-/obj/structure/falsewall/iron
-	fake_icon = '_horizon/icons/turf/walls/modules_wall/iron.dmi'
-
-// /obj/structure/falsewall/abductor
-
-/obj/structure/falsewall/titanium
-	fake_icon = '_horizon/icons/turf/walls/modules_wall/shuttle.dmi'
-
-/obj/structure/falsewall/plastitanium
-	fake_icon = '_horizon/icons/turf/walls/modules_wall/plastitanium.dmi'
-
-/obj/structure/falsewall/plastitanium/darkpod
-	fake_icon = '_horizon/icons/turf/walls/modules_wall/plastitanium_black.dmi'
-
-/obj/structure/falsewall/plastitanium/redpod
-	fake_icon = '_horizon/icons/turf/walls/modules_wall/plastitanium_red.dmi'
-
-/obj/structure/falsewall/plastitanium/survival
-	fake_icon = '_horizon/icons/turf/walls/modules_wall/EvaWall.dmi'
-
-/obj/structure/falsewall/material
-	fake_icon = '_horizon/icons/turf/walls/modules_wall/material wall greyscale.dmi'

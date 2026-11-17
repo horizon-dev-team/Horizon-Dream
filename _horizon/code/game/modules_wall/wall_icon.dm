@@ -46,7 +46,8 @@
 			if(can_join_with_object(thing, source, blend_objects, noblend_objects))
 				wall_dirs += direction
 				var/obj/machinery/door/current_door = thing
-				if(!isnull(see_through) && (istype(current_door) ? current_door.glass : !thing.opacity)) // glass doors, see-through windows
+				var/obj/structure/falsewall/false_wall = thing
+				if(!isnull(see_through) && !istype(false_wall) && (istype(current_door) ? current_door.glass : !thing.opacity))
 					see_through += direction
 				break
 	return wall_dirs
@@ -225,7 +226,7 @@
 	var/list/wall_connections = list("0", "0", "0", "0")
 	var/list/blend_turfs = list(/turf/closed)
 	var/list/noblend_turfs = list(/turf/closed/mineral, /turf/closed/wall/mineral/titanium)
-	var/list/blend_objects = list(/obj/structure/window/reinforced/fulltile, /obj/structure/window/framed, /obj/structure/window_frame, /obj/machinery/door)
+	var/list/blend_objects = list(/obj/structure/falsewall, /obj/structure/window/reinforced/fulltile, /obj/structure/window/framed, /obj/structure/window_frame, /obj/machinery/door)
 	var/list/noblend_objects = list()
 	var/special_icon = TRUE
 	smoothing_flags = SMOOTH_CONNECTOR

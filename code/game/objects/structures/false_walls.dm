@@ -62,7 +62,7 @@
 
 /obj/structure/falsewall/update_icon(updates=ALL)//Calling icon_update will refresh the smoothwalls if it's closed, otherwise it will make sure the icon is correct if it's open
 	. = ..()
-	if(!density || !(updates & UPDATE_SMOOTHING))
+	if(!density || !(updates & UPDATE_SMOOTHING) || (smoothing_flags & SMOOTH_CONNECTOR)) // [HORIZON-EDIT] Shadow-Render
 		return
 
 	if(opening)

@@ -1,5 +1,3 @@
-
-// MARK: False Wall
 /obj/structure/falsewall
 	icon = '_horizon/icons/turf/walls/modules_wall/false_walls.dmi'
 	base_icon_state = "metal_wall"

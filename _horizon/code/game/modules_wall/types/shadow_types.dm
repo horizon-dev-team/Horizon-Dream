@@ -55,7 +55,7 @@
 		if(current_wall.shadow) // walls own one, bare closed turfs don't
 			return TRUE
 	var/obj/machinery/door/current_door = locate(/obj/machinery/door) in current_turf
-	if(current_door.shadow) // solid doors own one, glass doors stay empty
+	if(current_door?.shadow) // solid doors own one, glass doors stay empty
 		return TRUE
 	var/obj/structure/falsewall/current_falsewall = locate(/obj/structure/falsewall) in current_turf
 	return current_falsewall?.shadow?.visible_shadow // open and see-through fake walls keep their mask hidden

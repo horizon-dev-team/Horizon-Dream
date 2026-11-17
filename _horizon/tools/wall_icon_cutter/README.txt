@@ -1,4 +1,4 @@
-Drop wall sprite PNGs here, then run `wall_dmi_cutter.bat` (or
+Drop wall sprite PNGs (./icons/mySprite.png), then run `wall_dmi_cutter.bat` (or
 `python ../wall_dmi_cutter.py --batch`). Each `foo.png` becomes a
 sibling `foo.dmi`.
 

@@ -19,4 +19,4 @@
 	med_hud_set_status()
 
 	update_fov_client()
-	update_sight() // [HORIZON-ADD] give the new client x-ray sight
+	update_sight() // [HORIZON-ADD] Shadow-Render

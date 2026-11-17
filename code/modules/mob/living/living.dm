@@ -2105,7 +2105,7 @@ GLOBAL_LIST_EMPTY(fire_appearances)
 	lighting_cutoff = initial(lighting_cutoff)
 	lighting_color_cutoffs = list(lighting_cutoff_red, lighting_cutoff_green, lighting_cutoff_blue)
 	var/init_sight = initial(sight)
-	init_sight |= SEE_MOBS|SEE_OBJS|SEE_TURFS // [HORIZON-ADD] x-ray only for mobs with a client (update_sight returns early without one), the wall shadow planes hide what is behind walls
+	init_sight |= SEE_MOBS|SEE_OBJS|SEE_TURFS // [HORIZON-ADD] Shadow-Render - x-ray only for mobs with a client
 	//we cannot see mobs and/or objects unless we have thermals/xray/material vision, but we can still see turfs to navigate around
 	if(HAS_TRAIT(src, TRAIT_MOVE_VENTCRAWLING) && istype(loc, /obj/machinery/atmospherics))
 		init_sight |= SEE_TURFS|BLIND

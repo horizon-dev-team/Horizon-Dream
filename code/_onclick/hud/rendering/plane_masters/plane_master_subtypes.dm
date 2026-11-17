@@ -526,6 +526,16 @@
 	mouse_opacity = MOUSE_OPACITY_TRANSPARENT
 	render_relay_planes = list(RENDER_PLANE_GAME)
 
+// [HORIZON-ADD] Shadow-Render
+/atom/movable/screen/plane_master/high_game/Initialize(mapload, datum/hud/hud_owner, datum/plane_master_group/home, offset)
+	. = ..()
+	// The wall shadow mask is relayed onto the same RENDER_PLANE_GAME with a very high layer and would paint over us.
+	// Mining scanner pings and atmos debug are meant to be seen through shadows, so our relay goes above it (the thermal relay sits at +1)
+	var/atom/movable/render_plane_relay/relay = get_relay_to(GET_NEW_PLANE(RENDER_PLANE_GAME, offset))
+	if(relay)
+		relay.layer = WALLS_FOV_PLANE_16 + abs(LOWEST_EVER_PLANE * 30) + 2
+// [/HORIZON-ADD]
+
 /atom/movable/screen/plane_master/ghost
 	name = "Ghost"
 	documentation = "Ghosts draw here, so they don't get mixed up in the visuals of the game world. Note, this is not how we HIDE ghosts from people, that's done with invisible and see_invisible."

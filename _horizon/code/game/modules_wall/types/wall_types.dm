@@ -38,7 +38,7 @@
 	icon = '_horizon/icons/turf/walls/reinforce.dmi'
 
 /turf/closed/wall/r_wall/plastitanium
-	icon = '_horizon/icons/turf/walls/pidopod.dmi'
+	icon = '_horizon/icons/turf/walls/plastitanium-pod.dmi'
 
 /*
 /turf/closed/wall/mineral/bananium

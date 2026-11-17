@@ -121,5 +121,5 @@
 	base_icon_state = "evawall_wall"
 
 /obj/structure/falsewall/material
-	fake_icon = '_horizon/icons/turf/walls/material wall greyscale.dmi'
+	fake_icon = '_horizon/icons/turf/walls/material_wall_greyscale.dmi'
 	base_icon_state = "material_wall_greyscale_wall"

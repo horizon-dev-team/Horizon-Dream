@@ -141,3 +141,42 @@
 /turf/closed/indestructible/riveted/boss
 	icon = '_horizon/icons/turf/walls/boss_wall.dmi'
 */
+
+// MARK: False Wall
+/obj/structure/falsewall
+	icon = '_horizon/icons/turf/walls/modules_wall/metal.dmi'
+	icon_state = "wall"
+
+	blend_turfs = list(/turf/closed, /turf/closed/wall/mineral/plastitanium)
+	noblend_turfs = list(/turf/closed/mineral, /turf/closed/wall/mineral/titanium)
+	blend_objects = list(/obj/structure/falsewall, /obj/structure/grille, /obj/structure/window/fulltile, /obj/structure/window/reinforced/fulltile, /obj/structure/window/reinforced/shuttle, /obj/structure/window/reinforced/plasma/plastitanium, /obj/structure/window/plasma/fulltile, /obj/structure/window/reinforced/plasma/fulltile, /obj/structure/window/framed, /obj/structure/window_frame, /obj/machinery/door)
+	noblend_objects = list()
+
+	special_icon = TRUE
+	smoothing_flags = SMOOTH_CONNECTOR
+	smoothing_groups = null
+	canSmoothWith = null
+
+/obj/structure/falsewall/reinforced
+/obj/structure/falsewall/uranium
+/obj/structure/falsewall/gold
+/obj/structure/falsewall/silver
+/obj/structure/falsewall/diamond
+/obj/structure/falsewall/plasma
+/obj/structure/falsewall/bananium
+/obj/structure/falsewall/sandstone
+/obj/structure/falsewall/wood
+/obj/structure/falsewall/bamboo
+/obj/structure/falsewall/iron
+/obj/structure/falsewall/abductor
+/obj/structure/falsewall/titanium
+/obj/structure/falsewall/plastitanium
+
+/obj/structure/falsewall/plastitanium/darkpod
+	icon = '_horizon/icons/turf/walls/modules_wall/plastitanium_black.dmi'
+
+/obj/structure/falsewall/plastitanium/redpod
+	icon = '_horizon/icons/turf/walls/modules_wall/plastitanium_red.dmi'
+
+/obj/structure/falsewall/plastitanium/survival
+/obj/structure/falsewall/material

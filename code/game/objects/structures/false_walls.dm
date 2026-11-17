@@ -5,21 +5,15 @@
 	name = "wall"
 	desc = "A huge chunk of metal used to separate rooms."
 	anchored = TRUE
-	icon = 'icons/turf/walls/false_walls.dmi'
-	icon_state = "wall-open"
-	base_icon_state = "wall"
 	layer = LOW_OBJ_LAYER
 	density = TRUE
 	opacity = TRUE
 	max_integrity = 100
-	smoothing_flags = SMOOTH_BITMASK
-	smoothing_groups = SMOOTH_GROUP_WALLS + SMOOTH_GROUP_CLOSED_TURFS
-	canSmoothWith = SMOOTH_GROUP_WALLS
 	can_atmos_pass = ATMOS_PASS_DENSITY
 	rad_insulation = RAD_MEDIUM_INSULATION
 	material_flags = MATERIAL_EFFECTS
 	/// The icon this falsewall is faking being. we'll switch out our icon with this when we're in fake mode
-	var/fake_icon = 'icons/turf/walls/wall.dmi'
+	var/fake_icon = '_horizon/icons/turf/walls/modules_wall/metal.dmi' // [HORIZON-EDIT]
 	var/mineral = /obj/item/stack/sheet/iron
 	var/mineral_amount = 2
 	var/walltype = /turf/closed/wall
@@ -166,12 +160,8 @@
 /obj/structure/falsewall/reinforced
 	name = "reinforced wall"
 	desc = "A huge chunk of reinforced metal used to separate rooms."
-	fake_icon = 'icons/turf/walls/reinforced_wall.dmi'
-	icon_state = "reinforced_wall-open"
-	base_icon_state = "reinforced_wall"
 	walltype = /turf/closed/wall/r_wall
 	mineral = /obj/item/stack/sheet/plasteel
-	smoothing_flags = SMOOTH_BITMASK
 
 /obj/structure/falsewall/reinforced/examine_status(mob/user)
 	return span_notice("The outer <b>grille</b> is fully intact.")
@@ -190,14 +180,8 @@
 /obj/structure/falsewall/uranium
 	name = "uranium wall"
 	desc = "A wall with uranium plating. This is probably a bad idea."
-	fake_icon = 'icons/turf/walls/uranium_wall.dmi'
-	icon_state = "uranium_wall-open"
-	base_icon_state = "uranium_wall"
 	mineral = /obj/item/stack/sheet/mineral/uranium
 	walltype = /turf/closed/wall/mineral/uranium
-	smoothing_flags = SMOOTH_BITMASK
-	smoothing_groups = SMOOTH_GROUP_URANIUM_WALLS + SMOOTH_GROUP_WALLS
-	canSmoothWith = SMOOTH_GROUP_URANIUM_WALLS
 
 	/// Mutex to prevent infinite recursion when propagating radiation pulses
 	var/active = null
@@ -241,149 +225,77 @@
 /obj/structure/falsewall/gold
 	name = "gold wall"
 	desc = "A wall with gold plating. Swag!"
-	fake_icon = 'icons/turf/walls/gold_wall.dmi'
-	icon_state = "gold_wall-open"
-	base_icon_state = "gold_wall"
 	mineral = /obj/item/stack/sheet/mineral/gold
 	walltype = /turf/closed/wall/mineral/gold
-	smoothing_flags = SMOOTH_BITMASK
-	smoothing_groups = SMOOTH_GROUP_GOLD_WALLS + SMOOTH_GROUP_WALLS
-	canSmoothWith = SMOOTH_GROUP_GOLD_WALLS
 
 /obj/structure/falsewall/silver
 	name = "silver wall"
 	desc = "A wall with silver plating. Shiny."
-	fake_icon = 'icons/turf/walls/silver_wall.dmi'
-	icon_state = "silver_wall-open"
-	base_icon_state = "silver_wall"
 	mineral = /obj/item/stack/sheet/mineral/silver
 	walltype = /turf/closed/wall/mineral/silver
-	smoothing_flags = SMOOTH_BITMASK
-	smoothing_groups = SMOOTH_GROUP_SILVER_WALLS + SMOOTH_GROUP_WALLS
-	canSmoothWith = SMOOTH_GROUP_SILVER_WALLS
 
 /obj/structure/falsewall/diamond
 	name = "diamond wall"
 	desc = "A wall with diamond plating. You monster."
-	fake_icon = 'icons/turf/walls/diamond_wall.dmi'
-	icon_state = "diamond_wall-open"
-	base_icon_state = "diamond_wall"
 	mineral = /obj/item/stack/sheet/mineral/diamond
 	walltype = /turf/closed/wall/mineral/diamond
-	smoothing_flags = SMOOTH_BITMASK
-	smoothing_groups = SMOOTH_GROUP_DIAMOND_WALLS + SMOOTH_GROUP_WALLS
-	canSmoothWith = SMOOTH_GROUP_DIAMOND_WALLS
 	max_integrity = 800
 
 /obj/structure/falsewall/plasma
 	name = "plasma wall"
 	desc = "A wall with plasma plating. This is definitely a bad idea."
-	fake_icon = 'icons/turf/walls/plasma_wall.dmi'
-	icon_state = "plasma_wall-open"
-	base_icon_state = "plasma_wall"
 	mineral = /obj/item/stack/sheet/mineral/plasma
 	walltype = /turf/closed/wall/mineral/plasma
-	smoothing_flags = SMOOTH_BITMASK
-	smoothing_groups = SMOOTH_GROUP_PLASMA_WALLS + SMOOTH_GROUP_WALLS
-	canSmoothWith = SMOOTH_GROUP_PLASMA_WALLS
 
 /obj/structure/falsewall/bananium
 	name = "bananium wall"
 	desc = "A wall with bananium plating. Honk!"
-	fake_icon = 'icons/turf/walls/bananium_wall.dmi'
-	icon_state = "bananium_wall-open"
-	base_icon_state = "bananium_wall"
 	mineral = /obj/item/stack/sheet/mineral/bananium
 	walltype = /turf/closed/wall/mineral/bananium
-	smoothing_flags = SMOOTH_BITMASK
-	smoothing_groups = SMOOTH_GROUP_BANANIUM_WALLS + SMOOTH_GROUP_WALLS
-	canSmoothWith = SMOOTH_GROUP_BANANIUM_WALLS
 
 
 /obj/structure/falsewall/sandstone
 	name = "sandstone wall"
 	desc = "A wall with sandstone plating. Rough."
-	fake_icon = 'icons/turf/walls/sandstone_wall.dmi'
-	icon_state = "sandstone_wall-open"
-	base_icon_state = "sandstone_wall"
 	mineral = /obj/item/stack/sheet/mineral/sandstone
 	walltype = /turf/closed/wall/mineral/sandstone
-	smoothing_flags = SMOOTH_BITMASK
-	smoothing_groups = SMOOTH_GROUP_SANDSTONE_WALLS + SMOOTH_GROUP_WALLS
-	canSmoothWith = SMOOTH_GROUP_SANDSTONE_WALLS
 
 /obj/structure/falsewall/wood
 	name = "wooden wall"
 	desc = "A wall with wooden plating. Stiff."
-	fake_icon = 'icons/turf/walls/wood_wall.dmi'
-	icon_state = "wood_wall-open"
-	base_icon_state = "wood_wall"
 	mineral = /obj/item/stack/sheet/mineral/wood
 	walltype = /turf/closed/wall/mineral/wood
-	smoothing_flags = SMOOTH_BITMASK
-	smoothing_groups = SMOOTH_GROUP_WOOD_WALLS + SMOOTH_GROUP_WALLS
-	canSmoothWith = SMOOTH_GROUP_WOOD_WALLS
 
 /obj/structure/falsewall/bamboo
 	name = "bamboo wall"
 	desc = "A wall with bamboo finish. Zen."
-	fake_icon = 'icons/turf/walls/bamboo_wall.dmi'
-	icon_state = "bamboo_wall-open"
-	base_icon_state = "bamboo_wall"
 	mineral = /obj/item/stack/sheet/mineral/bamboo
 	walltype = /turf/closed/wall/mineral/bamboo
-	smoothing_flags = SMOOTH_BITMASK
-	smoothing_groups = SMOOTH_GROUP_BAMBOO_WALLS + SMOOTH_GROUP_WALLS + SMOOTH_GROUP_CLOSED_TURFS
-	canSmoothWith = SMOOTH_GROUP_BAMBOO_WALLS
 
 /obj/structure/falsewall/iron
 	name = "rough iron wall"
 	desc = "A wall with rough metal plating."
-	fake_icon = 'icons/turf/walls/iron_wall.dmi'
-	icon_state = "iron_wall-open"
-	base_icon_state = "iron_wall"
 	mineral = /obj/item/stack/rods
 	mineral_amount = 5
 	walltype = /turf/closed/wall/mineral/iron
-	smoothing_flags = SMOOTH_BITMASK
-	smoothing_groups = SMOOTH_GROUP_IRON_WALLS + SMOOTH_GROUP_WALLS
-	canSmoothWith = SMOOTH_GROUP_IRON_WALLS
 
 /obj/structure/falsewall/abductor
 	name = "alien wall"
 	desc = "A wall with alien alloy plating."
-	fake_icon = 'icons/turf/walls/abductor_wall.dmi'
-	icon_state = "abductor_wall-open"
-	base_icon_state = "abductor_wall"
 	mineral = /obj/item/stack/sheet/mineral/abductor
 	walltype = /turf/closed/wall/mineral/abductor
-	smoothing_flags = SMOOTH_BITMASK
-	smoothing_groups = SMOOTH_GROUP_ABDUCTOR_WALLS + SMOOTH_GROUP_WALLS
-	canSmoothWith = SMOOTH_GROUP_ABDUCTOR_WALLS
 
 /obj/structure/falsewall/titanium
 	name = "wall"
 	desc = "A light-weight titanium wall used in shuttles."
-	fake_icon = 'icons/turf/walls/shuttle_wall.dmi'
-	icon_state = "shuttle_wall-open"
-	base_icon_state = "shuttle_wall"
 	mineral = /obj/item/stack/sheet/mineral/titanium
 	walltype = /turf/closed/wall/mineral/titanium
-	smoothing_flags = SMOOTH_BITMASK
-	smoothing_groups = SMOOTH_GROUP_TITANIUM_WALLS + SMOOTH_GROUP_WALLS
-	canSmoothWith = SMOOTH_GROUP_SHUTTLE_PARTS + SMOOTH_GROUP_AIRLOCK + SMOOTH_GROUP_TITANIUM_WALLS
 
 /obj/structure/falsewall/plastitanium
 	name = "wall"
 	desc = "An evil wall of plasma and titanium."
-	fake_icon = 'icons/turf/walls/plastitanium_wall.dmi'
-	icon_state = "plastitanium_wall-open"
-	base_icon_state = "plastitanium_wall"
 	mineral = /obj/item/stack/sheet/mineral/plastitanium
 	walltype = /turf/closed/wall/mineral/plastitanium
-	smoothing_flags = SMOOTH_BITMASK
-	smoothing_groups = SMOOTH_GROUP_PLASTITANIUM_WALLS + SMOOTH_GROUP_WALLS
-	canSmoothWith = SMOOTH_GROUP_SHUTTLE_PARTS + SMOOTH_GROUP_AIRLOCK + SMOOTH_GROUP_PLASTITANIUM_WALLS
 
 /obj/structure/falsewall/plastitanium/wall_fill
 	mineral = /obj/item/stack/wall_filling/plastitanium/basic
@@ -393,49 +305,28 @@
 /obj/structure/falsewall/plastitanium/darkpod
 	name = "dark pod wall"
 	desc = "An easily-compressible wall used for temporary shelter."
-	fake_icon = 'icons/turf/walls/dark_pod.dmi'
-	icon_state = "dark_pod_walls-open"
-	base_icon_state = "dark_pod_walls"
 	mineral = /obj/item/stack/wall_filling/plastitanium/pod
 	mineral_amount = 1
 	walltype = /turf/closed/wall/mineral/plastitanium/darkpod
-	smoothing_groups = SMOOTH_GROUP_SURVIVAL_TITANIUM_POD + SMOOTH_GROUP_TITANIUM_WALLS + SMOOTH_GROUP_WALLS + SMOOTH_GROUP_CLOSED_TURFS
-	canSmoothWith = SMOOTH_GROUP_SURVIVAL_TITANIUM_POD
 
 /obj/structure/falsewall/plastitanium/redpod
 	name = "red pod wall"
 	desc = "An easily-compressible wall used for temporary shelter."
-	fake_icon = 'icons/turf/walls/red_pod.dmi'
-	icon_state = "red_pod_walls-open"
-	base_icon_state = "red_pod_walls"
 	mineral = /obj/item/stack/wall_filling/plastitanium/redpod
 	mineral_amount = 1
 	walltype = /turf/closed/wall/mineral/plastitanium/redpod
-	smoothing_groups = SMOOTH_GROUP_SURVIVAL_TITANIUM_POD + SMOOTH_GROUP_TITANIUM_WALLS + SMOOTH_GROUP_WALLS + SMOOTH_GROUP_CLOSED_TURFS
-	canSmoothWith = SMOOTH_GROUP_SURVIVAL_TITANIUM_POD
 
 /obj/structure/falsewall/plastitanium/survival
 	name = "pod wall"
 	desc = "An easily-compressible wall used for temporary shelter."
-	fake_icon = 'icons/turf/walls/survival_pod_walls.dmi'
-	icon_state = "survival_pod_walls-open"
-	base_icon_state = "survival_pod_walls"
 	mineral = /obj/item/stack/wall_filling/plastitanium/survivalpod
 	mineral_amount = 1
 	walltype = /turf/closed/wall/mineral/plastitanium/survival
-	smoothing_groups = SMOOTH_GROUP_SURVIVAL_TITANIUM_POD + SMOOTH_GROUP_TITANIUM_WALLS + SMOOTH_GROUP_WALLS + SMOOTH_GROUP_CLOSED_TURFS
-	canSmoothWith = SMOOTH_GROUP_SURVIVAL_TITANIUM_POD
 
 /obj/structure/falsewall/material
 	name = "wall"
 	desc = "A huge chunk of material used to separate rooms."
-	fake_icon = 'icons/turf/walls/material_wall.dmi'
-	icon_state = "material_wall-open"
-	base_icon_state = "material_wall"
 	walltype = /turf/closed/wall/material
-	smoothing_flags = SMOOTH_BITMASK
-	smoothing_groups = SMOOTH_GROUP_WALLS + SMOOTH_GROUP_CLOSED_TURFS + SMOOTH_GROUP_MATERIAL_WALLS
-	canSmoothWith = SMOOTH_GROUP_MATERIAL_WALLS
 	material_flags = MATERIAL_EFFECTS | MATERIAL_ADD_PREFIX | MATERIAL_COLOR | MATERIAL_AFFECT_STATISTICS
 
 /obj/structure/falsewall/material/atom_deconstruct(disassembled = TRUE)

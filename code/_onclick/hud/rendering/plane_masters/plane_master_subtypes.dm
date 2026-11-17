@@ -699,6 +699,7 @@
 	mouse_opacity = MOUSE_OPACITY_TRANSPARENT
 	render_relay_planes = list()
 	color = list(1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,2)
+	multiz_scaled = FALSE
 
 /*
 // MARK: Под дебаг теней / For debug shadows

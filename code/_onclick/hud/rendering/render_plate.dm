@@ -363,7 +363,7 @@
 	if(new_cutoffs ~= light_cutoffs)
 		return
 
-	remove_filter(list("light_cutdown", "light_cutup", "shadow"))
+	remove_filter(list("light_cutdown", "light_cutup"))
 
 	var/ratio = light_cutoff/100
 	if(!color_cutoffs)
@@ -372,7 +372,7 @@
 	var/red = color_cutoffs[1] / 100
 	var/green = color_cutoffs[2] / 100
 	var/blue = color_cutoffs[3] / 100
-	add_filter("shadow", 1, alpha_mask_filter(render_source = OFFSET_RENDER_TARGET(RENDER_PLANE_LIGHTING, offset), flags = MASK_INVERSE))
+	// [HORIZON-EDIT] The old "shadow" alpha mask used RENDER_PLANE_LIGHTING as a render source, but no plane master renders to that target, so it masked nothing and failed unit_tests/plane_double_transform
 	add_filter("light_cutdown", 3, color_matrix_filter(list(1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1, -(ratio + red),-(ratio+green),-(ratio+blue),0)))
 	add_filter("light_cutup", 4, color_matrix_filter(list(1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1, ratio+red,ratio+green,ratio+blue,0)))
 

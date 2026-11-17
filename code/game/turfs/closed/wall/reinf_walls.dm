@@ -194,13 +194,13 @@
 /turf/closed/wall/r_wall/update_icon()
 	switch(d_state)
 		if(SUPPORT_LINES, COVER)
-			icon = '_horizon/icons/turf/walls//rstates/reinforce2.dmi'
+			icon = '_horizon/icons/turf/walls/rstates/reinforce2.dmi'
 		if(CUT_COVER)
-			icon = '_horizon/icons/turf/walls//rstates/reinforce3.dmi'
+			icon = '_horizon/icons/turf/walls/rstates/reinforce3.dmi'
 		if(ANCHOR_BOLTS, SUPPORT_RODS)
-			icon = '_horizon/icons/turf/walls//rstates/reinforce4.dmi'
+			icon = '_horizon/icons/turf/walls/rstates/reinforce4.dmi'
 		if(SHEATH)
-			icon = '_horizon/icons/turf/walls//rstates/reinforce5.dmi'
+			icon = '_horizon/icons/turf/walls/rstates/reinforce5.dmi'
 		else
 			icon = initial(icon)
 	return ..()

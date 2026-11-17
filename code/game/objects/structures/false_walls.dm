@@ -13,7 +13,7 @@
 	rad_insulation = RAD_MEDIUM_INSULATION
 	material_flags = MATERIAL_EFFECTS
 	/// The icon this falsewall is faking being. we'll switch out our icon with this when we're in fake mode
-	var/fake_icon = '_horizon/icons/turf/walls//metal.dmi' // [HORIZON-EDIT]
+	var/fake_icon = '_horizon/icons/turf/walls/metal.dmi' // [HORIZON-EDIT]
 	var/mineral = /obj/item/stack/sheet/iron
 	var/mineral_amount = 2
 	var/walltype = /turf/closed/wall

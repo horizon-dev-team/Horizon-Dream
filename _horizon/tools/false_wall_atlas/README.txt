@@ -1,5 +1,5 @@
 Builds a false wall atlas (same states as icons/turf/walls/false_walls.dmi) from the
-flat `wall` icon_state of every wall .dmi in _horizon/icons/turf/walls/modules_wall.
+flat `wall` icon_state of every wall .dmi in _horizon/icons/turf/walls/.
 
     false_wall_atlas.bat                    -> modules_wall/false_walls.dmi
     python false_wall_atlas.py a.dmi b.dmi -o out.dmi

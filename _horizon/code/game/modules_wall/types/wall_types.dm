@@ -31,14 +31,14 @@
 
 // MARK: Types
 /turf/closed/wall
-	icon = '_horizon/icons/turf/walls/modules_wall/metal.dmi'
+	icon = '_horizon/icons/turf/walls//metal.dmi'
 	icon_state = "wall"
 
 /turf/closed/wall/r_wall
-	icon = '_horizon/icons/turf/walls/modules_wall/reinforce.dmi'
+	icon = '_horizon/icons/turf/walls//reinforce.dmi'
 
 /turf/closed/wall/r_wall/plastitanium
-	icon = '_horizon/icons/turf/walls/modules_wall/pidopod.dmi'
+	icon = '_horizon/icons/turf/walls//pidopod.dmi'
 
 /*
 /turf/closed/wall/mineral/bananium
@@ -57,7 +57,7 @@
 	noblend_turfs = list()
 
 /turf/closed/wall/mineral/plastitanium
-	icon = '_horizon/icons/turf/walls/modules_wall/plastitanium.dmi'
+	icon = '_horizon/icons/turf/walls//plastitanium.dmi'
 
 /turf/closed/wall/mineral/plastitanium/nodiagonal
 //	icon = MAP_SWITCH('_horizon/icons/turf/walls/plastitanium_wall.dmi', 'icons/turf/walls/misc_wall.dmi')
@@ -68,22 +68,22 @@
 //	icon_state = MAP_SWITCH("plastitanium_wall-0", "plastitanium_overspace")
 
 /turf/closed/wall/mineral/plastitanium/survival
-	icon = '_horizon/icons/turf/walls/modules_wall/EvaWall.dmi'
+	icon = '_horizon/icons/turf/walls//EvaWall.dmi'
 
 /turf/closed/wall/mineral/plastitanium/darkpod
-	icon = '_horizon/icons/turf/walls/modules_wall/plastitanium_black.dmi'
+	icon = '_horizon/icons/turf/walls//plastitanium_black.dmi'
 
 /turf/closed/wall/mineral/plastitanium/redpod
-	icon = '_horizon/icons/turf/walls/modules_wall/plastitanium_red.dmi'
+	icon = '_horizon/icons/turf/walls//plastitanium_red.dmi'
 
 /turf/closed/wall/concrete
-	icon = '_horizon/icons/turf/walls/modules_wall/concrete.dmi'
+	icon = '_horizon/icons/turf/walls//concrete.dmi'
 
 /turf/closed/wall/concrete/reinforced
-	icon = '_horizon/icons/turf/walls/modules_wall/hexaconcrete.dmi'
+	icon = '_horizon/icons/turf/walls//hexaconcrete.dmi'
 
 /turf/closed/wall/mineral/titanium
-	icon = '_horizon/icons/turf/walls/modules_wall/shuttle.dmi'
+	icon = '_horizon/icons/turf/walls//shuttle.dmi'
 	diagonal = FALSE
 
 /turf/closed/wall/mineral/titanium/nodiagonal
@@ -104,31 +104,31 @@
 
 // MARK: Generic Walls
 /turf/closed/wall/mineral/snow
-	icon = '_horizon/icons/turf/walls/modules_wall/snow.dmi'
+	icon = '_horizon/icons/turf/walls//snow.dmi'
 
 /turf/closed/wall/mineral/sandstone
-	icon = '_horizon/icons/turf/walls/modules_wall/sandstone.dmi'
+	icon = '_horizon/icons/turf/walls//sandstone.dmi'
 
 /turf/closed/wall/mineral/iron
-	icon = '_horizon/icons/turf/walls/modules_wall/iron.dmi'
+	icon = '_horizon/icons/turf/walls//iron.dmi'
 
 /turf/closed/wall/mineral/gold
-	icon = '_horizon/icons/turf/walls/modules_wall/gold.dmi'
+	icon = '_horizon/icons/turf/walls//gold.dmi'
 
 /turf/closed/wall/mineral/silver
-	icon = '_horizon/icons/turf/walls/modules_wall/silver.dmi'
+	icon = '_horizon/icons/turf/walls//silver.dmi'
 
 /turf/closed/wall/mineral/wood
-	icon = '_horizon/icons/turf/walls/modules_wall/wood.dmi'
+	icon = '_horizon/icons/turf/walls//wood.dmi'
 
 /turf/closed/wall/mineral/uranium
-	icon = '_horizon/icons/turf/walls/modules_wall/uranium.dmi'
+	icon = '_horizon/icons/turf/walls//uranium.dmi'
 
 /turf/closed/wall/mineral/diamond
-	icon = '_horizon/icons/turf/walls/modules_wall/diamond.dmi'
+	icon = '_horizon/icons/turf/walls//diamond.dmi'
 
 /turf/closed/wall/mineral/plasma
-	icon = '_horizon/icons/turf/walls/modules_wall/plasma.dmi'
+	icon = '_horizon/icons/turf/walls//plasma.dmi'
 
 /*
 /turf/closed/indestructible/riveted

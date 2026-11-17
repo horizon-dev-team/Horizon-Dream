@@ -1,7 +1,7 @@
 /obj/structure/falsewall
-	icon = '_horizon/icons/turf/walls/modules_wall/false_walls.dmi'
+	icon = '_horizon/icons/turf/walls//false_walls.dmi'
 	base_icon_state = "metal_wall"
-	fake_icon = '_horizon/icons/turf/walls/modules_wall/metal.dmi'
+	fake_icon = '_horizon/icons/turf/walls//metal.dmi'
 	icon_state = "metal_wall-open"
 
 	var/atom/movable/atom_shadow/wall/falsewall/shadow
@@ -57,69 +57,69 @@
 	render_corner_frames(src, wall_connections, WALL_PLANE)
 
 /obj/structure/falsewall/reinforced
-	fake_icon = '_horizon/icons/turf/walls/modules_wall/reinforce.dmi'
+	fake_icon = '_horizon/icons/turf/walls//reinforce.dmi'
 	base_icon_state = "reinforce_wall"
 
 /obj/structure/falsewall/uranium
-	fake_icon = '_horizon/icons/turf/walls/modules_wall/uranium.dmi'
+	fake_icon = '_horizon/icons/turf/walls//uranium.dmi'
 	base_icon_state = "uranium_wall"
 
 /obj/structure/falsewall/gold
-	fake_icon = '_horizon/icons/turf/walls/modules_wall/gold.dmi'
+	fake_icon = '_horizon/icons/turf/walls//gold.dmi'
 	base_icon_state = "gold_wall"
 
 /obj/structure/falsewall/silver
-	fake_icon = '_horizon/icons/turf/walls/modules_wall/silver.dmi'
+	fake_icon = '_horizon/icons/turf/walls//silver.dmi'
 	base_icon_state = "silver_wall"
 
 /obj/structure/falsewall/diamond
-	fake_icon = '_horizon/icons/turf/walls/modules_wall/diamond.dmi'
+	fake_icon = '_horizon/icons/turf/walls//diamond.dmi'
 	base_icon_state = "diamond_wall"
 
 /obj/structure/falsewall/plasma
-	fake_icon = '_horizon/icons/turf/walls/modules_wall/plasma.dmi'
+	fake_icon = '_horizon/icons/turf/walls//plasma.dmi'
 	base_icon_state = "plasma_wall"
 
 // /obj/structure/falsewall/bananium
 
 /obj/structure/falsewall/sandstone
-	fake_icon = '_horizon/icons/turf/walls/modules_wall/sandstone.dmi'
+	fake_icon = '_horizon/icons/turf/walls//sandstone.dmi'
 	base_icon_state = "sandstone_wall"
 
 /obj/structure/falsewall/wood
-	fake_icon = '_horizon/icons/turf/walls/modules_wall/wood.dmi'
+	fake_icon = '_horizon/icons/turf/walls//wood.dmi'
 	base_icon_state = "wood_wall"
 
 /obj/structure/falsewall/bamboo
-	fake_icon = '_horizon/icons/turf/walls/modules_wall/wood.dmi'
+	fake_icon = '_horizon/icons/turf/walls//wood.dmi'
 	base_icon_state = "wood_wall"
 
 /obj/structure/falsewall/iron
-	fake_icon = '_horizon/icons/turf/walls/modules_wall/iron.dmi'
+	fake_icon = '_horizon/icons/turf/walls//iron.dmi'
 	base_icon_state = "iron_wall"
 
 // /obj/structure/falsewall/abductor
 
 /obj/structure/falsewall/titanium
-	fake_icon = '_horizon/icons/turf/walls/modules_wall/shuttle.dmi'
+	fake_icon = '_horizon/icons/turf/walls//shuttle.dmi'
 	base_icon_state = "shuttle_wall"
 
 /obj/structure/falsewall/plastitanium
-	fake_icon = '_horizon/icons/turf/walls/modules_wall/plastitanium.dmi'
+	fake_icon = '_horizon/icons/turf/walls//plastitanium.dmi'
 	base_icon_state = "plastitanium_wall"
 
 /obj/structure/falsewall/plastitanium/darkpod
-	fake_icon = '_horizon/icons/turf/walls/modules_wall/plastitanium_black.dmi'
+	fake_icon = '_horizon/icons/turf/walls//plastitanium_black.dmi'
 	base_icon_state = "plastitanium_black_wall"
 
 /obj/structure/falsewall/plastitanium/redpod
-	fake_icon = '_horizon/icons/turf/walls/modules_wall/plastitanium_red.dmi'
+	fake_icon = '_horizon/icons/turf/walls//plastitanium_red.dmi'
 	base_icon_state = "plastitanium_red_wall"
 
 /obj/structure/falsewall/plastitanium/survival
-	fake_icon = '_horizon/icons/turf/walls/modules_wall/EvaWall.dmi'
+	fake_icon = '_horizon/icons/turf/walls//EvaWall.dmi'
 	base_icon_state = "evawall_wall"
 
 /obj/structure/falsewall/material
-	fake_icon = '_horizon/icons/turf/walls/modules_wall/material wall greyscale.dmi'
+	fake_icon = '_horizon/icons/turf/walls//material wall greyscale.dmi'
 	base_icon_state = "material_wall_greyscale_wall"

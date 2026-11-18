@@ -112,6 +112,7 @@
 #include "code\modules\projectiles\guns\ballistic\shotgun.dm"
 #include "code\modules\projectiles\guns\ballistic\smg.dm"
 #include "code\modules\projectiles\guns\ballistic\stuff\guncleaning.dm"
+#include "code\modules\projectiles\guns\ballistic\stuff\suppressor.dm"
 #include "code\modules\projectiles\guns\ballistic\stuff\magazine_compat.dm"
 #include "code\modules\projectiles\guns\ballistic\stuff\sawoff_compat.dm"
 #include "code\modules\projectiles\guns\ballistic\stuff\wield_attack_self.dm"

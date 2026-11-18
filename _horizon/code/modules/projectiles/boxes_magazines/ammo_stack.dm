@@ -77,7 +77,7 @@
 /obj/item/ammo_casing
 	var/obj/item/ammo_box/magazine/stack_type
 
-/obj/item/ammo_casing/attackby(obj/item/attacking_item, mob/user, params)
+/obj/item/ammo_casing/attackby(obj/item/attacking_item, mob/user, list/modifiers)
 	. = ..()
 	if(!istype(attacking_item, /obj/item/ammo_casing))
 		return
@@ -97,11 +97,11 @@
 	if(!loaded_projectile || !ammo_casing.loaded_projectile)
 		to_chat(user, span_warning("I can't stack empty casings."))
 		return
-	var/obj/item/ammo_box/magazine/ammo_stack = new stack_type(drop_location())
-	user.transferItemToLoc(src, ammo_stack, silent = TRUE)
-	ammo_stack.give_round(src)
-	user.transferItemToLoc(ammo_casing, ammo_stack, silent = TRUE)
-	ammo_stack.give_round(ammo_casing)
-	user.put_in_hands(ammo_stack)
-	ammo_stack.update_appearance()
+	var/obj/item/ammo_box/magazine/new_stack = new stack_type(drop_location())
+	user.transferItemToLoc(src, new_stack, silent = TRUE)
+	new_stack.give_round(src)
+	user.transferItemToLoc(ammo_casing, new_stack, silent = TRUE)
+	new_stack.give_round(ammo_casing)
+	user.put_in_hands(new_stack)
+	new_stack.update_appearance()
 	to_chat(user, span_notice("[src] has been stacked with [ammo_casing]."))

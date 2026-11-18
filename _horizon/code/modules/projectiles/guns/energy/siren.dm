@@ -1,9 +1,8 @@
-/obj/item/gun/energy/hd_gun/siren
-	gunshot_animation_information = list("icon_state" = "boltshot", \
-							"pixel_x" = 28, \
-							"pixel_y" = 13)
-	recoil_animation_information = list("recoil_angle_upper" = -15, \
-							"recoil_angle_lower" = -25)
+// Shared base of the two heavy plasma rifles. They differ only in
+// sprite, fire sounds and fire delay - and only the Siren is integrally
+// full-auto (see its Initialize).
+/obj/item/gun/energy/hd_gun/heavy_plasma
+	abstract_type = /obj/item/gun/energy/hd_gun/heavy_plasma
 	name = "\improper \"Siren\" Heavy Plasma Rifle"
 	desc = "An unwieldly and burdenly heavy firearm capable of firing without physical bullets, but instead utilizing chargable plasma batteries."
 	icon = '_horizon/icons/obj/items/guns/energy.dmi'
@@ -40,8 +39,12 @@
 	weapon_weight = WEAPON_HEAVY
 	burst_size = 3
 	carry_weight = 5 KILOGRAMS
+	gunshot_animation_information = list("icon_state" = "boltshot", \
+						"pixel_x" = 28, \
+						"pixel_y" = 13)
+	recoil_animation_information = list("recoil_angle_upper" = -15, \
+						"recoil_angle_lower" = -25)
 
-/// Integrally full-auto: the component starts listening for held clicks.
-/obj/item/gun/energy/hd_gun/siren/Initialize(mapload)
+/obj/item/gun/energy/hd_gun/heavy_plasma/siren/Initialize(mapload)
 	. = ..()
 	AddComponent(/datum/component/automatic_fire, 3)

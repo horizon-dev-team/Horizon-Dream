@@ -1,9 +1,15 @@
+// Horizon overrides for /obj/item/gun/ballistic: icons/overlays,
+// suppressors, break-action gunplay, caliber modding, magazines and
+// the canonical (un)loading interactions live here or in
+// ballistic/stuff/wield_attack_self.dm.
+
 /obj/item/gun/ballistic
 	client_recoil_animation_information = list(
 		"strength" = 0.35,
 		"duration" = 2,
 	)
-	/// Why is this not already a variable?
+	/// Whether the bolt drop sound should vary in pitch (upstream has
+	/// bolt_drop_sound/volume but no vary toggle).
 	var/bolt_drop_sound_vary = FALSE
 	/// Wording for the cylinder, for break action guns
 	var/cylinder_wording = "cylinder"
@@ -21,12 +27,6 @@
 	var/unrack_sound_volume = 40
 	/// Whether unracking sound should vary
 	var/unrack_sound_vary = TRUE
-
-/obj/item/suppressor
-	name = "suppressor"
-	desc = "A multi-caliber suppressor for the discreet massacre of homeless, children, and homeless children."
-	icon = '_horizon/icons/obj/items/gun_mods/mods.dmi'
-	icon_state = "suppressor"
 
 /obj/item/gun/ballistic/update_icon_state()
 	. = ..()

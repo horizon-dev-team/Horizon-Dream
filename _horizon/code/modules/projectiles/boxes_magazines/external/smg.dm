@@ -24,7 +24,7 @@
 
 /obj/item/ammo_box/magazine/hksmg22lr/update_icon_state()
 	. = ..()
-	icon_state = "[base_icon_state]-[ammo_count() ? 40 : 0]"
+	icon_state = "[base_icon_state]-[ammo_count() ? max_ammo : 0]"
 
 /obj/item/ammo_box/magazine/hksmg380
 	name = "R8 Submachine Gun magazine (.380 ACP)"
@@ -38,7 +38,7 @@
 
 /obj/item/ammo_box/magazine/hksmg380/update_icon_state()
 	. = ..()
-	icon_state = "[base_icon_state]-[ammo_count() ? 30 : 0]"
+	icon_state = "[base_icon_state]-[ammo_count() ? max_ammo : 0]"
 
 /obj/item/ammo_box/magazine/bastardo9mm
 	name = "R1 Submachine Gun magazine (9mm)"
@@ -52,7 +52,7 @@
 
 /obj/item/ammo_box/magazine/bastardo9mm/update_icon_state()
 	. = ..()
-	icon_state = "[base_icon_state]-[ammo_count() ? 30 : 0]"
+	icon_state = "[base_icon_state]-[ammo_count() ? max_ammo : 0]"
 
 /obj/item/ammo_box/magazine/uzi9mm
 	name = "R6 Submachine Gun magazine (9mm)"
@@ -66,7 +66,7 @@
 
 /obj/item/ammo_box/magazine/uzi9mm/update_icon_state()
 	. = ..()
-	icon_state = "[base_icon_state]-[ammo_count() ? 30 : 0]"
+	icon_state = "[base_icon_state]-[ammo_count() ? max_ammo : 0]"
 
 /obj/item/ammo_box/magazine/thump45
 	name = "R2 Submachine Gun magazine (.45 ACP)"
@@ -80,4 +80,4 @@
 
 /obj/item/ammo_box/magazine/thump45/update_icon_state()
 	. = ..()
-	icon_state = "[base_icon_state]-[ammo_count() ? 25 : 0]"
+	icon_state = "[base_icon_state]-[ammo_count() ? max_ammo : 0]"

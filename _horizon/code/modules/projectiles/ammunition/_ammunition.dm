@@ -1,3 +1,6 @@
+// Horizon overrides for /obj/item/ammo_casing: world-sprite element
+// wiring and the -live icon_state convention.
+
 /obj/item/ammo_casing
 	carry_weight = 20 GRAMS
 	/// World icon for this bullet

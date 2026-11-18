@@ -12,7 +12,7 @@
 
 /obj/item/ammo_box/magazine/a556winter/update_icon_state()
 	. = ..()
-	icon_state = "[base_icon_state]-[ammo_count() ? 35 : 0]"
+	icon_state = "[base_icon_state]-[ammo_count() ? max_ammo : 0]"
 
 /obj/item/ammo_box/magazine/a556g36
 	name = "Perdedor magazine (5.56)"
@@ -44,7 +44,7 @@
 
 /obj/item/ammo_box/magazine/a545/update_icon_state()
 	. = ..()
-	icon_state = "[base_icon_state]-[ammo_count() ? 30 : 0]"
+	icon_state = "[base_icon_state]-[ammo_count() ? max_ammo : 0]"
 
 /obj/item/ammo_box/magazine/a545/donator
 	name = "Abyss-Platform paypig magazine (5.45x39)"
@@ -69,7 +69,7 @@
 
 /obj/item/ammo_box/magazine/a49234g11/update_icon_state()
 	. = ..()
-	icon_state = "[base_icon_state]-[ammo_count() ? 55 : 0]"
+	icon_state = "[base_icon_state]-[ammo_count() ? max_ammo : 0]"
 
 /obj/item/ammo_box/magazine/a556steyr
 	name = "Advanced Combat Rifle annular-primed flechette magazine (5.56×45mm)"
@@ -85,7 +85,7 @@
 
 /obj/item/ammo_box/magazine/a556steyr/update_icon_state()
 	. = ..()
-	icon_state = "[base_icon_state]-[ammo_count() ? 24 : 0]"
+	icon_state = "[base_icon_state]-[ammo_count() ? max_ammo : 0]"
 
 /obj/item/ammo_box/magazine/a762svd
 	name = "Lampiao marksman rifle magazine (7.62x54R)"
@@ -99,7 +99,7 @@
 
 /obj/item/ammo_box/magazine/a762svd/update_icon_state()
 	. = ..()
-	icon_state = "[base_icon_state]-[ammo_count() ? 15 : 0]"
+	icon_state = "[base_icon_state]-[ammo_count() ? max_ammo : 0]"
 
 /obj/item/ammo_box/magazine/a762g3
 	name = "Arma marksman rifle magazine (7.62x51)"
@@ -113,4 +113,4 @@
 
 /obj/item/ammo_box/magazine/a762g3/update_icon_state()
 	. = ..()
-	icon_state = "[base_icon_state]-[ammo_count() ? 20 : 0]"
+	icon_state = "[base_icon_state]-[ammo_count() ? max_ammo : 0]"

@@ -52,7 +52,7 @@
 
 /obj/item/ammo_box/magazine/combatmaster9mm/update_icon_state()
 	. = ..()
-	icon_state = "[base_icon_state]-[ammo_count() ? 20 : 0]"
+	icon_state = "[base_icon_state]-[ammo_count() ? max_ammo : 0]"
 
 /obj/item/ammo_box/magazine/glock9mm
 	name = "Gosma-17 magazine (9mm)"
@@ -67,7 +67,7 @@
 
 /obj/item/ammo_box/magazine/glock9mm/update_icon_state()
 	. = ..()
-	icon_state = "[base_icon_state]-[ammo_count() ? 17 : 0]"
+	icon_state = "[base_icon_state]-[ammo_count() ? max_ammo : 0]"
 
 /obj/item/ammo_box/magazine/ppk22lr
 	name = "walter bombeiro magazine (.22lr)"
@@ -97,7 +97,7 @@
 
 /obj/item/ammo_box/magazine/aniquilador/update_icon_state()
 	. = ..()
-	icon_state = "[base_icon_state]-[ammo_count() ? 10 : 0]"
+	icon_state = "[base_icon_state]-[ammo_count() ? max_ammo : 0]"
 
 /obj/item/ammo_box/magazine/john
 	name = "John Magazine (.50 AE)"
@@ -112,7 +112,7 @@
 
 /obj/item/ammo_box/magazine/john/update_icon_state()
 	. = ..()
-	icon_state = "[base_icon_state]-[ammo_count() ? 8 : 0]"
+	icon_state = "[base_icon_state]-[ammo_count() ? max_ammo : 0]"
 
 /obj/item/ammo_box/magazine/pm9
 	name = "PM9 Evil Magazine (nine milie meter)"
@@ -127,4 +127,4 @@
 
 /obj/item/ammo_box/magazine/pm9/update_icon_state()
 	. = ..()
-	icon_state = "[base_icon_state]-[ammo_count() ? 25 : 0]"
+	icon_state = "[base_icon_state]-[ammo_count() ? max_ammo : 0]"

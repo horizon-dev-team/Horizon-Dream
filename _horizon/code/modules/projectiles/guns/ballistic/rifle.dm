@@ -1,3 +1,5 @@
+// hd_gun rifles: the remis family (assault rifles, SMGs live in smg.dm) and the boltaction remis base.
+
 /obj/item/gun/ballistic/automatic/hd_gun/remis
 	worn_icon = '_horizon/icons/obj/items/guns/worn/back.dmi'
 	equip_sound = '_horizon/sound/weapons/guns/weap_away.ogg'

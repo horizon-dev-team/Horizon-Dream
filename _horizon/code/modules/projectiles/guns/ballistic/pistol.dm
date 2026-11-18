@@ -1,22 +1,14 @@
-// all pistols
+// Base for all hd_gun pistols: family-wide sounds and stats.
 /obj/item/gun/ballistic/automatic/pistol/hd_gun
 	fire_delay = 1
-	carry_weight = 1
-	carry_weight = 0.8
+	carry_weight = 1 KILOGRAMS
+	icon = '_horizon/icons/obj/items/guns/pistol.dmi'
+	suppressed = SUPPRESSED_NONE
 	safety_off_sound = '_horizon/sound/weapons/guns/pistol/pistol_safety.wav'
 	safety_on_sound = '_horizon/sound/weapons/guns/pistol/pistol_safety.wav'
-	suppressed = SUPPRESSED_NONE
+	pickup_sound = '_horizon/sound/weapons/guns/pistol/pistol_draw.wav'
 	equip_sound = '_horizon/sound/weapons/guns/pistol/pistol_holster.wav'
 	drop_sound = '_horizon/sound/weapons/guns/drop_lightgun.wav'
-
-// RUGER MKIV
-/obj/item/gun/ballistic/automatic/pistol/hd_gun
-	name = "\improper Plinker pistol"
-	desc = "A small, easily concealable 9mm handgun. Has a threaded barrel for suppressors."
-	icon = '_horizon/icons/obj/items/guns/pistol.dmi'
-	icon_state = "ruger"
-	base_icon_state = "ruger"
-	pickup_sound = '_horizon/sound/weapons/guns/pistol/pistol_draw.wav'
 	lock_back_sound = '_horizon/sound/weapons/guns/pistol/pistol_lockback.wav'
 	bolt_drop_sound = '_horizon/sound/weapons/guns/pistol/pistol_lockin.wav'
 	eject_sound = '_horizon/sound/weapons/guns/pistol/pistol_magout.wav'
@@ -26,6 +18,15 @@
 	load_sound = '_horizon/sound/weapons/guns/pistol/pistol_magin.wav'
 	load_empty_sound = '_horizon/sound/weapons/guns/pistol/pistol_magin.wav'
 	rack_sound = '_horizon/sound/weapons/guns/pistol/pistol_rack.wav'
+	w_class = WEIGHT_CLASS_NORMAL
+	suppressor_x_offset = 10
+
+// RUGER MKIV
+/obj/item/gun/ballistic/automatic/pistol/hd_gun/ruger
+	name = "\improper Plinker pistol"
+	desc = "A small, easily concealable 9mm handgun. Has a threaded barrel for suppressors."
+	icon_state = "ruger"
+	base_icon_state = "ruger"
 	gunshot_animation_information = list(
 		"pixel_x" = 15, \
 		"pixel_y" = 1, \
@@ -35,9 +36,6 @@
 		"recoil_angle_upper" = -15, \
 		"recoil_angle_lower" = -30, \
 	)
-	suppressor_x_offset = 10
-	w_class = WEIGHT_CLASS_NORMAL
-	carry_weight = 1 KILOGRAMS
 	custom_price = 3000
 
 // BERETTA 69R
@@ -174,7 +172,6 @@
 	w_class = WEIGHT_CLASS_NORMAL
 	carry_weight = 1 KILOGRAMS
 	custom_price = 2500
-	suppressor_x_offset = 10
 
 // WALTHER PPK
 /obj/item/gun/ballistic/automatic/pistol/hd_gun/ppk

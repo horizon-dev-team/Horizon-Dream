@@ -66,6 +66,10 @@
 		"strength" = 0.5,
 		"duration" = 2.5,
 	)
+	// Both overlay flags: the gun shows a distinct sprite for safety ON
+	// (OVERLAY_ENABLED) and OFF (OVERLAY_DISABLED) - see update_overlays().
+	// Both overlay flags: the gun shows a distinct sprite for safety ON
+	// (OVERLAY_ENABLED) and OFF (OVERLAY_DISABLED) - see update_overlays().
 	safety_flags = GUN_SAFETY_HAS_SAFETY | GUN_SAFETY_ENABLED | GUN_SAFETY_OVERLAY_ENABLED | GUN_SAFETY_OVERLAY_DISABLED
 	spawn_magazine_type = /obj/item/ammo_box/magazine/internal/cylinder/gado
 	carry_weight = 2 KILOGRAMS

@@ -22,7 +22,7 @@
 	item_flags = NEEDS_PERMIT
 	attack_verb_continuous = list("strikes", "hits", "bashes")
 	attack_verb_simple = list("strike", "hit", "bash")
-	action_slots = ITEM_SLOT_HANDS // [HORIZON-EDIT] only show action buttons when held in hands
+	action_slots = ITEM_SLOT_HANDS // [HORIZON-EDIT] GunRework
 
 	// Muzzle Flash
 	light_on = FALSE
@@ -438,11 +438,11 @@
 	if(check_botched(user, target))
 		return NONE
 
-	// [HORIZON-EDIT] One-handed firing of heavy guns is allowed now. The old
-	// hard block backfired while wielding: /datum/component/two_handed parks
-	// an /obj/item/offhand dummy in the inactive hand, so the check triggered
-	// exactly when the gun WAS held with both hands. Horizon's _gun.dm
-	// applies a spread_unwielded penalty instead (Shiptest-style).
+	//var/obj/item/bodypart/other_hand = user.has_hand_for_held_index(user.get_inactive_hand_index()) //returns non-disabled inactive hands
+	//if(weapon_weight == WEAPON_HEAVY && (user.get_inactive_held_item() || !other_hand))
+	//	balloon_alert(user, "use both hands!")
+	//	return ITEM_INTERACT_BLOCKING
+
 	//DUAL (or more!) WIELDING
 	var/bonus_spread = 0
 	if(user.combat_mode && !HAS_TRAIT(user, TRAIT_NO_GUN_AKIMBO))
@@ -533,7 +533,7 @@
 		firing_burst = FALSE
 		return FALSE
 	shoot_live_shot(user, get_dist(user, target) <= 1, target, message)
-	firing_animation(user, TRUE) // [HORIZON-ADD] gunshot + recoil
+	firing_animation(user, TRUE) // [HORIZON-ADD] GunRework
 	if (iteration >= burst_size)
 		firing_burst = FALSE
 
@@ -584,7 +584,7 @@
 		bonus_spread = bonus_spread_values[MAX_BONUS_SPREAD_INDEX]
 
 	SEND_SIGNAL(src, COMSIG_GUN_FIRED, user, target, params, zone_override)
-	SEND_SIGNAL(src, COMSIG_UPDATE_AMMO_HUD) // [HORIZON-ADD] ammo counter
+	SEND_SIGNAL(src, COMSIG_UPDATE_AMMO_HUD) // [HORIZON-ADD] GunRework
 
 	add_fingerprint(user)
 
@@ -624,7 +624,7 @@
 			return user.combat_mode ? ITEM_INTERACT_SKIP_TO_ATTACK : NONE
 
 		shoot_live_shot(user, get_dist(user, target) <= 1, target, message)
-		firing_animation(user, FALSE) // [HORIZON-ADD] gunshot + recoil
+		firing_animation(user, FALSE) // [HORIZON-ADD] GunRework
 		// If gun gets destroyed as a result of firing
 		if (!QDELETED(src))
 			process_chamber(user) // [HORIZON-EDIT] PHYSICS

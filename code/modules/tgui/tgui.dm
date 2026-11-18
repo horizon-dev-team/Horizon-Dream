@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: MIT
  */
 
+/// How long a new window gets to load and send ready before we close it
+#define TGUI_WINDOW_STARTUP_TIMEOUT (60 SECONDS)
+
 /**
  * tgui datum (represents a UI).
  */
@@ -25,8 +28,8 @@
 	var/autoupdate = TRUE
 	/// If the UI has been initialized yet.
 	var/initialized = FALSE
-	/// Time of opening the window.
-	var/opened_at
+	/// The world.time this UI has to finish its first handshake by, set once in open()
+	var/initialization_deadline
 	/// Stops further updates when close() was called.
 	var/closing = FALSE
 	/// The status/visibility of the UI.
@@ -93,15 +96,16 @@
 	window = SStgui.request_pooled_window(user)
 	if(!window)
 		return FALSE
-	opened_at = world.time
 	window.acquire_lock(src)
 	if(!window.is_ready())
+		initialization_deadline = world.time + TGUI_WINDOW_STARTUP_TIMEOUT
 		window.initialize(
 			strict_mode = TRUE,
 			assets = list(
 				get_asset_datum(/datum/asset/simple/tgui),
 			))
 	else
+		initialization_deadline = world.time + TGUI_PING_TIMEOUT
 		window.send_message("ping")
 	send_assets()
 	window.send_message("update", get_payload(
@@ -230,10 +234,12 @@
 		return
 	refreshing = FALSE
 	var/should_update_data = force || status >= UI_UPDATE
-	window.send_message("update", get_payload(
+	var/list/payload = get_payload(
 		custom_data,
 		with_data = should_update_data,
-		with_static_data = TRUE))
+		with_static_data = TRUE)
+	if(payload)
+		window.send_message("update", payload)
 	if(!always_instant)
 		COOLDOWN_START(src, refresh_cooldown, TGUI_REFRESH_FULL_UPDATE_COOLDOWN)
 
@@ -249,9 +255,11 @@
 	if(!user.client || !initialized || closing)
 		return
 	var/should_update_data = force || status >= UI_UPDATE
-	window.send_message("update", get_payload(
+	var/list/payload = get_payload(
 		custom_data,
-		with_data = should_update_data))
+		with_data = should_update_data)
+	if(payload)
+		window.send_message("update", payload)
 
 /**
  * private
@@ -261,25 +269,28 @@
  * return list
  */
 /datum/tgui/proc/get_payload(custom_data, with_data, with_static_data)
+	var/client/user_client = user?.client
+	if(isnull(user_client?.prefs))
+		return null
 	var/list/json_data = list()
 	json_data["config"] = list(
 		"title" = title,
 		"status" = status,
 		"interface" = list(
 			"name" = interface,
-			"layout" = user.client.prefs.read_preference(src_object.layout_prefs_used),
+			"layout" = user_client.prefs.read_preference(src_object.layout_prefs_used),
 		),
 		"refreshing" = refreshing,
 		"window" = list(
 			"key" = window_key,
 			"size" = window_size,
-			"locked" = user.client.prefs.read_preference(/datum/preference/toggle/tgui_lock),
-			"scale" = user.client.prefs.read_preference(/datum/preference/toggle/ui_scale),
+			"locked" = user_client.prefs.read_preference(/datum/preference/toggle/tgui_lock),
+			"scale" = user_client.prefs.read_preference(/datum/preference/toggle/ui_scale),
 		),
 		"client" = list(
-			"ckey" = user.client.ckey,
-			"address" = user.client.address,
-			"computer_id" = user.client.computer_id,
+			"ckey" = user_client.ckey,
+			"address" = user_client.address,
+			"computer_id" = user_client.computer_id,
 		),
 		"user" = list(
 			"name" = "[user]",
@@ -312,7 +323,7 @@
 		close(can_be_suspended = FALSE)
 		return
 	// Validate ping
-	if(!initialized && world.time - opened_at > TGUI_PING_TIMEOUT)
+	if(!initialized && world.time > initialization_deadline)
 		log_tgui(user, "Error: Zombie window detected, closing.",
 			window = window,
 			src_object = src_object)
@@ -328,7 +339,10 @@
 		close()
 		return
 	if(needs_update)
-		window.send_message("update", get_payload())
+		var/list/payload = get_payload()
+		if(payload)
+			window.send_message("update", payload)
+// [/HORIZON-EDIT]
 
 /**
  * private
@@ -395,3 +409,5 @@
 		return
 	if(src_object.ui_act(act_type, payload, src, state))
 		SStgui.update_uis(src_object)
+
+#undef TGUI_WINDOW_STARTUP_TIMEOUT

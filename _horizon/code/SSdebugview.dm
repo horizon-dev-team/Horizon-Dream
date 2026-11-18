@@ -52,7 +52,7 @@ SUBSYSTEM_DEF(debugview)
 	C.debug_text_overlay = null
 
 /atom/movable/screen/debugtextholder
-	icon = '_horizon/icons/screen_full.dmi'
+	icon = 'icons/hud/screen_full.dmi'
 	icon_state = "empty"
 	screen_loc = "TOP,LEFT"
 	plane = ABOVE_HUD_PLANE

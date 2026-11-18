@@ -1,37 +1,44 @@
+/atom/movable/screen/background_hud
+	mouse_opacity = MOUSE_OPACITY_TRANSPARENT
+
+/atom/movable/screen/background_hud/human
+	icon = '_horizon/icons/ui/screen_background.dmi'
+	icon_state = "background"
+	screen_loc = ui_stamina
+
+/atom/movable/screen/background_hud/battery
+	icon_state = "status_battery"
+	screen_loc = ui_spacesuit
+	alpha = 0
+
+/// Decorations so the frame
+/atom/movable/screen/background_hud/edge
+	layer = 3.05 // Magic number, but it's fucking simple. Define/undef here is just overkill.
+
+/atom/movable/screen/background_hud/edge/top
+	icon_state = "status_up"
+	screen_loc = ui_healthdoll_edge
+
+/atom/movable/screen/background_hud/edge/bottom
+	icon_state = "status_down"
+	screen_loc = ui_stamina
+
+// Re-desing style screen HUD icons
 /atom/movable/screen/healthdoll/human
-	icon = '_horizon/icons/ui/screen_gen.dmi'
-	icon_state = "template"
-
-/atom/movable/screen/healths/carbon
-	icon = '_horizon/icons/ui/screen_gen.dmi'
-
-/atom/movable/screen/healths/human
 	icon = '_horizon/icons/ui/screen_gen.dmi'
 
 /atom/movable/screen/healthdoll_limb
+	icon = '_horizon/icons/ui/screen_limb.dmi'
+
+/atom/movable/screen/healths/human
+	icon = '_horizon/icons/ui/screen_health_human.dmi'
+
+/atom/movable/screen/spacesuit
 	icon = '_horizon/icons/ui/screen_gen.dmi'
 
-//End gas alerts
-/*
-// Смайлы
-/atom/movable/screen/alert/gross
-	name = "Grossed out."
-	desc = "That was kind of gross..."
-	use_user_hud_icon = USER_HUD_STYLE_IGNORE
-	overlay_state = "gross"
-
-/atom/movable/screen/alert/verygross
-	name = "Very grossed out."
-	desc = "You're not feeling very well..."
-	use_user_hud_icon = USER_HUD_STYLE_IGNORE
-	overlay_state = "gross2"
-
-/atom/movable/screen/alert/disgusted
-	name = "DISGUSTED"
-	desc = "ABSOLUTELY DISGUSTIN'"
-	use_user_hud_icon = USER_HUD_STYLE_IGNORE
-	overlay_state = "gross3"
-*/
+/atom/movable/screen/stamina
+	icon = '_horizon/icons/ui/screen_gen.dmi'
+	icon_state = "stamina_0"
 
 /atom/movable/screen/alert/fire
 	icon = '_horizon/icons/ui/screen_alert.dmi'
@@ -50,14 +57,7 @@
 /atom/movable/screen/alert/highpressure
 	icon = '_horizon/icons/ui/screen_alert.dmi'
 
-//Gas alerts
-// Gas alerts are continuously thrown/cleared by:
-// * /obj/item/organ/lungs/proc/check_breath()
-// * /mob/living/carbon/check_breath()
-// * /mob/living/carbon/human/check_breath()
-// * /datum/element/atmos_requirements/proc/on_non_stasis_life()
-// * /mob/living/simple_animal/handle_environment()
-
+// Gas alerts
 /atom/movable/screen/alert/status_effect/hypernob_protection
 	icon = '_horizon/icons/ui/screen_alert.dmi'
 
@@ -94,7 +94,7 @@
 /atom/movable/screen/alert/not_enough_water
 	icon = '_horizon/icons/ui/screen_alert.dmi'
 
-
+// Other alerts
 /atom/movable/screen/alert/highgravity
 	icon = '_horizon/icons/ui/screen_alert.dmi'
 	use_user_hud_icon = USER_HUD_STYLE_IGNORE
@@ -125,7 +125,6 @@
 	overlay_icon = '_horizon/icons/ui/screen_alert.dmi'
 	overlay_state = "stun"
 
-// weaken
 /atom/movable/screen/alert/weightless
 	icon = '_horizon/icons/ui/screen_alert.dmi'
 	overlay_icon = '_horizon/icons/ui/screen_alert.dmi'
@@ -161,27 +160,6 @@
 	overlay_icon = '_horizon/icons/ui/screen_alert.dmi'
 	use_user_hud_icon = USER_HUD_STYLE_IGNORE
 	overlay_state = "terrified"
-
-/*
-/// Gives the player the option to succumb while in critical condition
-/atom/movable/screen/alert/succumb
-	name = "Succumb"
-	desc = "Shuffle off this mortal coil."
-	use_user_hud_icon = USER_HUD_STYLE_IGNORE
-	overlay_icon = 'icons/mob/simple/mob.dmi'
-	overlay_state = "ghost"
-	clickable_glow = TRUE
-	var/static/list/death_titles = list(
-		"Goodnight, Sweet Prince",
-		"Game Over, Man",
-		"End Of The Road",
-		"Live Long And Prosper",
-		"See You Space Cowboy...",
-		"It's Been An Honor",
-		"The Curtains Close",
-		"All Good Things Must End"
-	)
-*/
 
 /atom/movable/screen/alert/buckled
 	icon = '_horizon/icons/ui/screen_alert.dmi'

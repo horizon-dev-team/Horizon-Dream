@@ -55,7 +55,7 @@
 	return ..()
 
 /obj/item/gun/syringe/can_shoot()
-	return syringes.len
+	return ..() && syringes.len > 0
 
 /obj/item/gun/syringe/handle_chamber(mob/living/user, empty_chamber = TRUE, from_firing = TRUE, chamber_next_round = TRUE) // [HORIZON-EDIT] PHYSICS
 	if(chambered && !chambered.loaded_projectile) //we just fired

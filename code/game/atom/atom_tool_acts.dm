@@ -117,6 +117,8 @@
 			act_result = is_left_clicking ? welder_act(user, tool) : welder_act_secondary(user, tool)
 		if(TOOL_ANALYZER)
 			act_result = is_left_clicking ? analyzer_act(user, tool) : analyzer_act_secondary(user, tool)
+		if(TOOL_DECONSTRUCT) // [HORIZON-ADD] SALVAGE_TOOL
+			act_result = is_left_clicking ? deconstruct_act(user, tool, modifiers) : welder_act_secondary(user, tool)
 
 	if(!act_result)
 		return NONE
@@ -140,6 +142,23 @@
  */
 /atom/proc/item_interaction(mob/living/user, obj/item/tool, list/modifiers)
 	return NONE
+
+
+// [HORIZON-ADD] SALVAGE_TOOL
+/**
+ * Called when the target is cut with a TOOL_DECONSTRUCT tool (directly via the tool_act switch),
+ * Or with a dual-use cutting tool (TRAIT_CUTTING_TOOL) via /datum/element/cutting_tool_target.
+ *
+ * The target overrides this proc with its own logic (delay, what to drop).
+ * The base implementation checks INDESTRUCTIBLE and returns NONE — the chain continues to the default act.
+ * Return ITEM_INTERACT_SUCCESS to consume a click, ITEM_INTERACT_BLOCKING to block the chain.
+ */
+/atom/proc/deconstruct_act(mob/living/user, obj/item/I, list/modifiers)
+	if(resistance_flags & INDESTRUCTIBLE)
+		to_chat(user, span_warning("[src] cannot be deconstructed!"))
+		return ITEM_INTERACT_BLOCKING
+	return NONE
+// [/HORIZON-ADD]
 
 /**
  * Called when this atom has an item used on it WITH RIGHT CLICK,

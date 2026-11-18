@@ -18,7 +18,6 @@
 		"deadmin_position_silicon" = DEADMIN_POSITION_SILICON,
 		"disable_arrivalrattle" = DISABLE_ARRIVALRATTLE,
 		"disable_deathrattle" = DISABLE_DEATHRATTLE,
-		"member_public" = MEMBER_PUBLIC,
 		"sound_adminhelp" = SOUND_ADMINHELP,
 		"sound_prayers" = SOUND_PRAYERS,
 		"split_admin_tabs" = SPLIT_ADMIN_TABS,

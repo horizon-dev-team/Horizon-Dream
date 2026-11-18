@@ -17,7 +17,3 @@
 		var/datum/universal_icon/partial_icon = uni_icon(icon, icon_state)
 		partial_icon.blend_icon(uni_icon(default_language_file, "unknown"), ICON_OVERLAY)
 		insert_icon("language-[icon_state]-partial", partial_icon)
-
-	var/datum/universal_icon/byond_member = uni_icon('icons/ui/chat/member_content.dmi', "blag")
-	byond_member.scale(16, 16)
-	insert_icon("byond_member", byond_member)

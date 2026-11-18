@@ -1,6 +1,6 @@
 <div id="motd-header">
 	<center>
-		<h1 id="motd-header">Добро пожаловать на Horizob-Dream!</h1>
+		<h1 id="motd-header">Добро пожаловать на Horizon-Dream!</h1>
 		<i id="motd-p">Этот сервер использует модифицированный билд <a id="motd-a" href="https://github.com/tgstation/tgstation">/TG/Station</a></i>
 	</center>
 </div>

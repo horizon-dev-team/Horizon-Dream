@@ -28,11 +28,8 @@
 		button_icon_state = "safety0"
 	build_all_button_icons()
 
-/// When clicked, toggle the gun's safety.
-/// NOTE: we deliberately do NOT toggle here. Upstream's item_action Trigger()
-/// chains into do_effect(), which calls the gun's ui_action_click(), which
-/// calls toggle_safety(). Toggling directly here as well made every click
-/// toggle the safety twice and cancel itself out (reported as "the button
-/// presses itself twice").
-/datum/action/item_action/toggle_safety/Trigger(mob/clicker, trigger_flags)
-	return ..()
+/// NOTE: this action deliberately does NOT override Trigger() to toggle the
+/// safety itself. Upstream's item_action Trigger() chains into do_effect(),
+/// which calls the gun's ui_action_click(), which calls toggle_safety().
+/// Toggling directly here as well made every click toggle the safety twice
+/// and cancel itself out (reported as "the button presses itself twice").

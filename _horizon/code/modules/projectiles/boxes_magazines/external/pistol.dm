@@ -3,8 +3,6 @@
 	icon = '_horizon/icons/obj/items/ammo/pistol.dmi'
 	icon_state = "ruger9mm"
 	base_icon_state = "ruger9mm"
-	//tetris_width = 32
-	//tetris_height =  = 32
 
 /obj/item/ammo_box/magazine/m9mm_aps
 	name = "pernetta 69r magazine (9mm)"
@@ -13,8 +11,6 @@
 	base_icon_state = "beretta9mm"
 	multiple_sprites = AMMO_BOX_FULL_EMPTY
 	drop_sound = '_horizon/sound/weapons/plastic_drop.ogg'
-	//tetris_width = 32
-	//tetris_height =  = 32
 
 /obj/item/ammo_box/magazine/m45
 	name = "pistol magazine (.45)"
@@ -23,8 +19,6 @@
 	base_icon_state = "pistol45"
 	multiple_sprites = AMMO_BOX_FULL_EMPTY
 	drop_sound = '_horizon/sound/weapons/plastic_drop.ogg'
-	//tetris_width = 32
-	//tetris_height =  = 32
 
 /obj/item/ammo_box/magazine/m45/update_icon_state()
 	. = ..()
@@ -40,8 +34,6 @@
 	caliber = CALIBER_45
 	multiple_sprites = AMMO_BOX_FULL_EMPTY
 	drop_sound = '_horizon/sound/weapons/plastic_drop.ogg'
-	//tetris_width = 32
-	//tetris_height =  = 32
 
 /obj/item/ammo_box/magazine/u45/update_icon_state()
 	. = ..()
@@ -57,8 +49,6 @@
 	max_ammo = 20
 	multiple_sprites = AMMO_BOX_FULL_EMPTY
 	drop_sound = '_horizon/sound/weapons/plastic_drop.ogg'
-	//tetris_width = 32
-	//tetris_height =  = 32
 
 /obj/item/ammo_box/magazine/combatmaster9mm/update_icon_state()
 	. = ..()
@@ -74,8 +64,6 @@
 	max_ammo = 17
 	multiple_sprites = AMMO_BOX_ONE_SPRITE
 	drop_sound = '_horizon/sound/weapons/plastic_drop.ogg'
-	//tetris_width = 32
-	//tetris_height =  = 32
 
 /obj/item/ammo_box/magazine/glock9mm/update_icon_state()
 	. = ..()
@@ -91,8 +79,6 @@
 	max_ammo = 9
 	multiple_sprites = AMMO_BOX_ONE_SPRITE
 	drop_sound = '_horizon/sound/weapons/plastic_drop.ogg'
-	//tetris_width = 32
-	//tetris_height =  = 32
 
 /obj/item/ammo_box/magazine/ppk22lr/update_icon_state()
 	. = ..()
@@ -108,8 +94,6 @@
 	max_ammo = 10
 	multiple_sprites = AMMO_BOX_ONE_SPRITE
 	drop_sound = '_horizon/sound/weapons/plastic_drop.ogg'
-	//tetris_width = 32
-	//tetris_height =  = 32
 
 /obj/item/ammo_box/magazine/aniquilador/update_icon_state()
 	. = ..()
@@ -125,8 +109,6 @@
 	max_ammo = 8
 	multiple_sprites = AMMO_BOX_ONE_SPRITE
 	drop_sound = '_horizon/sound/weapons/plastic_drop.ogg'
-	//tetris_width = 32
-	//tetris_height =  = 32
 
 /obj/item/ammo_box/magazine/john/update_icon_state()
 	. = ..()
@@ -142,8 +124,6 @@
 	max_ammo = 25
 	multiple_sprites = AMMO_BOX_ONE_SPRITE
 	drop_sound = '_horizon/sound/weapons/plastic_drop.ogg'
-	//tetris_width = 32
-	//tetris_height =  = 32
 
 /obj/item/ammo_box/magazine/pm9/update_icon_state()
 	. = ..()

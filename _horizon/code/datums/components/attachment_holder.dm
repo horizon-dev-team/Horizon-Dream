@@ -37,9 +37,7 @@
 	RegisterSignal(parent, COMSIG_CLICK_CTRL_SHIFT, PROC_REF(handle_ctrl_shift_click))
 	RegisterSignal(parent, COMSIG_CLICK_CTRL, PROC_REF(handle_ctrl_click))
 	RegisterSignal(parent, COMSIG_CLICK_ALT, PROC_REF(handle_alt_click))
-	RegisterSignal(parent, COMSIG_CLICK_SECONDARY_ACTION, PROC_REF(handle_secondary_action))
 	RegisterSignal(parent, COMSIG_ATOM_UPDATE_OVERLAYS, PROC_REF(handle_overlays))
-	RegisterSignal(parent, COMSIG_GUN_TOGGLE_SAFETY, PROC_REF(handle_safety))
 
 	if(length(default_attachments))
 		for(var/attachment in default_attachments)
@@ -138,8 +136,6 @@
 		examine_list += span_notice("It can accept:")
 		for(var/obj/attach_type as anything in valid_types)
 			examine_list += span_notice("\t- [initial(attach_type.name)]")
-	for(var/obj/item/attach as anything in attachments)
-		SEND_SIGNAL(attach, COMSIG_ATTACHMENT_EXAMINE_MORE, user, examine_list)
 
 /datum/component/attachment_holder/proc/do_attach(obj/item/attachment, mob/user, bypass_checks)
 	var/slot = SEND_SIGNAL(attachment, COMSIG_ATTACHMENT_GET_SLOT)
@@ -191,7 +187,6 @@
 		if(selected)
 			if(do_after(user, 2 SECONDS, parent))
 				do_detach(hand_list[selected], user)
-
 
 /datum/component/attachment_holder/proc/handle_attack(obj/item/parent, obj/item/item, mob/user)
 	SIGNAL_HANDLER
@@ -248,25 +243,4 @@
 
 	for(var/obj/item/attach as anything in attachments)
 		if(SEND_SIGNAL(attach, COMSIG_ATTACHMENT_ATTACK_HAND, parent, user, params))
-			return TRUE
-
-/datum/component/attachment_holder/proc/handle_unique_action(obj/item/parent, mob/user, params)
-	SIGNAL_HANDLER
-
-	for(var/obj/item/attach as anything in attachments)
-		if(SEND_SIGNAL(attach, COMSIG_ATTACHMENT_UNIQUE_ACTION, parent, user, params))
-			return TRUE
-
-/datum/component/attachment_holder/proc/handle_secondary_action(obj/item/parent, mob/user, params)
-	SIGNAL_HANDLER
-
-	for(var/obj/item/attach as anything in attachments)
-		if(SEND_SIGNAL(attach, COMSIG_ATTACHMENT_SECONDARY_ACTION, parent, user, params))
-			return TRUE
-
-/datum/component/attachment_holder/proc/handle_safety(obj/item/gun/parent_gun, mob/user, atom/target, flag, params)
-	SIGNAL_HANDLER
-
-	for(var/obj/item/attach as anything in attachments)
-		if(SEND_SIGNAL(attach, COMSIG_ATTACHMENT_TOGGLE_SAFETY, parent_gun, user, target, flag, params))
 			return TRUE

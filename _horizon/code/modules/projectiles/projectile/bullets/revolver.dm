@@ -19,10 +19,6 @@
 	embed_falloff_tile = 0
 	ricochet_chance = 20
 
-/obj/projectile/bullet/c38/dumdum
-	wound_falloff_tile = -5
-	embed_falloff_tile = -15
-
 /obj/projectile/bullet/a500
 	name = ".500 magnum bullet"
 	damage = 60

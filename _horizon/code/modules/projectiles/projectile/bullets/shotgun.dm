@@ -18,10 +18,6 @@
 	wound_bonus = 0
 	sharpness = SHARP_POINTY
 
-/obj/projectile/bullet/shotgun_slug/ap
-	name = "12g armor-piercing slug"
-	damage = 57
-
 /obj/projectile/bullet/pellet/shotgun_buckshot
 	name = "12g pellet"
 	damage = 10

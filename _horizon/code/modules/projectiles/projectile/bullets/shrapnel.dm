@@ -1,6 +1,6 @@
 /obj/projectile/bullet/shrapnel
 	name = "flying shrapnel shard"
-	icon_state = "shrapnel"
+	icon_state = "shrapnel1"
 	base_icon_state = "shrapnel"
 	damage = 14
 	range = 5
@@ -13,11 +13,7 @@
 	hit_prone_targets = TRUE
 	sharpness = SHARP_EDGED
 	wound_bonus = 30
-//	embedding = list(embed_chance=70, ignore_throwspeed_threshold=TRUE, fall_chance=1)
 	var/state_variation = 5
-
-/obj/projectile/bullet/shrapnel/ted
-	damage = 35
 
 /obj/projectile/bullet/shrapnel/Initialize(mapload)
 	. = ..()

@@ -205,18 +205,6 @@
 /obj/item/ammo_box/magazine/ammo_stack/shotgun/loaded
 	start_empty = FALSE
 
-/obj/item/ammo_box/magazine/ammo_stack/shotgun/slugs
-	name = "12 gauge slugs"
-	icon_state = "12gauges-1"
-	base_icon_state = "12gauges"
-	world_icon_state = "gshells"
-	max_ammo = 8
-	caliber = CALIBER_SHOTGUN
-	ammo_type = /obj/item/ammo_casing/shotgun
-
-/obj/item/ammo_box/magazine/ammo_stack/shotgun/slugs/loaded
-	start_empty = FALSE
-
 /obj/item/ammo_box/magazine/ammo_stack/shotgun/bolas
 	name = "4 gauge buckshot"
 	icon_state = "8gauge-1"
@@ -227,37 +215,4 @@
 	ammo_type = /obj/item/ammo_casing/shotgun/bolas/buckshot
 
 /obj/item/ammo_box/magazine/ammo_stack/shotgun/bolas/loaded
-	start_empty = FALSE
-
-/obj/item/ammo_box/magazine/ammo_stack/shotgun/bolas/slugs
-	name = "4 gauge slugs"
-	icon_state = "8gauge-1"
-	base_icon_state = "8gauge"
-	world_icon_state = "8gshell"
-	max_ammo = 8
-	caliber = CALIBER_KS23
-	ammo_type = /obj/item/ammo_casing/shotgun/bolas
-
-/obj/item/ammo_box/magazine/ammo_stack/shotgun/bolas/slugs/loaded
-	start_empty = FALSE
-
-/obj/item/ammo_box/magazine/ammo_stack/batteries
-	name = "batteries"
-	icon = '_horizon/icons/obj/items/ammo/batteries.dmi'
-	world_icon = '_horizon/icons/obj/items/ammo/batteries.dmi'
-	icon_state = "BB-1"
-	base_icon_state = "BB"
-	world_icon_state = "BB"
-	max_ammo = 7
-	caliber = CALIBER_BATTERY
-	//It's literally a fucking battery
-	ammo_type = /obj/item/ammo_casing/batteries
-
-/obj/item/ammo_box/magazine/ammo_stack/batteries/loaded
-	start_empty = FALSE
-
-/obj/item/ammo_box/magazine/ammo_stack/shotgun/buckshot
-	ammo_type = /obj/item/ammo_casing/shotgun/buckshot
-
-/obj/item/ammo_box/magazine/ammo_stack/shotgun/buckshot/loaded
 	start_empty = FALSE

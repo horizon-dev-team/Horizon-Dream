@@ -9,12 +9,6 @@
 	projectile_type = /obj/projectile/bullet/a762
 	stack_type = /obj/item/ammo_box/magazine/ammo_stack/a762
 
-/obj/item/ammo_casing/a762/ap
-	name = "7.62 black-tip bullet casing"
-	desc = "A 7.62 black-tip bullet casing."
-	world_icon_state = "762b-casing"
-	projectile_type = /obj/projectile/bullet/a762/ap
-
 /obj/item/ammo_casing/a556
 	icon = '_horizon/icons/obj/items/ammo/casings.dmi'
 	name = "5.56mm bullet casing"

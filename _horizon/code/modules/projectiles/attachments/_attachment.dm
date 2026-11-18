@@ -9,8 +9,6 @@
 	var/slot = ATTACHMENT_SLOT_RAIL
 	///various yes no flags associated with attachments
 	var/attach_features_flags = ATTACH_REMOVABLE_HAND
-	///See attachment component
-	var/list/valid_parents = list()
 	///Component that handles most of the logic of attachments
 	var/datum/component/attachment/attachment_comp
 
@@ -30,7 +28,6 @@
 		/datum/component/attachment, \
 		slot, \
 		attach_features_flags, \
-		valid_parents, \
 		CALLBACK(src, PROC_REF(apply_attachment)), \
 		CALLBACK(src, PROC_REF(remove_attachment)), \
 		CALLBACK(src, PROC_REF(toggle_attachment)), \
@@ -38,14 +35,12 @@
 		CALLBACK(src, PROC_REF(on_fire_gun)), \
 		CALLBACK(src, PROC_REF(on_preattack)), \
 		CALLBACK(src, PROC_REF(on_attacked)), \
-		CALLBACK(src, PROC_REF(on_secondary_action)), \
 		CALLBACK(src, PROC_REF(on_ctrl_click)), \
 		CALLBACK(src, PROC_REF(on_wield)), \
 		CALLBACK(src, PROC_REF(on_unwield)), \
 		CALLBACK(src, PROC_REF(on_examine)), \
 		CALLBACK(src, PROC_REF(on_alt_click)), \
 		CALLBACK(src, PROC_REF(on_attack_hand)), \
-		CALLBACK(src, PROC_REF(on_safety)), \
 		list())
 
 /obj/item/attachment/Destroy()
@@ -90,20 +85,14 @@
 /obj/item/attachment/proc/on_attacked(obj/item/gun/gun, mob/user, obj/item)
 	return FALSE
 
-/obj/item/attachment/proc/on_secondary_action(obj/item/gun/gun, mob/user, obj/item)
-	return FALSE
-
 /obj/item/attachment/proc/on_ctrl_click(obj/item/gun/gun, mob/user, params)
 	return FALSE
 
-/obj/item/attachment/proc/on_examine(obj/item/gun/gun, mob/user, list/examine_list)
+/obj/item/attachment/proc/on_examine(obj/item/attachment/attach, mob/user, list/examine_list)
 	return
 
-/obj/item/attachment/proc/on_attack_hand(obj/item/gun/gun, mob/user, list/examine_list)
+/obj/item/attachment/proc/on_attack_hand(obj/item/gun/gun, mob/user, list/params)
 	return FALSE
 
-/obj/item/attachment/proc/on_safety(obj/item/gun/gun, mob/user, list/examine_list)
-	return FALSE
-
-/obj/item/attachment/proc/on_alt_click(obj/item/gun/gun, mob/user, list/examine_list)
+/obj/item/attachment/proc/on_alt_click(obj/item/gun/gun, mob/user, list/params)
 	return FALSE

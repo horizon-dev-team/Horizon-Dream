@@ -4,4 +4,3 @@
 	ricochets_max = 2
 	ricochet_chance = 20
 	ricochet_incidence_leeway = 45
-	sharpness = SHARP_POINTY

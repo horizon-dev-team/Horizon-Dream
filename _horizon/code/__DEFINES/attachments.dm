@@ -12,28 +12,20 @@
 #define COMSIG_ATTACHMENT_ATTACH "attach-attach"
 #define COMSIG_ATTACHMENT_DETACH "attach-detach"
 #define COMSIG_ATTACHMENT_EXAMINE "attach-examine"
-#define COMSIG_ATTACHMENT_EXAMINE_MORE "attach-examine-more"
 #define COMSIG_ATTACHMENT_TRY_FIRE_GUN "attach-try-fire-gun"
 #define COMSIG_ATTACHMENT_PRE_ATTACK "attach-pre-attack"
-#define COMSIG_ATTACHMENT_AFTER_ATTACK "attach-after-attack"
 #define COMSIG_ATTACHMENT_ATTACK "attach-attacked"
 #define COMSIG_ATTACHMENT_WIELD "attach-wield"
 #define COMSIG_ATTACHMENT_UNWIELD "attach-unwield"
 #define COMSIG_ATTACHMENT_UPDATE_OVERLAY "attach-overlay"
-#define COMSIG_ATTACHMENT_UNIQUE_ACTION "attach-unique-action"
-#define COMSIG_ATTACHMENT_SECONDARY_ACTION "attach-secondary-action"
 #define COMSIG_ATTACHMENT_CTRL_CLICK "attach-ctrl-click"
 #define COMSIG_ATTACHMENT_ALT_CLICK "attach-alt-click"
 #define COMSIG_ATTACHMENT_ATTACK_HAND "attach-attack-hand"
-#define COMSIG_ATTACHMENT_TOGGLE_SAFETY "attach-safety"
 #define COMSIG_ATTACHMENT_TOGGLE "attach-toggle"
 #define COMSIG_ATTACHMENT_TOGGLE_AMMO "attach-ammo"
 #define COMSIG_ATTACHMENT_GET_SLOT "attach-slot-who"
 #define COMSIG_ATTACHMENT_CHANGE_SLOT "change_attach_slot"
 
-// Missing signal defines not in upstream
-#define COMSIG_GUN_TOGGLE_SAFETY "gun_try_safety"
-#define COMSIG_CLICK_SECONDARY_ACTION "secondary_action"
 
 // Slots
 #define ATTACHMENT_SLOT_MUZZLE "muzzle"

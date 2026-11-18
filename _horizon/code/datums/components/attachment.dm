@@ -10,12 +10,10 @@
 	var/datum/callback/on_toggle
 	var/datum/callback/on_toggle_ammo
 	var/datum/callback/on_attacked
-	var/datum/callback/on_secondary_action
 	var/datum/callback/on_ctrl_click
 	var/datum/callback/on_alt_click
 	var/datum/callback/on_examine
 	var/datum/callback/on_attack_hand
-	var/datum/callback/on_safety
 	///Called on the parent's fire_gun
 	var/datum/callback/on_fire_gun
 	///Called on the parents preattack
@@ -42,14 +40,12 @@
 		datum/callback/on_fire_gun = null,
 		datum/callback/on_preattack = null,
 		datum/callback/on_attacked = null,
-		datum/callback/on_secondary_action = null,
 		datum/callback/on_ctrl_click = null,
 		datum/callback/on_wield = null,
 		datum/callback/on_unwield = null,
 		datum/callback/on_examine = null,
 		datum/callback/on_alt_click = null,
 		datum/callback/on_attack_hand = null,
-		datum/callback/on_safety = null,
 		list/signals = null
 	)
 
@@ -66,20 +62,17 @@
 	src.on_fire_gun = on_fire_gun
 	src.on_preattack = on_preattack
 	src.on_attacked = on_attacked
-	src.on_secondary_action = on_secondary_action
 	src.on_ctrl_click = on_ctrl_click
 	src.on_wield = on_wield
 	src.on_unwield = on_unwield
 	src.on_examine = on_examine
 	src.on_alt_click = on_alt_click
 	src.on_attack_hand = on_attack_hand
-	src.on_safety = on_safety
 
 	ADD_TRAIT(parent, TRAIT_ATTACHABLE, "attachable")
 	RegisterSignal(parent, COMSIG_ATTACHMENT_ATTACH, PROC_REF(try_attach))
 	RegisterSignal(parent, COMSIG_ATTACHMENT_DETACH, PROC_REF(try_detach))
 	RegisterSignal(parent, COMSIG_ATTACHMENT_EXAMINE, PROC_REF(handle_examine))
-	RegisterSignal(parent, COMSIG_ATTACHMENT_EXAMINE_MORE, PROC_REF(handle_examine_more))
 	if(attach_features_flags & ATTACH_TOGGLE)
 		RegisterSignal(parent, COMSIG_ATTACHMENT_TOGGLE, PROC_REF(try_toggle))
 		attachment_toggle_action = new /datum/action/attachment/toggle(parent)
@@ -94,11 +87,9 @@
 	RegisterSignal(parent, COMSIG_ATTACHMENT_WIELD, PROC_REF(try_wield))
 	RegisterSignal(parent, COMSIG_ATTACHMENT_UNWIELD, PROC_REF(try_unwield))
 	RegisterSignal(parent, COMSIG_ATTACHMENT_ATTACK, PROC_REF(relay_attacked))
-	RegisterSignal(parent, COMSIG_ATTACHMENT_SECONDARY_ACTION, PROC_REF(relay_secondary_action))
 	RegisterSignal(parent, COMSIG_ATTACHMENT_CTRL_CLICK, PROC_REF(relay_ctrl_click))
 	RegisterSignal(parent, COMSIG_ATTACHMENT_ALT_CLICK, PROC_REF(relay_alt_click))
 	RegisterSignal(parent, COMSIG_ATTACHMENT_ATTACK_HAND, PROC_REF(relay_attack_hand))
-	RegisterSignal(parent, COMSIG_ATTACHMENT_TOGGLE_SAFETY, PROC_REF(relay_safety))
 
 	for(var/signal in signals)
 		RegisterSignal(parent, signal, signals[signal])
@@ -236,9 +227,6 @@
 	if(on_examine)
 		on_examine.Invoke(parent, user, examine_list)
 
-/datum/component/attachment/proc/handle_examine_more(obj/item/parent, mob/user, list/examine_list)
-	SIGNAL_HANDLER
-
 /datum/component/attachment/proc/try_fire_gun(obj/item/parent, obj/item/gun/parent_gun, mob/user, atom/target, flag, params)
 	SIGNAL_HANDLER
 
@@ -269,12 +257,6 @@
 	if(on_unwield)
 		return on_unwield.Invoke(gun, user, params)
 
-/datum/component/attachment/proc/relay_secondary_action(obj/item/parent, obj/item/gun, mob/user, params)
-	SIGNAL_HANDLER
-
-	if(on_secondary_action)
-		return on_secondary_action.Invoke(gun, user, params)
-
 /datum/component/attachment/proc/relay_ctrl_click(obj/item/parent, obj/item/gun, mob/user, params)
 	SIGNAL_HANDLER
 
@@ -292,12 +274,6 @@
 
 	if(on_attack_hand)
 		return on_attack_hand.Invoke(gun, user, params)
-
-/datum/component/attachment/proc/relay_safety(obj/item/parent, obj/item/gun, mob/user, params)
-	SIGNAL_HANDLER
-
-	if(on_safety)
-		return on_safety.Invoke(gun, user, params)
 
 /datum/component/attachment/proc/send_slot(obj/item/parent)
 	SIGNAL_HANDLER
@@ -358,5 +334,3 @@
 		return FALSE
 	SEND_SIGNAL(target, COMSIG_ATTACHMENT_TOGGLE_AMMO, gun, owner)
 	return TRUE
-
-

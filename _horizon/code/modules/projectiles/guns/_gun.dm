@@ -339,7 +339,7 @@
 	for(var/datum/action/item_action/toggle_safety/safety_action in actions)
 		safety_action.update_icon()
 
-/obj/item/gun/ui_action_click(mob/user, actiontype) /// Allows users to spew facts
+/obj/item/gun/ui_action_click(mob/user, actiontype)
 	if(istype(actiontype, /datum/action/item_action/toggle_stock))
 		toggle_stock(user)
 	else if(istype(actiontype, /datum/action/item_action/toggle_safety))
@@ -358,13 +358,11 @@
 		folded = TRUE
 		playsound(src, fold_close_sound, 80, FALSE)
 		to_chat(user, span_notice("I fold [src]'s stock."))
-		//tetris_width -= 32
 	else
 		w_class++
 		folded = FALSE
 		playsound(src, fold_open_sound, 80, FALSE)
 		to_chat(user, span_notice("I unfold [src]'s stock."))
-		//tetris_width += 32
 	update_appearance()
 
 /datum/action/item_action/toggle_stock

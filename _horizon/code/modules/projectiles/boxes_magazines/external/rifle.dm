@@ -9,8 +9,6 @@
 	multiple_sprites = AMMO_BOX_ONE_SPRITE
 	drop_sound = '_horizon/sound/weapons/plastic_drop.ogg'
 	pickup_sound = '_horizon/sound/weapons/plastic_pickup.ogg'
-	//tetris_width = 32
-	//tetris_height =  = 64
 
 /obj/item/ammo_box/magazine/a556winter/update_icon_state()
 	. = ..()
@@ -27,8 +25,6 @@
 	multiple_sprites = AMMO_BOX_ONE_SPRITE
 	drop_sound = '_horizon/sound/weapons/plastic_drop.ogg'
 	pickup_sound = '_horizon/sound/weapons/plastic_pickup.ogg'
-	//tetris_width = 32
-	//tetris_height =  = 64
 
 /obj/item/ammo_box/magazine/a556g36/update_icon_state()
 	. = ..()
@@ -45,8 +41,6 @@
 	multiple_sprites = AMMO_BOX_ONE_SPRITE
 	drop_sound = '_horizon/sound/weapons/plastic_drop.ogg'
 	pickup_sound = '_horizon/sound/weapons/plastic_pickup.ogg'
-	//tetris_width = 32
-	//tetris_height =  = 64
 
 /obj/item/ammo_box/magazine/a545/update_icon_state()
 	. = ..()
@@ -72,8 +66,6 @@
 	caliber = CALIBER_UNCONVENTIONAL
 	max_ammo = 55
 	multiple_sprites = AMMO_BOX_ONE_SPRITE
-	//tetris_width = 64
-	//tetris_height =  = 32
 
 /obj/item/ammo_box/magazine/a49234g11/update_icon_state()
 	. = ..()
@@ -90,8 +82,6 @@
 	multiple_sprites = AMMO_BOX_ONE_SPRITE
 	drop_sound = '_horizon/sound/weapons/plastic_drop.ogg'
 	pickup_sound = '_horizon/sound/weapons/plastic_pickup.ogg'
-	//tetris_width = 32
-	//tetris_height =  = 64
 
 /obj/item/ammo_box/magazine/a556steyr/update_icon_state()
 	. = ..()
@@ -106,8 +96,6 @@
 	caliber = CALIBER_54R
 	max_ammo = 15
 	multiple_sprites = AMMO_BOX_ONE_SPRITE
-	//tetris_width = 32
-	//tetris_height =  = 32
 
 /obj/item/ammo_box/magazine/a762svd/update_icon_state()
 	. = ..()

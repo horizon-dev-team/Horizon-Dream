@@ -9,8 +9,6 @@
 	caliber = CALIBER_SHOTGUN
 	max_ammo = 20
 	multiple_sprites = AMMO_BOX_ONE_SPRITE
-	//tetris_width = 64
-	//tetris_height =  = 64
 
 /obj/item/ammo_box/magazine/abyss_shotgun_drum/update_icon_state()
 	. = ..()
@@ -21,8 +19,6 @@
 	icon = '_horizon/icons/obj/items/ammo/shotgun.dmi'
 	icon_state = "m12"
 	base_icon_state = "m12"
-	//tetris_width = 64
-	//tetris_height =  = 64
 
 /obj/item/ammo_box/magazine/m12g/update_icon_state()
 	. = ..()

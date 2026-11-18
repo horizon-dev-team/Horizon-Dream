@@ -14,6 +14,3 @@
 #define CALIBER_380 ".380 ACP"
 #define CALIBER_500 ".500 magnum"
 #define CALIBER_276 ".276 Federson"
-// NOTE: CALIBER_BATTERY is only used by the legacy batteries casing stub and
-// its ammo stack; both go away with that content.
-#define CALIBER_BATTERY "batteries"

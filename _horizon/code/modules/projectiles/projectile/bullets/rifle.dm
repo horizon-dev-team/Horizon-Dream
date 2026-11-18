@@ -2,9 +2,6 @@
 	damage = 60
 	wound_falloff_tile = -2
 
-/obj/projectile/bullet/a762/ap
-	damage = 60
-
 /obj/projectile/bullet/a556
 	damage = 50
 	wound_falloff_tile = -1

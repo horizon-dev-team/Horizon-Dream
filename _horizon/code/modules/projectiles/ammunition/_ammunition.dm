@@ -4,12 +4,6 @@
 	var/world_icon = '_horizon/icons/obj/items/ammo/casings_world.dmi'
 	/// World icon state
 	var/world_icon_state = "s-casing"
-	/// The funny sound we make when we bounce on floors
-	var/bounce_sound = list('_horizon/sound/bullet/casing_bounce1.wav', '_horizon/sound/bullet/casing_bounce2.wav', '_horizon/sound/bullet/casing_bounce3.wav')
-	/// The volume of the bouncing
-	var/bounce_volume = 40
-	/// Should bouncing vary
-	var/bounce_vary = FALSE
 
 /obj/item/ammo_casing/Initialize(mapload)
 	. = ..()

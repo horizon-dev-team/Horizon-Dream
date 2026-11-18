@@ -99,7 +99,7 @@
 	custom_price = 3500
 
 // USP
-/obj/item/gun/ballistic/automatic/pistol/hd_gun/cortes //corruptable gun
+/obj/item/gun/ballistic/automatic/pistol/hd_gun/cortes
 	name = "\improper Cortes .45"
 	desc = "A lavish pistol for a lavish life."
 	icon = '_horizon/icons/obj/items/guns/pistol.dmi'
@@ -120,34 +120,7 @@
 	force = 15
 	w_class = WEIGHT_CLASS_NORMAL
 	carry_weight = 1 KILOGRAMS
-	var/corrupted = FALSE
-	var/corrupted_shot_sound = list('_horizon/sound/weapons/guns/pistol/USP_corrupt1.ogg', '_horizon/sound/weapons/guns/pistol/USP_corrupt2.ogg')
-	var/corruption_cooldown_duration = 1 SECONDS
-	COOLDOWN_DECLARE(corruption_cooldown)
 	custom_price = 3500
-
-/obj/item/gun/ballistic/automatic/pistol/hd_gun/cortes/proc/corrupt(chance = 0, mob/inborn)
-	if(corrupted)
-		return
-	if(prob(chance))
-		visible_message(span_warning("[src] grumbles."))
-		corrupted = TRUE
-		sleep(rand(1 SECONDS, 1.5 SECONDS))
-		visible_message(span_warning("[src] <span class='boldwarning'>CORRUPTS!</span>"))
-		to_chat(inborn, span_notice("I have corrupted the [src]."))
-		playsound(src, '_horizon/sound/effects/inborn_combatcocktail.ogg', 80, FALSE)
-		name = "\improper Cortraxx .45"
-		desc = "A lavish pistol for a lavish life. <span class='boldwarning'>It has been corrupted.</span>"
-		icon_state = "USP_corrupted"
-		base_icon_state = "USP_corrupted"
-		update_appearance(UPDATE_ICON)
-	else
-		say(pick("No...", "It can't be...", "Stop..."))
-
-/obj/item/gun/ballistic/automatic/pistol/hd_gun/cortes/shoot_live_shot(mob/living/user, pointblank = FALSE, atom/target, message = TRUE)
-	. = ..()
-	if(corrupted)
-		playsound(user, corrupted_shot_sound, 70, FALSE)
 
 // STI 2011 COMBAT MASTER
 /obj/item/gun/ballistic/automatic/pistol/hd_gun/combatmaster

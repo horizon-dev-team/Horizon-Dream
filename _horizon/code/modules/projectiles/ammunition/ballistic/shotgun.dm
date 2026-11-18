@@ -3,8 +3,6 @@
 	icon_state = "12gauge_slug"
 	base_icon_state = "12gauge_slug"
 	world_icon_state = "gshells"
-	bounce_sound = list('_horizon/sound/weapons/guns/shotgun/12cal1.wav', '_horizon/sound/weapons/guns/shotgun/12cal2.wav', '_horizon/sound/weapons/guns/shotgun/12cal3.wav')
-	bounce_volume = 45
 	stack_type = /obj/item/ammo_box/magazine/ammo_stack/shotgun
 
 /obj/item/ammo_casing/shotgun/Initialize(mapload)
@@ -38,12 +36,6 @@
 	pellets = 20
 	variance = 18.5
 	projectile_type = /obj/projectile/bullet/pellet/shotgun_flechette
-
-/obj/item/ammo_casing/shotgun/ap
-	name = "shotgun armor-piercing slug"
-	desc = "A 12 gauge solid steel armor-piercing slug. \
-			There's a label on the shell itself, AP-20."
-	projectile_type = /obj/projectile/bullet/shotgun_slug/ap
 
 /obj/item/ammo_casing/shotgun/bolas
 	name =	"Consumidor de Buceta 4 guage slug"

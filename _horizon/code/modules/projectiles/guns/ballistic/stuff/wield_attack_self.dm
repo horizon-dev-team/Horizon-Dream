@@ -76,19 +76,3 @@
 		return
 	recent_rack = world.time + rack_delay
 	rack(user)
-
-/obj/item/gun/ballistic/attack_self_secondary(mob/living/user, modifiers)
-	// [HORIZON-ADD] Hard unload: right-clicking a broken-open break action
-	// dumps EVERY round (live ones too). Safety keeps working on the closed
-	// gun.
-	if(bolt_type == BOLT_TYPE_BREAK_ACTION && cylinder_open)
-		if(get_ammo(FALSE, TRUE))
-			unload_ammo(user)
-		else
-			balloon_alert(user, "it's empty!")
-		return TRUE
-	if(safety_flags & GUN_SAFETY_HAS_SAFETY)
-		toggle_safety(user)
-		return TRUE
-	return ..()
-

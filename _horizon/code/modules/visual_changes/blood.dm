@@ -24,6 +24,14 @@
 	if(blood_visuals)
 		QDEL_NULL(blood_visuals)
 
+/// Cleanup helper for visual_effect(): removes the smoke / debris particle
+/// holders after the effect finishes. Lives here (not in the gun module)
+/// because it is called on arbitrary atoms hit by projectiles.
+/atom/proc/remove_ping(obj/effect/abstract/particle_holder/smoke_visuals, obj/effect/abstract/particle_holder/debris_visuals)
+	QDEL_NULL(smoke_visuals)
+	if(debris_visuals)
+		QDEL_NULL(debris_visuals)
+
 /atom/proc/visual_effect(var/obj/projectile/P, var/debris = DEBRIS_SPARKS)
 	var/debris_velocity = -15
 	if(debris == "drip")

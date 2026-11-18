@@ -1,8 +1,3 @@
-/atom/proc/remove_ping(obj/effect/abstract/particle_holder/smoke_visuals, obj/effect/abstract/particle_holder/debris_visuals)
-	QDEL_NULL(smoke_visuals)
-	if(debris_visuals)
-		QDEL_NULL(debris_visuals)
-
 /obj/item/gun
 	carry_weight = 2.5 KILOGRAMS
 	pickup_sound = '_horizon/sound/weapons/guns/generic_draw.wav'
@@ -241,7 +236,7 @@
 // newer (tk_firing / NODROP / random valid zone handling) and is used directly.
 
 /obj/item/gun/on_autofire_start(mob/living/shooter)
-	if(fire_cd || semicd || shooter.incapacitated || shooter.stat)
+	if(fire_cd || shooter.incapacitated || shooter.stat)
 		return NONE
 	if(istype(src, /obj/item/gun/ballistic/automatic))
 		var/obj/item/gun/ballistic/automatic/automatic_source = src
@@ -269,7 +264,7 @@
 /// (datum/source, atom/target, mob/living/shooter, allow_akimbo, params) or the
 /// last two arguments shift and the mouse params are silently lost.
 /obj/item/gun/do_autofire(datum/source, atom/target, mob/living/shooter, allow_akimbo, params)
-	if(fire_cd || semicd || shooter.incapacitated || shooter.stat)
+	if(fire_cd || shooter.incapacitated || shooter.stat)
 		return NONE
 	if(istype(src, /obj/item/gun/ballistic/automatic))
 		var/obj/item/gun/ballistic/automatic/automatic_source = src

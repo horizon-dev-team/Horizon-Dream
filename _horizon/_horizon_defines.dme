@@ -27,6 +27,5 @@
 #include "code\__DEFINES\physics.dm"
 #include "code\__DEFINES\projectiles.dm"
 #include "code\__DEFINES\sharpness.dm"
-#include "code\__DEFINES\signals_mob_living.dm"
 #include "code\__DEFINES\weight.dm"
 // END_INCLUDE

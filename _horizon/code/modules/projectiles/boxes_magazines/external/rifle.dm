@@ -93,7 +93,7 @@
 	//tetris_width = 32
 	//tetris_height =  = 64
 
-/obj/item/ammo_box/magazine/a556f/update_icon_state()
+/obj/item/ammo_box/magazine/a556steyr/update_icon_state()
 	. = ..()
 	icon_state = "[base_icon_state]-[ammo_count() ? 24 : 0]"
 

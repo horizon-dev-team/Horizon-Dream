@@ -7,10 +7,6 @@
 	base_icon_state = "c9mm"
 	item_flags = NO_PIXEL_RANDOM_DROP | NO_ANGLE_RANDOM_DROP
 	multiple_sprites = AMMO_BOX_ONE_SPRITE
-	multiload = FALSE
-	// Upstream renamed multiload to ammo_box_multiload. Set it to NONE
-	// so clicking an ammo_stack with another ammo_stack/box only loads
-	// ONE bullet at a time, matching the legacy modular_septic behaviour.
 	ammo_box_multiload = AMMO_BOX_MULTILOAD_NONE
 	start_empty = TRUE
 	max_ammo = 12
@@ -44,39 +40,14 @@
 		ammo.do_messy(duration = 2)
 	check_for_del()
 
-/obj/item/ammo_box/magazine/ammo_stack/empty_magazine()
-	. = ..()
-	check_for_del()
-
-// EFN parity: upstream's attack_self() ended with update_ammo_count(),
-// whose check_for_del() chain deletes the husk once you pull the last
-// round out of a stack (right in your hand). Dream has no
-// update_ammo_count - run the check synchronously right after the
-// parent proc for the same instant feedback.
 /obj/item/ammo_box/magazine/ammo_stack/attack_self(mob/user)
 	. = ..()
 	check_for_del()
 
-// EFN parity (deferred): EFN's core chained every casing exit into
-// update_ammo_count() -> check_for_del(), so a stack drained dry by
-// ANY route (try_load transfer into another box/mag, revolver speed
-// loading...) self-deleted. Dream routes those transfers through
-// item_interaction()/try_load(), and its Exited() ->
-// remove_from_stored_ammo() hook fires synchronously *inside*
-// give_round()/forceMove() - a qdel there would null stored_ammo
-// mid-iteration and runtime the transfer loop. So we keep the EFN
-// invariant but defer the check to the end of the tick. The QDELETED
-// guard inside check_for_del() makes the timer safe if the stack is
-// already gone (or got refilled) by the time it fires.
 /obj/item/ammo_box/magazine/ammo_stack/remove_from_stored_ammo(atom/movable/gone)
 	. = ..()
 	addtimer(CALLBACK(src, PROC_REF(check_for_del)), 0)
 
-// Dream adaptation: Dream's core /obj/item/ammo_box/Destroy() qdels every
-// casing still in stored_ammo, and anything loose in contents would be
-// stranded in nullspace inside the deleted stack. Nevado's core has no
-// such Destroy. Dump everything we still hold onto the floor first so
-// casings can never vanish without a trace.
 /obj/item/ammo_box/magazine/ammo_stack/Destroy(force)
 	var/atom/dump_loc = drop_location()
 	if(dump_loc)
@@ -95,9 +66,6 @@
 	icon_state = ""
 	for(var/casing in stored_ammo)
 		var/obj/item/ammo_casing/casing_ref = casing
-		// maploaded /loaded stacks store typepaths (lazyload) - those are
-		// live by definition; runtime-picked casings show a spent sprite
-		// when their projectile is gone so players can tell brass from ammo.
 		var/state = "[world_icon_state][(ispath(casing) || casing_ref.loaded_projectile) ? "-live" : ""]"
 		var/image/bullet = image(world_icon, src, state)
 		bullet.pixel_x = rand(-12, 12)
@@ -106,12 +74,7 @@
 		add_overlay(bullet)
 	return UPDATE_ICON_STATE | UPDATE_OVERLAYS
 
-// ammo casing attackby code here - faithful EFN (modular_septic) port:
-// pick a floor casing up with another casing of the same type, they form
-// a stack right in your hand. Spent casings are NOT stackable this way
-// (grab them with a box/stack instead).
 /obj/item/ammo_casing
-	/// What this casing can be stacked into
 	var/obj/item/ammo_box/magazine/stack_type
 
 /obj/item/ammo_casing/attackby(obj/item/attacking_item, mob/user, params)

@@ -332,9 +332,9 @@
 			playsound(src, safety_on_sound, safety_sound_volume, safety_sound_vary)
 	if(user)
 		to_chat(user, span_notice("I [safety_flags & GUN_SAFETY_ENABLED ? "enable" : "disable"] [src]'s safety."))
+		user.update_mouse_pointer()
 	sound_hint()
 	update_appearance()
-	user.update_mouse_pointer()
 	// Update safety HUD button icon
 	for(var/datum/action/item_action/toggle_safety/safety_action in actions)
 		safety_action.update_icon()

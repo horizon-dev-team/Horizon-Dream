@@ -1,10 +1,10 @@
 /obj/projectile/bullet/l40mm
-	name ="40mm fragmentation grenade"
+	name = "40mm fragmentation grenade"
 	desc = "MEU DEUS"
 	icon = '_horizon/icons/obj/items/guns/projectiles/projectiles.dmi'
-	icon_state= "bolter"
+	icon_state = "bolter"
 	damage = 60
-//	embedding = null
+	embed_type = null
 	shrapnel_type = null
 	range = 7
 
@@ -18,12 +18,12 @@
 	return BULLET_ACT_HIT
 
 /obj/projectile/bullet/gas40mm
-	name ="40mm gassy grenade"
+	name = "40mm gassy grenade"
 	desc = "OH MY GOODNESS GRACIOUS"
 	icon = '_horizon/icons/obj/items/guns/projectiles/projectiles.dmi'
-	icon_state= "bolter"
+	icon_state = "bolter"
 	damage = 30
-//	embedding = null
+	embed_type = null // grenades do not stick in people
 	shrapnel_type = null
 	range = 7
 
@@ -43,12 +43,12 @@
 	return BULLET_ACT_HIT
 
 /obj/projectile/bullet/smoke40mm
-	name ="40mm smoke grenade"
+	name = "40mm smoke grenade"
 	desc = "MHM"
 	icon = '_horizon/icons/obj/items/guns/projectiles/projectiles.dmi'
-	icon_state= "bolter"
+	icon_state = "bolter"
 	damage = 30
-//	embedding = null
+	embed_type = null // grenades do not stick in people
 	shrapnel_type = null
 	range = 7
 
@@ -64,12 +64,12 @@
 	return BULLET_ACT_HIT
 
 /obj/projectile/bullet/inc40mm
-	name ="40mm incindiary grenade"
+	name = "40mm incendiary grenade"
 	desc = "MHM"
 	icon = '_horizon/icons/obj/items/guns/projectiles/projectiles.dmi'
-	icon_state= "bolter"
+	icon_state = "bolter"
 	damage = 30
-//	embedding = null
+	embed_type = null // grenades do not stick in people
 	shrapnel_type = null
 	range = 7
 

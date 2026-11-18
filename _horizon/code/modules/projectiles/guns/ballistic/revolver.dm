@@ -1,3 +1,4 @@
+// break-action cylinders with hammers.
 /obj/item/gun/ballistic/revolver/hd_gun
 	icon = '_horizon/icons/obj/items/guns/revolver.dmi'
 	icon_state = "revolver"
@@ -13,18 +14,12 @@
 	initial_caliber = CALIBER_357
 	alternative_caliber = CALIBER_38
 	alternative_ammo_misfires = FALSE
-	// close cylinder sound
 	lock_back_sound = '_horizon/sound/weapons/guns/revolver/cylinder_in.wav'
-	// open cylinder sound
 	bolt_drop_sound = '_horizon/sound/weapons/guns/revolver/cylinder_out.wav'
 	load_sound = '_horizon/sound/weapons/guns/revolver/load_bullet.wav'
 	eject_sound = '_horizon/sound/weapons/guns/revolver/revolver_eject.wav'
 	drop_sound = '_horizon/sound/weapons/guns/drop_lightgun.wav'
-	// hammer sound
-	rack_sound = list(
-		'_horizon/sound/weapons/guns/revolver/hammer1.ogg', \
-		'_horizon/sound/weapons/guns/revolver/hammer2.ogg', \
-	)
+	rack_sound = list('_horizon/sound/weapons/guns/revolver/hammer1.ogg', '_horizon/sound/weapons/guns/revolver/hammer2.ogg',)
 	fire_sound = '_horizon/sound/weapons/guns/revolver/revolver_fire.ogg'
 	alternative_fire_sound = '_horizon/sound/weapons/guns/revolver/revolver_fire.ogg'
 	equip_sound = '_horizon/sound/weapons/guns/pistol/pistol_holster.wav'
@@ -45,16 +40,6 @@
 	w_class = WEIGHT_CLASS_NORMAL
 	carry_weight = 1.5 KILOGRAMS
 
-/obj/item/gun/ballistic/revolver/hd_gun/chamber_examine(mob/user)
-	. = ..()
-	. += "The [cylinder_wording] can be spun with <b>alt+click</b>"
-
-/obj/item/gun/ballistic/revolver/hd_gun/get_ammo(countchambered = FALSE, countempties = TRUE)
-	var/boolets = 0 //mature var names for mature people //What If I'm a child?
-	if(magazine)
-		boolets += magazine.ammo_count(countempties)
-	return boolets
-
 // CATTLE REVOLVER
 /obj/item/gun/ballistic/revolver/hd_gun/gado
 	name = "\improper Revolver de Gado"
@@ -63,13 +48,11 @@
 	icon_state = "bladerunner"
 	base_icon_state = "bladerunner"
 	uncocked_icon_state = FALSE
-	fire_sound = list('_horizon/sound/weapons/guns/revolver/gado1.wav', '_horizon/sound/weapons/guns/revolver/gado3.wav', '_horizon/sound/weapons/guns/revolver/gado3.wav')
+	fire_sound = list('_horizon/sound/weapons/guns/revolver/gado1.wav', '_horizon/sound/weapons/guns/revolver/gado2.wav', '_horizon/sound/weapons/guns/revolver/gado3.wav')
 	safety_on_sound = '_horizon/sound/weapons/guns/revolver/gado_safetyon.ogg'
 	safety_off_sound = '_horizon/sound/weapons/guns/revolver/gado_safetyoff.ogg'
 	lock_back_sound = '_horizon/sound/weapons/guns/revolver/gado_in.wav'
-	// open cylinder sound
 	bolt_drop_sound = '_horizon/sound/weapons/guns/revolver/gado_out.wav'
-	// hammer sound
 	rack_sound = '_horizon/sound/weapons/guns/revolver/gado_hammer.wav'
 	gunshot_animation_information = list(
 		"pixel_x" = 13, \
@@ -142,9 +125,8 @@
 		"strength" = 0.8,
 		"duration" = 3,
 	)
-	spawn_magazine_type = /obj/item/ammo_box/magazine/internal/cylinder/poppy
+	spawn_magazine_type = /obj/item/ammo_box/magazine/internal/cylinder/rhino
 	carry_weight = 3 KILOGRAMS
-
 
 // CHIAPPA RHINO
 /obj/item/gun/ballistic/revolver/hd_gun/rhino

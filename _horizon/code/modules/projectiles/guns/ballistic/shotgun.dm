@@ -37,7 +37,7 @@
 	gunshot_animation_information = list(
 		"pixel_x" = 24, \
 		"pixel_y" = 1, \
-		"inactive_wben_suppressed" = TRUE, \
+		"inactive_when_suppressed" = TRUE, \
 		"add_pixel_x_sawn" = -5, \
 	)
 	recoil_animation_information = list(
@@ -50,15 +50,9 @@
 	suppressor_x_offset = 13
 	bolt_type = BOLT_TYPE_LOCKING
 	slot_flags = ITEM_SLOT_BACK | ITEM_SLOT_SUITSTORE
-	// Shiptest-style: one-handed fire allowed, but inaccurate without
-	// a two-handed grip (offset by a laser sight attachment).
 	spread_unwielded = 12
 
 // DOUBLE BARRELED SHOTGUN
-// [HORIZON-EDIT] Reparented from /obj/item/gun/ballistic/shotgun/hd_gun to
-// /obj/item/gun/ballistic/shotgun/doublebarrel/hd_gun so it inherits the
-// double barrel's 2-shell dual tube, sawability and WEAPON_MEDIUM weight
-// (the old path wrongly inherited the 4-shell pump tube + WEAPON_HEAVY).
 /obj/item/gun/ballistic/shotgun/doublebarrel/hd_gun
 	pb_knockback = 0
 	empty_icon_state = FALSE
@@ -70,7 +64,6 @@
 	cylinder_shows_ammo_count = TRUE
 	cylinder_wording = "barrel"
 	wielded_inhand_state = FALSE
-	// horizon look & feel (was inherited from shotgun/hd_gun before the repath)
 	worn_icon = '_horizon/icons/obj/items/guns/worn/back.dmi'
 	worn_icon_state = "shotgun"
 	equip_sound = '_horizon/sound/weapons/guns/weap_away.ogg'
@@ -85,7 +78,7 @@
 	gunshot_animation_information = list(
 		"pixel_x" = 24, \
 		"pixel_y" = 1, \
-		"inactive_wben_suppressed" = TRUE, \
+		"inactive_when_suppressed" = TRUE, \
 	)
 	recoil_animation_information = list(
 		"recoil_angle_upper" = -15, \
@@ -100,12 +93,6 @@
 	inhand_icon_state = "bobox"
 	lefthand_file = '_horizon/icons/obj/items/guns/inhands/shotgun_lefthand.dmi'
 	righthand_file = '_horizon/icons/obj/items/guns/inhands/shotgun_righthand.dmi'
-	// [HORIZON-FIX] The core /obj/item/gun/ballistic/shotgun family uses
-	// 64x64 in-hand icons (icons/mob/inhands/weapons/64x_guns_*.dmi); the
-	// reparent onto shotgun/doublebarrel silently inherited those 64x64
-	// dims while this gun swaps in 32x32 horizon in-hand sprites. The
-	// mismatch made build_worn_icon's center_image() shift the held sprite
-	// 16px left and 16px down ("спрайт в руках смещённый сильно очень").
 	inhand_x_dimension = 32
 	inhand_y_dimension = 32
 	base_icon_state = "bobox"
@@ -120,16 +107,10 @@
 		'_horizon/sound/weapons/guns/revolver/hammer2.ogg', \
 	)
 	drop_sound = '_horizon/sound/weapons/guns/drop_lightgun.wav'
-	// close cylinder sound
 	lock_back_sound = '_horizon/sound/weapons/guns/shotgun/db_in.wav'
-	// open cylinder sound
 	bolt_drop_sound = '_horizon/sound/weapons/guns/shotgun/db_out.wav'
 	fire_sound = list('_horizon/sound/weapons/guns/shotgun/comgun1.wav', '_horizon/sound/weapons/guns/shotgun/comgun2.wav')
 	load_sound = '_horizon/sound/weapons/guns/shotgun/db_load.wav'
-	// [HORIZON-FIX] The 2-shell bobox cylinder is not a subtype of the double
-	// barrel's internal/shot/dual, which made Initialize() CRASH on the
-	// accepted_magazine_type istype() check and left the gun half-initialized
-	// (no chambered round, no icon update). Accept the cylinder directly.
 	accepted_magazine_type = /obj/item/ammo_box/magazine/internal/cylinder/bobox
 	spawn_magazine_type = /obj/item/ammo_box/magazine/internal/cylinder/bobox
 	slot_flags = ITEM_SLOT_BELT
@@ -166,7 +147,7 @@
 	gunshot_animation_information = list(
 		"pixel_x" = 25, \
 		"pixel_y" = 1, \
-		"inactive_wben_suppressed" = TRUE, \
+		"inactive_when_suppressed" = TRUE, \
 		"add_pixel_x_sawn" = -4, \
 	)
 	recoil_animation_information = list(
@@ -195,7 +176,7 @@
 	gunshot_animation_information = list(
 		"pixel_x" = 23, \
 		"pixel_y" = 1, \
-		"inactive_wben_suppressed" = TRUE, \
+		"inactive_when_suppressed" = TRUE, \
 		"add_pixel_x_sawn" = -4, \
 	)
 	recoil_animation_information = list(
@@ -228,7 +209,7 @@
 	gunshot_animation_information = list(
 		"pixel_x" = 25, \
 		"pixel_y" = 1, \
-		"inactive_wben_suppressed" = TRUE, \
+		"inactive_when_suppressed" = TRUE, \
 		"add_pixel_x_sawn" = -5, \
 	)
 	recoil_animation_information = list(
@@ -257,7 +238,7 @@
 	gunshot_animation_information = list(
 		"pixel_x" = 25, \
 		"pixel_y" = 1, \
-		"inactive_wben_suppressed" = TRUE, \
+		"inactive_when_suppressed" = TRUE, \
 		"add_pixel_x_sawn" = -5, \
 	)
 	recoil_animation_information = list(
@@ -303,7 +284,7 @@
 	gunshot_animation_information = list(
 		"pixel_x" = 25, \
 		"pixel_y" = 1, \
-		"inactive_wben_suppressed" = TRUE, \
+		"inactive_when_suppressed" = TRUE, \
 		"add_pixel_x_sawn" = -5, \
 	)
 	recoil_animation_information = list(
@@ -348,7 +329,7 @@
 	gunshot_animation_information = list(
 		"pixel_x" = 31, \
 		"pixel_y" = 0, \
-		"inactive_wben_suppressed" = TRUE, \
+		"inactive_when_suppressed" = TRUE, \
 		"add_pixel_x_sawn" = -5, \
 	)
 	recoil_animation_information = list(
@@ -401,26 +382,26 @@
 	bolt_drop_sound = '_horizon/sound/weapons/guns/shotgun/spas_lockin.ogg'
 	rack_sound = '_horizon/sound/weapons/guns/shotgun/spas_cycle.ogg'
 	fire_sound = list('_horizon/sound/weapons/guns/shotgun/spas1.ogg', '_horizon/sound/weapons/guns/shotgun/spas2.ogg')
-	fold_open_sound = '_horizon/sound/weapons/guns/rifle/ak_stock_open.wav'
-	fold_close_sound = '_horizon/sound/weapons/guns/rifle/ak_stock_close.wav'
 	var/semi = FALSE
 	var/spas_semi_click = '_horizon/sound/weapons/guns/shotgun/spas_click.ogg'
 	foldable = TRUE
+	fold_open_sound = '_horizon/sound/weapons/guns/rifle/ak_stock_open.wav'
+	fold_close_sound = '_horizon/sound/weapons/guns/rifle/ak_stock_close.wav'
 	spawn_magazine_type = /obj/item/ammo_box/magazine/internal/shot/spas
 
 /obj/item/gun/ballistic/shotgun/hd_gun/denominator/item_interaction_secondary(mob/living/user, obj/item/tool, list/modifiers)
 	. = ..()
-	if(bolt_locked || (!(safety_flags & GUN_SAFETY_ENABLED)))
-		var/wontbudge = "Флажок предохранителя не поддаётся."
-		if(!(safety_flags & GUN_SAFETY_ENABLED))
+	if(bolt_locked || (safety_flags & GUN_SAFETY_ENABLED))
+		var/wontbudge = span_notice("Флажок переключателя режимов не поддаётся.")
+		if(safety_flags & GUN_SAFETY_ENABLED)
 			wontbudge += span_warning(" Предохранитель должен быть снят.")
 		if(bolt_locked)
-			wontbudge += span_danger(" Завтор должен быть передёрнут.")
-		to_chat(user, span_notice("[wontbudge]"))
+			wontbudge += span_danger(" Затвор должен быть передёрнут.")
+		to_chat(user, wontbudge)
 		return ITEM_INTERACT_BLOCKING
 	semi = !semi
-	user.visible_message(span_warning("[user] переключает предохранитель на [semi ? "S" : "F"]."), \
-	span_notice("Я переключил предохранитель на позицию [semi ? "S" : "F"]."))
+	user.visible_message(span_warning("[user] переключает переключатель режимов огня на [semi ? "S" : "F"]."), \
+	span_notice("Я переключил переключатель режимов огня на позицию [semi ? "S" : "F"]."))
 	if(semi)
 		playsound(src, safety_off_sound, safety_sound_volume, safety_sound_vary)
 	else

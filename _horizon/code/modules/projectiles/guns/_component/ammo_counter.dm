@@ -1,14 +1,3 @@
-// horizon-dev-sync[bot] port from Shiptest
-// Ammo counter attachment + HUD component.
-// Shows remaining ammo count as a HUD overlay when holding a ballistic gun
-// with an ammo counter attached.
-// Adapted from Shiptest's code/game/objects/items/attachments/ammo_counter.dm
-// and code/modules/projectiles/guns/gunhud.dm.
-
-// =============================================================================
-// Screen object
-// =============================================================================
-
 #define ui_ammocounter "EAST-1:28,CENTER+1:25"
 
 /atom/movable/screen/ammo_counter
@@ -19,18 +8,15 @@
 	invisibility = INVISIBILITY_ABSTRACT
 	/// Color for the OTH backing, numbers and indicator
 	var/backing_color = "#ff0000ff"
-	/// OTH position X00
+	/// OTH position X00 - 0X0 - 00X
 	var/oth_o
-	/// OTH position 0X0
 	var/oth_t
-	/// OTH position 00X
 	var/oth_h
 	/// Custom indicator sprite (e.g. "bullet")
 	var/indicator
 
 /atom/movable/screen/ammo_counter/proc/turn_off()
 	invisibility = INVISIBILITY_ABSTRACT
-	maptext = null
 	backing_color = "#ff0000ff"
 	oth_o = ""
 	oth_t = ""
@@ -69,16 +55,9 @@
 		indicator_overlay.color = backing_color
 		. += indicator_overlay
 
-// =============================================================================
-// HUD var on /datum/hud
-// =============================================================================
-
+// MARK: HUD component for ballistic guns
 /datum/hud
 	var/atom/movable/screen/ammo_counter
-
-// =============================================================================
-// Component
-// =============================================================================
 
 /datum/component/ammo_hud
 	var/atom/movable/screen/ammo_counter/hud
@@ -107,7 +86,6 @@
 			turn_off()
 
 /datum/component/ammo_hud/proc/turn_on()
-	SIGNAL_HANDLER
 	RegisterSignal(parent, COMSIG_ITEM_DROPPED, PROC_REF(turn_off))
 	RegisterSignals(parent, list(COMSIG_UPDATE_AMMO_HUD, COMSIG_GUN_CHAMBER_PROCESSED), PROC_REF(update_hud))
 	hud.turn_on()
@@ -123,8 +101,8 @@
 /datum/component/ammo_hud/proc/update_hud()
 	SIGNAL_HANDLER
 	var/obj/item/gun/ballistic/pew = parent
-	hud.maptext = null
-	hud.icon_state = "backing"
+	if(!istype(pew))
+		return
 	if(!pew.magazine)
 		hud.set_hud(backing_color, "oe", "te", "he", "no_mag")
 		return
@@ -153,10 +131,7 @@
 			oth_h = "h9"
 	hud.set_hud(backing_color, oth_o, oth_t, oth_h, indicator)
 
-// =============================================================================
-// Attachment item
-// =============================================================================
-
+// MARK: Attachment item
 /obj/item/attachment/ammo_counter
 	name = "ammunition counter"
 	desc = "A computerized ammunition tracker for use on conventional firearms. Includes a small toggle for telling the user when ammo is depleted. Capable of mounting on both a railing or a scope, depending on the user's preference."
@@ -211,9 +186,10 @@
 	var/obj/item/gun/ballistic/ballistic_gun = gun
 	if(!istype(ballistic_gun))
 		return
-	// If the gun comes with an alarm by default, don't touch it.
 	if(initial(ballistic_gun.empty_alarm))
 		return
 	alarm_enabled = !alarm_enabled
 	ballistic_gun.empty_alarm = alarm_enabled
 	to_chat(user, span_notice("You turn [src]'s alarm [alarm_enabled ? "on" : "off"]."))
+
+#undef ui_ammocounter

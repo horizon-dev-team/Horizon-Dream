@@ -1,5 +1,5 @@
-// gangstalker
 /obj/item/ammo_casing/c38
+	icon = '_horizon/icons/obj/items/ammo/casings.dmi'
 	name = ".38 suspicious bullet casing"
 	desc = "A .38 suspicious bullet casing."
 	icon_state = "c38"
@@ -19,14 +19,11 @@
 	stack_type = /obj/item/ammo_box/magazine/ammo_stack/c38/pluspee
 
 /obj/item/ammo_casing/a357
+	icon = '_horizon/icons/obj/items/ammo/casings.dmi'
 	name = ".357 magnum bullet casing"
 	desc = "A .357 magnum bullet casing."
 	icon_state = "c357"
 	base_icon_state = "c357"
-	// [HORIZON-FIX] The old repo's core defined caliber + projectile_type on
-	// the base a357; only the cosmetic modular override was ported, so this
-	// casing spawned with NO caliber (couldn't be loaded into the gado
-	// cylinder) and NO projectile (spawned duds that could never fire).
 	caliber = CALIBER_357
 	projectile_type = /obj/projectile/bullet/a357
 	bounce_sound = list('_horizon/sound/weapons/guns/pistol/pistol_shell1.wav', '_horizon/sound/weapons/guns/pistol/pistol_shell2.wav', '_horizon/sound/weapons/guns/pistol/pistol_shell3.wav')
@@ -34,6 +31,7 @@
 	stack_type = /obj/item/ammo_box/magazine/ammo_stack/a357
 
 /obj/item/ammo_casing/a500
+	icon = '_horizon/icons/obj/items/ammo/casings.dmi'
 	name = ".500 magnum bullet casing"
 	desc = "A .500 magnum bullet casing."
 	icon_state = "c357"

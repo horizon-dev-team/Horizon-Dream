@@ -20,10 +20,6 @@
 /// The gun cannot fire until the player toggles safety off (right-click).
 #define GUN_SAFETY_FLAGS_DEFAULT (GUN_SAFETY_HAS_SAFETY|GUN_SAFETY_ENABLED)
 
-// ~Autofire stat aliases
-/// Legacy alias - upstream uses AUTOFIRE_STAT_IDLE for "off / not firing"
-#define AUTOFIRE_STAT_OFF AUTOFIRE_STAT_IDLE
-
 // ~Cooldown identifiers used by horizon's ammo box load cooldown
 #define COOLDOWN_AMMO_BOX_LOAD "ammo_box_load"
 

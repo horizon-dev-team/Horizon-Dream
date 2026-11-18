@@ -28,5 +28,4 @@
 	name = "bobox double-barrel shotgun internal magazine"
 	ammo_type = /obj/item/ammo_casing/shotgun/flechette
 	max_ammo = 2
-	multiload = FALSE
 	caliber = CALIBER_SHOTGUN

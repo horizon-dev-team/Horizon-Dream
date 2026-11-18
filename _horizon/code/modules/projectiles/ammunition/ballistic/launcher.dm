@@ -10,8 +10,7 @@
 	bounce_sound = list('_horizon/sound/weapons/guns/launcher/heavy_shell1.wav', '_horizon/sound/weapons/guns/launcher/heavy_shell2.wav', '_horizon/sound/weapons/guns/launcher/heavy_shell3.wav')
 	bounce_volume = 65
 	projectile_type = /obj/projectile/bullet/l40mm
-	stack_type = null
-
+	
 /obj/item/ammo_casing/l40mm/poop
 	name = "40mm IG shell"
 	desc = "An incredibly gassy grenade."
@@ -30,7 +29,7 @@
 
 /obj/item/ammo_casing/l40mm/inc
 	name = "40mm INC shell"
-	desc = "A cased incindary grenade that can only be activated once fired out of a grenade launcher."
+	desc = "A cased incendiary grenade that can only be activated once fired out of a grenade launcher."
 	world_icon_state = "40mmINC"
 	icon_state = "40mmINC"
 	base_icon_state = "40mmINC"

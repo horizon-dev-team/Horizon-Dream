@@ -29,7 +29,7 @@
 	gunshot_animation_information = list(
 		"pixel_x" = 15, \
 		"pixel_y" = 1, \
-		"inactive_wben_suppressed" = TRUE, \
+		"inactive_when_suppressed" = TRUE, \
 	)
 	recoil_animation_information = list(
 		"recoil_angle_upper" = -15, \
@@ -63,7 +63,7 @@
 	gunshot_animation_information = list(
 		"pixel_x" = 15, \
 		"pixel_y" = 2, \
-		"inactive_wben_suppressed" = TRUE, \
+		"inactive_when_suppressed" = TRUE, \
 	)
 	recoil_animation_information = list(
 		"recoil_angle_upper" = -15, \
@@ -88,7 +88,7 @@
 	gunshot_animation_information = list(
 		"pixel_x" = 16, \
 		"pixel_y" = 2, \
-		"inactive_wben_suppressed" = TRUE,
+		"inactive_when_suppressed" = TRUE,
 	)
 	recoil_animation_information = list()
 	fire_sound = '_horizon/sound/weapons/guns/pistol/colt1.wav'
@@ -108,7 +108,7 @@
 	gunshot_animation_information = list(
 		"pixel_x" = 16, \
 		"pixel_y" = 2, \
-		"inactive_wben_suppressed" = TRUE,
+		"inactive_when_suppressed" = TRUE,
 	)
 	recoil_animation_information = list()
 	fire_sound = list('_horizon/sound/weapons/guns/pistol/USP1.ogg', '_horizon/sound/weapons/guns/pistol/USP2.ogg')
@@ -162,7 +162,7 @@
 	gunshot_animation_information = list(
 		"pixel_x" = 15, \
 		"pixel_y" = 1, \
-		"inactive_wben_suppressed" = TRUE, \
+		"inactive_when_suppressed" = TRUE, \
 	)
 	recoil_animation_information = list(
 		"recoil_angle_upper" = -15, \
@@ -219,7 +219,7 @@
 	gunshot_animation_information = list(
 		"pixel_x" = 11, \
 		"pixel_y" = 1, \
-		"inactive_wben_suppressed" = TRUE, \
+		"inactive_when_suppressed" = TRUE, \
 	)
 	recoil_animation_information = list(
 		"recoil_angle_upper" = -10, \

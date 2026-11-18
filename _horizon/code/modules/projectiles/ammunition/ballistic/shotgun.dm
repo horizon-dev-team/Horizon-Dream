@@ -1,4 +1,5 @@
 /obj/item/ammo_casing/shotgun
+	icon = '_horizon/icons/obj/items/ammo/casings.dmi'
 	icon_state = "12gauge_slug"
 	base_icon_state = "12gauge_slug"
 	world_icon_state = "gshells"
@@ -8,7 +9,6 @@
 
 /obj/item/ammo_casing/shotgun/Initialize(mapload)
 	if((type == /obj/item/ammo_casing/shotgun) && prob(0.1))
-		playsound(src, '_horizon/sound/weapons/faggot.ogg', 70, FALSE)
 		name = "reggie slug"
 		desc = "Hi, my name is Reggie, I like penetrating IIIA body armor."
 	return ..()
@@ -34,7 +34,7 @@
 
 /obj/item/ammo_casing/shotgun/flechette
 	name = "shotgun flechette"
-	desc = "A 12 gauge steel flechette. Contains 20 indevidual projectiles"
+	desc = "A 12 gauge steel flechette. Contains 20 individual projectiles"
 	pellets = 20
 	variance = 18.5
 	projectile_type = /obj/projectile/bullet/pellet/shotgun_flechette
@@ -47,7 +47,7 @@
 
 /obj/item/ammo_casing/shotgun/bolas
 	name =	"Consumidor de Buceta 4 guage slug"
-	desc = "A 4 guage destructive slug designed with the purpose of destroying armored structures at a range. \
+	desc = "A 4 gauge destructive slug designed with the purpose of destroying armored structures at a range. \
 			But It can destroy flesh, too."
 	icon_state = "8gauge"
 	base_icon_state = "8gauge"
@@ -57,8 +57,8 @@
 	stack_type = /obj/item/ammo_box/magazine/ammo_stack/shotgun/bolas
 
 /obj/item/ammo_casing/shotgun/bolas/buckshot
-	name = "Estuprador-3 4 guage buckshot"
-	desc = "A 4 guage anti-personel buckshot shell for the sole purpose of completely fucking obliterating soft tissue from close range."
+	name = "Estuprador-3 4 gauge buckshot"
+	desc = "A 4 gauge anti-personnel buckshot shell for the sole purpose of completely fucking obliterating soft tissue from close range."
 	icon_state = "8gauge"
 	base_icon_state = "8gauge"
 	world_icon_state = "8gshell"

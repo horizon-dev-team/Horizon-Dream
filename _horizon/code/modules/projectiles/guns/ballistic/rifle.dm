@@ -144,7 +144,7 @@
 	gunshot_animation_information = list(
 		"pixel_x" = 32, \
 		"pixel_y" = 3, \
-		"inactive_wben_suppressed" = TRUE, \
+		"inactive_when_suppressed" = TRUE, \
 	)
 	recoil_animation_information = list(
 		"recoil_angle_upper" = -10, \
@@ -208,7 +208,7 @@
 	gunshot_animation_information = list(
 		"pixel_x" = 21, \
 		"pixel_y" = -1, \
-		"inactive_wben_suppressed" = TRUE, \
+		"inactive_when_suppressed" = TRUE, \
 	)
 	recoil_animation_information = list(
 		"recoil_angle_upper" = -10, \
@@ -275,7 +275,7 @@
 	gunshot_animation_information = list(
 		"pixel_x" = 29, \
 		"pixel_y" = 0, \
-		"inactive_wben_suppressed" = TRUE, \
+		"inactive_when_suppressed" = TRUE, \
 	)
 	recoil_animation_information = list(
 		"recoil_angle_upper" = -10, \
@@ -297,16 +297,23 @@
 	UnregisterSignal(src, COMSIG_GUNPOINT_GUN_AIM_STRESS_SOUNDED)
 	return ..()
 
-/// Alt-click plays a voice line + screen shake. Uses upstream's click_alt API.
-/obj/item/gun/ballistic/automatic/hd_gun/remis/steyr/click_alt(mob/user, sounding)
-	var/monologue = "FIX ME!"
-	switch(sounding)
+/obj/item/gun/ballistic/automatic/hd_gun/remis/steyr/click_alt(mob/user)
+	if(suppressed)
+		return ..()
+	var/sound_path = pick(
+		'_horizon/sound/weapons/guns/rifle/voice_steyr/cyberpunk.wav',
+		'_horizon/sound/weapons/guns/rifle/voice_steyr/consequences.wav',
+		'_horizon/sound/weapons/guns/rifle/voice_steyr/thefeds.wav',
+	)
+	var/monologue
+	switch(sound_path)
 		if('_horizon/sound/weapons/guns/rifle/voice_steyr/cyberpunk.wav')
 			monologue = "Cyberpunk is just a soyjack interpretation of the real world."
 		if('_horizon/sound/weapons/guns/rifle/voice_steyr/consequences.wav')
 			monologue = "Now you know the consequences of your actions."
 		if('_horizon/sound/weapons/guns/rifle/voice_steyr/thefeds.wav')
 			monologue = "I hate the feds."
+	playsound(src, sound_path, 60, FALSE)
 	if(monologue)
 		say(monologue)
 	INVOKE_ASYNC(src, PROC_REF(we_do_a_little_shaking))
@@ -349,7 +356,6 @@
 	spawn_magazine_type = /obj/item/ammo_box/magazine/a762svd
 	actions_types = null
 	burst_size = 1
-	select = FALSE
 	fire_sound = '_horizon/sound/weapons/guns/rifle/svd.wav'
 	suppressed_sound = '_horizon/sound/weapons/guns/rifle/svd_silenced.wav'
 	load_sound = '_horizon/sound/weapons/guns/rifle/svdmagin.wav'
@@ -359,9 +365,6 @@
 	safety_off_sound = '_horizon/sound/weapons/guns/rifle/aksafety2.wav'
 	safety_on_sound = '_horizon/sound/weapons/guns/rifle/aksafety1.wav'
 	rack_sound = '_horizon/sound/weapons/guns/rifle/akrack.wav'
-	fireselector_auto = '_horizon/sound/weapons/guns/rifle/aksafety2.wav'
-	fireselector_burst = '_horizon/sound/weapons/guns/rifle/aksafety2.wav'
-	fireselector_semi = '_horizon/sound/weapons/guns/rifle/aksafety1.wav'
 	force = 13
 	carry_weight = 4 KILOGRAMS
 	custom_price = 30000
@@ -372,7 +375,7 @@
 	gunshot_animation_information = list(
 		"pixel_x" = 43, \
 		"pixel_y" = 2, \
-		"inactive_wben_suppressed" = TRUE, \
+		"inactive_when_suppressed" = TRUE, \
 	)
 	recoil_animation_information = list(
 		"recoil_angle_upper" = -18, \
@@ -459,7 +462,7 @@
 	gunshot_animation_information = list(
 		"pixel_x" = 36, \
 		"pixel_y" = 3, \
-		"inactive_wben_suppressed" = TRUE, \
+		"inactive_when_suppressed" = TRUE, \
 	)
 	recoil_animation_information = list(
 		"recoil_angle_upper" = -10, \

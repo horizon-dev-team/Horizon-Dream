@@ -41,6 +41,7 @@
 	burst_size = 3
 	carry_weight = 5 KILOGRAMS
 
-/obj/item/gun/energy/siren/Initialize(mapload)
+/// Integrally full-auto: the component starts listening for held clicks.
+/obj/item/gun/energy/hd_gun/siren/Initialize(mapload)
 	. = ..()
 	AddComponent(/datum/component/automatic_fire, 3)

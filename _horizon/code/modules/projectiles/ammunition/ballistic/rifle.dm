@@ -1,32 +1,33 @@
 /obj/item/ammo_casing/a762
+	icon = '_horizon/icons/obj/items/ammo/casings.dmi'
 	name = "7.62 bullet casing"
 	desc = "A 7.62 bullet casing."
 	icon_state = "c762"
 	base_icon_state = "c762"
 	world_icon_state = "762-casing"
-	// [HORIZON-FIX] Same port gap as the a357: the old repo's core defined
-	// these on the base a762, the port only brought the cosmetic override.
-	// Without them rifle magazines spawned dud rounds that couldn't fire
-	// and couldn't be stacked (null caliber).
 	caliber = CALIBER_A762
 	projectile_type = /obj/projectile/bullet/a762
 	stack_type = /obj/item/ammo_box/magazine/ammo_stack/a762
 
 /obj/item/ammo_casing/a762/ap
 	name = "7.62 black-tip bullet casing"
-	desc = "A 7.62 black-tip bulelt casing."
+	desc = "A 7.62 black-tip bullet casing."
 	world_icon_state = "762b-casing"
 	projectile_type = /obj/projectile/bullet/a762/ap
 
 /obj/item/ammo_casing/a556
+	icon = '_horizon/icons/obj/items/ammo/casings.dmi'
 	name = "5.56mm bullet casing"
 	desc = "A 5.56mm bullet casing."
+	icon_state = "c545"
 	base_icon_state = "c545"
+	stack_type = /obj/item/ammo_box/magazine/ammo_stack/a556
 	world_icon_state = "545-casing"
 	caliber = CALIBER_A556
 	projectile_type = /obj/projectile/bullet/a556
 
 /obj/item/ammo_casing/a545
+	icon = '_horizon/icons/obj/items/ammo/casings.dmi'
 	name = "5.45x39 bullet casing"
 	desc = "A 5.45x39 bullet casing."
 	icon_state = "c545"
@@ -43,6 +44,7 @@
 	projectile_type = /obj/projectile/bullet/a545/ap
 
 /obj/item/ammo_casing/a49234g11
+	icon = '_horizon/icons/obj/items/ammo/casings.dmi'
 	name = "4.92x34 bullet"
 	desc = "Somewhat rare caseless ammunition, If It's spent, the universe will explode."
 	icon_state = "c545"
@@ -53,6 +55,7 @@
 	stack_type = /obj/item/ammo_box/magazine/ammo_stack/a49234g11
 
 /obj/item/ammo_casing/a556steyr
+	icon = '_horizon/icons/obj/items/ammo/casings.dmi'
 	name = "5.56x45mm SCF"
 	desc = "A dart-shaped flechette."
 	icon_state = "flechette"
@@ -63,6 +66,7 @@
 	stack_type = /obj/item/ammo_box/magazine/ammo_stack/a556steyr
 
 /obj/item/ammo_casing/a762svd
+	icon = '_horizon/icons/obj/items/ammo/casings.dmi'
 	name = "7.62x54R bullet casing"
 	desc = "A 7.62x54R bullet casing."
 	icon_state = "c762"
@@ -80,6 +84,7 @@
 	projectile_type = /obj/projectile/bullet/a762svd/ap
 
 /obj/item/ammo_casing/a762x51
+	icon = '_horizon/icons/obj/items/ammo/casings.dmi'
 	name = "7.62x51 bullet casing"
 	desc = "A 7.62x51 bullet casing."
 	icon_state = "c762"
@@ -90,6 +95,7 @@
 	stack_type = /obj/item/ammo_box/magazine/ammo_stack/a762x51
 
 /obj/item/ammo_casing/a276
+	icon = '_horizon/icons/obj/items/ammo/casings.dmi'
 	name = ".276 Federson bullet casing"
 	desc = "A .276 Federson bullet casing."
 	icon_state = "c762"

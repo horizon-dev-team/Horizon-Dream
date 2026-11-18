@@ -6,11 +6,8 @@
 	damage = 60
 
 /obj/projectile/bullet/a556
-	name = "bullet"
 	damage = 50
-	armour_penetration = 0
 	wound_falloff_tile = -1
-	wound_bonus = 0
 
 /obj/projectile/bullet/a545
 	damage = 55
@@ -19,6 +16,7 @@
 
 /obj/projectile/bullet/a545/ap
 	damage = 51
+	armour_penetration = 30
 
 /obj/projectile/bullet/a49234g11
 	damage = 41
@@ -35,6 +33,7 @@
 
 /obj/projectile/bullet/a762svd/ap
 	damage = 68
+	armour_penetration = 30
 
 /obj/projectile/bullet/a762x51
 	damage = 65

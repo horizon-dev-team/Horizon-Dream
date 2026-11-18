@@ -1,9 +1,4 @@
 /obj/item/gun/energy/hd_gun/nasr
-	gunshot_animation_information = list("icon_state" = "energyshot", \
-							"pixel_x" = 16, \
-							"pixel_y" = 2)
-	recoil_animation_information = list("recoil_angle_upper" = -15, \
-							"recoil_angle_lower" = -30)
 	name = "Nasr"
 	desc = "A handheld, industrial device meant to melt glue at low-voltages. It has been powered wirelessly by the hatred and blatent racism of a certain egyption indevidual with terroristic intentions."
 	icon = '_horizon/icons/obj/items/guns/energy.dmi'
@@ -43,15 +38,20 @@
 	w_class = WEIGHT_CLASS_NORMAL
 	selfcharge = TRUE
 	custom_price = 100000
+	gunshot_animation_information = list("icon_state" = "energyshot", \
+							"pixel_x" = 16, \
+							"pixel_y" = 2)
+	recoil_animation_information = list("recoil_angle_upper" = -15, \
+							"recoil_angle_lower" = -30)
 
-/obj/item/gun/energy/nasr/process(delta_time)
+/obj/item/gun/energy/hd_gun/nasr/process(delta_time)
 	if(selfcharge && cell && cell.percent() < 100)
 		charge_timer += delta_time
 		if(charge_timer < charge_delay)
 			return
 		charge_timer = 0
 		cell.give(500)
-		if(!chambered) //if empty chamber we try to charge a new shot
+		if(!chambered)
 			recharge_newshot(TRUE)
 		sound_hint()
 		flick("nasr_reload", src)

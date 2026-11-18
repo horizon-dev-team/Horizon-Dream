@@ -16,7 +16,7 @@
 	w_class = WEIGHT_CLASS_BULKY
 
 // ppsh
-/obj/item/gun/ballistic/automatic/remis/smg/ppsh
+/obj/item/gun/ballistic/automatic/hd_gun/remis/smg/ppsh
 	name = "\improper ППС"
 	desc = "Автоматический пистолет пулемёт Папасши, простой в производстве. Вмещает в себя магазины по 32 патрона. \
 		Калибр - 9мм."
@@ -64,7 +64,7 @@
 	gunshot_animation_information = list(
 		"pixel_x" = 15, \
 		"pixel_y" = 2, \
-		"inactive_wben_suppressed" = TRUE, \
+		"inactive_when_suppressed" = TRUE, \
 	)
 	recoil_animation_information = list(
 		"recoil_angle_upper" = -10, \
@@ -100,7 +100,7 @@
 	fireselector_auto = '_horizon/sound/weapons/guns/rifle/aksafety2.wav'
 	fireselector_burst = '_horizon/sound/weapons/guns/rifle/aksafety2.wav'
 	fireselector_semi = '_horizon/sound/weapons/guns/rifle/aksafety1.wav'
-	spawn_magazine_type =	/obj/item/ammo_box/magazine/bastardo9mm
+	spawn_magazine_type = /obj/item/ammo_box/magazine/bastardo9mm
 	weapon_weight = WEAPON_MEDIUM
 	force = 10
 	recoil = 0.2
@@ -111,7 +111,7 @@
 	gunshot_animation_information = list(
 		"pixel_x" = 15, \
 		"pixel_y" = 2, \
-		"inactive_wben_suppressed" = TRUE, \
+		"inactive_when_suppressed" = TRUE, \
 	)
 	recoil_animation_information = list(
 		"recoil_angle_upper" = -10, \
@@ -193,7 +193,7 @@
 		"duration" = 1, \
 	)
 
-/obj/item/gun/ballistic/automatic/remis/smg/solitario/suppressed/Initialize(mapload)
+/obj/item/gun/ballistic/automatic/hd_gun/remis/smg/solitario/suppressed/Initialize(mapload)
 	. = ..()
 	var/obj/item/suppressor/S = new(src)
 	install_suppressor(S)
@@ -201,7 +201,6 @@
 /obj/item/gun/ballistic/automatic/hd_gun/remis/smg/solitario/suppressed/no_mag
 	spawnwithmagazine = FALSE
 
-// KAKAKAKAKAKAKAKAKAKKAKAKAKAKAKAKA REALLYGOODCOMICS GUN I LOVE REALLYGOODCOMICS YES SIR I AM AN AIR MARSHAL
 /obj/item/gun/ballistic/automatic/hd_gun/remis/smg/bolsa
 	name = "\improper Bolsa R6 submachine gun"
 	desc = "An antique, compact submachine gun that is prohibited to civillians in many stations. Discontinued, but it still has It's strengths, that being the extendable stock and the size."
@@ -243,7 +242,7 @@
 	gunshot_animation_information = list(
 		"pixel_x" = 21, \
 		"pixel_y" = 5, \
-		"inactive_wben_suppressed" = TRUE, \
+		"inactive_when_suppressed" = TRUE, \
 	)
 	recoil_animation_information = list(
 		"recoil_angle_upper" = -10, \

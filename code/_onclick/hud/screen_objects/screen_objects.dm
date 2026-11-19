@@ -1171,13 +1171,13 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 	name = "hunger"
 	icon_state = "hungerbar"
 	screen_loc = ui_hunger
-	mouse_opacity = MOUSE_OPACITY_TRANSPARENT
+	mouse_opacity = MOUSE_OPACITY_ICON //MOUSE_OPACITY_TRANSPARENT
 	/// What state of hunger are we in?
 	VAR_PRIVATE/state
 	/// What was the last fullness we recorded?
 	VAR_PRIVATE/fullness
 	/// What food icon do we show by the bar
-	var/food_icon = 'icons/obj/food/burgerbread.dmi'
+	var/food_icon = '_horizon/icons/ui/icons_status.dmi'
 	/// What food icon state do we show by the bar
 	var/food_icon_state = "hburger"
 	/// The image shown by the bar.
@@ -1492,13 +1492,13 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 	name = "hydration"
 	icon_state = "hungerbar"
 	screen_loc = ui_hydration
-	mouse_opacity = MOUSE_OPACITY_TRANSPARENT
+	mouse_opacity = MOUSE_OPACITY_ICON //MOUSE_OPACITY_TRANSPARENT
 	/// What state of hydration are we in?
 	VAR_PRIVATE/state
 	/// What was the last fullness_water we recorded?
 	VAR_PRIVATE/fullness_water
 	/// What water icon do we show by the bar
-	var/water_icon = '_horizon/CORE/icons/hud/screen_alert.dmi'
+	var/water_icon = '_horizon/icons/ui/icons_status.dmi'
 	/// What water icon state do we show by the bar
 	var/water_icon_state = "hhydration"
 	/// The image shown by the bar.

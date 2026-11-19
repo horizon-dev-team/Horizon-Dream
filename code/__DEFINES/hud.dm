@@ -259,16 +259,19 @@
 #define ui_palette_scroll "WEST+1:8,NORTH-6:28"
 #define ui_palette_scroll_offset(north_offset) ("WEST+1:8,NORTH-[6+north_offset]:28")
 
+// [HORIZON-EDIT] WIDE_HUD + NEED_WATER + CARRY_WEIGHT
 //Middle right (status indicators)
-#define ui_healthdoll_edge "EAST-1:28,CENTER-1:20" // [HORIZON-EDIT] WIDE_HUD
+#define ui_healthdoll_edge "EAST-1:28,CENTER-1:20"
 #define ui_healthdoll "EAST-1:28,CENTER-1:17"
-#define ui_health "EAST-1:28,CENTER-2:17" // [/HORIZON-EDIT]
+#define ui_health "EAST-1:28,CENTER-2:17"
 #define ui_internal "EAST-1:28,CENTER+1:21"
 #define ui_mood "EAST-1:28,CENTER:21"
-#define ui_hunger "EAST-1:2,CENTER:21"
-#define ui_hydration "EAST-1:2,CENTER-1:19"
-#define ui_spacesuit "EAST-1:28,CENTER-3" // [HORIZON-EDIT] WIDE_HUD
-#define ui_stamina "EAST-1:28,CENTER-2:2" // [/HORIZON-EDIT]
+#define ui_hunger "EAST,CENTER-3:16"
+#define ui_hydration "EAST:16,CENTER-3:16"
+#define ui_weight "EAST:8,CENTER-3:8"
+#define ui_spacesuit "EAST-1:28,CENTER-3"
+#define ui_stamina "EAST-1:28,CENTER-2:2"
+// [/HORIZON-EDIT]
 
 //Pop-up inventory
 #define ui_shoes "WEST+1:8,SOUTH:5"

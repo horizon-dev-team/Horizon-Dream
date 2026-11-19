@@ -9,6 +9,8 @@
 	network = list(CAMERANET_NETWORK_THUNDERDOME)
 	density = FALSE
 	circuit = null
+	breakable_without_circuit = TRUE
+	armor_type = /obj/machinery/status_display::armor_type
 	light_power = 0
 	/// The kind of wallframe that this telescreen drops
 	var/frame_type = /obj/item/wallframe/telescreen
@@ -17,6 +19,7 @@
 
 /obj/machinery/computer/security/telescreen/Initialize(mapload)
 	. = ..()
+	AddElement(/datum/element/weld_repairable)
 	if(mapload)
 		find_and_mount_on_atom()
 
@@ -31,12 +34,6 @@
 
 /obj/machinery/computer/security/telescreen/on_deconstruction(disassembled)
 	new frame_type(loc)
-
-/obj/machinery/computer/security/telescreen/update_icon_state()
-	icon_state = initial(icon_state)
-	if(machine_stat & BROKEN)
-		icon_state += "b"
-	return ..()
 
 /obj/machinery/computer/security/telescreen/entertainment
 	name = "entertainment monitor"
@@ -63,7 +60,7 @@
 	speakers.toggle_mute()
 	return CLICK_ACTION_SUCCESS
 
-MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/entertainment, 32)
+MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/entertainment, 22)
 
 /obj/item/wallframe/telescreen/entertainment
 	name = "entertainment telescreen frame"
@@ -152,7 +149,7 @@ MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/entertai
 	else
 		icon_screen = icon_state_off
 	update_appearance(UPDATE_OVERLAYS)
-	if(announcement)
+	if(announcement && is_operational)
 		say(announcement)
 
 /// Adds a camera network ID to the entertainment monitor, and turns off the monitor if network list is empty
@@ -215,7 +212,7 @@ MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/entertai
 	)
 	frame_type = /obj/item/wallframe/telescreen/rd
 
-MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/rd, 32)
+MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/rd, 22)
 
 /obj/item/wallframe/telescreen/rd
 	name = "\improper Research Director's telescreen frame"
@@ -231,7 +228,7 @@ MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/rd, 32)
 	name = "research telescreen frame"
 	result_path = /obj/machinery/computer/security/telescreen/research
 
-MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/research, 32)
+MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/research, 22)
 
 /obj/machinery/computer/security/telescreen/ce
 	name = "\improper Chief Engineer's telescreen"
@@ -243,7 +240,7 @@ MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/research
 	name = "\improper Chief Engineer's telescreen frame"
 	result_path = /obj/machinery/computer/security/telescreen/ce
 
-MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/ce, 32)
+MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/ce, 22)
 
 /obj/machinery/computer/security/telescreen/cmo
 	name = "\improper Chief Medical Officer's telescreen"
@@ -255,7 +252,7 @@ MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/ce, 32)
 	name = "\improper Chief Medical Officer's telescreen frame"
 	result_path = /obj/machinery/computer/security/telescreen/cmo
 
-MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/cmo, 32)
+MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/cmo, 22)
 
 /obj/machinery/computer/security/telescreen/med_sec
 	name = "\improper medical telescreen"
@@ -267,7 +264,7 @@ MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/cmo, 32)
 	name = "\improper medical telescreen frame"
 	result_path = /obj/machinery/computer/security/telescreen/med_sec
 
-MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/med_sec, 32)
+MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/med_sec, 22)
 
 /obj/machinery/computer/security/telescreen/vault
 	name = "vault monitor"
@@ -279,7 +276,7 @@ MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/med_sec,
 	name = "vault telescreen frame"
 	result_path = /obj/machinery/computer/security/telescreen/vault
 
-MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/vault, 32)
+MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/vault, 22)
 
 /obj/machinery/computer/security/telescreen/ordnance
 	name = "bomb test site monitor"
@@ -291,7 +288,7 @@ MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/vault, 3
 	name = "bomb test site telescreen frame"
 	result_path = /obj/machinery/computer/security/telescreen/ordnance
 
-MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/ordnance, 32)
+MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/ordnance, 22)
 
 /obj/machinery/computer/security/telescreen/engine
 	name = "engine monitor"
@@ -304,7 +301,7 @@ MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/ordnance
 	result_path = /obj/machinery/computer/security/telescreen/engine
 	custom_materials = list(/datum/material/iron = SHEET_MATERIAL_AMOUNT * 7)
 
-MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/engine, 32)
+MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/engine, 22)
 
 /obj/machinery/computer/security/telescreen/turbine
 	name = "turbine monitor"
@@ -317,7 +314,7 @@ MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/engine, 
 	result_path = /obj/machinery/computer/security/telescreen/turbine
 	custom_materials = list(/datum/material/iron = SHEET_MATERIAL_AMOUNT * 7)
 
-MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/turbine, 32)
+MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/turbine, 22)
 
 /obj/machinery/computer/security/telescreen/interrogation
 	name = "interrogation room monitor"
@@ -329,7 +326,7 @@ MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/turbine,
 	name = "interrogation telescreen frame"
 	result_path = /obj/machinery/computer/security/telescreen/interrogation
 
-MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/interrogation, 32)
+MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/interrogation, 22)
 
 /obj/machinery/computer/security/telescreen/prison
 	name = "prison monitor"
@@ -341,7 +338,7 @@ MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/interrog
 	name = "prison telescreen frame"
 	result_path = /obj/machinery/computer/security/telescreen/prison
 
-MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/prison, 32)
+MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/prison, 22)
 
 /obj/machinery/computer/security/telescreen/auxbase
 	name = "auxiliary base monitor"
@@ -354,7 +351,7 @@ MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/prison, 
 	result_path = /obj/machinery/computer/security/telescreen/auxbase
 	custom_materials = list(/datum/material/iron = SHEET_MATERIAL_AMOUNT * 7)
 
-MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/auxbase, 32)
+MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/auxbase, 22)
 
 /obj/machinery/computer/security/telescreen/minisat
 	name = "minisat monitor"
@@ -366,7 +363,7 @@ MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/auxbase,
 	name = "minisat telescreen frame"
 	result_path = /obj/machinery/computer/security/telescreen/minisat
 
-MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/minisat, 32)
+MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/minisat, 22)
 
 /obj/machinery/computer/security/telescreen/aiupload
 	name = "\improper AI upload monitor"
@@ -378,7 +375,7 @@ MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/minisat,
 	name = "\improper AI upload telescreen frame"
 	result_path = /obj/machinery/computer/security/telescreen/aiupload
 
-MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/aiupload, 32)
+MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/aiupload, 22)
 
 /obj/machinery/computer/security/telescreen/bar
 	name = "bar monitor"
@@ -390,7 +387,7 @@ MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/aiupload
 	name = "bar telescreen frame"
 	result_path = /obj/machinery/computer/security/telescreen/bar
 
-MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/bar, 32)
+MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/bar, 22)
 
 /obj/machinery/computer/security/telescreen/isolation
 	name = "isolation cell monitor"
@@ -402,7 +399,7 @@ MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/bar, 32)
 	name = "isolation telescreen frame"
 	result_path = /obj/machinery/computer/security/telescreen/isolation
 
-MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/isolation, 32)
+MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/isolation, 22)
 
 /obj/machinery/computer/security/telescreen/normal
 	name = "security camera monitor"
@@ -414,7 +411,7 @@ MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/isolatio
 	name = "security camera telescreen frame"
 	result_path = /obj/machinery/computer/security/telescreen/normal
 
-MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/normal, 32)
+MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/normal, 22)
 
 /obj/machinery/computer/security/telescreen/tcomms
 	name = "tcomms camera monitor"
@@ -426,7 +423,7 @@ MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/normal, 
 	name = "tcomms camera telescreen frame"
 	result_path = /obj/machinery/computer/security/telescreen/tcomms
 
-MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/tcomms, 32)
+MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/tcomms, 22)
 
 /obj/machinery/computer/security/telescreen/test_chamber
 	name = "xenobiology test chamber camera monitor"
@@ -438,7 +435,7 @@ MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/tcomms, 
 	name = "xenobiology test chamber camera telescreen frame"
 	result_path = /obj/machinery/computer/security/telescreen/test_chamber
 
-MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/test_chamber, 32)
+MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/test_chamber, 22)
 
 /obj/machinery/computer/security/telescreen/engine_waste
 	name = "\improper Engine Waste Monitor"
@@ -450,7 +447,7 @@ MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/test_cha
 	name = "\improper Engine Waste telescreen frame"
 	result_path = /obj/machinery/computer/security/telescreen/engine_waste
 
-MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/engine_waste, 32)
+MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/engine_waste, 22)
 
 /obj/machinery/computer/security/telescreen/cargo_sec
 	name = "cargo camera monitor"
@@ -464,7 +461,7 @@ MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/engine_w
 	name = "cargo telescreen frame"
 	result_path = /obj/machinery/computer/security/telescreen/cargo_sec
 
-MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/cargo_sec, 32)
+MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/cargo_sec, 22)
 
 // This is used in moonoutpost19.dmm
 /obj/machinery/computer/security/telescreen/moon_outpost
@@ -476,14 +473,14 @@ MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/cargo_se
 					CAMERANET_NETWORK_MOON19_XENO,
 					)
 
-MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/moon_outpost/research, 32)
+MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/moon_outpost/research, 22)
 
 /obj/machinery/computer/security/telescreen/moon_outpost/xenobio
 	name = "xenobiology monitor"
 	desc = "Used for watching the contents of the xenobiology containment pen."
 	network = list(CAMERANET_NETWORK_MOON19_XENO)
 
-MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/moon_outpost/xenobio, 32)
+MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/moon_outpost/xenobio, 22)
 
 // This is used in undergroundoutpost45.dmm
 /obj/machinery/computer/security/telescreen/underground_outpost
@@ -493,7 +490,7 @@ MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/moon_out
 	desc = "Used for monitoring the research division and the labs within."
 	network = list(CAMERANET_NETWORK_UGO45_RESEARCH)
 
-MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/underground_outpost/research, 32)
+MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/underground_outpost/research, 22)
 
 // This is used in forgottenship.dmm
 /obj/machinery/computer/security/telescreen/forgotten_ship
@@ -503,7 +500,7 @@ MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/undergro
 	network = list(CAMERANET_NETWORK_FSCI)
 	req_access = list("syndicate")
 
-MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/forgotten_ship/sci, 32)
+MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/forgotten_ship/sci, 22)
 
 // This is used in deepstorage.dmm
 /obj/machinery/computer/security/telescreen/deep_storage
@@ -512,7 +509,7 @@ MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/forgotte
 	name = "Bunker Entrance monitor"
 	network = list(CAMERA_NETWORK_BUNKER)
 
-MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/deep_storage/bunker, 32)
+MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/deep_storage/bunker, 22)
 
 /// A button that adds a camera network to the entertainment monitors
 /obj/machinery/button/showtime
@@ -564,7 +561,7 @@ MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/deep_sto
 	network = list(CAMERANET_NETWORK_MONASTERY)
 	frame_type = /obj/item/wallframe/telescreen/monastery
 
-MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/monastery, 32)
+MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/computer/security/telescreen/monastery, 22)
 
 /obj/item/wallframe/telescreen/monastery
 	name = "monastery telescreen frame"

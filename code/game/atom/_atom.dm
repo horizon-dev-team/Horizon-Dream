@@ -887,6 +887,12 @@
 		active_hud.screentip_text.maptext = ""
 		return
 
+	// [HORIZON-ADD] Shadow-Render
+	if(isliving(user) && !wall_fov_room_visible(user, src))
+		active_hud.screentip_text.maptext = ""
+		return
+	// [/HORIZON-ADD]
+
 	var/lmb_rmb_line = ""
 	var/ctrl_lmb_ctrl_rmb_line = ""
 	var/alt_lmb_alt_rmb_line = ""
@@ -980,6 +986,8 @@
 	active_hud.screentip_text.maptext_y = 10 - (extra_lines > 0 ? 11 + 9 * (extra_lines - 1): 0)
 
 /atom/proc/set_hover_maptext(client/client, datum/hud/active_hud, new_maptext)
+	usr = null // we are sticking `usr = null` on anything with MeasureText now.
+
 	var/map_height
 	WXH_TO_HEIGHT(client.MeasureText(new_maptext, null, active_hud.screentip_text.maptext_width), map_height)
 	active_hud.screentip_text.maptext = new_maptext

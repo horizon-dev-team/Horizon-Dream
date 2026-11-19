@@ -90,6 +90,7 @@
 /// Whitelist of planes allowed to use TOPDOWN_LAYER
 GLOBAL_ALIST_INIT(topdown_planes, alist(
 	FLOOR_PLANE = TRUE,
+	ABOVE_FLOOR_PLANE = TRUE, // [HORIZON-ADD] Shadow-Render: cables live here and use WIRE_LAYER (a TOPDOWN_LAYER)
 ))
 
 #define IS_TOPDOWN_PLANE(plane) GLOB.topdown_planes[PLANE_TO_TRUE(plane)]

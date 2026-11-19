@@ -1,8 +1,6 @@
 /turf/closed/wall
 	name = "wall"
 	desc = "A huge chunk of iron used to separate rooms."
-	icon = 'icons/turf/walls/wall.dmi'
-	icon_state = "wall-0"
 	base_icon_state = "wall"
 	explosive_resistance = 1
 	rust_resistance = RUST_RESISTANCE_BASIC
@@ -13,10 +11,6 @@
 	baseturfs = /turf/open/floor/plating
 
 	flags_ricochet = RICOCHET_HARD
-
-	smoothing_flags = SMOOTH_BITMASK
-	smoothing_groups = SMOOTH_GROUP_WALLS + SMOOTH_GROUP_CLOSED_TURFS
-	canSmoothWith = SMOOTH_GROUP_WALLS
 
 	rcd_memory = RCD_MEMORY_WALL
 	///bool on whether this wall can be chiselled into
@@ -49,15 +43,6 @@
 		ADD_TRAIT(src, TRAIT_NOT_ENGRAVABLE, INNATE_TRAIT)
 	if(is_station_level(z))
 		GLOB.station_turfs += src
-	if(smoothing_flags & SMOOTH_DIAGONAL_CORNERS && fixed_underlay) //Set underlays for the diagonal walls.
-		var/mutable_appearance/underlay_appearance = mutable_appearance(layer = LOW_FLOOR_LAYER, offset_spokesman = src, plane = FLOOR_PLANE)
-		if(fixed_underlay["space"])
-			generate_space_underlay(underlay_appearance, src)
-		else
-			underlay_appearance.icon = fixed_underlay["icon"]
-			underlay_appearance.icon_state = fixed_underlay["icon_state"]
-		fixed_underlay = string_assoc_list(fixed_underlay)
-		underlays += underlay_appearance
 	register_context()
 
 /turf/closed/wall/add_context(atom/source, list/context, obj/item/held_item, mob/user)
@@ -95,11 +80,12 @@
 /turf/closed/wall/attack_tk()
 	return
 
-/turf/closed/wall/proc/dismantle_wall(devastated = FALSE, explode = FALSE)
+/turf/closed/wall/proc/dismantle_wall(devastated = FALSE, explode = FALSE, silent = FALSE)
 	if(devastated)
 		devastate_wall()
 	else
-		playsound(src, break_sound, 100, TRUE)
+		if(!silent)
+			playsound(src, break_sound, 100, TRUE)
 		var/newgirder = break_wall()
 		if(newgirder) //maybe we don't /want/ a girder!
 			transfer_fingerprints_to(newgirder)
@@ -349,10 +335,6 @@
 /turf/closed/wall/wrench_act(mob/living/user, obj/item/tool)
 	if(user.combat_mode || !(initial(smoothing_flags) & SMOOTH_DIAGONAL_CORNERS))
 		return ITEM_INTERACT_SKIP_TO_ATTACK
-	if(smoothing_flags & SMOOTH_DIAGONAL_CORNERS)
-		smoothing_flags &= ~SMOOTH_DIAGONAL_CORNERS
-	else
-		smoothing_flags |= SMOOTH_DIAGONAL_CORNERS
 	QUEUE_SMOOTH(src)
 	to_chat(user, span_notice("You adjust [src]."))
 	tool.play_tool_sound(src)

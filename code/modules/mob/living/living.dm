@@ -1067,9 +1067,9 @@ GAME_VERB_PROC(/mob/living, mob_sleep, "Sleep", null)
 		puller.set_pull_offsets(src, puller.grab_state)
 
 	if(active_storage)
-		var/storage_is_important_recurisve = (active_storage.parent in important_recursive_contents?[RECURSIVE_CONTENTS_ACTIVE_STORAGE])
-		var/can_reach_active_storage = active_storage.parent.IsReachableBy(src)
-		if(!storage_is_important_recurisve && !can_reach_active_storage)
+		// first checks "is our active storage still in our recursive contents", i.e. anywhere on our person
+		// second check is "is our active storage still somewhere reachable", e.g. nearby on a table
+		if(!(active_storage.parent in important_recursive_contents?[RECURSIVE_CONTENTS_ACTIVE_STORAGE]) && !active_storage.parent.IsReachableBy(src))
 			active_storage.hide_contents(src)
 
 	if(!buckled && !moving_diagonally && loc != old_loc)
@@ -2105,6 +2105,7 @@ GLOBAL_LIST_EMPTY(fire_appearances)
 	lighting_cutoff = initial(lighting_cutoff)
 	lighting_color_cutoffs = list(lighting_cutoff_red, lighting_cutoff_green, lighting_cutoff_blue)
 	var/init_sight = initial(sight)
+	init_sight |= SEE_MOBS|SEE_OBJS|SEE_TURFS // [HORIZON-ADD] Shadow-Render - x-ray only for mobs with a client
 	//we cannot see mobs and/or objects unless we have thermals/xray/material vision, but we can still see turfs to navigate around
 	if(HAS_TRAIT(src, TRAIT_MOVE_VENTCRAWLING) && istype(loc, /obj/machinery/atmospherics))
 		init_sight |= SEE_TURFS|BLIND

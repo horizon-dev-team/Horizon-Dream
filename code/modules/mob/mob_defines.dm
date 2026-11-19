@@ -114,7 +114,7 @@
 	/// Hunger level of the mob
 	var/nutrition = NUTRITION_LEVEL_START_MIN // randomised in Initialize
 
-	/// Hydration level of the mob
+	/// Hydration level of the mob // [HORIZON-ADD] NEED_WATER
 	var/hydration = HYDRATION_LEVEL_START_MIN
 
 	/// Satiation level of the mob

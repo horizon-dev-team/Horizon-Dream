@@ -92,7 +92,7 @@
 		alt_hud.apply_to_new_mob(src)
 
 	set_nutrition(rand(NUTRITION_LEVEL_START_MIN, NUTRITION_LEVEL_START_MAX))
-	set_hydration(rand(HYDRATION_LEVEL_START_MIN, HYDRATION_LEVEL_START_MAX))
+	set_hydration(rand(HYDRATION_LEVEL_START_MIN, HYDRATION_LEVEL_START_MAX)) // [HORIZON-ADD] NEED_WATER
 	. = ..()
 	setup_hud_traits()
 	update_config_movespeed()
@@ -1486,7 +1486,7 @@ GAME_VERB_NATIVE(/mob, DisDblClick, ".dblclick", null, argu = null as anything, 
 
 /mob/living/adjust_nutrition(change, forced)
 	. = ..()
-	if(!change)
+	if(!change) // [HORIZON-ADD] NEED_WATER
 		return
 	// Queue update if change is small enough (6 is 1% of nutrition softcap)
 	if(abs(change) >= 6)
@@ -1518,7 +1518,7 @@ GAME_VERB_NATIVE(/mob, DisDblClick, ".dblclick", null, argu = null as anything, 
 		hunger_bar.update_hunger_bar()
 	SEND_SIGNAL(src, COMSIG_LIVING_UPDATE_NUTRITION)
 
-// [HORIZON-ADD]
+// [HORIZON-ADD] NEED_WATERS
 /// Whether this mob is subject to thirst at all. Single source of truth for the HUD, moodlets, speech, examine and drain.
 /mob/proc/can_get_thirsty()
 	return !HAS_TRAIT(src, TRAIT_NOHYDRATION)
@@ -1549,7 +1549,7 @@ GAME_VERB_NATIVE(/mob, DisDblClick, ".dblclick", null, argu = null as anything, 
 
 /mob/living/adjust_hydration(change, forced)
 	. = ..()
-	if(!change)
+	if(!change) // [HORIZON-ADD] NEED_WATER
 		return
 	// Queue update if change is small enough (6 is 1% of hydration softcap)
 	if(abs(change) >= 6)

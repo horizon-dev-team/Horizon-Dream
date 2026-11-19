@@ -5,7 +5,7 @@
 	name = "Soup"
 	chemical_flags = NONE
 	nutriment_factor = 12 // Slightly less to that of nutriment as soups will come with nutriments in tow
-	hydration_factor = DRINK_HYDRATION_FACTOR_MEDIUM // [HORIZON-ADD]
+	hydration_factor = DRINK_HYDRATION_FACTOR_SALTY // [HORIZON-ADD] NEED_WATER
 	burning_temperature = 520
 	default_container = /obj/item/reagent_containers/cup/bowl
 	glass_price = FOOD_PRICE_CHEAP

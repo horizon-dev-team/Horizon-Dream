@@ -522,7 +522,7 @@ GLOBAL_LIST_INIT(message_modes_stat_limits, list(
 	tts_filter = data[TREAT_TTS_FILTER_ARG]
 	capitalize_message = data[TREAT_CAPITALIZE_MESSAGE]
 
-// [HORIZON-ADD]
+// [HORIZON-ADD] NEED_WATER
 	if(can_get_thirsty() && hydration <= HYDRATION_LEVEL_DEHYDRATED)
 		message = thirstymessage(message)
 // [/HORIZON-ADD]
@@ -534,6 +534,7 @@ GLOBAL_LIST_INIT(message_modes_stat_limits, list(
 		message = capitalize(message)
 		tts_message = capitalize(tts_message)
 
+// [HORIZON-ADD] NEED_WATER
 	///caps the length of individual letters to 3: ex: heeeeeeyy -> heeeyy
 	/// prevents TTS from choking on unrealistic text while keeping emphasis
 	var/static/regex/length_regex = regex(@"(.+)\1\1\1", "gi")
@@ -546,6 +547,7 @@ GLOBAL_LIST_INIT(message_modes_stat_limits, list(
 	while(word_start_regex.Find(tts_message))
 		var/replacement = word_start_regex.group[1]
 		tts_message = replacetext(tts_message, word_start_regex.match, replacement, word_start_regex.index)
+// [/HORIZON-ADD]
 
 	return list("message" = message, "tts_message" = tts_message, "tts_filter" = tts_filter)
 

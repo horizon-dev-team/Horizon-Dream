@@ -145,7 +145,7 @@
 
 	return TRUE
 
-// [HORIZON-ADD]
+// [HORIZON-ADD] NEED_WATER
 /// Handles mood given by hydration
 /datum/mood/proc/update_hydration_moodlets()
 	if(!mob_parent.can_get_thirsty())
@@ -416,7 +416,7 @@
 /datum/mood/proc/print_mood(mob/user)
 	var/msg = "[span_info("<EM>My current mental status:</EM>")]<br>"
 
-// [HORIZON-EDIT]
+// [HORIZON-EDIT] NEED_WATER
 	if(!HAS_TRAIT(src, TRAIT_NOHUNGER))
 		msg += span_notice("My hunger: ")
 		var/nutrition = mob_parent.nutrition
@@ -436,9 +436,7 @@
 			if(0 to NUTRITION_LEVEL_STARVING)
 				msg += span_boldwarning("I'm starving!")
 		msg += "<br>"
-// [HORIZON-EDIT]
 
-// [HORIZON-ADD]
 	if(mob_parent.can_get_thirsty())
 		msg += span_notice("My thirst: ")
 		var/hydration = mob_parent.hydration
@@ -454,7 +452,7 @@
 			if(-INFINITY to HYDRATION_LEVEL_DEHYDRATED)
 				msg += span_boldwarning("I need water!")
 		msg += "<br>"
-// [/HORIZON-ADD]
+// [/HORIZON-EDIT]
 
 	var/drunkness = mob_parent.get_drunk_amount()
 	if(drunkness >= 1)

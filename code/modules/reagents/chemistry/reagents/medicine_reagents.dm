@@ -320,7 +320,7 @@
 	/// Only supplements blood types that use this restoration chem.
 	var/required_restoration_chem = /datum/reagent/iron
 
-// [HORIZON-ADD]
+// [HORIZON-ADD] NEED_WATER
 /datum/reagent/medicine/salglu_solution/expose_mob(mob/living/exposed_mob, methods = TOUCH, reac_volume)
 	. = ..()
 	if(methods & INJECT)

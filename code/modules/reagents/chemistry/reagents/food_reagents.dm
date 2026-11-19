@@ -514,7 +514,7 @@
 	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
 	randomized_spawns = REAGENT_SPAWN_ALL_RANDOM_SPAWNS
 	default_container = /obj/item/reagent_containers/condiment/saltshaker
-	hydration_factor = DRINK_HYDRATION_FACTOR_SALTY // [HORIZON-ADD]
+	hydration_factor = DRINK_HYDRATION_FACTOR_SALTY // [HORIZON-ADD] NEED_WATER
 
 /datum/reagent/consumable/salt/expose_turf(turf/exposed_turf, reac_volume) //Creates an umbra-blocking salt pile
 	. = ..()

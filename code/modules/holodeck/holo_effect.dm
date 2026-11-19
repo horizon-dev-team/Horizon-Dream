@@ -74,7 +74,7 @@
 			. += holo_organ
 
 	// these vars are not really standardized but all would theoretically create stuff on death
-	our_mob.add_traits(list(TRAIT_PERMANENTLY_MORTAL, TRAIT_NO_BLOOD_OVERLAY, TRAIT_NOBLOOD, TRAIT_NOHUNGER, TRAIT_NOHYDRATION, TRAIT_SPAWNED_MOB), INNATE_TRAIT)
+	our_mob.add_traits(list(TRAIT_PERMANENTLY_MORTAL, TRAIT_NO_BLOOD_OVERLAY, TRAIT_NOBLOOD, TRAIT_NOHUNGER, TRAIT_NOHYDRATION, TRAIT_SPAWNED_MOB), INNATE_TRAIT) // [HORIZON-EDIT] NEED_WATER
 	RegisterSignal(our_mob, COMSIG_QDELETING, PROC_REF(handle_mob_delete))
 
 	return .

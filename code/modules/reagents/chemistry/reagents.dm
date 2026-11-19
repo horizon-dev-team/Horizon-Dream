@@ -96,7 +96,7 @@
 	var/restaurant_order = /datum/custom_order/reagent/drink
 	/// How we interact with random generators
 	var/randomized_spawns = REAGENT_SPAWN_NO_RANDOM
-// [HORIZON-ADD]
+// [HORIZON-ADD] NEED_WATER
 	///hydration factor to restore thirst
 	var/hydration_factor = 0
 // [/HORIZON-ADD]
@@ -143,7 +143,7 @@
 		if(amount >= 0.5)
 			exposed_mob.reagents.add_reagent(type, amount, data, holder.chem_temp, purity)
 
-// [HORIZON-ADD]
+// [HORIZON-ADD] NEED_WATER
 	if((methods & INGEST) && hydration_factor)
 		exposed_mob.adjust_hydration(reac_volume * hydration_factor)
 // [/HORIZON-ADD]

@@ -9,7 +9,7 @@
 	GLOB.carbon_list += src
 	add_traits(list(TRAIT_FENCE_CLIMBER, TRAIT_CAN_THROW_ITEMS), INNATE_TRAIT)
 	breathing_loop = new(src, _direct = TRUE)
-	AddComponent(/datum/component/carry_weight) // [HORIZON-ADD] weight system, see _horizon/code/modules/mob/living/carry_weight.dm
+	AddComponent(/datum/component/carry_weight) // [HORIZON-ADD] CARRY_WEIGHT
 
 /mob/living/carbon/Destroy()
 	//This must be done first, so the mob ghosts correctly before DNA etc is nulled

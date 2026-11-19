@@ -157,7 +157,7 @@
 		. += letter
 	return sanitize(.)
 
-// [HORIZON-ADD]
+// [HORIZON-ADD] NEED_WATER
 /proc/thirstymessage(message)
 	. = ""
 	for(var/n = 1, n <= length_char(message), n++)

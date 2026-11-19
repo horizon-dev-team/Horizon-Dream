@@ -10,25 +10,23 @@
 	. = ..()
 	if(!. || (movement_type & FLOATING)) //floating is easy
 		return
+	// [HORIZON-EDIT] NEED_WATER
 	if(stat == DEAD)
 		return
-	// [HORIZON-EDIT] hunger and thirst drain independently, starving must not stop thirst from draining
 	if(nutrition > 0)
 		var/hunger_loss = HUNGER_FACTOR / 10
 		if(move_intent == MOVE_INTENT_RUN)
 			hunger_loss *= 2
-		hunger_loss *= get_encumbrance_drain_multiplier() // [HORIZON-ADD] carrying a load burns food faster
+		hunger_loss *= get_encumbrance_drain_multiplier()
 		adjust_nutrition(-1 * hunger_loss)
-	// [/HORIZON-EDIT]
 
-// [HORIZON-ADD]
 	if(hydration > 0 && can_get_thirsty())
 		var/hydration_loss = HYDRATION_LOSS_PER_MOVE
 		if(move_intent == MOVE_INTENT_RUN)
 			hydration_loss *= 2
 		hydration_loss *= get_encumbrance_drain_multiplier() // carrying a load burns water faster
 		adjust_hydration(-hydration_loss)
-// [/HORIZON-ADD]
+	// [/HORIZON-EDIT]
 
 /mob/living/carbon/set_usable_legs(new_value)
 	. = ..()

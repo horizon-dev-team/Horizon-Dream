@@ -66,7 +66,7 @@
 		var/mob/living/carbon/human/humi = owner
 		if(!(organ_flags & ORGAN_FAILING))
 			handle_hunger(humi, seconds_per_tick)
-			handle_hydration(humi, seconds_per_tick)
+			handle_hydration(humi, seconds_per_tick) // [HORIZON-ADD] NEED_WATER
 
 	var/mob/living/carbon/body = owner
 
@@ -135,12 +135,14 @@
 		body.vomit(VOMIT_CATEGORY_DEFAULT, lost_nutrition = damage)
 		to_chat(body, span_warning("Your stomach reels in pain as you're incapable of holding down all that food!"))
 
+// [HORIZON-ADD] NEED_WATER
 /obj/item/organ/stomach/proc/handle_hydration(mob/living/carbon/human/human, seconds_per_tick)
 	if(HAS_TRAIT(human, TRAIT_NOHYDRATION))
 		return
 
 	if(human.hydration > 0 && human.stat != DEAD)
 		human.adjust_hydration(-HYDRATION_LOSS_PER_LIFE * seconds_per_tick)
+// [/HORIZON-ADD]
 
 /obj/item/organ/stomach/proc/handle_hunger(mob/living/carbon/human/human, seconds_per_tick)
 	if(HAS_TRAIT(human, TRAIT_NOHUNGER))
@@ -388,7 +390,7 @@
 	var/atom/movable/screen/hunger/hunger_bar = receiver.hud_used?.screen_objects[HUD_MOB_HUNGER]
 	if(hunger_bar)
 		hunger_bar.update_hunger_bar()
-// [HORIZON-ADD]
+// [HORIZON-ADD] NEED_WATER
 	var/atom/movable/screen/hydration/hydration_bar = receiver.hud_used?.screen_objects[HUD_MOB_HYDRATION]
 	if(hydration_bar)
 		hydration_bar.update_hydration_bar()
@@ -405,7 +407,7 @@
 	var/atom/movable/screen/hunger/hunger_bar = stomach_owner.hud_used?.screen_objects[HUD_MOB_HUNGER]
 	if(hunger_bar)
 		hunger_bar.update_hunger_bar()
-// [HORIZON-ADD]
+// [HORIZON-ADD] NEED_WATER
 	var/atom/movable/screen/hydration/hydration_bar = stomach_owner.hud_used?.screen_objects[HUD_MOB_HYDRATION]
 	if(hydration_bar)
 		hydration_bar.update_hydration_bar()
@@ -435,7 +437,7 @@
 	SIGNAL_HANDLER
 	// If we're forced to vomit, try to spew out at least one item
 	empty_contents(chance = 60, damaging = TRUE, min_amount = (force ? 1 : 0))
-	vomiter.adjust_hydration(-15) // [HORIZON-ADD]
+	vomiter.adjust_hydration(-15) // [HORIZON-ADD] NEED_WATERS
 
 /obj/item/organ/stomach/tool_act(mob/living/user, obj/item/tool, list/modifiers)
 	if (tool.tool_behaviour == TOOL_SCALPEL)
@@ -494,7 +496,7 @@
 	desc = "You have no idea what this strange ball of bones does."
 	icon_state = "stomach-bone"
 	metabolism_efficiency = 0.025 //very bad
-	organ_traits = list(TRAIT_NOHUNGER, TRAIT_NOHYDRATION) // [HORIZON-ADD]
+	organ_traits = list(TRAIT_NOHUNGER, TRAIT_NOHYDRATION) // [HORIZON-EDIT] NEED_WATER
 	organ_flags = ORGAN_MINERAL
 
 /obj/item/organ/stomach/bone/plasmaman

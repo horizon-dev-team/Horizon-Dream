@@ -1519,6 +1519,19 @@ GAME_VERB_NATIVE(/mob, DisDblClick, ".dblclick", null, argu = null as anything, 
 	SEND_SIGNAL(src, COMSIG_LIVING_UPDATE_NUTRITION)
 
 // [HORIZON-ADD]
+/// Whether this mob is subject to thirst at all. Single source of truth for the HUD, moodlets, speech, examine and drain.
+/mob/proc/can_get_thirsty()
+	return !HAS_TRAIT(src, TRAIT_NOHYDRATION)
+
+/// Carbons additionally need a stomach to get thirsty.
+/mob/living/carbon/can_get_thirsty()
+	return ..() && !isnull(get_organ_slot(ORGAN_SLOT_STOMACH))
+
+/// Gaining or losing TRAIT_NOHYDRATION must refresh moodlets and HUD, otherwise stale thirst effects linger.
+/mob/living/proc/on_hydration_trait_change(datum/source)
+	SIGNAL_HANDLER
+	living_flags |= QUEUE_HYDRATION_UPDATE
+
 /// Updates hydration related effects
 /mob/living/proc/update_hydration()
 	mob_mood?.update_hydration_moodlets()

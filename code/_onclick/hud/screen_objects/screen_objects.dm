@@ -1512,7 +1512,7 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 	if(!istype(need_water))
 		return
 
-	if(!ishuman(need_water) || CONFIG_GET(flag/disable_human_mood))
+	if(!ishuman(need_water) || isnull(need_water.mob_mood))
 		screen_loc = ui_mood // Slot in where mood normally is if mood is disabled
 
 	// Water drop next to the bar
@@ -1533,7 +1533,7 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 	if(!istype(need_water))
 		return
 
-	if(HAS_TRAIT(need_water, TRAIT_NOHYDRATION) || !need_water.get_organ_slot(ORGAN_SLOT_STOMACH))
+	if(!need_water.can_get_thirsty())
 		fullness_water = need_water.hydration
 		state = HYDRATION_STATE_FINE
 		return

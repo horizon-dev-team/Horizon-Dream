@@ -148,7 +148,7 @@
 // [HORIZON-ADD]
 /// Handles mood given by hydration
 /datum/mood/proc/update_hydration_moodlets()
-	if(HAS_TRAIT(mob_parent, TRAIT_NOHYDRATION) || !mob_parent.get_organ_slot(ORGAN_SLOT_STOMACH))
+	if(!mob_parent.can_get_thirsty())
 		clear_mood_event("thirst")
 		return FALSE
 
@@ -439,7 +439,7 @@
 // [HORIZON-EDIT]
 
 // [HORIZON-ADD]
-	if(!HAS_TRAIT(src, TRAIT_NOHYDRATION))
+	if(mob_parent.can_get_thirsty())
 		msg += span_notice("My thirst: ")
 		var/hydration = mob_parent.hydration
 		switch(hydration)

@@ -1,5 +1,8 @@
 /// Called on [/mob/living/Initialize(mapload)], for the mob to register to relevant signals.
 /mob/living/proc/register_init_signals()
+	// [HORIZON-ADD]
+	RegisterSignals(src, list(SIGNAL_ADDTRAIT(TRAIT_NOHYDRATION), SIGNAL_REMOVETRAIT(TRAIT_NOHYDRATION)), PROC_REF(on_hydration_trait_change))
+	// [/HORIZON-ADD]
 	RegisterSignal(src, SIGNAL_ADDTRAIT(TRAIT_KNOCKEDOUT), PROC_REF(on_knockedout_trait_gain))
 	RegisterSignal(src, SIGNAL_REMOVETRAIT(TRAIT_KNOCKEDOUT), PROC_REF(on_knockedout_trait_loss))
 

@@ -392,6 +392,7 @@
 	var/atom/movable/screen/hydration/hydration_bar = receiver.hud_used?.screen_objects[HUD_MOB_HYDRATION]
 	if(hydration_bar)
 		hydration_bar.update_hydration_bar()
+	receiver.living_flags |= QUEUE_HYDRATION_UPDATE // refresh the thirst moodlet, a stomach changes whether we get thirsty
 // [/HORIZON-ADD]
 	RegisterSignal(receiver, COMSIG_CARBON_VOMITED, PROC_REF(on_vomit))
 	RegisterSignal(receiver, COMSIG_HUMAN_GOT_PUNCHED, PROC_REF(on_punched))
@@ -408,6 +409,7 @@
 	var/atom/movable/screen/hydration/hydration_bar = stomach_owner.hud_used?.screen_objects[HUD_MOB_HYDRATION]
 	if(hydration_bar)
 		hydration_bar.update_hydration_bar()
+	stomach_owner.living_flags |= QUEUE_HYDRATION_UPDATE // the organ is gone by the next life tick, so the moodlet gets cleared then
 // [/HORIZON-ADD]
 	UnregisterSignal(stomach_owner, list(COMSIG_CARBON_VOMITED, COMSIG_HUMAN_GOT_PUNCHED))
 	return ..()

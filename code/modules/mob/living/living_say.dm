@@ -523,7 +523,7 @@ GLOBAL_LIST_INIT(message_modes_stat_limits, list(
 	capitalize_message = data[TREAT_CAPITALIZE_MESSAGE]
 
 // [HORIZON-ADD]
-	if(hydration <= HYDRATION_LEVEL_DEHYDRATED)
+	if(can_get_thirsty() && hydration <= HYDRATION_LEVEL_DEHYDRATED)
 		message = thirstymessage(message)
 // [/HORIZON-ADD]
 

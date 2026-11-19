@@ -1485,7 +1485,7 @@ GAME_VERB_NATIVE(/mob, DisDblClick, ".dblclick", null, argu = null as anything, 
 		hunger_bar.update_hunger_bar()
 	SEND_SIGNAL(src, COMSIG_LIVING_UPDATE_NUTRITION)
 
-// [HORIZON-ADD] - По сути можно попытаться по новому
+// [HORIZON-ADD]
 /// Updates hydration related effects
 /mob/living/proc/update_hydration()
 	mob_mood?.update_hydration_moodlets()
@@ -1495,11 +1495,11 @@ GAME_VERB_NATIVE(/mob, DisDblClick, ".dblclick", null, argu = null as anything, 
 	SEND_SIGNAL(src, COMSIG_LIVING_UPDATE_HYDRATION)
 
 ///Adjust the hydration of a mob
-/mob/proc/adjust_hydration(change, forced = FALSE) //Honestly FUCK the oldcoders for putting hydration on /mob someone else can move it up because holy hell I'd have to fix SO many typechecks
+/mob/proc/adjust_hydration(change, forced = FALSE)
 	if(HAS_TRAIT(src, TRAIT_NOHYDRATION) && !forced)
 		return
 
-	hydration = max(0, hydration + change)
+	hydration = clamp(hydration + change, 0, HYDRATION_LEVEL_MAX)
 
 /mob/living/adjust_hydration(change, forced)
 	. = ..()
@@ -1516,7 +1516,7 @@ GAME_VERB_NATIVE(/mob, DisDblClick, ".dblclick", null, argu = null as anything, 
 	if(HAS_TRAIT(src, TRAIT_NOHYDRATION) && !forced)
 		return
 
-	hydration = max(0, set_to)
+	hydration = clamp(set_to, 0, HYDRATION_LEVEL_MAX)
 
 /mob/living/set_hydration(set_to, forced)
 	var/old_hydration = hydration

@@ -537,13 +537,13 @@ GLOBAL_LIST_INIT(message_modes_stat_limits, list(
 	/// prevents TTS from choking on unrealistic text while keeping emphasis
 	var/static/regex/length_regex = regex(@"(.+)\1\1\1", "gi")
 	while(length_regex.Find(tts_message))
-		var/replacement = tts_message[length_regex.index]+tts_message[length_regex.index]+tts_message[length_regex.index]
+		var/replacement = length_regex.group[1] + length_regex.group[1] + length_regex.group[1]
 		tts_message = replacetext(tts_message, length_regex.match, replacement, length_regex.index)
 
 	// removes repeated consonants at the start of a word: ex: sss
 	var/static/regex/word_start_regex = regex(@"\b([^aeiou\L])\1", "gi")
 	while(word_start_regex.Find(tts_message))
-		var/replacement = tts_message[word_start_regex.index]
+		var/replacement = word_start_regex.group[1]
 		tts_message = replacetext(tts_message, word_start_regex.match, replacement, word_start_regex.index)
 
 	return list("message" = message, "tts_message" = tts_message, "tts_filter" = tts_filter)

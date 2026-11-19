@@ -146,10 +146,10 @@
 	return TRUE
 
 // [HORIZON-ADD]
-/// Handles mood given by nutrition
+/// Handles mood given by hydration
 /datum/mood/proc/update_hydration_moodlets()
-	if(HAS_TRAIT(mob_parent, TRAIT_NOHYDRATION))
-		clear_mood_event(MOOD_CATEGORY_NUTRITION)
+	if(HAS_TRAIT(mob_parent, TRAIT_NOHYDRATION) || !mob_parent.get_organ_slot(ORGAN_SLOT_STOMACH))
+		clear_mood_event("thirst")
 		return FALSE
 
 	switch(mob_parent.hydration)
@@ -416,7 +416,7 @@
 /datum/mood/proc/print_mood(mob/user)
 	var/msg = "[span_info("<EM>My current mental status:</EM>")]<br>"
 
-// [HORIZON-EDIT] - FIX STUPID <br>
+// [HORIZON-EDIT]
 	if(!HAS_TRAIT(src, TRAIT_NOHUNGER))
 		msg += span_notice("My hunger: ")
 		var/nutrition = mob_parent.nutrition
@@ -444,15 +444,15 @@
 		var/hydration = mob_parent.hydration
 		switch(hydration)
 			if(HYDRATION_LEVEL_OVERHYDRATED to INFINITY)
-				msg += span_grey("I'M HAD TOO MUCH WATER...")
+				msg += span_grey("I've had too much water...")
 			if(HYDRATION_LEVEL_NORMAL to HYDRATION_LEVEL_OVERHYDRATED)
-				msg += span_nicegreen("I'm not thirsty anymore")
+				msg += span_nicegreen("I'm not thirsty anymore.")
 			if(HYDRATION_LEVEL_THIRSTY to HYDRATION_LEVEL_NORMAL)
-				msg += span_info("I'm could use a drink.")
+				msg += span_info("I could use a drink.")
 			if(HYDRATION_LEVEL_DEHYDRATED to HYDRATION_LEVEL_THIRSTY)
-				msg += span_warning("I'm feel quite thirsty!")
+				msg += span_warning("I feel quite thirsty!")
 			if(-INFINITY to HYDRATION_LEVEL_DEHYDRATED)
-				msg += span_boldwarning("I'M NEED WATER!")
+				msg += span_boldwarning("I need water!")
 		msg += "<br>"
 // [/HORIZON-ADD]
 

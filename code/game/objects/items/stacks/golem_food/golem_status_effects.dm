@@ -184,13 +184,15 @@
 	. = ..()
 	if (!.)
 		return FALSE
-	ADD_TRAIT(owner, TRAIT_NOHUNGER, TRAIT_STATUS_EFFECT(id))
+	ADD_TRAIT(owner, TRAIT_NOHUNGER, TRAIT_STATUS_EFFECT(id)) // [HORIZON-ADD]
+	ADD_TRAIT(owner, TRAIT_NOHYDRATION, TRAIT_STATUS_EFFECT(id))
 	owner.remove_movespeed_modifier(/datum/movespeed_modifier/golem_hunger)
 	owner.remove_status_effect(/datum/status_effect/golem_statued) // Instant fix!
 	return TRUE
 
 /datum/status_effect/golem/uranium/on_remove()
-	REMOVE_TRAIT(owner, TRAIT_NOHUNGER, TRAIT_STATUS_EFFECT(id))
+	REMOVE_TRAIT(owner, TRAIT_NOHUNGER, TRAIT_STATUS_EFFECT(id)) // [HORIZON-ADD]
+	REMOVE_TRAIT(owner, TRAIT_NOHYDRATION, TRAIT_STATUS_EFFECT(id))
 	return ..()
 
 /// Magic immunity

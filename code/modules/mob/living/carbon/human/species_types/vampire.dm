@@ -157,6 +157,7 @@
 		// future todo : tie nobreath and nohunger to a vampire organ set bonus
 		TRAIT_NOBREATH,
 		TRAIT_NOHUNGER,
+		TRAIT_NOHYDRATION, // [HORIZON-ADD]
 	)
 	COOLDOWN_DECLARE(drain_cooldown)
 

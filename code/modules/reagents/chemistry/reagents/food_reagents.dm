@@ -29,12 +29,7 @@
 		return
 
 	var/mob/living/carbon/human/affected_human = affected_mob
-	var/nutriment_amount = 0.5 * get_nutriment_factor(affected_mob) * metabolization_ratio * seconds_per_tick
-	var/hydration_amount = 0.5 * get_hydration_factor(affected_mob) * metabolization_ratio * seconds_per_tick // [HORIZON-ADD]
-	if(nutriment_amount)
-		affected_human.adjust_nutrition(nutriment_amount)
-	if(hydration_amount)
-		affected_human.adjust_hydration(hydration_amount)
+	affected_human.adjust_nutrition(0.5 * get_nutriment_factor(affected_mob) * metabolization_ratio * seconds_per_tick)
 
 /datum/reagent/consumable/expose_mob(mob/living/exposed_mob, methods=TOUCH, reac_volume)
 	. = ..()
@@ -59,16 +54,9 @@
 			if(isitem(the_real_food) && !is_reagent_container(the_real_food))
 				exposed_mob.add_mob_memory(/datum/memory/good_food, food = the_real_food)
 
-	if(chemical_flags == REAGENT_CAN_BE_SYNTHESIZED)
-		exposed_mob.adjust_hydration(max(0.5, hydration_factor))
-
 /// Gets just how much nutrition this reagent supplies per server tick to the eater
 /datum/reagent/consumable/proc/get_nutriment_factor(mob/living/carbon/eater)
 	return nutriment_factor * REAGENTS_METABOLISM * purity * 2
-
-/// Gets just how much nutrition this reagent supplies per server tick to the eater
-/datum/reagent/consumable/proc/get_hydration_factor(mob/living/carbon/eater)
-	return hydration_factor * REAGENTS_METABOLISM * purity * 2
 
 /datum/reagent/consumable/nutriment
 	name = "Nutriment"
@@ -526,6 +514,7 @@
 	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
 	randomized_spawns = REAGENT_SPAWN_ALL_RANDOM_SPAWNS
 	default_container = /obj/item/reagent_containers/condiment/saltshaker
+	hydration_factor = DRINK_HYDRATION_FACTOR_SALTY // [HORIZON-ADD]
 
 /datum/reagent/consumable/salt/expose_turf(turf/exposed_turf, reac_volume) //Creates an umbra-blocking salt pile
 	. = ..()
@@ -535,7 +524,6 @@
 
 /datum/reagent/consumable/salt/expose_mob(mob/living/exposed_mob, methods, reac_volume)
 	. = ..()
-	exposed_mob.adjust_hydration(-0.04)
 	if(!iscarbon(exposed_mob))
 		return
 	var/mob/living/carbon/carbies = exposed_mob

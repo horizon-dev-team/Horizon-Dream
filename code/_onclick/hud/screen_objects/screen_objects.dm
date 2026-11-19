@@ -1441,7 +1441,7 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 #undef FORMAT_XENOBIO_HUD_MAPTEXT
 #undef POTION_DROP_SPEED
 
-// [HORIZON-ADD] - YDRATION-THIRST
+// [HORIZON-ADD]
 #define HYDRATION_STATE_OVERHYDRATED 4
 #define HYDRATION_STATE_FULL 3
 #define HYDRATION_STATE_FINE 2
@@ -1457,9 +1457,9 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 	VAR_PRIVATE/state
 	/// What was the last fullness_water we recorded?
 	VAR_PRIVATE/fullness_water
-	/// What food icon do we show by the bar
+	/// What water icon do we show by the bar
 	var/water_icon = '_horizon/CORE/icons/hud/screen_alert.dmi'
-	/// What food icon state do we show by the bar
+	/// What water icon state do we show by the bar
 	var/water_icon_state = "hhydration"
 	/// The image shown by the bar.
 	VAR_PRIVATE/image/water_image
@@ -1475,7 +1475,7 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 	if(!ishuman(need_water) || CONFIG_GET(flag/disable_human_mood))
 		screen_loc = ui_mood // Slot in where mood normally is if mood is disabled
 
-	// Burger next to the bar
+	// Water drop next to the bar
 	water_image = image(icon = water_icon, icon_state = water_icon_state, pixel_x = -5)
 	water_image.plane = plane
 	water_image.appearance_flags |= KEEP_APART // To be unaffected by filters applied to src
@@ -1494,21 +1494,21 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 		return
 
 	if(HAS_TRAIT(need_water, TRAIT_NOHYDRATION) || !need_water.get_organ_slot(ORGAN_SLOT_STOMACH))
-		fullness_water = HYDRATION_LEVEL_NORMAL
+		fullness_water = need_water.hydration
 		state = HYDRATION_STATE_FINE
 		return
 
 	fullness_water = round(need_water.get_fullness(only_consumable = TRUE, hydration_flag = TRUE), 0.05)
 	switch(fullness_water)
 		if(1 + HYDRATION_LEVEL_OVERHYDRATED to INFINITY)
+			state = HYDRATION_STATE_OVERHYDRATED
+		if(1 + HYDRATION_LEVEL_NORMAL to HYDRATION_LEVEL_OVERHYDRATED)
 			state = HYDRATION_STATE_FULL
-		if(1 + HYDRATION_LEVEL_THIRSTY to HYDRATION_LEVEL_OVERHYDRATED)
+		if(1 + HYDRATION_LEVEL_THIRSTY to HYDRATION_LEVEL_NORMAL)
 			state = HYDRATION_STATE_FINE
 		if(1 + HYDRATION_LEVEL_DEHYDRATED to HYDRATION_LEVEL_THIRSTY)
 			state = HYDRATION_STATE_THIRSTY
-		if(1 + HYDRATION_LEVEL_MIN_CAP to HYDRATION_LEVEL_DEHYDRATED)
-			state = HYDRATION_STATE_THIRSTY
-		if(0 to HYDRATION_LEVEL_MIN_CAP)
+		if(0 to HYDRATION_LEVEL_DEHYDRATED)
 			state = HYDRATION_STATE_DEHYDRATED
 
 /atom/movable/screen/hydration/update_appearance(updates)
@@ -1567,12 +1567,12 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 	/// Gradient used to color the bar
 	VAR_PRIVATE/static/list/hydration_gradient = list(
 		0.0, "#FF0000",
-		0.2, "#FF8000",
-		0.4, "#f0f000",
-		0.6, "#00FF00",
-		0.8, "#46daff",
-		1.0, "#2A72AA",
-		1.2, "#494949",
+		0.3, "#FF8000",
+		0.65, "#f0f000",
+		0.85, "#00FF00",
+		1.0, "#46daff",
+		1.5, "#2A72AA",
+		2.0, "#494949",
 	)
 	/// Offset of the mask
 	VAR_PRIVATE/bar_offset
@@ -1591,7 +1591,7 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 		return
 	last_fullness_band = new_fullness
 	// Update color
-	var/new_color = gradient(hydration_gradient, clamp(new_fullness, 0, 1.2))
+	var/new_color = gradient(hydration_gradient, clamp(new_fullness, 0, 2))
 	if(instant)
 		color = new_color
 	else

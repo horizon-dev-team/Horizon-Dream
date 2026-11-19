@@ -144,7 +144,7 @@
 			exposed_mob.reagents.add_reagent(type, amount, data, holder.chem_temp, purity)
 
 // [HORIZON-ADD]
-	if(methods & INGEST)
+	if((methods & INGEST) && hydration_factor)
 		exposed_mob.adjust_hydration(reac_volume * hydration_factor)
 // [/HORIZON-ADD]
 

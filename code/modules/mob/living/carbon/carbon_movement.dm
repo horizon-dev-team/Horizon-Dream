@@ -21,7 +21,7 @@
 
 // [HORIZON-ADD]
 	if(!HAS_TRAIT(src, TRAIT_NOHYDRATION))
-		if(hydration <= 0 || stat != DEAD)
+		if(hydration <= 0 || stat == DEAD)
 			return
 		var/hydration_loss = HYDRATION_LOSS_PER_MOVE
 		if(move_intent == MOVE_INTENT_RUN)

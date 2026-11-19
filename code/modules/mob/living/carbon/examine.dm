@@ -160,10 +160,8 @@
 		if(DISGUST_LEVEL_DISGUSTED to INFINITY)
 			. += "[t_He] look[p_s()] extremely disgusted."
 
-	// [HORIZON-ADD] - THIRST
-	if(hydration < HYDRATION_LEVEL_DEHYDRATED)
-		. += "[t_He] [t_is] parched.\n"
-	// [/HORIZON-ADD] - THIRST
+	if(hydration < HYDRATION_LEVEL_DEHYDRATED) // [HORIZON-ADD]
+		. += span_warning("[t_He] [t_is] parched.")
 
 	var/apparent_blood_volume = CAN_HAVE_BLOOD(src) ? get_blood_volume(apply_modifiers = TRUE) : BLOOD_VOLUME_NORMAL
 	if(HAS_TRAIT(src, TRAIT_USES_SKINTONES) && ishuman(src))

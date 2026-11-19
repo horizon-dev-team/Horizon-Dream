@@ -158,25 +158,12 @@
 	var/fraction = min(gulp_size / reagents.total_volume, 1)
 	reagents.trans_to(target_mob, gulp_size, transferred_by = user, methods = reagent_consumption_method)
 
-	/* // Пока выключу - ибо тяжело понять что не так с барами
-	var/total_hydration
-	var/total_nutriment
-	for(var/datum/reagent/targetReagent in reagents.reagent_list)
-		total_hydration += targetReagent.hydration_factor
-		if(istype(targetReagent, /datum/reagent/consumable))
-			var/datum/reagent/consumable/ConsumableReagent = targetReagent
-			total_nutriment += ConsumableReagent.nutriment_factor
-
-	if(total_hydration)
-		var/atom/movable/screen/hydration/hydration_bar = user.hud_used?.screen_objects[HUD_MOB_HYDRATION]
-		if(istype(hydration_bar))
-			hydration_bar.update_hydration_bar()
-
-	if(total_nutriment)
-		var/atom/movable/screen/hunger/hunger_bar = user.hud_used?.screen_objects[HUD_MOB_HUNGER]
-		if(istype(hunger_bar))
-			hunger_bar.update_hunger_bar()
-	*/
+	var/atom/movable/screen/hunger/hunger_bar = user.hud_used?.screen_objects[HUD_MOB_HUNGER]
+	if (istype(hunger_bar))
+		hunger_bar.update_hunger_bar()
+	var/atom/movable/screen/hydration/hydration_bar = user.hud_used?.screen_objects[HUD_MOB_HYDRATION]
+	if (istype(hydration_bar))
+		hydration_bar.update_hydration_bar()
 	checkLiked(fraction, target_mob)
 	playsound(target_mob, consumption_sound, rand(10, 50), TRUE)
 	var/list/datum/disease/diseases_to_add

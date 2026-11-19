@@ -29,20 +29,20 @@
 
 // [HORIZON-ADD]
 /datum/mood_event/overhydrated
-	description = "<B>I'M HAD TOO MUCH WATER..</B>"
+	description = "I've had too much water..."
 	mood_change = -6
 
 /datum/mood_event/hydrated
-	description = "I'm not thirsty anymore"
-	mood_change = 4
+	description = "I'm not thirsty anymore."
+	mood_change = 5
 
 /datum/mood_event/thirsty
-	description = "I'm could use a drink."
-	mood_change = -10
+	description = "I could use a drink."
+	mood_change = -3
 
 /datum/mood_event/dehydrated
-	description = "I'M NEED WATER!"
-	mood_change = -15
+	description = "<B>I need water!</B>"
+	mood_change = -10
 // [/HORIZON-ADD]
 
 //charge

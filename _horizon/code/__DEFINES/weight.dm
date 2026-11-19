@@ -1,8 +1,12 @@
 #define ENCUMBRANCE_NONE 0
 #define ENCUMBRANCE_LIGHT 1
 #define ENCUMBRANCE_MEDIUM 2
-#define ENCUMBRANCE_HEAVY 3
-#define ENCUMBRANCE_EXTREME 4
+#define ENCUMBRANCE_STRENUOUS 3
+#define ENCUMBRANCE_HEAVY 4
+#define ENCUMBRANCE_EXTREME 5
+#define ENCUMBRANCE_IMPOSSIBLE 6
+/// Trait source for the >=200% pinned-to-the-ground state
+#define CARRY_WEIGHT_TRAIT "carry-weight"
 
 #define GRAMS * 0.001
 #define KILOGRAMS * 1
@@ -11,6 +15,12 @@
 #define HUMAN_WEIGHT 60
 /// Weight required for someone to fall in water
 #define DROWNING_WEIGHT (HUMAN_WEIGHT * 2)
+
+/// Mass of one reagent unit when the container actually holds liquid.
+/// 100u = 1 L = 1 kg of water. Doses (pills, patches, cigarettes) use REAGENT_WEIGHT_DOSE instead.
+#define REAGENT_UNIT_KG 0.01
+/// Share of liquid density a solid dose contributes. 50u pill ≈ 10 g of compound, not half a litre.
+#define REAGENT_WEIGHT_DOSE 0.02
 
 /// Basic lift (kg) of a carbon in perfect shape. Original: STR^2/10 via attributes, STR 10 -> 10.
 #define ENCUMBRANCE_DEFAULT_BASIC_LIFT 10
@@ -21,12 +31,6 @@
 /// Refresh cadence for content changes that emit no mob signal (ammo, storage, reagents).
 #define ENCUMBRANCE_REFRESH_INTERVAL (2 SECONDS)
 
-/// Mass of one reagent unit when the container actually holds liquid.
-/// 100u = 1 L = 1 kg of water. Doses (pills, patches, cigarettes) use REAGENT_WEIGHT_DOSE instead.
-#define REAGENT_UNIT_KG 0.01
-/// Share of liquid density a solid dose contributes. 50u pill ≈ 10 g of compound, not half a litre.
-#define REAGENT_WEIGHT_DOSE 0.02
-
 // Worn containers. Fraction of CONTENT mass that still counts. The bag itself is always full weight.
 // Backpack 30% off, satchel 25% off, duffel 15% off (worse harness), utility bags 35% off.
 #define STORAGE_WEIGHT_MULT_BACKPACK 0.70
@@ -35,8 +39,12 @@
 #define STORAGE_WEIGHT_MULT_BAG 0.65
 /// Bluespace pockets. Not weightless, so a bag of holding is still a choice.
 #define STORAGE_WEIGHT_MULT_HOLDING 0.15
+/// Belts spread load over the hips. 20% off.
+#define STORAGE_WEIGHT_MULT_BELT 0.80
+/// MODsuit servos carry half of what the suit itself holds: parts (stowed or deployed), core and modules. 50% off.
+#define STORAGE_WEIGHT_MULT_MODSUIT 0.50
 
-// Needs <-> weight link.
+// Needs <-> weight.
 // Share of the basic lift a carbon keeps while thirsty or hungry. The worse of the two applies.
 #define LIFT_MULT_THIRSTY 0.8
 #define LIFT_MULT_DEHYDRATED 0.6
@@ -48,5 +56,7 @@
 #define NEEDS_DRAIN_MULT_NONE 1
 #define NEEDS_DRAIN_MULT_LIGHT 1.1
 #define NEEDS_DRAIN_MULT_MEDIUM 1.25
+#define NEEDS_DRAIN_MULT_STRENUOUS 1.35
 #define NEEDS_DRAIN_MULT_HEAVY 1.5
 #define NEEDS_DRAIN_MULT_EXTREME 2
+#define NEEDS_DRAIN_MULT_IMPOSSIBLE 2.5

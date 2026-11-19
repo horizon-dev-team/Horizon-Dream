@@ -1510,13 +1510,15 @@ GAME_VERB_NATIVE(/mob, DisDblClick, ".dblclick", null, argu = null as anything, 
 	else
 		living_flags |= QUEUE_NUTRITION_UPDATE
 
+// [HORIZON-EDIT] NEED_WATERS
 /// Updates nutrition related effects
 /mob/living/proc/update_nutrition()
 	mob_mood?.update_nutrition_moodlets()
-	var/atom/movable/screen/hunger/hunger_bar = hud_used?.screen_objects[HUD_MOB_HUNGER]
-	if (hunger_bar)
-		hunger_bar.update_hunger_bar()
+	var/atom/movable/screen/hunger/hunger_status = hud_used?.screen_objects[HUD_MOB_HUNGER]
+	if (hunger_status)
+		hunger_status.update_status()
 	SEND_SIGNAL(src, COMSIG_LIVING_UPDATE_NUTRITION)
+// [/HORIZON-EDIT]
 
 // [HORIZON-ADD] NEED_WATERS
 /// Whether this mob is subject to thirst at all. Single source of truth for the HUD, moodlets, speech, examine and drain.
@@ -1535,9 +1537,9 @@ GAME_VERB_NATIVE(/mob, DisDblClick, ".dblclick", null, argu = null as anything, 
 /// Updates hydration related effects
 /mob/living/proc/update_hydration()
 	mob_mood?.update_hydration_moodlets()
-	var/atom/movable/screen/hydration/hydration_bar = hud_used?.screen_objects[HUD_MOB_HYDRATION]
-	if (hydration_bar)
-		hydration_bar.update_hydration_bar()
+	var/atom/movable/screen/hydration/hydration_status = hud_used?.screen_objects[HUD_MOB_HYDRATION]
+	if (hydration_status)
+		hydration_status.update_status()
 	SEND_SIGNAL(src, COMSIG_LIVING_UPDATE_HYDRATION)
 
 ///Adjust the hydration of a mob

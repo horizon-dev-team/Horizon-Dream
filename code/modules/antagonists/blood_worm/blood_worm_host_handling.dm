@@ -37,7 +37,7 @@
 	TRAIT_STABLELIVER, // Ditto.
 	TRAIT_NOCRITDAMAGE, // Prevents blood worms from noob trapping themselves by reviving a host "too early", since that shouldn't be a thing.
 	TRAIT_NOHUNGER, // Every single long-deceased corpse is starved. Many people also just ignore hunger the whole shift. Starving with every new host gets old fast.
-	TRAIT_NOHYDRATION, // [HORIZON-ADD]
+	TRAIT_NOHYDRATION, // [HORIZON-ADD] NEED_WATER
 	TRAIT_NO_WITHDRAWALS, // Prevents OOC quirk choices from impacting blood worms as much. Stops withdrawals instead of addictions since the latter can be metagamed.
 	TRAIT_NO_SPLIT_PERSONALITY, // How about no?
 	TRAIT_BLOOD_HUD, // Self-explanatory, allows blood worms to seek prey even while in a host.

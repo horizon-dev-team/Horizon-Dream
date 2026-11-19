@@ -37,7 +37,8 @@
 	add_screen_object(/atom/movable/screen/stamina, HUD_MOB_STAMINA, HUD_GROUP_INFO)
 	add_screen_object(/atom/movable/screen/healths/human, HUD_MOB_HEALTH, HUD_GROUP_INFO) // [HORIZON-EDIT] WIDE_HUD
 	add_screen_object(/atom/movable/screen/hunger, HUD_MOB_HUNGER, HUD_GROUP_INFO)
-	add_screen_object(/atom/movable/screen/hydration, HUD_MOB_HYDRATION, HUD_GROUP_INFO) // [HORIZON-ADD]
+	add_screen_object(/atom/movable/screen/hydration, HUD_MOB_HYDRATION, HUD_GROUP_INFO) // [HORIZON-ADD] NEED_WATER
+	add_screen_object(/atom/movable/screen/encumbrance, HUD_MOB_ENCUMBRANCE, HUD_GROUP_INFO) // [HORIZON-ADD] CARRY_WEIGHT
 
 /datum/hud/human/update_locked_slots()
 	if(!mymob)

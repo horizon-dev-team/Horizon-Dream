@@ -7,6 +7,10 @@
 /// Liquid reagents use REAGENT_UNIT_KG (100u = 1 kg). Storage contents are scaled by
 /// storage_weight_multiplier. Loose contents (magazines, cells, rounds) are counted too.
 /obj/item/proc/get_carry_weight(list/seen)
+	// Abstract items (offhand placeholders, touch attacks, grabs) are not objects you carry.
+	// /obj/item/offhand is HUGE and sits in the free hand while wielding, so it used to add 8 kg.
+	if(item_flags & ABSTRACT)
+		return 0
 	if(seen && (src in seen))
 		return 0
 	if(!seen)
@@ -21,10 +25,11 @@
 	if(atom_storage)
 		. += atom_storage.get_carry_weight(seen)
 		return .
+	// Loose contents (magazine, cell, MODsuit parts and modules) get the same relief as storage contents.
+	var/contained_weight = 0
 	for(var/obj/item/contained in contents)
-		if(contained.item_flags & ABSTRACT)
-			continue
-		. += contained.get_carry_weight(seen)
+		contained_weight += contained.get_carry_weight(seen)
+	. += contained_weight * storage_weight_multiplier
 
 /// Total carry weight of items inside this storage datum, after the container's relief.
 /datum/storage/proc/get_carry_weight(list/seen)

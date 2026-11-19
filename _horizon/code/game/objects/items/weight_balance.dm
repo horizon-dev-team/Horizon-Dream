@@ -26,6 +26,9 @@
 	carry_weight = 0.45
 	storage_weight_multiplier = STORAGE_WEIGHT_MULT_BAG
 
+/obj/item/storage/belt
+	storage_weight_multiplier = STORAGE_WEIGHT_MULT_BELT
+
 /obj/item/storage/bag/trash/bluespace
 	storage_weight_multiplier = STORAGE_WEIGHT_MULT_HOLDING
 
@@ -195,6 +198,16 @@
 // --- MODsuit. Parts and modules live inside the control unit. ---
 /obj/item/mod/control
 	carry_weight = 2.2
+	storage_weight_multiplier = STORAGE_WEIGHT_MULT_MODSUIT
+
+/// Weight (kg) the servos take off the deployed parts. Stowed parts sit in contents and get the
+/// same relief through storage_weight_multiplier, so deploying or retracting never changes your load.
+/obj/item/mod/control/proc/get_deployed_weight_relief()
+	. = 0
+	for(var/obj/item/part as anything in get_parts())
+		if(part.loc == src)
+			continue
+		. += part.get_carry_weight() * (1 - storage_weight_multiplier)
 
 /obj/item/mod/core
 	carry_weight = 0.4

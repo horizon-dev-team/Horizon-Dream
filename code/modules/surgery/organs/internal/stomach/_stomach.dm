@@ -387,13 +387,13 @@
 
 /obj/item/organ/stomach/on_mob_insert(mob/living/carbon/receiver, special, movement_flags)
 	. = ..()
-	var/atom/movable/screen/hunger/hunger_bar = receiver.hud_used?.screen_objects[HUD_MOB_HUNGER]
-	if(hunger_bar)
-		hunger_bar.update_hunger_bar()
 // [HORIZON-ADD] NEED_WATER
-	var/atom/movable/screen/hydration/hydration_bar = receiver.hud_used?.screen_objects[HUD_MOB_HYDRATION]
-	if(hydration_bar)
-		hydration_bar.update_hydration_bar()
+	var/atom/movable/screen/hunger/hunger_status = receiver.hud_used?.screen_objects[HUD_MOB_HUNGER]
+	if(hunger_status)
+		hunger_status.update_status()
+	var/atom/movable/screen/hydration/hydration_status = receiver.hud_used?.screen_objects[HUD_MOB_HYDRATION]
+	if(hydration_status)
+		hydration_status.update_status()
 	receiver.living_flags |= QUEUE_HYDRATION_UPDATE // refresh the thirst moodlet, a stomach changes whether we get thirsty
 // [/HORIZON-ADD]
 	RegisterSignal(receiver, COMSIG_CARBON_VOMITED, PROC_REF(on_vomit))
@@ -404,13 +404,13 @@
 		var/mob/living/carbon/human/human_owner = stomach_owner
 		human_owner.clear_alert(ALERT_DISGUST)
 		human_owner.clear_mood_event("disgust")
-	var/atom/movable/screen/hunger/hunger_bar = stomach_owner.hud_used?.screen_objects[HUD_MOB_HUNGER]
-	if(hunger_bar)
-		hunger_bar.update_hunger_bar()
 // [HORIZON-ADD] NEED_WATER
-	var/atom/movable/screen/hydration/hydration_bar = stomach_owner.hud_used?.screen_objects[HUD_MOB_HYDRATION]
-	if(hydration_bar)
-		hydration_bar.update_hydration_bar()
+	var/atom/movable/screen/hunger/hunger_status = stomach_owner.hud_used?.screen_objects[HUD_MOB_HUNGER]
+	if(hunger_status)
+		hunger_status.update_status()
+	var/atom/movable/screen/hydration/hydration_status = stomach_owner.hud_used?.screen_objects[HUD_MOB_HYDRATION]
+	if(hydration_status)
+		hydration_status.update_status()
 	stomach_owner.living_flags |= QUEUE_HYDRATION_UPDATE // the organ is gone by the next life tick, so the moodlet gets cleared then
 // [/HORIZON-ADD]
 	UnregisterSignal(stomach_owner, list(COMSIG_CARBON_VOMITED, COMSIG_HUMAN_GOT_PUNCHED))

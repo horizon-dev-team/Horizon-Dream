@@ -12,9 +12,24 @@
 	variable = TRUE
 
 /// Default item mass (kg) from bulk class. Original formula: w_class^2 / 4.
-/// Only used when an item has no explicit carry_weight.
+/// Default item mass (kg) from bulk class. Only used when an item has no explicit carry_weight.
+/// The old w_class^2/4 curve made a normal item, a pistol and a vest the same couple of kilos.
 /proc/weight_class_to_kg(weight_class)
-	return (weight_class ** 2) / 4
+	switch(weight_class)
+		if(WEIGHT_CLASS_TINY)
+			return 0.04
+		if(WEIGHT_CLASS_SMALL)
+			return 0.3
+		if(WEIGHT_CLASS_NORMAL)
+			return 1
+		if(WEIGHT_CLASS_BULKY)
+			return 3.2
+		if(WEIGHT_CLASS_HUGE)
+			return 8
+		if(WEIGHT_CLASS_GIGANTIC)
+			return 15
+	return max(0.04, weight_class * 0.5)
+
 
 /// Basic lift in kg. Original: STR^2/10 via attributes; stable fallback here,
 /// reduced while the carbon is hungry or thirsty.

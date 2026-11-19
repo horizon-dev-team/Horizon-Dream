@@ -46,6 +46,7 @@
 #include "code\game\objects\items\card_ids.dm"
 #include "code\game\objects\items\item_defines.dm"
 #include "code\game\objects\items\overlay_internals_tank.dm"
+#include "code\game\objects\items\weight_balance.dm"
 #include "code\game\objects\items\tanks\internals_tactical.dm"
 #include "code\game\objects\structures\flora.dm"
 #include "code\game\objects\structures\markings.dm"

@@ -22,3 +22,7 @@
 	 * LEAVING THIS AS NULL DERIVES A DEFAULT FROM W_CLASS EVERY TIME get_carry_weight() IS CALLED. See carry_weight.dm.
 	 */
 	var/carry_weight = null
+	/// Share of REAGENT_UNIT_KG applied to reagents.total_volume. 1 = real liquid (100u = 1 kg).
+	var/reagent_weight_factor = 1
+	/// Fraction of storage CONTENTS that count toward encumbrance. 1 = no relief. The item's own mass is not scaled.
+	var/storage_weight_multiplier = 1

@@ -21,8 +21,20 @@
 /// Refresh cadence for content changes that emit no mob signal (ammo, storage, reagents).
 #define ENCUMBRANCE_REFRESH_INTERVAL (2 SECONDS)
 
-/// Mass in kg of one reagent unit, so full containers and food are not weightless.
+/// Mass of one reagent unit when the container actually holds liquid.
+/// 100u = 1 L = 1 kg of water. Doses (pills, patches, cigarettes) use REAGENT_WEIGHT_DOSE instead.
 #define REAGENT_UNIT_KG 0.01
+/// Share of liquid density a solid dose contributes. 50u pill ≈ 10 g of compound, not half a litre.
+#define REAGENT_WEIGHT_DOSE 0.02
+
+// Worn containers. Fraction of CONTENT mass that still counts. The bag itself is always full weight.
+// Backpack 30% off, satchel 25% off, duffel 15% off (worse harness), utility bags 35% off.
+#define STORAGE_WEIGHT_MULT_BACKPACK 0.70
+#define STORAGE_WEIGHT_MULT_SATCHEL 0.75
+#define STORAGE_WEIGHT_MULT_DUFFEL 0.85
+#define STORAGE_WEIGHT_MULT_BAG 0.65
+/// Bluespace pockets. Not weightless, so a bag of holding is still a choice.
+#define STORAGE_WEIGHT_MULT_HOLDING 0.15
 
 // Needs <-> weight link.
 // Share of the basic lift a carbon keeps while thirsty or hungry. The worse of the two applies.

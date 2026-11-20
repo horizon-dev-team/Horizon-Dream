@@ -53,6 +53,5 @@
 		cell.give(500)
 		if(!chambered)
 			recharge_newshot(TRUE)
-		sound_hint()
 		flick("nasr_reload", src)
 		playsound(src, '_horizon/sound/weapons/guns/energy/nasrcharge.wav', 75, FALSE)

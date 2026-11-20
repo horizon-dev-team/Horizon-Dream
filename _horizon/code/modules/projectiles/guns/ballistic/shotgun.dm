@@ -406,7 +406,6 @@
 		playsound(src, safety_off_sound, safety_sound_volume, safety_sound_vary)
 	else
 		playsound(src, safety_on_sound, safety_sound_volume, safety_sound_vary)
-	sound_hint()
 	return ITEM_INTERACT_SUCCESS
 
 /obj/item/gun/ballistic/shotgun/hd_gun/denominator/shoot_live_shot(mob/living/user)

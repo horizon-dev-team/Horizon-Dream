@@ -74,8 +74,8 @@
 		animate(src, pixel_x = new_pixel_x, time = recoil_burst_speed, easing = recoil_burst_easing, flags = ANIMATION_PARALLEL)
 		animate(src, pixel_y = new_pixel_y, time = recoil_burst_speed, easing = recoil_burst_easing, flags = ANIMATION_PARALLEL)
 		sleep(recoil_burst_speed)
-		animate(src, transform = return_matrix, pixel_x = old_pixel_x, pixel_y = old_pixel_y, time = return_burst_speed, easing = recoil_burst_easing, flags = ANIMATION_PARALLEL)
-		animate(src, pixel_x = old_pixel_x, time = return_burst_speed, easing = recoil_burst_easing, flags = ANIMATION_PARALLEL)
-		animate(src, pixel_y = old_pixel_y, time = return_burst_speed, easing = recoil_burst_easing, flags = ANIMATION_PARALLEL)
+		animate(src, transform = return_matrix, pixel_x = old_pixel_x, pixel_y = old_pixel_y, time = return_burst_speed, easing = return_burst_easing, flags = ANIMATION_PARALLEL)
+		animate(src, pixel_x = old_pixel_x, time = return_burst_speed, easing = return_burst_easing, flags = ANIMATION_PARALLEL)
+		animate(src, pixel_y = old_pixel_y, time = return_burst_speed, easing = return_burst_easing, flags = ANIMATION_PARALLEL)
 		sleep(return_burst_speed)
 	doing_recoil_burst_animation = FALSE

@@ -168,11 +168,10 @@
 		//Can't shoot stuff inside us.
 		if(target in user.contents)
 			return
-		var/list/modifiers = params2list(params)
 		//Gun does not fire when flogging
-		if((safety_flags & GUN_SAFETY_NO_FLOGGING) && IS_HARM_INTENT(user, modifiers))
+		if((safety_flags & GUN_SAFETY_NO_FLOGGING) && user.combat_mode)
 			return
-		if(iscarbon(target) && !IS_HARM_INTENT(user, modifiers))
+		if(iscarbon(target) && !user.combat_mode)
 			var/mob/living/carbon/carbon_target = target
 			for(var/datum/wound/wound as anything in carbon_target.all_wounds)
 				if(wound.try_treating(src, user))
@@ -201,8 +200,7 @@
 	//DUAL (or more!) WIELDING
 	var/bonus_spread = 0
 	var/loop_counter = 0
-	var/list/modifiers = params2list(params)
-	if(ishuman(user) && IS_HARM_INTENT(user, modifiers) && !HAS_TRAIT(user, TRAIT_NO_GUN_AKIMBO))
+	if(ishuman(user) && user.combat_mode && !HAS_TRAIT(user, TRAIT_NO_GUN_AKIMBO))
 		var/mob/living/carbon/human/human_user = user
 		for(var/obj/item/gun/other_gun in human_user.held_items)
 			if((other_gun == src) || (other_gun.weapon_weight >= WEAPON_MEDIUM))
@@ -285,7 +283,6 @@
 		to_chat(user, dry_fire_message)
 	if(dry_fire_sound)
 		playsound(src, dry_fire_sound, dry_fire_sound_volume, dry_fire_sound_vary)
-	sound_hint()
 
 /obj/item/gun/proc/initialize_full_auto()
 	if(!full_auto)
@@ -329,7 +326,6 @@
 	if(user)
 		to_chat(user, span_notice("I [safety_flags & GUN_SAFETY_ENABLED ? "enable" : "disable"] [src]'s safety."))
 		user.update_mouse_pointer()
-	sound_hint()
 	update_appearance()
 	// Update safety HUD button icon
 	for(var/datum/action/item_action/toggle_safety/safety_action in actions)

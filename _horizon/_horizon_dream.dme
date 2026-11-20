@@ -24,7 +24,6 @@
 #include "code\__HELPERS\size_icons.dm"
 #include "code\__HELPERS\sound_hint.dm"
 #include "code\__HELPERS\text.dm"
-#include "code\_globalvars\horizon_globals.dm"
 #include "code\datums\components\attachment.dm"
 #include "code\datums\components\attachment_holder.dm"
 #include "code\datums\datums\storage\subtypes.dm"

@@ -1,3 +1,4 @@
+import { storage } from 'common/storage';
 import {
   type CSSProperties,
   type MouseEvent,
@@ -7,7 +8,6 @@ import {
   useRef,
   useState,
 } from 'react';
-import { storage } from 'common/storage';
 import { Box, Button, Modal, Section, Stack } from 'tgui-core/components';
 import { classes } from 'tgui-core/react';
 
@@ -46,7 +46,7 @@ export type ServerState = {
   returning?: boolean;
 };
 
-type LobbyTheme = 'orange' | 'green' | 'blue';
+type LobbyTheme = 'orange' | 'green' | 'blue' | 'red';
 
 const FILTER_STORAGE_KEY = 'lobby-filter-disabled';
 const TINT_STORAGE_KEY = 'lobby-bg-tint-disabled';
@@ -141,13 +141,15 @@ export function LobbyMenu() {
     storage.get(FILTER_STORAGE_KEY).then((val) => setFilterDisabled(!!val));
     storage.get(TINT_STORAGE_KEY).then((val) => setTintDisabled(!!val));
     storage.get(BG_STORAGE_KEY).then((val) => setBgDisabled(!!val));
-    storage.get(THEME_STORAGE_KEY).then((val) =>
-      setTheme(
-        val === 'blue' || val === 'green' || val === 'orange'
-          ? val
-          : 'orange',
-      ),
-    );
+    storage
+      .get(THEME_STORAGE_KEY)
+      .then((val) =>
+        setTheme(
+          val === 'blue' || val === 'green' || val === 'orange' || val === 'red'
+            ? val
+            : 'orange',
+        ),
+      );
     storage.get(VIDEO_STORAGE_KEY).then((val) => {
       setVideoEnabled(val === undefined || val === null ? true : !!val);
     });
@@ -231,7 +233,8 @@ export function LobbyMenu() {
         video.paused &&
         !video.seeking &&
         video.currentTime > 0 &&
-        (video.duration === 0 || !isFinite(video.duration) ||
+        (video.duration === 0 ||
+          !isFinite(video.duration) ||
           video.currentTime >= video.duration - 0.1)
       ) {
         restart();
@@ -294,9 +297,7 @@ export function LobbyMenu() {
   const videoOn = !ss.transparent && videoEnabled;
   const bgVideoUrl = videoOn && ss.videoUrl ? ss.videoUrl : null;
   const bgImageUrl =
-    !ss.transparent && !bgDisabled && !bgVideoUrl
-      ? ss.backgroundUrl
-      : null;
+    !ss.transparent && !bgDisabled && !bgVideoUrl ? ss.backgroundUrl : null;
   const bgReveal = userSwapped ? 'bgSwap' : 'bgLoad';
   const pregame = ss.gamePhase === 'pregame' || ss.gamePhase === 'startup';
   const typingDelay = (index: number) =>
@@ -633,10 +634,7 @@ function CharacterPreview({
             // The asset may still be in transit right after login; remount
             // the img until the file arrives in the client cache
             if (imgRetry < PREVIEW_IMG_RETRIES) {
-              setTimeout(
-                () => setImgRetry((n) => n + 1),
-                PREVIEW_IMG_RETRY_MS,
-              );
+              setTimeout(() => setImgRetry((n) => n + 1), PREVIEW_IMG_RETRY_MS);
             }
           }}
         />
@@ -923,6 +921,12 @@ function LobbySettings({
                 >
                   Blue
                 </Button>
+                <Button
+                  selected={theme === 'red'}
+                  onClick={() => pickTheme('red')}
+                >
+                  Red
+                </Button>
               </SettingsRow>
 
               <SettingsRow label="CRT filter">
@@ -1000,7 +1004,6 @@ function LobbySettings({
                   </Button>
                 </SettingsRow>
               )}
-
             </Stack>
           </Section>
         </Modal>

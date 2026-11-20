@@ -96,6 +96,10 @@
 	var/restaurant_order = /datum/custom_order/reagent/drink
 	/// How we interact with random generators
 	var/randomized_spawns = REAGENT_SPAWN_NO_RANDOM
+// [HORIZON-ADD] NEED_WATER
+	///thirst factor to restore thirst
+	var/thirst_factor = 0
+// [/HORIZON-ADD]
 
 /datum/reagent/New()
 	SHOULD_CALL_PARENT(TRUE)
@@ -138,6 +142,11 @@
 		var/amount = round(reac_volume * clamp((1 - touch_protection), 0, 1), 0.1)
 		if(amount >= 0.5)
 			exposed_mob.reagents.add_reagent(type, amount, data, holder.chem_temp, purity)
+
+// [HORIZON-ADD] NEED_WATER
+	if((methods & INGEST) && thirst_factor)
+		exposed_mob.adjust_thirst(reac_volume * thirst_factor)
+// [/HORIZON-ADD]
 
 /// Applies this reagent to an [/obj]
 /datum/reagent/proc/expose_obj(obj/exposed_obj, reac_volume, methods=TOUCH, show_message=TRUE)

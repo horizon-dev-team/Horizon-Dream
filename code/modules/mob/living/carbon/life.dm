@@ -690,8 +690,12 @@
 //Stomach//
 ///////////
 
-/mob/living/carbon/get_fullness(only_consumable)
+// [HORIZON-EDIT] NEED_WATER
+/mob/living/carbon/get_fullness(only_consumable, thirst_flag = FALSE)
+	if(thirst_flag)
+		return thirst
 	. = ..()
+// [/HORIZON-EDIT]
 
 	var/obj/item/organ/stomach/belly = get_organ_slot(ORGAN_SLOT_STOMACH)
 	if(!belly) //nothing to see here if we do not have a stomach

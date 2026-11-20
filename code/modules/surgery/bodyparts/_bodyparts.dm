@@ -124,14 +124,16 @@
 	/// If we're bleeding, which icon are we displaying on this part
 	var/bleed_overlay_icon
 
+	// [HORIZON-EDIT] STATUS_TWEAKS
 	//Damage messages used by help_shake_act()
-	var/light_brute_msg = "bruised and feels sore"
-	var/medium_brute_msg = "battered"
-	var/heavy_brute_msg = "mangled"
+	var/light_brute_msg = "BRUISED"
+	var/medium_brute_msg = "BATTERED"
+	var/heavy_brute_msg = "MANGLED"
 
-	var/light_burn_msg = "red and feels numb"
-	var/medium_burn_msg = "blistered"
-	var/heavy_burn_msg = "like its peeling away"
+	var/light_burn_msg = "BURNED"
+	var/medium_burn_msg = "BLISTERED"
+	var/heavy_burn_msg = "CHARRED"
+	// [/HORIZON-EDIT]
 
 	//Damage messages used by examine(). the desc that is most common accross all bodyparts gets shown
 	var/list/damage_examines = list(
@@ -391,46 +393,41 @@
 	var/status = ""
 	var/self_aware = HAS_TRAIT(examiner, TRAIT_SELF_AWARE)
 
+	// [HORIZON-EDIT] STATUS_TWEAKS
 	if(self_aware)
 		if(!shown_brute && !shown_burn)
-			status = "no damage"
+			status = "\[[span_nicegreen("NO DAMAGE")]\]"
 		else
-			status = "[shown_brute] brute damage and [shown_burn] burn damage"
-
+			if(shown_brute > DAMAGE_PRECISION)
+				status += "\[<font color='[SELF_CHECK_BRUTE_COLOR]'>BRUTE: [shown_brute]</font>\]"
+			if(shown_burn > DAMAGE_PRECISION)
+				status += "\[<font color='[SELF_CHECK_BURN_COLOR]'>BURN: [shown_burn]</font>\]"
 	else
-		if(shown_brute > (max_damage * 0.8))
-			status += heavy_brute_msg
-		else if(shown_brute > (max_damage * 0.4))
-			status += medium_brute_msg
-		else if(shown_brute > DAMAGE_PRECISION)
-			status += light_brute_msg
+		if(shown_brute > DAMAGE_PRECISION)
+			status += "\[<font color='[SELF_CHECK_BRUTE_COLOR]'>"
+			if(shown_brute > (max_damage * 0.8))
+				status += "<b>[heavy_brute_msg]</b>"
+			else if(shown_brute > (max_damage * 0.4))
+				status += medium_brute_msg
+			else
+				status += "<i>[light_brute_msg]</i>"
+			status += "</font>\]"
 
-		if(shown_brute > DAMAGE_PRECISION && shown_burn > DAMAGE_PRECISION)
-			status += " and "
-
-		if(shown_burn > (max_damage * 0.8))
-			status += heavy_burn_msg
-		else if(shown_burn > (max_damage * 0.2))
-			status += medium_burn_msg
-		else if(shown_burn > DAMAGE_PRECISION)
-			status += light_burn_msg
+		if(shown_burn > DAMAGE_PRECISION)
+			status += "\[<font color='[SELF_CHECK_BURN_COLOR]'>"
+			if(shown_burn > (max_damage * 0.8))
+				status += "<b>[heavy_burn_msg]</b>"
+			else if(shown_burn > (max_damage * 0.2))
+				status += medium_burn_msg
+			else
+				status += "<i>[light_burn_msg]</i>"
+			status += "</font>\]"
 
 		if(status == "")
-			status = "OK"
+			status = "\[[span_nicegreen("OK")]\]"
 
-	var/no_damage
-	if(status == "OK" || status == "no damage")
-		no_damage = TRUE
-
-	var/is_disabled = ""
-	if(bodypart_disabled)
-		is_disabled = " is disabled"
-		if(no_damage)
-			is_disabled += " but otherwise"
-		else
-			is_disabled += " and"
-
-	check_list += "<span class='[no_damage ? "notice" : "warning"]'>Your [plaintext_zone][is_disabled][self_aware ? " has " : " looks "][status].</span>"
+	var/is_disabled = bodypart_disabled ? "\[<span class='danger'>PARALYZED</span>\]" : ""
+	check_list += "[is_disabled][status]"
 
 	var/adept_organ_feeler = owner == examiner && HAS_TRAIT(examiner, TRAIT_SELF_AWARE)
 	for(var/obj/item/organ/organ in src)
@@ -438,59 +435,57 @@
 			continue
 		var/feeling = organ.feel_for_damage(adept_organ_feeler)
 		if(feeling)
-			check_list += "\t[feeling]"
+			check_list += "\[[feeling]\]"
 
 	for(var/datum/wound/wound as anything in wounds)
 		var/wound_desc = wound.get_self_check_description(adept_organ_feeler)
 		if(wound_desc)
-			check_list += "\t[wound_desc]"
+			check_list += "\[[wound_desc]\]"
 
 	var/surgery_check = get_surgery_self_check()
 	if(surgery_check)
-		check_list += "\t[surgery_check]"
+		check_list += "\[[surgery_check]\]"
 
 	for(var/obj/item/embedded_thing as anything in embedded_objects)
 		if(embedded_thing.get_embed().stealthy_embed)
 			continue
 		var/harmless = embedded_thing.get_embed().is_harmless()
-		var/stuck_wordage = harmless ? "stuck to" : "embedded in"
-		var/embed_text = "\t<a href='byond://?src=[REF(examiner)];embedded_object=[REF(embedded_thing)];embedded_limb=[REF(src)]'>There is [icon2html(embedded_thing, examiner)] \a [embedded_thing] [stuck_wordage] your [plaintext_zone]!</a>"
-		if (harmless)
-			check_list += span_italics(span_notice(embed_text))
+		var/embed_text = "<a href='byond://?src=[REF(examiner)];embedded_object=[REF(embedded_thing)];embedded_limb=[REF(src)]'>[icon2html(embedded_thing, examiner)] [uppertext(embedded_thing.name)]</a>"
+		if(harmless)
+			check_list += "\[[span_italics(span_notice(embed_text))]\]"
 		else
-			check_list += span_boldwarning(embed_text)
+			check_list += "\[[span_boldwarning(embed_text)]\]"
 
 	var/obj/item/stack/medical/wrap/current_gauze = LAZYACCESS(applied_items, LIMB_ITEM_GAUZE)
 	var/obj/item/tourniquet/current_tourniquet = LAZYACCESS(applied_items, LIMB_ITEM_TOURNIQUET)
 	if(current_tourniquet)
-		var/tourniquet_href = "<a href='byond://?src=[REF(owner)];remove_tourniquet=[REF(src)]'>[icon2html(current_tourniquet, examiner)] \a [current_tourniquet]</a>"
-		var/tourniquet_text = "\tThere is [tourniquet_href] tightly secured around [body_zone == BODY_ZONE_HEAD ? "your neck!" : "it."]"
+		var/tourniquet_href = "<a href='byond://?src=[REF(owner)];remove_tourniquet=[REF(src)]'>[icon2html(current_tourniquet, examiner)] TOURNIQUET</a>"
 		if(body_zone == BODY_ZONE_HEAD)
-			check_list += span_boldwarning(tourniquet_text)
+			check_list += "\[[span_boldwarning(tourniquet_href)]\]"
 		else
-			check_list += span_warning(tourniquet_text)
+			check_list += "\[[span_warning(tourniquet_href)]\]"
 	if(current_gauze)
-		var/gauze_href = "<a href='byond://?src=[REF(examiner)];gauze_limb=[REF(src)]'>[icon2html(current_gauze, examiner)] \a [current_gauze]</a>"
-		var/gauze_text = "\tThere is [gauze_href] wrapped around your [name]."
-		check_list += span_notice(gauze_text)
+		var/gauze_href = "<a href='byond://?src=[REF(examiner)];gauze_limb=[REF(src)]'>[icon2html(current_gauze, examiner)] GAUZE</a>"
+		check_list += "\[[span_notice(gauze_href)]\]"
 
 	else if(can_bleed())
 		var/bleed_text = ""
 		switch(cached_bleed_rate)
 			if(0.2 to 1)
-				bleed_text = span_warning("It's lightly bleeding.")
+				bleed_text = "\[<font color='[SELF_CHECK_BLEED_COLOR]'><i>BLEEDING</i></font>\]"
 			if(1 to 2)
-				bleed_text = span_warning("It's bleeding.")
+				bleed_text = "\[<font color='[SELF_CHECK_BLEED_COLOR]'>BLEEDING</font>\]"
 			if(3 to 4)
-				bleed_text = span_warning("It's bleeding heavily!")
+				bleed_text = "\[<font color='[SELF_CHECK_BLEED_COLOR]'><b>BLEEDING!</b></font>\]"
 			if(4 to INFINITY)
-				bleed_text = span_warning("It's bleeding profusely!")
+				bleed_text = "\[<span class='slightly_larger'><font color='[SELF_CHECK_BLEED_COLOR]'><b>BLEEDING!!!</b></font></span>\]"
 
 		if(bleed_text)
-			check_list += "\t[span_tooltip("You are loosing blood. You should wrap your limb in gauze \
-				or apply pressure to it by grabbing yourself (while targeting the limb) to stem the flow.", bleed_text)]"
+			check_list += span_tooltip("You are loosing blood. You should wrap your limb in gauze \
+				or apply pressure to it by grabbing yourself (while targeting the limb) to stem the flow.", bleed_text)
 
-	return jointext(check_list, "<br>")
+	return "<tr><td valign='top'><b>[uppertext(plaintext_zone)]:</b></td><td>[jointext(check_list, " ")]</td></tr>"
+	// [/HORIZON-EDIT]
 
 /// Returns all surgical states, filtering out stuff which should not be reported
 /obj/item/bodypart/proc/get_reported_surgery_state()

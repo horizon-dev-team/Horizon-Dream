@@ -1558,7 +1558,7 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 
 /atom/movable/screen/hydration/MouseEntered(location, control, params)
 	. = ..()
-	openToolTip(usr, src, params, title = "Hydration", content = hydration_text())
+	openToolTip(usr, src, params, title = "Thirst", content = hydration_text())
 
 /// Band phrases mirroring the thirst moodlets, shown on hover.
 /atom/movable/screen/hydration/proc/hydration_text()

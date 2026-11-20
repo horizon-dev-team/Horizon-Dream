@@ -1,5 +1,5 @@
-// Horizon overrides for /obj/item/ammo_casing: world-sprite element
-// wiring and the -live icon_state convention.
+// Horizon overrides for /obj/item/ammo_casing: world-sprite element.
+// The -live icon suffix already lives on the upstream casing.
 
 /obj/item/ammo_casing
 	carry_weight = 20 GRAMS
@@ -14,13 +14,9 @@
 		AddElement(/datum/element/world_icon, PROC_REF(update_icon_world))
 
 /obj/item/ammo_casing/update_icon(updates)
+	// update_icon_world swaps the inventory icon for the floor sprite.
 	icon = initial(icon)
 	return ..()
-
-/obj/item/ammo_casing/update_icon_state()
-	. = ..()
-	var/casing_base = base_icon_state || initial(icon_state)
-	icon_state = "[casing_base][loaded_projectile ? "-live" : null]"
 
 /obj/item/ammo_casing/proc/update_icon_world()
 	icon = world_icon

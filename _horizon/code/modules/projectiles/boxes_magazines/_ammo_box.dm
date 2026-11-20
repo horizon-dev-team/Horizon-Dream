@@ -1,21 +1,5 @@
 /obj/item/ammo_box
 	carry_weight = 2 KILOGRAMS
-	var/bullet_spill = list('_horizon/sound/weapons/guns/bullet_spill1.wav', '_horizon/sound/weapons/guns/bullet_spill2.wav', '_horizon/sound/weapons/guns/bullet_spill3.wav')
-	var/bullet_load = list('_horizon/sound/weapons/guns/bullet_load1.wav', '_horizon/sound/weapons/guns/bullet_load2.wav', '_horizon/sound/weapons/guns/bullet_load3.wav')
-
-/obj/item/ammo_box/attack_self(mob/user)
-	var/obj/item/ammo_casing/casing = get_round()
-	if(!casing)
-		return
-
-	casing.forceMove(drop_location())
-	//incase they're using TK
-	if(!user.is_holding(src) || !user.put_in_hands(casing))
-		casing.bounce_away(bounce_angle = null, spread_multiplier = 0.75, still_warm = FALSE, sound_delay = 0)
-	playsound(src, pick(bullet_spill), 60, TRUE)
-	to_chat(user, span_notice("I remove a round from [src]!"))
-	casing.update_appearance()
-	update_appearance()
 
 /// stored_ammo can hold type paths (top_off starting) or live casings (in contents).
 /// Parent get_carry_weight already walks contents; only path entries need an explicit mass.

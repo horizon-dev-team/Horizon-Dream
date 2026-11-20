@@ -152,76 +152,31 @@
 // /obj/item/gun/interact_with_atom_secondary() which checks can_hold_up
 // and adds /datum/component/gunpoint. No need for a horizon override.
 
+// Upstream fire_gun already does signals, pins, suicide, botch and akimbo.
+// Horizon only gates flogging, field-dressing and the pre-fire hook.
 /obj/item/gun/fire_gun(atom/target, mob/living/user, flag, params)
 	if(QDELETED(target))
-		return
-	if(firing_burst)
-		return
-	// Upstream signals: let mobs (implants, MODsuits, etc.) and the gun
-	// itself (attachments via attachment_holder) cancel the shot.
-	if(SEND_SIGNAL(user, COMSIG_MOB_TRYING_TO_FIRE_GUN, src, target, flag, params) & COMPONENT_CANCEL_GUN_FIRE)
-		return
-	if(SEND_SIGNAL(src, COMSIG_GUN_TRY_FIRE, user, target, flag, params) & COMPONENT_CANCEL_GUN_FIRE)
-		return
-	//It's adjacent, is the user, or is on the user's person
+		return NONE
 	if(flag)
-		//Can't shoot stuff inside us.
-		if(target in user.contents)
-			return
-		//Gun does not fire when flogging
-		if((safety_flags & GUN_SAFETY_NO_FLOGGING) && user.combat_mode)
-			return
-		if(iscarbon(target) && !user.combat_mode)
+		if((safety_flags & GUN_SAFETY_NO_FLOGGING) && user?.combat_mode)
+			return NONE
+		if(iscarbon(target) && user && !user.combat_mode)
 			var/mob/living/carbon/carbon_target = target
 			for(var/datum/wound/wound as anything in carbon_target.all_wounds)
 				if(wound.try_treating(src, user))
-					return
-
-	//Check if the user can use the gun, if the user isn't alive (turrets) assume it can.
-	if(istype(user))
-		if(!can_trigger_gun(user))
-			shoot_with_empty_chamber(user)
-			return
-
-	// Upstream: aiming at our own mouth with an adjacent shot starts the suicide do_after.
-	// Kept after the can_trigger_gun() check so the safety blocks it like any other shot.
-	if(flag && doafter_self_shoot && user.zone_selected == BODY_ZONE_PRECISE_MOUTH)
-		return handle_suicide(user, target, params)
-
-	//Just because you can pull the trigger doesn't mean it can shoot.
-	before_can_shoot_checks(user, FALSE)
-	if(!can_shoot())
+					return NONE
+	// Safety-on is a dry click. Pin failures already message inside handle_pins.
+	if(istype(user) && (safety_flags & GUN_SAFETY_ENABLED))
 		shoot_with_empty_chamber(user)
-		return
-
-	if(check_botched(user, target))
-		return
-
-	//DUAL (or more!) WIELDING
-	var/bonus_spread = 0
-	var/loop_counter = 0
-	if(ishuman(user) && user.combat_mode && !HAS_TRAIT(user, TRAIT_NO_GUN_AKIMBO))
-		var/mob/living/carbon/human/human_user = user
-		for(var/obj/item/gun/other_gun in human_user.held_items)
-			if((other_gun == src) || (other_gun.weapon_weight >= WEAPON_MEDIUM))
-				continue
-			else if(other_gun.can_trigger_gun(user))
-				bonus_spread += dual_wield_spread
-				loop_counter++
-				addtimer(CALLBACK(other_gun, TYPE_PROC_REF(/obj/item/gun, process_fire), target, user, TRUE, params, null, bonus_spread), loop_counter)
-
-	return process_fire(target, user, TRUE, params, null, bonus_spread)
+		return NONE
+	before_can_shoot_checks(user, FALSE)
+	return ..()
 
 /obj/item/gun/can_trigger_gun(mob/living/user, akimbo_usage)
-	// Chain into upstream's checks (can_use_guns + firing pins), then add
-	// horizon's safety check on top. Signature matches upstream so callers
-	// using the akimbo_usage keyword argument don't runtime.
+	// Parent already checks can_use_guns and the firing pin.
 	. = ..()
 	if(!.)
 		return .
-	if(!handle_pins(user))
-		return FALSE
-	// Safety checks: if safety is ENABLED (ON), the gun cannot fire.
 	if(safety_flags & GUN_SAFETY_ENABLED)
 		return FALSE
 	return TRUE
@@ -277,12 +232,6 @@
 		return NONE
 	INVOKE_ASYNC(src, PROC_REF(do_autofire_shot), source, target, shooter, allow_akimbo, params)
 	return COMPONENT_AUTOFIRE_SHOT_SUCCESS //All is well, we can continue shooting
-
-/obj/item/gun/shoot_with_empty_chamber(mob/living/user as mob|obj)
-	if(ismob(user) && dry_fire_message)
-		to_chat(user, dry_fire_message)
-	if(dry_fire_sound)
-		playsound(src, dry_fire_sound, dry_fire_sound_volume, dry_fire_sound_vary)
 
 /obj/item/gun/proc/initialize_full_auto()
 	if(!full_auto)

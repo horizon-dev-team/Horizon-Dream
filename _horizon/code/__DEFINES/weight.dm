@@ -15,6 +15,8 @@
 #define HUMAN_WEIGHT 60
 /// Weight required for someone to fall in water
 #define DROWNING_WEIGHT (HUMAN_WEIGHT * 2)
+/// Share of a rider's body weight the carrier actually bears. A piggyback rider grips 50% of their own weight, the rest is on the carrier. A fireman carry is similar.
+#define RIDER_WEIGHT_MULT 0.5
 
 /// Mass of one reagent unit when the container actually holds liquid.
 /// 100u = 1 L = 1 kg of water. Doses (pills, patches, cigarettes) use REAGENT_WEIGHT_DOSE instead.
@@ -26,8 +28,8 @@
 #define ENCUMBRANCE_DEFAULT_BASIC_LIFT 5
 /// maximum_carry_weight is this many times the basic lift.
 #define ENCUMBRANCE_MAXIMUM_PER_LIFT 10
-/// Load, in basic lifts, at which the carbon collapses (ENCUMBRANCE_IMPOSSIBLE). 12 = 120 kg at the default lift,
-/// about twice the body weight of an average human, the realistic ceiling for a short carry.
+/// Load, in basic lifts, at which the carbon collapses (ENCUMBRANCE_IMPOSSIBLE). 12 = 60 kg at the halved
+/// default lift - the body weight of one average human, the realistic ceiling for a short carry.
 #define ENCUMBRANCE_COLLAPSE_PER_LIFT 12
 /// Base move-delay used to scale encumbrance slowdown. Tunable.
 #define ENCUMBRANCE_BASIC_SLOWDOWN 1.5
@@ -42,10 +44,15 @@
 #define STORAGE_WEIGHT_MULT_BAG 0.65
 /// Bluespace pockets. Not weightless, so a bag of holding is still a choice.
 #define STORAGE_WEIGHT_MULT_HOLDING 0.15
-/// Belts spread load over the hips. 20% off.
-#define STORAGE_WEIGHT_MULT_BELT 0.80
+/// Belts spread load over the hips. 50% off.
+#define STORAGE_WEIGHT_MULT_BELT 0.50
 /// MODsuit servos carry half of what the suit itself holds: parts (stowed or deployed), core and modules. 50% off.
 #define STORAGE_WEIGHT_MULT_MODSUIT 0.50
+
+/// RPED and sheet snatcher: machine parts and sheets are bulky, not heavy.
+#define STORAGE_WEIGHT_MULT_PART_REPLACER 0.20
+/// Bluespace RPED: the pocket dimension does most of the lifting.
+#define STORAGE_WEIGHT_MULT_BLUESPACE 0.05
 
 // Needs <-> weight.
 // Share of the basic lift a carbon keeps while thirsty or hungry. The worse of the two applies.

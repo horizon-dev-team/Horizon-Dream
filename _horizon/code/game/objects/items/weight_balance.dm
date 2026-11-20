@@ -29,11 +29,11 @@
 /obj/item/storage/belt
 	storage_weight_multiplier = STORAGE_WEIGHT_MULT_BELT
 
-/obj/item/storage/bag/trash/bluespace
-	storage_weight_multiplier = STORAGE_WEIGHT_MULT_HOLDING
+/obj/item/storage/belt/utility/full/powertools/holding
+	storage_weight_multiplier = STORAGE_WEIGHT_MULT_BLUESPACE
 
-/obj/item/storage/bag/ore/holding
-	storage_weight_multiplier = STORAGE_WEIGHT_MULT_HOLDING
+/obj/item/storage/bag/trash/bluespace
+	storage_weight_multiplier = STORAGE_WEIGHT_MULT_BLUESPACE
 
 // --- doses are not litres ---
 /obj/item/reagent_containers/applicator
@@ -233,3 +233,161 @@
 
 /obj/item/reagent_containers/cup/bottle
 	carry_weight = 0.08
+
+// --- tool containers: contents relief; shells weigh like the hardware they are ---
+/obj/item/storage/part_replacer
+	carry_weight = 2.5
+	storage_weight_multiplier = STORAGE_WEIGHT_MULT_PART_REPLACER
+
+/obj/item/storage/part_replacer/bluespace
+	carry_weight = 2
+	storage_weight_multiplier = STORAGE_WEIGHT_MULT_BLUESPACE
+
+/obj/item/storage/bag/ore
+	storage_weight_multiplier = STORAGE_WEIGHT_MULT_PART_REPLACER
+
+/obj/item/storage/bag/ore/holding
+	storage_weight_multiplier = STORAGE_WEIGHT_MULT_BLUESPACE
+
+/obj/item/storage/bag/sheetsnatcher
+	storage_weight_multiplier = STORAGE_WEIGHT_MULT_PART_REPLACER
+
+// --- sheets: kilograms per sheet; a stack weighs per-sheet mass x amount ---
+/obj/item/stack/sheet/iron
+	carry_weight_per_unit = 0.4
+/obj/item/stack/sheet/plasteel
+	carry_weight_per_unit = 0.6
+/obj/item/stack/sheet/runed_metal
+	carry_weight_per_unit = 0.4
+/obj/item/stack/sheet/bronze
+	carry_weight_per_unit = 0.45
+/obj/item/stack/sheet/hauntium
+	carry_weight_per_unit = 0.5
+/obj/item/stack/sheet/mineral/metal_hydrogen
+	carry_weight_per_unit = 0.5
+/obj/item/stack/sheet/mineral/runite
+	carry_weight_per_unit = 0.55
+/obj/item/stack/sheet/mineral/zaukerite
+	carry_weight_per_unit = 0.6
+/obj/item/stack/sheet/mineral/mythril
+	carry_weight_per_unit = 0.2
+/obj/item/stack/sheet/mineral/adamantine
+	carry_weight_per_unit = 0.8
+/obj/item/stack/sheet/mineral/abductor
+	carry_weight_per_unit = 0.35
+/obj/item/stack/sheet/mineral/coal
+	carry_weight_per_unit = 0.3
+/obj/item/stack/sheet/plastic
+	carry_weight_per_unit = 0.15
+/obj/item/stack/sheet/glass
+	carry_weight_per_unit = 0.25
+/obj/item/stack/sheet/rglass
+	carry_weight_per_unit = 0.35
+/obj/item/stack/sheet/plasmaglass
+	carry_weight_per_unit = 0.4
+/obj/item/stack/sheet/plasmarglass
+	carry_weight_per_unit = 0.5
+/obj/item/stack/sheet/titaniumglass
+	carry_weight_per_unit = 0.45
+/obj/item/stack/sheet/plastitaniumglass
+	carry_weight_per_unit = 0.55
+/obj/item/stack/sheet/mineral/gold
+	carry_weight_per_unit = 0.9
+/obj/item/stack/sheet/mineral/uranium
+	carry_weight_per_unit = 0.8
+/obj/item/stack/sheet/mineral/silver
+	carry_weight_per_unit = 0.55
+/obj/item/stack/sheet/mineral/plasma
+	carry_weight_per_unit = 0.4
+/obj/item/stack/sheet/mineral/diamond
+	carry_weight_per_unit = 0.3
+/obj/item/stack/sheet/mineral/titanium
+	carry_weight_per_unit = 0.35
+/obj/item/stack/sheet/mineral/plastitanium
+	carry_weight_per_unit = 0.55
+/obj/item/stack/sheet/mineral/bananium
+	carry_weight_per_unit = 0.3
+/obj/item/stack/sheet/mineral/sandstone
+	carry_weight_per_unit = 0.4
+/obj/item/stack/sheet/mineral/sandbags
+	carry_weight_per_unit = 0.8
+/obj/item/stack/sheet/mineral/snow
+	carry_weight_per_unit = 0.1
+/obj/item/stack/sheet/mineral/wood
+	carry_weight_per_unit = 0.25
+/obj/item/stack/sheet/mineral/bamboo
+	carry_weight_per_unit = 0.1
+/obj/item/stack/sheet/cardboard
+	carry_weight_per_unit = 0.08
+/obj/item/stack/sheet/paperframes
+	carry_weight_per_unit = 0.1
+/obj/item/stack/sheet/cloth
+	carry_weight_per_unit = 0.05
+/obj/item/stack/sheet/durathread
+	carry_weight_per_unit = 0.06
+/obj/item/stack/sheet/cotton
+	carry_weight_per_unit = 0.03
+/obj/item/stack/sheet/bone
+	carry_weight_per_unit = 0.15
+/obj/item/stack/sheet/animalhide
+	carry_weight_per_unit = 0.1
+/obj/item/stack/sheet/hot_ice
+	carry_weight_per_unit = 0.45
+/obj/item/stack/sheet/lessergem
+	carry_weight_per_unit = 0.2
+/obj/item/stack/sheet/greatergem
+	carry_weight_per_unit = 0.4
+
+// --- sheet families the first pass missed: hide chain, food slabs, telecrystals ---
+/obj/item/stack/sheet/bluespace_crystal
+	carry_weight_per_unit = 0.1
+/obj/item/stack/sheet/telepolycrystal
+	carry_weight_per_unit = 0.03
+/obj/item/stack/sheet/wethide
+	carry_weight_per_unit = 0.12
+/obj/item/stack/sheet/hairlesshide
+	carry_weight_per_unit = 0.08
+/obj/item/stack/sheet/leather
+	carry_weight_per_unit = 0.06
+/obj/item/stack/sheet/sinew
+	carry_weight_per_unit = 0.03
+/obj/item/stack/sheet/meat
+	carry_weight_per_unit = 0.15
+/obj/item/stack/sheet/pizza
+	carry_weight_per_unit = 0.15
+
+// --- ores: a raw chunk is rock plus metal, so it outweighs its refined sheet ---
+// --- (~1.35x now). Base covers plain rock and any future subtype. ---
+/obj/item/stack/ore
+	carry_weight_per_unit = 0.25
+/obj/item/stack/ore/slag
+	carry_weight_per_unit = 0.2
+/obj/item/stack/ore/iron
+	carry_weight_per_unit = 0.55
+/obj/item/stack/ore/glass
+	carry_weight_per_unit = 0.3
+/obj/item/stack/ore/plasma
+	carry_weight_per_unit = 0.5
+/obj/item/stack/ore/silver
+	carry_weight_per_unit = 0.75
+/obj/item/stack/ore/gold
+	carry_weight_per_unit = 1.2
+/obj/item/stack/ore/uranium
+	carry_weight_per_unit = 1.1
+/obj/item/stack/ore/titanium
+	carry_weight_per_unit = 0.45
+/obj/item/stack/ore/diamond
+	carry_weight_per_unit = 0.35
+/obj/item/stack/ore/bananium
+	carry_weight_per_unit = 0.4
+/obj/item/stack/ore/bluespace_crystal
+	carry_weight_per_unit = 0.15
+
+// --- construction stacks: cut from sheets, so they weigh the fraction they yield ---
+// 1 iron sheet -> 2 rods (0.2), 1 sheet -> 4 floor tiles (0.1); a cable length is a wire strip.
+/obj/item/stack/rods
+	carry_weight_per_unit = 0.2
+/obj/item/stack/tile
+	carry_weight_per_unit = 0.1
+/obj/item/stack/cable_coil
+	carry_weight_per_unit = 0.02

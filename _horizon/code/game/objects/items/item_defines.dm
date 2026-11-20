@@ -42,3 +42,21 @@
 	var/obj/item/container = parent
 	if(istype(container))
 		. *= container.storage_weight_multiplier
+
+// --- stacks: the mass is per unit and scales with the amount ---
+/// Kilograms one unit of this stack adds to a mob's encumbrance. Null (default)
+/// keeps the flat w_class-derived mass regardless of the stack size.
+/obj/item/stack
+	var/carry_weight_per_unit = null
+
+/// A stack with a per-unit mass weighs that mass times its amount; the plain
+/// item default (reagents, storage) does not apply to material stacks.
+/obj/item/stack/get_carry_weight(list/seen)
+	if(isnull(carry_weight_per_unit))
+		return ..()
+	if(seen && (src in seen))
+		return 0
+	if(!seen)
+		seen = list()
+	seen += src
+	return carry_weight_per_unit * amount

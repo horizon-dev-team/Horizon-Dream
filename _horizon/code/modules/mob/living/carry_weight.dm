@@ -97,7 +97,7 @@
 		. -= modsuit.get_deployed_weight_relief()
 	// Carrying another human on your back adds their body weight.
 	for(var/mob/living/carbon/human/rider in buckled_mobs)
-		. += HUMAN_WEIGHT
+		. += HUMAN_WEIGHT * RIDER_WEIGHT_MULT
 	carry_weight = .
 	update_encumbrance()
 	// Propagate to whoever we're buckled to (piggyback chain).
@@ -185,6 +185,14 @@
 /mob/living/carbon/proc/notify_encumbrance_change()
 	var/atom/movable/screen/encumbrance/encumbrance_hud = hud_used?.screen_objects[HUD_MOB_ENCUMBRANCE]
 	encumbrance_hud?.update_status()
+
+/mob/living/carbon/human/post_buckle_mob(mob/living/buckled_mob)
+	update_carry_weight()
+	return ..()
+
+/mob/living/carbon/human/post_unbuckle_mob(mob/living/unbuckled_mob)
+	update_carry_weight()
+	return ..()
 
 /datum/component/carry_weight
 	var/refresh_timer

@@ -1246,6 +1246,11 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 		animate(target.get_filter("status_warning"), alpha = 200, time = 1.5 SECONDS, loop = -1)
 		animate(alpha = 0, time = 1.5 SECONDS)
 
+/// Need indicators close their hover tooltip when the mouse leaves them.
+/atom/movable/screen/need_status/MouseExited(location, control, params)
+	closeToolTip(usr)
+	return ..()
+
 // Hunger is drawn as a burger over a crossfading status circle instead of a bar.
 #define HUNGER_CIRCLE_STARVING 0
 #define HUNGER_CIRCLE_VERY_HUNGRY 1
@@ -1260,6 +1265,7 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 	name = "hunger"
 	icon_state = "hburger"
 	screen_loc = ui_hunger
+	mouse_over_pointer = MOUSE_HAND_POINTER
 	/// Which circle of the status atlas we are on (HUNGER_CIRCLE_*)
 	VAR_PRIVATE/circle_level
 	/// The last fullness we recorded
@@ -1274,6 +1280,28 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 		return
 
 	update_status(instant = TRUE)
+
+/atom/movable/screen/hunger/MouseEntered(location, control, params)
+	. = ..()
+	openToolTip(usr, src, params, title = "Hunger", content = hunger_text())
+
+/// Band phrases mirroring the nutrition moodlets, shown on hover.
+/atom/movable/screen/hunger/proc/hunger_text()
+	switch(circle_level)
+		if(HUNGER_CIRCLE_STARVING)
+			return "I'm starving!"
+		if(HUNGER_CIRCLE_VERY_HUNGRY)
+			return "I'm hungry!"
+		if(HUNGER_CIRCLE_HUNGRY)
+			return "I'm getting a bit hungry."
+		if(HUNGER_CIRCLE_FINE)
+			return "I'm not hungry."
+		if(HUNGER_CIRCLE_FED)
+			return "I have recently had some food."
+		if(HUNGER_CIRCLE_WELL_FED)
+			return "I'm stuffed!"
+		if(HUNGER_CIRCLE_OVERATE)
+			return "I think I've eaten too much."
 
 /// Works out the hunger circle level and fullness from the mob. Special diets pin both.
 /atom/movable/screen/hunger/proc/update_hunger_state()
@@ -1508,6 +1536,7 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 	name = "hydration"
 	icon_state = "hhydration"
 	screen_loc = ui_hydration
+	mouse_over_pointer = MOUSE_HAND_POINTER
 	/// Which circle of the status atlas we are on (HYDRATION_CIRCLE_*)
 	VAR_PRIVATE/circle_level
 	/// The last fullness_water we recorded
@@ -1526,6 +1555,28 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 		return
 
 	update_status(instant = TRUE)
+
+/atom/movable/screen/hydration/MouseEntered(location, control, params)
+	. = ..()
+	openToolTip(usr, src, params, title = "Hydration", content = hydration_text())
+
+/// Band phrases mirroring the thirst moodlets, shown on hover.
+/atom/movable/screen/hydration/proc/hydration_text()
+	switch(circle_level)
+		if(HYDRATION_CIRCLE_DEHYDRATED)
+			return "I need water!"
+		if(HYDRATION_CIRCLE_THIRSTY)
+			return "I could use a drink."
+		if(HYDRATION_CIRCLE_DRY)
+			return "My throat is a bit dry."
+		if(HYDRATION_CIRCLE_FINE)
+			return "I'm not thirsty."
+		if(HYDRATION_CIRCLE_HYDRATED)
+			return "I'm not thirsty anymore."
+		if(HYDRATION_CIRCLE_QUENCHED)
+			return "I'm not thirsty anymore."
+		if(HYDRATION_CIRCLE_OVERHYDRATED)
+			return "I've had too much water..."
 
 /atom/movable/screen/hydration/proc/update_hydration_state()
 	var/mob/living/need_water = hud?.mymob
@@ -1608,10 +1659,6 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 		return
 	openToolTip(usr, src, params, title = "Encumbrance weight", content = "[round(encumbered.carry_weight, 0.01)] / [round(encumbered.maximum_carry_weight, 0.01)] kg - [encumbered.encumbrance_text()]")
 
-/atom/movable/screen/encumbrance/MouseExited(location, control, params)
-	closeToolTip(usr)
-	return ..()
-
 /atom/movable/screen/encumbrance/proc/update_status(instant = FALSE)
 	var/mob/living/carbon/encumbered = hud?.mymob
 	if(!istype(encumbered))
@@ -1634,7 +1681,6 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 			circle_state = "3" // Green
 
 	var/should_show = encumbered.encumbrance != ENCUMBRANCE_NONE
-	var/was_hidden = is_status_hidden()
 	fade_visibility(should_show, instant)
 	if(should_show)
 		set_circle_state(circle_state, instant || alpha == 0)

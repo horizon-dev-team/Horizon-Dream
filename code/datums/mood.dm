@@ -1,6 +1,5 @@
 #define MINOR_INSANITY_PEN 5
 #define MAJOR_INSANITY_PEN 10
-#define MOOD_CATEGORY_NUTRITION "nutrition"
 #define MOOD_CATEGORY_AREA_BEAUTY "area_beauty"
 
 /**
@@ -149,20 +148,20 @@
 /// Handles mood given by hydration
 /datum/mood/proc/update_hydration_moodlets()
 	if(!mob_parent.can_get_thirsty())
-		clear_mood_event("thirst")
+		clear_mood_event(MOOD_CATEGORY_THIRST)
 		return FALSE
 
 	switch(mob_parent.hydration)
 		if(HYDRATION_LEVEL_OVERHYDRATED to INFINITY)
-			add_mood_event("thirst", /datum/mood_event/overhydrated)
+			add_mood_event(MOOD_CATEGORY_THIRST, /datum/mood_event/overhydrated)
 		if(HYDRATION_LEVEL_NORMAL to HYDRATION_LEVEL_OVERHYDRATED)
-			add_mood_event("thirst", /datum/mood_event/hydrated)
+			add_mood_event(MOOD_CATEGORY_THIRST, /datum/mood_event/hydrated)
 		if(HYDRATION_LEVEL_THIRSTY to HYDRATION_LEVEL_NORMAL)
-			clear_mood_event("thirst")
+			clear_mood_event(MOOD_CATEGORY_THIRST)
 		if(HYDRATION_LEVEL_DEHYDRATED to HYDRATION_LEVEL_THIRSTY)
-			add_mood_event("thirst", /datum/mood_event/thirsty)
+			add_mood_event(MOOD_CATEGORY_THIRST, /datum/mood_event/thirsty)
 		if(-INFINITY to HYDRATION_LEVEL_DEHYDRATED)
-			add_mood_event("thirst", /datum/mood_event/dehydrated)
+			add_mood_event(MOOD_CATEGORY_THIRST, /datum/mood_event/dehydrated)
 
 	return TRUE
 // [/HORIZON-ADD]

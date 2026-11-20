@@ -222,9 +222,9 @@
 
 ///Used to convert a SFX define into a .ogg so we can add some variance to sounds. If soundin is already a .ogg, we simply return it
 /proc/get_sfx(soundin)
-	if(!istext(soundin))
+	if(!ispath(soundin, /datum/sound_effect))
 		return soundin
-	var/datum/sound_effect/sfx = GLOB.sfx_datum_by_key[soundin]
+	var/datum/sound_effect/sfx = GLOB.sfx_datums_by_paths[soundin]
 	return sfx?.return_sfx() || soundin
 
 
@@ -259,7 +259,7 @@
 		if(CHANNEL_HEARTBEAT)
 			return list("Heartbeat", "The beating of your heart in crit/cardiac arrest.", "Player & Mobs")
 		if(CHANNEL_BREATH)
-			return list("Breath", "WiP", "Player & Mobs")
+			return list("Breath", "The sound of breathing through a breather mask or oxygen tank.", "Player & Mobs")
 		if(CHANNEL_AMBIENCE)
 			return list("Ambience", "Music that plays when you enter a new room, most prominently in the Detective's Office and Maintenance.", "Environment")
 		if(CHANNEL_SOUND_EFFECTS)

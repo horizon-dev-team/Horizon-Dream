@@ -173,7 +173,13 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 		ui = new(user, src, "PreferencesMenu")
 		ui.set_autoupdate(FALSE)
 		ui.open()
-		character_preview_view.display_to(user, ui.window)
+		// [HORIZON-EDIT] LOBBY
+		character_preview_view?.display_to(user, ui.window)
+	else if(isnull(character_preview_view) && ui.window)
+		character_preview_view = create_character_preview_view(user)
+		character_preview_view?.display_to(user, ui.window)
+		ui.send_full_update()
+		// [/HORIZON-ADD]
 
 /datum/preferences/ui_state(mob/user)
 	return GLOB.always_state
@@ -227,7 +233,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 /datum/preferences/ui_static_data(mob/user)
 	var/list/data = list()
 
-	data["character_preview_view"] = character_preview_view.assigned_map
+	data["character_preview_view"] = character_preview_view?.assigned_map // [HORIZON-EDIT] LOBBY
 	data["overflow_role"] = SSjob.get_job_type(SSjob.overflow_role).title
 	data["window"] = current_window
 
@@ -604,6 +610,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 		body.wipe_state()
 
 	appearance = preferences.render_new_preview_appearance(body, show_job_clothes)
+	preferences.parent?.lobby_menu?.queue_character_refresh() // [HORIZON-ADD] LOBBY
 
 /atom/movable/screen/map_view/char_preview/proc/create_body()
 	QDEL_NULL(body)
@@ -651,6 +658,10 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 		job_preferences -= job.title
 	else
 		job_preferences[job.title] = level
+
+	if(isnewplayer(parent?.mob))
+		var/mob/dead/new_player/lobbyguy = parent.mob
+		lobbyguy.update_ready_report()
 
 	return TRUE
 

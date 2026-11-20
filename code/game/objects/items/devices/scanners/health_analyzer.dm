@@ -23,8 +23,8 @@
 	interaction_flags_click = NEED_LITERACY|NEED_LIGHT|ALLOW_RESTING
 	custom_price = PAYCHECK_COMMAND
 	sound_vary = TRUE
-	pickup_sound = SFX_GENERIC_DEVICE_PICKUP
-	drop_sound = SFX_GENERIC_DEVICE_DROP
+	pickup_sound = /datum/sound_effect/generic_device_pickup
+	drop_sound = /datum/sound_effect/generic_device_drop
 	/// Verbose/condensed
 	var/mode = SCANNER_VERBOSE
 	/// HEALTH/WOUND
@@ -122,6 +122,10 @@
 		return NONE
 	if(user.can_read(src) && !user.is_blind())
 		chemscan(user, interacting_with)
+	// [HORIZON-ADD]
+	if(!user.Adjacent(interacting_with))
+		interacting_with.Beam(user, icon_state = "medbeam", time = 5, beam_color = "#99b4ee")
+	// [/HORIZON-ADD]
 	return ITEM_INTERACT_SUCCESS
 
 /obj/item/healthanalyzer/add_item_context(
@@ -531,7 +535,7 @@
 
 	report_paper.last_healthy_scanned_mob = last_healthy_scanned
 	ADD_TRAIT(patient, TRAIT_RECENTLY_TREATED, ANALYZER_TRAIT)
-	addtimer(TRAIT_CALLBACK_REMOVE(patient, RECENTLY_HEALED_COOLDOWN, ANALYZER_TRAIT), RECENTLY_HEALED_COOLDOWN)
+	addtimer(TRAIT_CALLBACK_REMOVE(patient, TRAIT_RECENTLY_TREATED, ANALYZER_TRAIT), RECENTLY_HEALED_COOLDOWN)
 	return TRUE
 
 /obj/item/healthanalyzer/proc/clear_treatment(mob/living/target)

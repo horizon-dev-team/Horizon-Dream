@@ -1,18 +1,25 @@
-import { useCallback, useEffect, useReducer, useRef, useState } from 'react';
-import { Tooltip } from 'tgui-core/components';
-import { assetMap } from './assets';
-import { playCollapseSound, playExpandSound, playSelectSound } from './audio';
+import { storage } from 'common/storage';
+import {
+  type CSSProperties,
+  type MouseEvent,
+  type ReactNode,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
+import { Box, Button, Modal, Section, Stack } from 'tgui-core/components';
+import { classes } from 'tgui-core/react';
 
-type StationTrait = {
-  ref: string;
-  name: string;
-  description: string;
-  iconState: string;
-  overlays: string[];
-};
+import {
+  loadSoundsEnabled,
+  playLoadSound,
+  playSelectSound,
+  setSoundsEnabled,
+} from './audio';
+import { updateScaling } from './scaling';
 
 export type ServerState = {
-  titleImageUrl: string;
   gamePhase: 'startup' | 'pregame' | 'setting_up' | 'playing' | 'postgame';
   isReady: boolean;
   canReady: boolean;
@@ -27,642 +34,999 @@ export type ServerState = {
   mapName: string;
   shiftTime: string;
   isAdmin: boolean;
-  isLocalhost: boolean;
-  stationTraits: StationTrait[];
+  canStartNow: boolean;
   hasNewPoll: boolean;
   canPoll: boolean;
-  overflowJob: string | null;
-  traitFeedback: string | null;
   transparent: boolean;
+  characterName: string | null;
+  preferenceIssues: string[];
+  backgroundUrl: string | null;
+  videoUrl: string | null;
+  previewUrls: Record<string, string> | null;
+  returning?: boolean;
 };
 
-type LobbyState = {
-  isCollapsed: boolean;
-  serverState: ServerState | null;
+type LobbyTheme = 'orange' | 'green' | 'blue' | 'red';
+
+const FILTER_STORAGE_KEY = 'lobby-filter-disabled';
+const TINT_STORAGE_KEY = 'lobby-bg-tint-disabled';
+const BG_STORAGE_KEY = 'lobby-bg-image-disabled';
+const THEME_STORAGE_KEY = 'lobby-theme';
+const VIDEO_STORAGE_KEY = 'lobby-video-enabled';
+
+const ANIMATION_DISABLE_MS = 10_000;
+const LOAD_SOUND_DELAY_MS = 250;
+const PREVIEW_DIRS = ['south', 'east', 'north', 'west'] as const;
+const PREVIEW_IMG_RETRIES = 12;
+const PREVIEW_IMG_RETRY_MS = 400;
+
+const GAME_PHASE_TEXT: Record<ServerState['gamePhase'], string> = {
+  startup: 'Starting up',
+  pregame: 'Pre-game',
+  setting_up: 'Setting up',
+  playing: 'Round in progress',
+  postgame: 'Round ended',
 };
-
-type LobbyAction =
-  | { type: 'serverInit'; payload: ServerState }
-  | { type: 'serverUpdate'; payload: Partial<ServerState> }
-  | { type: 'setCollapsed'; collapsed: boolean };
-
-const DEFAULT_STATE: LobbyState = {
-  isCollapsed: false,
-  serverState: null,
-};
-
-function lobbyReducer(state: LobbyState, action: LobbyAction): LobbyState {
-  switch (action.type) {
-    case 'serverInit':
-      return { ...state, serverState: action.payload };
-    case 'serverUpdate':
-      if (!state.serverState) return state;
-      return {
-        ...state,
-        serverState: { ...state.serverState, ...action.payload },
-      };
-    case 'setCollapsed':
-      return { ...state, isCollapsed: action.collapsed };
-    default:
-      return state;
-  }
-}
 
 function sendAction(action: string, payload?: Record<string, unknown>) {
   Byond.sendMessage('action', { action, ...payload });
 }
 
-async function getApngDuration(url: string): Promise<number> {
-  try {
-    const res = await fetch(url);
-    const data = await res.arrayBuffer();
-    const decoder = new ImageDecoder({ type: 'image/apng', data });
-    await decoder.tracks.ready;
-    let total = 0;
-    for (let i = 0; i < decoder.tracks.selectedTrack!.frameCount; i++) {
-      const result = await decoder.decode({ frameIndex: i });
-      total += result.image.duration! / 1000;
-      result.image.close();
-    }
-    decoder.close();
-    return total;
-  } catch {
-    return FALLBACK_APNG_DURATION_MS;
-  }
-}
-
-const durationCache = new Map<string, Promise<number>>();
-const blobCache = new Map<string, string>();
-
-function getCachedDuration(url: string): Promise<number> {
-  let p = durationCache.get(url);
-  if (!p) {
-    p = getApngDuration(url);
-    durationCache.set(url, p);
-  }
-  return p;
-}
-
-function preloadApng(assetKey: string) {
-  const url = assetMap[assetKey];
-  if (!url || blobCache.has(assetKey)) return;
-  blobCache.set(assetKey, url);
-  fetch(url)
-    .then((r) => r.blob())
-    .then((blob) => {
-      const blobUrl = URL.createObjectURL(blob);
-      blobCache.set(assetKey, blobUrl);
-      getCachedDuration(blobUrl);
-    })
-    .catch(() => {});
-}
-
-function getPreloadedUrl(assetKey: string): string | null {
-  return blobCache.get(assetKey) ?? assetMap[assetKey] ?? null;
-}
-
-function useFlick(assetKey: string): [() => void, React.ReactNode] {
-  const [count, setCount] = useState(0);
-  const [activeUrl, setActiveUrl] = useState<string | null>(null);
-
-  useEffect(() => {
-    preloadApng(assetKey);
-  }, [assetKey]);
-
-  const trigger = useCallback(() => {
-    const url = getPreloadedUrl(assetKey);
-    if (!url) return;
-    setActiveUrl(url);
-    setCount((c) => c + 1);
-    getCachedDuration(url).then((ms) => {
-      setTimeout(() => setActiveUrl(null), ms);
-    });
-  }, [assetKey]);
-
-  const element = activeUrl ? (
-    <img key={count} className="sprite-btn__pressed" src={activeUrl} alt="" />
-  ) : null;
-
-  return [trigger, element];
-}
-
-/** Helper to get an icon URL from the asset map */
-function icon(name: string): string | undefined {
-  return assetMap[`${name}.png`];
-}
-
-function SpriteButton({
-  iconState,
-  enabled = true,
-  onClick,
-  children,
-  pressedKey,
-}: {
-  iconState: string;
-  enabled?: boolean;
-  onClick?: React.MouseEventHandler;
-  children?: React.ReactNode;
-  pressedKey?: string;
-}) {
-  const displayState = enabled ? iconState : `${iconState}_disabled`;
-  const key = pressedKey ?? iconState;
-  const [triggerFlick, flickElement] = useFlick(`${key}_pressed.png`);
-  const [triggerEnabled, enabledElement] = useFlick(`${iconState}_enabled.png`);
-  const prevEnabled = useRef(enabled);
-
-  useEffect(() => {
-    if (enabled && !prevEnabled.current) {
-      triggerEnabled();
-    }
-    prevEnabled.current = enabled;
-  }, [enabled, triggerEnabled]);
-
-  return (
-    <button
-      className={`sprite-btn ${!enabled ? 'sprite-btn--disabled' : ''}`}
-      onClick={(e) => {
-        if (!enabled) return;
-        playSelectSound();
-        triggerFlick();
-        onClick?.(e);
-      }}
-      disabled={!enabled}
-    >
-      <img className="sprite-btn__normal" src={icon(displayState)} alt="" />
-      <img
-        className="sprite-btn__hover"
-        src={icon(`${iconState}_highlighted`)}
-        alt=""
-      />
-      {flickElement}
-      {enabledElement}
-      {children}
-    </button>
-  );
-}
-
-const scaleCss = (px: number) => `calc(${px}px * var(--lobby-scale, 1))`;
-
-/** Wrapper for absolutely-positioned lobby elements that collapse with the menu. */
-function LobbyElement({
-  top,
-  left,
-  zIndex,
-  collapsed,
-  slide,
-  children,
-  elRef,
-  style,
-  noCollapse,
-}: {
-  top: number;
-  left: number;
-  zIndex?: number;
-  collapsed: boolean;
-  slide?: boolean;
-  children: React.ReactNode;
-  elRef?: React.Ref<HTMLDivElement>;
-  style?: React.CSSProperties;
-  /** Don't apply collapse animation (e.g. shutter is JS-animated) */
-  noCollapse?: boolean;
-}) {
-  const collapseClass =
-    !noCollapse && collapsed
-      ? slide
-        ? 'lobby__el--collapse-slide'
-        : 'lobby__el--collapse-up'
-      : '';
-  return (
-    <div
-      ref={elRef}
-      className={`lobby__el ${collapseClass}`}
-      style={{
-        top: scaleCss(top),
-        left: scaleCss(left),
-        zIndex,
-        ...style,
-      }}
-    >
-      {children}
-    </div>
-  );
-}
-
-function TraitFeedback({ text }: { text: string }) {
-  const [visible, setVisible] = useState(true);
-
-  useEffect(() => {
-    setVisible(true);
-    const timer = setTimeout(() => setVisible(false), TRAIT_FEEDBACK_MS);
-    return () => clearTimeout(timer);
-  }, [text]);
-
-  if (!visible) return null;
-
-  return (
-    <div className="lobby__el lobby__trait-feedback" key={text}>
-      {text}
-    </div>
-  );
-}
-
-const SHUTTER_TRAVEL_PX = 143;
-const SHUTTER_MOVE_MS = 400;
-const SHUTTER_WAIT_MS = 200;
-const COLLAPSE_SLIDE_PX = 134;
-const LOCALHOST_HANDLE_SHIFT_PX = 50;
-const LOCALHOST_HANDLE_SHIFT_MS = 200;
-const TRAIT_FEEDBACK_MS = 1500;
-const MAX_TRAITS_PER_COLUMN = 3;
-const FALLBACK_APNG_DURATION_MS = 300;
-const EASE_OUT = 'cubic-bezier(0.33, 1, 0.68, 1)';
-const EASE_IN = 'cubic-bezier(0.32, 0, 0.67, 0)';
-
-function getLobbyScale(): number {
-  return parseFloat(
-    document.documentElement.style.getPropertyValue('--lobby-scale') || '1',
-  );
+/** Paints the page backdrop; the browser element behind it is made see-through by the server when needed */
+function applyBackdrop(transparent: boolean) {
+  const background = transparent ? 'transparent' : '#000';
+  document.documentElement.style.setProperty('--lobby-bg', background);
+  document.documentElement.style.backgroundColor = background;
+  document.body.style.backgroundColor = background;
 }
 
 export function LobbyMenu() {
-  const [state, dispatch] = useReducer(lobbyReducer, DEFAULT_STATE);
-  const [animating, setAnimating] = useState(false);
-  const [tvActive, setTvActive] = useState(true);
-  const shutterRef = useRef<HTMLDivElement>(null);
-  const collapseRef = useRef<HTMLDivElement>(null);
+  const [ss, setSs] = useState<ServerState | null>(null);
+  const [fadingOut, setFadingOut] = useState(false);
+  const [animationsDisabled, setAnimationsDisabled] = useState(false);
+  const [theme, setTheme] = useState<LobbyTheme | undefined>();
+  const [filterDisabled, setFilterDisabled] = useState<boolean | undefined>();
+  const [tintDisabled, setTintDisabled] = useState<boolean | undefined>();
+  const [bgDisabled, setBgDisabled] = useState<boolean | undefined>();
+  const [videoEnabled, setVideoEnabled] = useState(true);
+  const [soundsOn, setSoundsOn] = useState(true);
+  const [hidden, setHidden] = useState(false);
+  const [themeFlash, setThemeFlash] = useState(false);
+  const [bootEpoch, setBootEpoch] = useState(0);
+  const [returnBoot, setReturnBoot] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [userSwapped, setUserSwapped] = useState(false);
 
-  const ss = state.serverState;
+  useLayoutEffect(() => {
+    updateScaling();
+    const onResize = () => updateScaling();
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
 
   useEffect(() => {
     Byond.subscribeTo('init', (payload: ServerState) => {
-      dispatch({ type: 'serverInit', payload });
+      setSs(payload);
+      setFadingOut(false);
+      if (payload.returning && !payload.transparent) {
+        applyBackdrop(true);
+        setHidden(false);
+        setReturnBoot(true);
+        setBootEpoch((epoch) => epoch + 1);
+        setUserSwapped(false);
+      } else {
+        setReturnBoot(false);
+        applyBackdrop(!!payload.transparent);
+      }
+      videoRef.current?.play()?.catch(() => {});
     });
 
     Byond.subscribeTo('state', (payload: Partial<ServerState>) => {
-      dispatch({ type: 'serverUpdate', payload });
+      setSs((prev) =>
+        prev ? { ...prev, ...payload } : (payload as ServerState),
+      );
+    });
+
+    // The server makes the browser element see-through right after this, so
+    // dropping the page backdrop at the same time cross-fades into the game
+    Byond.subscribeTo('fadeOut', () => {
+      setFadingOut(true);
+      applyBackdrop(true);
+    });
+
+    Byond.sendMessage('ready');
+  }, []);
+
+  useEffect(() => {
+    storage.get(FILTER_STORAGE_KEY).then((val) => setFilterDisabled(!!val));
+    storage.get(TINT_STORAGE_KEY).then((val) => setTintDisabled(!!val));
+    storage.get(BG_STORAGE_KEY).then((val) => setBgDisabled(!!val));
+    storage
+      .get(THEME_STORAGE_KEY)
+      .then((val) =>
+        setTheme(
+          val === 'blue' || val === 'green' || val === 'orange' || val === 'red'
+            ? val
+            : 'orange',
+        ),
+      );
+    storage.get(VIDEO_STORAGE_KEY).then((val) => {
+      setVideoEnabled(val === undefined || val === null ? true : !!val);
+    });
+    loadSoundsEnabled().then((enabled) => {
+      setSoundsOn(enabled);
+      if (enabled) {
+        setTimeout(() => playLoadSound(), LOAD_SOUND_DELAY_MS);
+      }
     });
   }, []);
 
   useEffect(() => {
-    const bg = ss?.transparent ? 'transparent' : '#000';
-    document.documentElement.style.setProperty('--lobby-bg', bg);
-    document.documentElement.style.backgroundColor = bg;
-    document.body.style.backgroundColor = bg;
-  }, [ss?.transparent]);
+    setAnimationsDisabled(false);
+    const timer = setTimeout(
+      () => setAnimationsDisabled(true),
+      ANIMATION_DISABLE_MS,
+    );
+    return () => clearTimeout(timer);
+  }, [bootEpoch]);
 
-  if (!ss) {
+  useEffect(() => {
+    videoRef.current?.play()?.catch(() => {});
+  }, [ss?.videoUrl, videoEnabled, ss?.transparent, bootEpoch]);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || !ss?.videoUrl || !videoEnabled || ss?.transparent) {
+      return;
+    }
+    const tryPlay = () => {
+      video.play()?.catch(() => {});
+    };
+    const hardRestart = () => {
+      try {
+        video.load();
+      } catch {
+        // best-effort reset
+      }
+      tryPlay();
+    };
+    let seekBroken = false;
+    let restartTimer: number | undefined;
+    const restart = () => {
+      if (seekBroken) {
+        hardRestart();
+        return;
+      }
+      try {
+        video.currentTime = 0;
+      } catch {
+        seekBroken = true;
+        hardRestart();
+        return;
+      }
+      tryPlay();
+      window.clearTimeout(restartTimer);
+      restartTimer = window.setTimeout(() => {
+        if (video.ended || (video.paused && !video.seeking)) {
+          seekBroken = true;
+          hardRestart();
+        }
+      }, 600);
+    };
+    const onEnded = () => restart();
+    const onTimeUpdate = () => {
+      if (video.ended) {
+        restart();
+      }
+    };
+    let lastTime = -1;
+    let stalls = 0;
+    const watchdog = window.setInterval(() => {
+      if (document.hidden) {
+        return;
+      }
+      if (video.ended) {
+        restart();
+        return;
+      }
+      if (
+        video.paused &&
+        !video.seeking &&
+        video.currentTime > 0 &&
+        (video.duration === 0 ||
+          !isFinite(video.duration) ||
+          video.currentTime >= video.duration - 0.1)
+      ) {
+        restart();
+        return;
+      }
+      if (video.paused || video.seeking) {
+        stalls = 0;
+      } else if (Math.abs(video.currentTime - lastTime) < 0.05) {
+        stalls += 1;
+        if (stalls >= 4) {
+          stalls = 0;
+          restart();
+        }
+      } else {
+        stalls = 0;
+      }
+      lastTime = video.currentTime;
+    }, 1000);
+    video.addEventListener('ended', onEnded);
+    video.addEventListener('timeupdate', onTimeUpdate);
+    return () => {
+      window.clearTimeout(restartTimer);
+      window.clearInterval(watchdog);
+      video.removeEventListener('ended', onEnded);
+      video.removeEventListener('timeupdate', onTimeUpdate);
+    };
+  }, [ss?.videoUrl, videoEnabled, ss?.transparent]);
+
+  if (
+    !ss ||
+    theme === undefined ||
+    filterDisabled === undefined ||
+    tintDisabled === undefined ||
+    bgDisabled === undefined
+  ) {
     return null;
   }
 
-  const backgroundStyle = ss.transparent
-    ? undefined
-    : ss.titleImageUrl
-      ? {
-          backgroundImage: `url(${ss.titleImageUrl})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-        }
-      : undefined;
-
-  const collapsed = state.isCollapsed;
-  const blipEnabled = ss.gamePhase === 'pregame' || ss.gamePhase === 'startup';
-  const collapseIcon = collapsed ? 'expand' : 'collapse';
-
-  let blipState = 'ready_blip_disabled';
-  if (blipEnabled) {
-    blipState = ss.isReady ? 'ready_blip_ready' : 'ready_blip_not_ready';
-  }
-
-  async function handleToggleCollapse() {
-    if (animating) return;
-    setAnimating(true);
-
-    const shutter = shutterRef.current;
-
-    if (!collapsed) {
-      playCollapseSound();
-      setTvActive(false);
-
-      if (shutter) {
-        const dist = SHUTTER_TRAVEL_PX * getLobbyScale();
-
-        await shutter.animate(
-          [
-            { transform: 'translateY(0)' },
-            { transform: `translateY(${dist}px)` },
-          ],
-          { duration: SHUTTER_MOVE_MS, easing: EASE_OUT, fill: 'forwards' },
-        ).finished;
-
-        await new Promise((r) => setTimeout(r, SHUTTER_WAIT_MS));
-
-        for (const a of shutter.getAnimations()) a.cancel();
-        shutter.animate(
-          [
-            { transform: `translateY(${dist}px)` },
-            { transform: 'translateY(0)' },
-          ],
-          { duration: SHUTTER_MOVE_MS, easing: EASE_IN, fill: 'forwards' },
-        );
-      }
-
-      dispatch({ type: 'setCollapsed', collapsed: true });
-
-      await new Promise((r) => setTimeout(r, SHUTTER_MOVE_MS));
-      if (shutter) {
-        for (const a of shutter.getAnimations()) a.cancel();
-      }
-
-      if (ss?.isLocalhost && collapseRef.current) {
-        const shift = LOCALHOST_HANDLE_SHIFT_PX * getLobbyScale();
-        collapseRef.current.animate(
-          [
-            {
-              transform: `translateY(${-COLLAPSE_SLIDE_PX * getLobbyScale()}px)`,
-            },
-            {
-              transform: `translateY(${-COLLAPSE_SLIDE_PX * getLobbyScale()}px) translateX(${-shift}px)`,
-            },
-          ],
-          {
-            duration: LOCALHOST_HANDLE_SHIFT_MS,
-            easing: EASE_OUT,
-            fill: 'forwards',
-          },
-        );
-      }
-    } else {
-      playExpandSound();
-
-      if (ss?.isLocalhost && collapseRef.current) {
-        const scale = getLobbyScale();
-        const shift = 50 * scale;
-        const yOff = -COLLAPSE_SLIDE_PX * scale;
-        for (const a of collapseRef.current.getAnimations()) a.cancel();
-        await collapseRef.current.animate(
-          [
-            { transform: `translateY(${yOff}px) translateX(${-shift}px)` },
-            { transform: `translateY(${yOff}px)` },
-          ],
-          {
-            duration: LOCALHOST_HANDLE_SHIFT_MS,
-            easing: EASE_IN,
-            fill: 'forwards',
-          },
-        ).finished;
-        for (const a of collapseRef.current.getAnimations()) a.cancel();
-      }
-
-      if (shutter) {
-        const dist = SHUTTER_TRAVEL_PX * getLobbyScale();
-
-        shutter.animate(
-          [
-            { transform: 'translateY(0)' },
-            { transform: `translateY(${dist}px)` },
-          ],
-          { duration: SHUTTER_MOVE_MS, easing: EASE_OUT, fill: 'forwards' },
-        );
-      }
-
-      dispatch({ type: 'setCollapsed', collapsed: false });
-
-      await new Promise((r) => setTimeout(r, SHUTTER_MOVE_MS));
-
-      if (shutter) {
-        const dist = SHUTTER_TRAVEL_PX * getLobbyScale();
-
-        await new Promise((r) => setTimeout(r, SHUTTER_WAIT_MS));
-
-        for (const a of shutter.getAnimations()) a.cancel();
-        await shutter.animate(
-          [
-            { transform: `translateY(${dist}px)` },
-            { transform: 'translateY(0)' },
-          ],
-          { duration: SHUTTER_MOVE_MS, easing: EASE_IN, fill: 'forwards' },
-        ).finished;
-
-        for (const a of shutter.getAnimations()) a.cancel();
-      }
-
-      setTvActive(true);
+  const pickTheme = (next: LobbyTheme) => {
+    playSelectSound();
+    setTheme(next);
+    storage.set(THEME_STORAGE_KEY, next);
+    if (next !== theme) {
+      setThemeFlash(true);
+      window.setTimeout(() => setThemeFlash(false), 160);
     }
+  };
 
-    setAnimating(false);
-  }
+  const toggleBgSetting = (next: boolean) => {
+    setUserSwapped(true);
+    setBgDisabled(next);
+  };
 
-  const roundStarted = ss.gamePhase === 'playing';
-  const postgame = ss.gamePhase === 'postgame';
-  let tvLines: string[];
-  if (postgame) {
-    tvLines = ['Game ended,', 'restart soon'];
-  } else if (roundStarted) {
-    tvLines = [
-      ss.mapName,
-      `${ss.playerCount} player${ss.playerCount !== 1 ? 's' : ''} online`,
-      `${ss.shiftTime} in`,
-    ];
-  } else if (ss.isAdmin) {
-    tvLines = [
-      `Starting in ${ss.countdown}`,
-      `${ss.playerCount} player${ss.playerCount !== 1 ? 's' : ''}`,
-      `${ss.readyCount} players ready`,
-      `${ss.adminReadyCount} / ${ss.adminCount} admins ready`,
-    ];
-  } else {
-    tvLines = [
-      ss.countdown,
-      `${ss.playerCount} player${ss.playerCount !== 1 ? 's' : ''}`,
-    ];
+  const toggleVideoSetting = (next: boolean) => {
+    setUserSwapped(true);
+    setVideoEnabled(next);
+  };
+
+  const crtFilter = !filterDisabled;
+  const videoOn = !ss.transparent && videoEnabled;
+  const bgVideoUrl = videoOn && ss.videoUrl ? ss.videoUrl : null;
+  const bgImageUrl =
+    !ss.transparent && !bgDisabled && !bgVideoUrl ? ss.backgroundUrl : null;
+  const bgReveal = userSwapped ? 'bgSwap' : 'bgLoad';
+  const pregame = ss.gamePhase === 'pregame' || ss.gamePhase === 'startup';
+  const typingDelay = (index: number) =>
+    animationsDisabled ? '0s' : `${1.5 + index * 0.2}s`;
+
+  const panelBootDelay = (index: number) =>
+    animationsDisabled ? '0s' : `${1.7 + (index - 1) * 0.25}s`;
+
+  const collapsible = classes(['menuCollapsible', hidden && 'menuHidden']);
+
+  return (
+    <div
+      key={bootEpoch}
+      className={classes([
+        'LobbyScreen',
+        `LobbyScreen--${theme}`,
+        crtFilter && 'filterEnabled',
+        returnBoot && 'LobbyScreen--return',
+        animationsDisabled && 'noAnimation',
+        fadingOut && 'lobbyFadeOut',
+        themeFlash && 'LobbyScreen--themeSwap',
+        ss.transparent && 'LobbyScreen--transparent',
+      ])}
+    >
+      {bgImageUrl && <BgImage url={bgImageUrl} reveal={bgReveal} />}
+
+      {bgVideoUrl && (
+        <BgVideo url={bgVideoUrl} reveal={bgReveal} videoRef={videoRef} />
+      )}
+
+      {!tintDisabled && !ss.transparent && <div className="bgTint" />}
+
+      {crtFilter && !ss.transparent && (
+        <>
+          <div className="crt" />
+          <div className="crtNoise" />
+          <div className="crtVignette" />
+        </>
+      )}
+
+      <Stack
+        vertical
+        height="100%"
+        justify="space-around"
+        align="center"
+        className="menuHolder"
+      >
+        <Stack.Item className={collapsible}>
+          <div className="brandLockup">
+            <svg
+              className="brandLockup__logo"
+              viewBox="0 0 350 350"
+              focusable="false"
+            >
+              <path d="M230.9 257.5h26.7v20.7h-68.7V71.8h68.7v20.7h-26.7c-7.1 0-12.8 5.7-12.8 12.8v139.5c0 7.1 5.7 12.8 12.8 12.8ZM92.4 71.8v20.7h26.7c7.1 0 12.8 5.7 12.8 12.8v139.5c0 7.1-5.7 12.8-12.8 12.8h-26.7v20.7h68.7V71.8H92.4ZM92.4 188.7v27.6H0v-27.6h92.4ZM257.6 188.7v27.6h92.4v-27.6h-92.4ZM0 133.4v27.9h92.4v-27.9H0ZM257.6 133.4v27.9h92.4v-27.9h-92.4Z" />
+            </svg>
+            <div className="brandLockup__name">Horizon-Dream</div>
+            <div className="brandLockup__sub">Beyond the station</div>
+          </div>
+          <Section p={3} pt={1} className="sectionLoad">
+            <Stack vertical>
+              <Stack.Item>
+                <Stack vertical align="center" className="welcomeHolder">
+                  <Stack.Item>
+                    <Box className="typeEffect styledText">Welcome,</Box>
+                  </Stack.Item>
+                  <Stack.Item>
+                    <Box
+                      className="typeEffect styledText"
+                      style={{ animationDelay: '1.4s' }}
+                    >
+                      {ss.characterName || 'Guest'}
+                    </Box>
+                  </Stack.Item>
+                </Stack>
+              </Stack.Item>
+
+              <Stack.Item>
+                <div className="dividerEffect" />
+              </Stack.Item>
+
+              <LobbyButton
+                delay={typingDelay(1)}
+                icon="file-lines"
+                disabled={!ss.assetsReady}
+                onClick={() => sendAction('character_setup')}
+              >
+                Setup Character
+              </LobbyButton>
+
+              <LobbyButton
+                delay={typingDelay(2)}
+                icon="gear"
+                disabled={!ss.assetsReady}
+                onClick={() => sendAction('settings')}
+              >
+                Settings
+              </LobbyButton>
+
+              <LobbyButton
+                delay={typingDelay(3)}
+                icon="check-to-slot"
+                onClick={() => sendAction('crew_manifest')}
+              >
+                Crew Manifest
+              </LobbyButton>
+
+              <LobbyButton
+                delay={typingDelay(4)}
+                icon="list-ul"
+                onClick={() => sendAction('changelog')}
+              >
+                Changelog
+              </LobbyButton>
+
+              <Stack.Item>
+                <div className="dividerEffect" />
+              </Stack.Item>
+
+              <LobbyButton
+                delay={typingDelay(5)}
+                icon="eye"
+                disabled={!ss.canObserve}
+                onClick={() => sendAction('observe')}
+              >
+                Observe
+              </LobbyButton>
+
+              {!!ss.canReady && (
+                <LobbyButton
+                  delay={typingDelay(6)}
+                  icon={ss.isReady ? 'check' : 'xmark'}
+                  selected={ss.isReady}
+                  onClick={() => sendAction('ready_toggle')}
+                >
+                  {ss.isReady ? 'Unready' : 'Ready'}
+                </LobbyButton>
+              )}
+
+              {!ss.canReady && !!ss.canJoin && (
+                <LobbyButton
+                  delay={typingDelay(6)}
+                  icon="users"
+                  onClick={() => sendAction('join')}
+                >
+                  Join Game
+                </LobbyButton>
+              )}
+
+              {!!ss.canPoll && (
+                <LobbyButton
+                  delay={typingDelay(7)}
+                  icon="clipboard-list"
+                  badge={ss.hasNewPoll ? 'New poll!' : null}
+                  onClick={() => sendAction('poll')}
+                >
+                  Polls
+                </LobbyButton>
+              )}
+            </Stack>
+          </Section>
+        </Stack.Item>
+      </Stack>
+
+      <div className="lobby__side-left">
+        <CharacterPreview
+          ss={ss}
+          hidden={hidden}
+          bootDelay={panelBootDelay(1)}
+        />
+
+        <PreferenceIssues
+          issues={ss.preferenceIssues}
+          hidden={hidden}
+          bootDelay={panelBootDelay(3)}
+        />
+      </div>
+
+      <StatsPanel
+        ss={ss}
+        pregame={pregame}
+        hidden={hidden}
+        bootDelay={panelBootDelay(2)}
+        onStartNow={() => sendAction('start_now')}
+      />
+
+      {hidden && !ss.transparent && (
+        <div className="brandWatermark floatingAppear">
+          <svg
+            className="brandWatermark__logo"
+            viewBox="0 0 350 350"
+            focusable="false"
+          >
+            <path d="M230.9 257.5h26.7v20.7h-68.7V71.8h68.7v20.7h-26.7c-7.1 0-12.8 5.7-12.8 12.8v139.5c0 7.1 5.7 12.8 12.8 12.8ZM92.4 71.8v20.7h26.7c7.1 0 12.8 5.7 12.8 12.8v139.5c0 7.1-5.7 12.8-12.8 12.8h-26.7v20.7h68.7V71.8H92.4ZM92.4 188.7v27.6H0v-27.6h92.4ZM257.6 188.7v27.6h92.4v-27.6h-92.4ZM0 133.4v27.9h92.4v-27.9H0ZM257.6 133.4v27.9h92.4v-27.9h-92.4Z" />
+          </svg>
+          <div className="brandWatermark__text">
+            <div className="brandWatermark__name">Horizon-Dream</div>
+            <div className="brandWatermark__sub">Beyond the station</div>
+          </div>
+        </div>
+      )}
+
+      <LobbySettings
+        ss={ss}
+        menuHidden={hidden}
+        onShowMenu={() => setHidden(false)}
+        onHideMenu={() => setHidden(true)}
+        filterDisabled={filterDisabled}
+        setFilterDisabled={setFilterDisabled}
+        tintDisabled={tintDisabled}
+        setTintDisabled={setTintDisabled}
+        bgDisabled={bgDisabled}
+        setBgDisabled={toggleBgSetting}
+        theme={theme}
+        pickTheme={pickTheme}
+        videoEnabled={videoEnabled}
+        setVideoEnabled={toggleVideoSetting}
+        soundsOn={soundsOn}
+        setSoundsOn={setSoundsOn}
+      />
+    </div>
+  );
+}
+
+function BgImage({ url, reveal }: { url: string; reveal: string }) {
+  const [mountedReveal] = useState(reveal);
+  return (
+    <div
+      className={`bgBackground ${mountedReveal}`}
+      style={{ backgroundImage: `url(${url})` }}
+    />
+  );
+}
+
+function BgVideo({
+  url,
+  reveal,
+  videoRef,
+}: {
+  url: string;
+  reveal: string;
+  videoRef: { current: HTMLVideoElement | null };
+}) {
+  const [mountedReveal] = useState(reveal);
+  return (
+    <video
+      ref={videoRef}
+      className={`bgVideo ${mountedReveal}`}
+      src={url}
+      autoPlay
+      loop
+      muted
+      playsInline
+    />
+  );
+}
+
+function LobbyButton(props: {
+  delay: string;
+  icon?: string;
+  selected?: boolean;
+  disabled?: boolean;
+  badge?: string | null;
+  onClick?: (e: MouseEvent<HTMLButtonElement>) => void;
+  children: ReactNode;
+}) {
+  const { delay, icon, selected, disabled, badge, onClick, children } = props;
+  return (
+    <Stack.Item className="buttonEffect" style={{ animationDelay: delay }}>
+      <Button
+        fluid
+        className="distinctButton"
+        icon={icon}
+        selected={selected}
+        disabled={disabled}
+        onClick={(e) => {
+          if (disabled) {
+            return;
+          }
+          playSelectSound();
+          onClick?.(e);
+        }}
+      >
+        <span className="styledText">{children}</span>
+        {!!badge && <span className="badgeNotification">{badge}</span>}
+      </Button>
+    </Stack.Item>
+  );
+}
+
+/** Character preview with client-side direction cycling */
+function CharacterPreview({
+  ss,
+  hidden,
+  bootDelay,
+}: {
+  ss: ServerState;
+  hidden: boolean;
+  bootDelay: string;
+}) {
+  const [dirIndex, setDirIndex] = useState(0);
+  const [imgRetry, setImgRetry] = useState(0);
+
+  const urls = ss.previewUrls;
+  const dir = PREVIEW_DIRS[dirIndex % PREVIEW_DIRS.length];
+  const url = urls ? (urls[dir] ?? Object.values(urls)[0]) : null;
+
+  useEffect(() => {
+    setImgRetry(0);
+  }, [url]);
+
+  if (!urls || !url) {
+    return null;
   }
 
   return (
     <div
-      className={`lobby ${ss.transparent ? 'lobby--transparent' : ''}`}
-      style={backgroundStyle}
+      className={classes([
+        'lobby__preview',
+        'panelBoot',
+        'menuCollapsible',
+        hidden && 'menuHidden',
+      ])}
+      style={{ '--panel-boot-delay': bootDelay } as CSSProperties}
     >
-      <div className="lobby__anchor">
-        <LobbyElement top={0} left={-61} zIndex={1} collapsed={collapsed}>
-          <img className="lobby__sprite" src={icon('background')} alt="" />
-        </LobbyElement>
-
-        {!!ss.canReady && (
-          <LobbyElement top={8} left={-65} zIndex={3} collapsed={collapsed}>
-            <SpriteButton
-              iconState={ss.isReady ? 'ready' : 'not_ready'}
-              onClick={() => sendAction('ready_toggle')}
-            />
-          </LobbyElement>
-        )}
-
-        {!!ss.canJoin && (
-          <LobbyElement top={13} left={-58} zIndex={3} collapsed={collapsed}>
-            <SpriteButton
-              iconState="join_game"
-              onClick={(e) => sendAction('join', { ctrlClick: e.ctrlKey })}
-            />
-          </LobbyElement>
-        )}
-
-        <LobbyElement top={40} left={-54} zIndex={3} collapsed={collapsed}>
-          <SpriteButton
-            iconState="observe"
-            enabled={!!ss.canObserve}
-            onClick={() => sendAction('observe')}
-          />
-        </LobbyElement>
-
-        <LobbyElement top={70} left={-54} zIndex={3} collapsed={collapsed}>
-          <SpriteButton
-            iconState="character_setup"
-            enabled={!!ss.assetsReady}
-            onClick={() => sendAction('character_setup')}
-          />
-        </LobbyElement>
-
-        <LobbyElement
-          top={-143}
-          left={-73}
-          zIndex={5}
-          collapsed={collapsed}
-          noCollapse
-          elRef={shutterRef}
-        >
-          <img className="lobby__sprite" src={icon('shutter')} alt="" />
-        </LobbyElement>
-
-        <LobbyElement
-          top={82}
-          left={-54}
-          collapsed={collapsed}
-          slide
-          elRef={collapseRef}
-        >
-          <button
-            className="sprite-btn sprite-btn--no-press"
-            onClick={handleToggleCollapse}
-            disabled={animating}
-          >
-            <img
-              className="sprite-btn__normal"
-              src={icon(collapseIcon)}
-              alt=""
-            />
-            <img
-              className="sprite-btn__hover"
-              src={icon(`${collapseIcon}_highlighted`)}
-              alt=""
-            />
-            <img className="lobby__blip" src={icon(blipState)} alt="" />
-          </button>
-        </LobbyElement>
-
-        {[
-          {
-            id: 'poll',
-            left: -26,
-            enabled: !!ss.canPoll,
-            badge: ss.hasNewPoll,
-          },
-          { id: 'crew_manifest', left: 2 },
-          { id: 'settings', left: 29, enabled: !!ss.assetsReady },
-          { id: 'changelog', left: 57 },
-        ].map(({ id, left, enabled, badge }) => (
-          <LobbyElement
-            key={id}
-            top={122}
-            left={left}
-            zIndex={6}
-            collapsed={collapsed}
-          >
-            <SpriteButton
-              iconState={id}
-              enabled={enabled}
-              onClick={() => sendAction(id)}
-            >
-              {!!badge && (
-                <img className="lobby__badge" src={icon('new_poll')} alt="" />
-              )}
-            </SpriteButton>
-          </LobbyElement>
-        ))}
-
-        {!!ss.isLocalhost && (
-          <LobbyElement top={146} left={-54} zIndex={3} collapsed={collapsed}>
-            <SpriteButton
-              iconState="start_now"
-              onClick={() => sendAction('start_now')}
-            />
-          </LobbyElement>
-        )}
-
-        {ss.stationTraits.map((trait, i) => (
-          <LobbyElement
-            key={trait.ref}
-            top={40 + (i % MAX_TRAITS_PER_COLUMN) * 27}
-            left={-85 - Math.floor(i / MAX_TRAITS_PER_COLUMN) * 27}
-            zIndex={3}
-            collapsed={collapsed}
-          >
-            <Tooltip content={trait.description} position="left">
-              <div className="lobby__trait-wrapper">
-                <SpriteButton
-                  iconState={trait.iconState}
-                  onClick={() => sendAction('sign_up', { ref: trait.ref })}
-                >
-                  {trait.overlays.map((overlay) => (
-                    <img
-                      key={overlay}
-                      className="lobby__trait-overlay"
-                      src={icon(overlay)}
-                      alt=""
-                    />
-                  ))}
-                </SpriteButton>
-              </div>
-            </Tooltip>
-          </LobbyElement>
-        ))}
-
-        {!!ss.traitFeedback && <TraitFeedback text={ss.traitFeedback} />}
+      <div className="lobby__panel-title">Character</div>
+      <div className="lobby__preview-body">
+        <img
+          key={`${url}-${imgRetry}`}
+          className="lobby__preview-img"
+          src={url}
+          alt=""
+          onError={() => {
+            // The asset may still be in transit right after login; remount
+            // the img until the file arrives in the client cache
+            if (imgRetry < PREVIEW_IMG_RETRIES) {
+              setTimeout(() => setImgRetry((n) => n + 1), PREVIEW_IMG_RETRY_MS);
+            }
+          }}
+        />
       </div>
-
-      <div className={`lobby__tv ${collapsed ? 'lobby__tv--collapsed' : ''}`}>
-        <div className="info-tv">
-          <img className="info-tv__layer" src={icon('newplayer')} alt="" />
-          <img
-            className="info-tv__layer info-tv__overlay"
-            src={icon('newplayer_overlay')}
-            alt=""
-          />
-          {tvActive && (
-            <div className="info-tv__text">
-              {tvLines.map((line, i) => (
-                <div key={i}>{line}</div>
-              ))}
-            </div>
-          )}
-          {tvActive && !collapsed && (
-            <>
-              {assetMap['static_base.png'] && (
-                <img
-                  className="info-tv__static"
-                  src={assetMap['static_base.png']}
-                  alt=""
-                />
-              )}
-              {assetMap['scanline.png'] && (
-                <img
-                  className="info-tv__scanlines"
-                  src={assetMap['scanline.png']}
-                  alt=""
-                />
-              )}
-            </>
-          )}
-        </div>
-      </div>
+      <Stack className="lobby__preview-buttons">
+        <Stack.Item grow>
+          <Button
+            fluid
+            compact
+            icon="rotate"
+            onClick={() => {
+              playSelectSound();
+              setDirIndex((index) => (index + 1) % PREVIEW_DIRS.length);
+            }}
+          >
+            Rotate
+          </Button>
+        </Stack.Item>
+        <Stack.Item grow>
+          <Button
+            fluid
+            compact
+            icon="arrows-rotate"
+            onClick={() => {
+              playSelectSound();
+              sendAction('refresh_preview');
+            }}
+          >
+            Refresh
+          </Button>
+        </Stack.Item>
+      </Stack>
     </div>
+  );
+}
+
+function StatsRow({ label, value }: { label: string; value: string | null }) {
+  return (
+    <div className="lobby__stats-row">
+      <span className="lobby__stats-label">{label}</span>
+      <span className="lobby__stats-value">{value || '—'}</span>
+    </div>
+  );
+}
+
+/** Round/server statistics panel on the right edge */
+function StatsPanel({
+  ss,
+  pregame,
+  hidden,
+  bootDelay,
+  onStartNow,
+}: {
+  ss: ServerState;
+  pregame: boolean;
+  hidden: boolean;
+  bootDelay: string;
+  onStartNow: () => void;
+}) {
+  return (
+    <div
+      className={classes([
+        'lobby__stats-holder',
+        'panelBoot',
+        'menuCollapsible',
+        hidden && 'menuHidden',
+      ])}
+      style={{ '--panel-boot-delay': bootDelay } as CSSProperties}
+    >
+      <div className="lobby__stats">
+        <div className="lobby__panel-title">Server</div>
+        <StatsRow label="Map" value={ss.mapName} />
+        <StatsRow label="Status" value={GAME_PHASE_TEXT[ss.gamePhase]} />
+        {pregame ? (
+          <StatsRow label="Time left" value={ss.countdown} />
+        ) : (
+          <StatsRow label="Shift time" value={ss.shiftTime} />
+        )}
+        <StatsRow label="Players" value={String(ss.playerCount)} />
+        <StatsRow label="Ready" value={String(ss.readyCount)} />
+        <StatsRow
+          label="Admins"
+          value={`${ss.adminReadyCount} / ${ss.adminCount}`}
+        />
+      </div>
+
+      <StartNowButton
+        visible={!!ss.canStartNow && pregame}
+        onStartNow={onStartNow}
+      />
+    </div>
+  );
+}
+
+function StartNowButton({
+  visible,
+  onStartNow,
+}: {
+  visible: boolean;
+  onStartNow: () => void;
+}) {
+  const [mounted, setMounted] = useState(visible);
+  const [fading, setFading] = useState(false);
+
+  useEffect(() => {
+    if (visible) {
+      setMounted(true);
+      setFading(false);
+      return;
+    }
+    setFading(true);
+    const timer = setTimeout(() => setMounted(false), 800);
+    return () => clearTimeout(timer);
+  }, [visible]);
+
+  if (!mounted) {
+    return null;
+  }
+
+  return (
+    <div
+      className={classes([
+        'lobby__start-now',
+        'buttonEffect',
+        fading && 'lobby__start-now--out',
+      ])}
+    >
+      <Button
+        fluid
+        className="distinctButton"
+        icon="forward"
+        onClick={() => {
+          playSelectSound();
+          onStartNow();
+        }}
+      >
+        <span className="styledText">Start Now</span>
+      </Button>
+    </div>
+  );
+}
+
+/** CM13-style warnings about the player's current preferences */
+function PreferenceIssues({
+  issues,
+  hidden,
+  bootDelay,
+}: {
+  issues: string[];
+  hidden: boolean;
+  bootDelay: string;
+}) {
+  if (!issues || issues.length === 0) {
+    return null;
+  }
+  return (
+    <div
+      className={classes([
+        'messageHolder',
+        'panelBoot',
+        'menuCollapsible',
+        hidden && 'menuHidden',
+      ])}
+      style={{ '--panel-boot-delay': bootDelay } as CSSProperties}
+    >
+      <Stack vertical>
+        {issues.map((issue, index) => (
+          <Section key={index} className="sectionLoad issueSection">
+            <Box className="issueText">{issue}</Box>
+          </Section>
+        ))}
+      </Stack>
+    </div>
+  );
+}
+
+/** Settings corner (bottom right) and its popup */
+function LobbySettings({
+  ss,
+  menuHidden,
+  onShowMenu,
+  onHideMenu,
+  filterDisabled,
+  setFilterDisabled,
+  tintDisabled,
+  setTintDisabled,
+  bgDisabled,
+  setBgDisabled,
+  theme,
+  pickTheme,
+  videoEnabled,
+  setVideoEnabled,
+  soundsOn,
+  setSoundsOn,
+}: {
+  ss: ServerState;
+  menuHidden: boolean;
+  onShowMenu: () => void;
+  onHideMenu: () => void;
+  filterDisabled: boolean;
+  setFilterDisabled: (value: boolean) => void;
+  tintDisabled: boolean;
+  setTintDisabled: (value: boolean) => void;
+  bgDisabled: boolean;
+  setBgDisabled: (value: boolean) => void;
+  theme: LobbyTheme;
+  pickTheme: (value: LobbyTheme) => void;
+  videoEnabled: boolean;
+  setVideoEnabled: (value: boolean) => void;
+  soundsOn: boolean;
+  setSoundsOn: (value: boolean) => void;
+}) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <>
+      <Box
+        position="absolute"
+        bottom="10px"
+        right="10px"
+        className="settingsHolder"
+      >
+        {menuHidden ? (
+          <Button
+            icon="check"
+            className="floatingAppear"
+            onClick={() => {
+              playSelectSound();
+              onShowMenu();
+            }}
+          />
+        ) : (
+          <Button
+            icon="eye-slash"
+            className="floatingAppear"
+            onClick={() => {
+              playSelectSound();
+              onHideMenu();
+            }}
+          />
+        )}
+        <Button
+          icon="cog"
+          onClick={() => {
+            playSelectSound();
+            setOpen(true);
+          }}
+        />
+      </Box>
+
+      {open && (
+        <Modal>
+          <Section
+            p={3}
+            className="settingsModal"
+            title="Lobby Settings"
+            buttons={
+              <Button
+                icon="xmark"
+                onClick={() => {
+                  playSelectSound();
+                  setOpen(false);
+                }}
+              />
+            }
+          >
+            <Stack vertical>
+              <SettingsRow label="Theme">
+                <Button
+                  selected={theme === 'orange'}
+                  onClick={() => pickTheme('orange')}
+                >
+                  Orange
+                </Button>
+                <Button
+                  selected={theme === 'green'}
+                  onClick={() => pickTheme('green')}
+                >
+                  Green
+                </Button>
+                <Button
+                  selected={theme === 'blue'}
+                  onClick={() => pickTheme('blue')}
+                >
+                  Blue
+                </Button>
+                <Button
+                  selected={theme === 'red'}
+                  onClick={() => pickTheme('red')}
+                >
+                  Red
+                </Button>
+              </SettingsRow>
+
+              <SettingsRow label="CRT filter">
+                <Button
+                  selected={!filterDisabled}
+                  onClick={() => {
+                    playSelectSound();
+                    const next = !filterDisabled;
+                    setFilterDisabled(next);
+                    storage.set(FILTER_STORAGE_KEY, next);
+                  }}
+                >
+                  {filterDisabled ? 'Off' : 'On'}
+                </Button>
+              </SettingsRow>
+
+              <SettingsRow label="Background tint">
+                <Button
+                  selected={!tintDisabled}
+                  onClick={() => {
+                    playSelectSound();
+                    const next = !tintDisabled;
+                    setTintDisabled(next);
+                    storage.set(TINT_STORAGE_KEY, next);
+                  }}
+                >
+                  {tintDisabled ? 'Off' : 'On'}
+                </Button>
+              </SettingsRow>
+
+              {!!ss.backgroundUrl && (
+                <SettingsRow label="Background image">
+                  <Button
+                    selected={!bgDisabled}
+                    onClick={() => {
+                      playSelectSound();
+                      const next = !bgDisabled;
+                      setBgDisabled(next);
+                      storage.set(BG_STORAGE_KEY, next);
+                    }}
+                  >
+                    {bgDisabled ? 'Off' : 'On'}
+                  </Button>
+                </SettingsRow>
+              )}
+
+              <SettingsRow label="Interface sounds">
+                <Button
+                  selected={soundsOn}
+                  onClick={() => {
+                    const next = !soundsOn;
+                    setSoundsEnabled(next);
+                    setSoundsOn(next);
+                    if (next) {
+                      playSelectSound();
+                    }
+                  }}
+                >
+                  {soundsOn ? 'On' : 'Off'}
+                </Button>
+              </SettingsRow>
+
+              {!!ss.videoUrl && (
+                <SettingsRow label="Video background">
+                  <Button
+                    selected={videoEnabled}
+                    onClick={() => {
+                      playSelectSound();
+                      const next = !videoEnabled;
+                      setVideoEnabled(next);
+                      storage.set(VIDEO_STORAGE_KEY, next);
+                    }}
+                  >
+                    {videoEnabled ? 'On' : 'Off'}
+                  </Button>
+                </SettingsRow>
+              )}
+            </Stack>
+          </Section>
+        </Modal>
+      )}
+    </>
+  );
+}
+
+function SettingsRow({
+  label,
+  children,
+}: {
+  label: string;
+  children: ReactNode;
+}) {
+  return (
+    <Stack.Item>
+      <Stack justify="space-between" align="center">
+        <Stack.Item className="settingsLabel">{label}</Stack.Item>
+        <Stack.Item>
+          <Stack>{children}</Stack>
+        </Stack.Item>
+      </Stack>
+    </Stack.Item>
   );
 }

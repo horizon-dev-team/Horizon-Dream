@@ -3,7 +3,6 @@
 // !!! DO NOT ADD ANY NEW ONES HERE !!!
 // Use `/datum/preference/toggle` instead.
 #define SOUND_ADMINHELP (1<<0)
-#define MEMBER_PUBLIC (1<<4)
 #define SOUND_PRAYERS (1<<9)
 #define ANNOUNCE_LOGIN (1<<10)
 #define DISABLE_DEATHRATTLE (1<<12)
@@ -18,7 +17,7 @@
 #define SPLIT_ADMIN_TABS (1<<23)
 
 #define TOGGLES_DEADMIN_DEFAULT (DEADMIN_ANTAGONIST|DEADMIN_POSITION_HEAD|DEADMIN_POSITION_SECURITY|DEADMIN_POSITION_SILICON)
-#define TOGGLES_DEFAULT (SOUND_ADMINHELP|MEMBER_PUBLIC|SOUND_PRAYERS|TOGGLES_DEADMIN_DEFAULT)
+#define TOGGLES_DEFAULT (SOUND_ADMINHELP|SOUND_PRAYERS|TOGGLES_DEADMIN_DEFAULT)
 
 // Legacy chat toggles.
 // !!! DO NOT ADD ANY NEW ONES HERE !!!
@@ -84,6 +83,12 @@
 #define DB_FLAG_EXEMPT (1<<0)
 
 #define DEFAULT_CYBORG_NAME "Default Cyborg Name"
+
+// [HORIZON-ADD] UI
+#define TGPANEL_ONMAP "onmap"
+#define TGPANEL_PANEL "panel"
+#define TGPANEL_WINDOW "window"
+// [/HORIZON-ADD]
 
 // Choose grid or list TGUI layouts for UI's, when possible.
 /// Force grid layout, even if default is a list.
@@ -181,6 +186,9 @@
 #define UPPER_LIP "Upper"
 #define MIDDLE_LIP "Middle"
 #define LOWER_LIP "Lower"
+
+// Plaque description
+#define INFO_DESCRIPTION "description"
 
 // Job greyscale colors for loadout items
 #define COLOR_JOB_ASSISTANT /obj/item/clothing/under/color/grey::greyscale_colors

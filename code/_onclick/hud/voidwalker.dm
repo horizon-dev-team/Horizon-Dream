@@ -1,5 +1,7 @@
 /datum/hud/dextrous/voidwalker
 	ui_style = 'icons/hud/screen_voidwalker.dmi'
+	wide_icon = '_horizon/icons/ui/themed/screen_wide_voidwalker.dmi' // [HORIZON-ADD] WIDE-HUD
+	progbar_icon = '_horizon/icons/ui/themed/progessbar_voidwalker.dmi' // [/HORIZON-ADD]
 	give_generic_combat = FALSE //we give our own version below, here.
 
 /datum/hud/dextrous/voidwalker/initialize_screen_objects()
@@ -12,4 +14,4 @@
 	add_screen_object(/atom/movable/screen/combattoggle/flashy/voidwalker, HUD_MOB_INTENTS, HUD_GROUP_INFO, ui_style)
 	add_screen_object(/atom/movable/screen/space_camo, HUD_VOIDWALKER_SPACE_CAMO)
 	add_screen_object(/atom/movable/screen/vomit_jump, HUD_VOIDWALKER_VOID_JUMP)
-
+	add_screen_object(/atom/movable/screen/progbar_container, HUDKEY_MOB_USE_TIMER, HUD_GROUP_STATIC, progbar_icon) // [HORIZON-ADD] WIDE-HUD

@@ -4,18 +4,11 @@ import { loadMappings, loadStyleSheet } from 'common/assets';
 import { createRoot, type Root } from 'react-dom/client';
 import { assetMap } from './assets';
 import { LobbyMenu } from './LobbyMenu';
-import { updateScaling } from './scaling';
 
 let reactRoot: Root | null = null;
 
 document.onreadystatechange = () => {
   if (document.readyState !== 'complete') return;
-
-  updateScaling();
-
-  window.addEventListener('resize', () => {
-    updateScaling();
-  });
 
   const KEY_CODE_TO_BYOND: Record<string, string> = {
     DEL: 'Delete',

@@ -69,28 +69,14 @@
 
 	var/sound = 'sound/effects/footstep/crawl1.ogg'
 	if(HAS_TRAIT(source, TRAIT_FLOPPING))
-		sound = pick(SFX_FISH_PICKUP, 'sound/mobs/non-humanoids/fish/fish_drop1.ogg')
-	playsound(turf, sound, 15 * volume, falloff_distance = 1, vary = sound_vary)
+		sound = pick(/datum/sound_effect/fish_pickup, 'sound/mobs/non-humanoids/fish/fish_drop1.ogg')
+	playsound(turf, sound, 15 * volume, falloff_distance = 1, vary = sound_vary, mixer_channel = CHANNEL_FOOTSTEPS) // [HORIZON-EDIT] Master_Sounds
 
 ///Prepares a footstep for living mobs. Determines if it should get played. Returns the turf it should get played on. Note that it is always a /turf/open
 /datum/element/footstep/proc/prepare_step(mob/living/source)
 	var/turf/open/turf = get_turf(source)
 	if(!istype(turf))
 		return
-
-	if(source.buckled || source.throwing || source.movement_type & (VENTCRAWLING | FLYING) || HAS_TRAIT(source, TRAIT_IMMOBILIZED) || CHECK_MOVE_LOOP_FLAGS(source, MOVEMENT_LOOP_OUTSIDE_CONTROL))
-		return
-
-	if(source.body_position == LYING_DOWN) //play crawling sound if we're lying
-		if(turf.footstep)
-			var/sound = 'sound/effects/footstep/crawl1.ogg'
-			if(HAS_TRAIT(source, TRAIT_FLOPPING))
-				sound = pick(SFX_FISH_PICKUP, 'sound/mobs/non-humanoids/fish/fish_drop1.ogg')
-			playsound(turf, sound, 15 * volume, falloff_distance = 1, vary = sound_vary, mixer_channel = CHANNEL_FOOTSTEPS) // [HORIZON-EDIT] Master_Sounds
-		return
-
-	if(iscarbon(source) && source.move_intent == MOVE_INTENT_WALK)
-		return // stealth
 
 	steps_for_living[source] += 1
 	var/steps = steps_for_living[source]
@@ -160,7 +146,8 @@
 		return
 
 	if(source.body_position == LYING_DOWN)
-		play_craw_step(source)
+		if(!source.buckled)
+			play_craw_step(source)
 		return
 
 	if(HAS_TRAIT(source, TRAIT_SILENT_FOOTSTEPS) || SHOULD_MOB_DISABLE_FOOTSTEPS(source))

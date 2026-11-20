@@ -41,6 +41,7 @@
 	src.sound_range = sound_range
 	src.sound_length = sound_length
 	our_channel = channel
+	our_sound.channel = channel
 	src.mixer_channel = mixer_channel
 	src.falloff_distance = falloff_distance
 	src.falloff_exponent = falloff_exponent

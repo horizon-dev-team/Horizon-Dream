@@ -1,14 +1,4 @@
-// horizon-dev-sync[bot] port
-// Item side of the weight / encumbrance system. See _horizon/code/modules/mob/living/carry_weight.dm.
-
-/// Returns the weight (in kilograms) this item contributes to a mob's encumbrance.
-/// Derives a default from w_class when carry_weight is null. The result is NOT cached
-/// into carry_weight, so a w_class change (update_weight_class) is picked up right away.
-/// Liquid reagents use REAGENT_UNIT_KG (100u = 1 kg). Storage contents are scaled by
-/// storage_weight_multiplier. Loose contents (magazines, cells, rounds) are counted too.
 /obj/item/proc/get_carry_weight(list/seen)
-	// Abstract items (offhand placeholders, touch attacks, grabs) are not objects you carry.
-	// /obj/item/offhand is HUGE and sits in the free hand while wielding, so it used to add 8 kg.
 	if(item_flags & ABSTRACT)
 		return 0
 	if(seen && (src in seen))
@@ -31,7 +21,6 @@
 		contained_weight += contained.get_carry_weight(seen)
 	. += contained_weight * storage_weight_multiplier
 
-/// Total carry weight of items inside this storage datum, after the container's relief.
 /datum/storage/proc/get_carry_weight(list/seen)
 	. = 0
 	var/atom/location = real_location
@@ -43,14 +32,11 @@
 	if(istype(container))
 		. *= container.storage_weight_multiplier
 
-// --- stacks: the mass is per unit and scales with the amount ---
 /// Kilograms one unit of this stack adds to a mob's encumbrance. Null (default)
 /// keeps the flat w_class-derived mass regardless of the stack size.
 /obj/item/stack
 	var/carry_weight_per_unit = null
 
-/// A stack with a per-unit mass weighs that mass times its amount; the plain
-/// item default (reagents, storage) does not apply to material stacks.
 /obj/item/stack/get_carry_weight(list/seen)
 	if(isnull(carry_weight_per_unit))
 		return ..()

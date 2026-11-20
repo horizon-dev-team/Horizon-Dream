@@ -1533,7 +1533,7 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 
 /atom/movable/screen/hydration
 	parent_type = /atom/movable/screen/need_status
-	name = "hydration"
+	name = "thirst"
 	icon_state = "hhydration"
 	screen_loc = ui_hydration
 	mouse_over_pointer = MOUSE_HAND_POINTER

@@ -2,7 +2,7 @@
 // carry_weight is kilograms and wins over weight_class_to_kg().
 // Liquid is 100u = 1 kg. See REAGENT_UNIT_KG.
 
-// --- worn containers (contents only; shell mass is carry_weight) ---
+// MARK: Containers
 /obj/item/storage/backpack
 	carry_weight = 1
 	storage_weight_multiplier = STORAGE_WEIGHT_MULT_BACKPACK
@@ -35,7 +35,7 @@
 /obj/item/storage/bag/trash/bluespace
 	storage_weight_multiplier = STORAGE_WEIGHT_MULT_BLUESPACE
 
-// --- doses are not litres ---
+// MARK: Reagent containers
 /obj/item/reagent_containers/applicator
 	reagent_weight_factor = REAGENT_WEIGHT_DOSE
 
@@ -58,7 +58,7 @@
 /obj/item/cigarette/pipe
 	carry_weight = 0.08
 
-// --- clothes that used to share the "normal item" bracket ---
+// MARK: Clothes
 /obj/item/clothing/under
 	carry_weight = 0.45
 
@@ -106,7 +106,8 @@
 /obj/item/clothing/suit/armor/balloon_vest
 	carry_weight = 0.2
 
-// --- guns. Empty body; magazine, cell and chambered rounds add themselves. ---
+// MARK: Guns
+// Empty body; magazine, cell and chambered rounds add themselves.
 /obj/item/gun/ballistic/automatic
 	carry_weight = 2.3
 
@@ -170,7 +171,8 @@
 /obj/item/gun/energy/pulse/pistol
 	carry_weight = 1.5
 
-// --- ammo. A cartridge is grams; the box/mag shell is separate. ---
+// MARK: Ammo.
+// A cartridge is grams; the box/mag shell is separate.
 /obj/item/ammo_casing
 	carry_weight = 0.012
 
@@ -195,7 +197,8 @@
 /obj/item/ammo_box/magazine/internal
 	carry_weight = 0.05
 
-// --- MODsuit. Parts and modules live inside the control unit. ---
+// MARK: MODsuit.
+// Parts and modules live inside the control unit.
 /obj/item/mod/control
 	carry_weight = 2.2
 	storage_weight_multiplier = STORAGE_WEIGHT_MULT_MODSUIT
@@ -234,7 +237,7 @@
 /obj/item/reagent_containers/cup/bottle
 	carry_weight = 0.08
 
-// --- tool containers: contents relief; shells weigh like the hardware they are ---
+// MARK: Tool containers
 /obj/item/storage/part_replacer
 	carry_weight = 2.5
 	storage_weight_multiplier = STORAGE_WEIGHT_MULT_PART_REPLACER
@@ -252,7 +255,7 @@
 /obj/item/storage/bag/sheetsnatcher
 	storage_weight_multiplier = STORAGE_WEIGHT_MULT_PART_REPLACER
 
-// --- sheets: kilograms per sheet; a stack weighs per-sheet mass x amount ---
+// MARK: Sheets
 /obj/item/stack/sheet/iron
 	carry_weight_per_unit = 0.4
 /obj/item/stack/sheet/plasteel
@@ -338,7 +341,7 @@
 /obj/item/stack/sheet/greatergem
 	carry_weight_per_unit = 0.4
 
-// --- sheet families the first pass missed: hide chain, food slabs, telecrystals ---
+// MARK: Sheet families
 /obj/item/stack/sheet/bluespace_crystal
 	carry_weight_per_unit = 0.1
 /obj/item/stack/sheet/telepolycrystal
@@ -356,8 +359,9 @@
 /obj/item/stack/sheet/pizza
 	carry_weight_per_unit = 0.15
 
-// --- ores: a raw chunk is rock plus metal, so it outweighs its refined sheet ---
-// --- (~1.35x now). Base covers plain rock and any future subtype. ---
+// MARK: Ores
+// A raw chunk is rock plus metal, so it outweighs its refined sheet.
+// (~1.35x now). Base covers plain rock and any future subtype.
 /obj/item/stack/ore
 	carry_weight_per_unit = 0.25
 /obj/item/stack/ore/slag
@@ -383,7 +387,7 @@
 /obj/item/stack/ore/bluespace_crystal
 	carry_weight_per_unit = 0.15
 
-// --- construction stacks: cut from sheets, so they weigh the fraction they yield ---
+// MARK: Construction stacks
 // 1 iron sheet -> 2 rods (0.2), 1 sheet -> 4 floor tiles (0.1); a cable length is a wire strip.
 /obj/item/stack/rods
 	carry_weight_per_unit = 0.2

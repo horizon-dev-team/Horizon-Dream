@@ -122,8 +122,3 @@
 
 /// Check if a mob is desensitized (passes the threshold)
 #define IS_DESENSITIZED(mob) ((mob.mind?.desensitized_level || 1) <= DESENSITIZED_THRESHOLD)
-
-/// Mood category for nutrition/hunger moodlets
-#define MOOD_CATEGORY_NUTRITION "nutrition"
-/// Mood category for hydration/thirst moodlets
-#define MOOD_CATEGORY_THIRST "thirst"

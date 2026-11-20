@@ -1681,9 +1681,10 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 			circle_state = "3" // Green
 
 	var/should_show = encumbered.encumbrance != ENCUMBRANCE_NONE
+	var/was_hidden = is_status_hidden() // before fade_visibility(): animate() sets alpha at once
 	fade_visibility(should_show, instant)
 	if(should_show)
-		set_circle_state(circle_state, instant || alpha == 0)
+		set_circle_state(circle_state, instant || was_hidden)
 	set_warning_pulse(encumbered.encumbrance >= ENCUMBRANCE_EXTREME)
 
 #undef HYDRATION_CIRCLE_DEHYDRATED

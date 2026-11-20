@@ -429,7 +429,6 @@
 	var/is_disabled = bodypart_disabled ? "\[<span class='danger'>PARALYZED</span>\]" : ""
 	check_list += "[is_disabled][status]"
 
-	var/combine_msg
 	var/adept_organ_feeler = owner == examiner && HAS_TRAIT(examiner, TRAIT_SELF_AWARE)
 	for(var/obj/item/organ/organ in src)
 		if(organ.organ_flags & ORGAN_HIDDEN)

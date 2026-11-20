@@ -98,15 +98,15 @@
         text: "",
         theme: "",
         padding: 2,
-        init: (tileSize, control) => {
+        init: function (tileSize, control) {
           tooltip.tileSize = parseInt(tileSize);
           tooltip.control = control;
         },
-        hide: () => {
+        hide: function () {
           window.location =
             "byond://winset?id=" + tooltip.control + ";is-visible=false";
         },
-        updateCallback: (map) => {
+        updateCallback: function (map) {
           if (typeof map === "undefined" || !map) {
             return false;
           }
@@ -282,11 +282,11 @@
             posY +
             ";is-visible=true";
 
-          $content.on("mouseover", () => {
+          $content.on("mouseover", function () {
             tooltip.hide();
           });
         },
-        update: (params, client_vw, clien_vh, text, theme, special) => {
+        update: function (params, client_vw, clien_vh, text, theme, special) {
           //Assign our global object
           tooltip.params = $.parseJSON(params);
           tooltip.client_view_w = parseInt(client_vw);

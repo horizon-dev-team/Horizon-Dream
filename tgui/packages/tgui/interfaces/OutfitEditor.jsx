@@ -1,4 +1,12 @@
-import { Box, Button, Icon, Image, Section, Stack } from 'tgui-core/components';
+import {
+  Box,
+  Button,
+  DmIcon,
+  Icon,
+  Image,
+  Section,
+  Stack,
+} from 'tgui-core/components';
 
 import { useBackend } from '../backend';
 import { Window } from '../layouts';
@@ -7,7 +15,7 @@ export const OutfitEditor = (props) => {
   const { act, data } = useBackend();
   const { outfit, saveable, dummy64 } = data;
   return (
-    <Window width={380} height={600} theme="admin">
+    <Window width={380} height={600} theme="horizon">
       <Window.Content>
         <Image
           fillPositionedParent
@@ -135,10 +143,11 @@ const OutfitSlot = (props) => {
         {name}
       </Button>
       <Box height="32px">
-        {currItem?.sprite && (
+        {currItem?.icon && (
           <>
-            <Image
-              src={`data:image/jpeg;base64,${currItem?.sprite}`}
+            <DmIcon
+              icon={currItem?.icon}
+              icon_state={currItem?.icon_state}
               title={currItem?.desc}
             />
             <Icon

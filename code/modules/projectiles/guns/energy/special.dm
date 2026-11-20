@@ -102,6 +102,7 @@
 	tool_behaviour = TOOL_WELDER
 	toolspeed = 0.7 //plasmacutters can be used as welders, and are faster than standard welders
 	custom_materials = list(/datum/material/iron = SHEET_MATERIAL_AMOUNT * 0.75, /datum/material/glass = HALF_SHEET_MATERIAL_AMOUNT, /datum/material/plasma = SMALL_MATERIAL_AMOUNT * 4)
+	var/adv = FALSE // [HORIZON-ADD] SALVAGE_TOOL
 
 /obj/item/gun/energy/plasmacutter/Initialize(mapload)
 	AddElement(/datum/element/update_icon_blocker)
@@ -110,9 +111,10 @@
 		speed = 2.5 SECONDS, \
 		effectiveness = 105, \
 		bonus_modifier = 0, \
-		butcher_sound = 'sound/items/weapons/plasma_cutter.ogg', \
-	)
+		butcher_sound = '_horizon/sound/plasma_cutter_melee.ogg', \
+	) // [HORIZON-EDIT]
 	AddElement(/datum/element/tool_flash, 1)
+	ADD_TRAIT(src, TRAIT_CUTTING_TOOL, INNATE_TRAIT) // [HORIZON-ADD] SALVAGE_TOOL
 
 /obj/item/gun/energy/plasmacutter/examine(mob/user)
 	. = ..()
@@ -175,11 +177,48 @@
 /obj/item/gun/energy/plasmacutter/use(used)
 	return (!QDELETED(cell) && cell.use(used ? used * PLASMA_CUTTER_CHARGE_WELD : PLASMA_CUTTER_CHARGE_WELD))
 
-/obj/item/gun/energy/plasmacutter/use_tool(atom/target, mob/living/user, delay, amount=1, volume=0, datum/callback/extra_checks)
-	if(!amount)
-		return ..(amount = 1)
+// [HORIZON-ADD] SALVAGE_TOOL
+/obj/item/gun/energy/plasmacutter/interact_with_atom(atom/interacting_with, mob/living/user, list/modifiers)
+	if(!isliving(interacting_with) || user.combat_mode)
+		return NONE
 
-	var/mutable_appearance/sparks = mutable_appearance('icons/effects/welding_effect.dmi', "welding_sparks", GASFIRE_LAYER, src, ABOVE_LIGHTING_PLANE)
+	if(!ishuman(interacting_with))
+		return ITEM_INTERACT_BLOCKING
+
+	. = try_heal_loop(interacting_with, user)
+	return . == NONE ? ITEM_INTERACT_BLOCKING : .
+
+/obj/item/gun/energy/plasmacutter/proc/try_heal_loop(atom/interacting_with, mob/living/user, repeating = FALSE)
+	var/mob/living/carbon/human/attacked_humanoid = interacting_with
+	var/obj/item/bodypart/affecting = attacked_humanoid.get_bodypart(check_zone(user.zone_selected))
+	if(isnull(affecting) || !IS_ROBOTIC_LIMB(affecting))
+		return NONE
+
+	if(!affecting.brute_dam)
+		balloon_alert(user, "limb not damaged")
+		return ITEM_INTERACT_BLOCKING
+
+	user.visible_message(span_notice("[user] starts to fix some of the dents on [attacked_humanoid == user ? user.p_their() : "[attacked_humanoid]'s"] [affecting.name]."),
+		span_notice("You start fixing some of the dents on [attacked_humanoid == user ? "your" : "[attacked_humanoid]'s"] [affecting.name]."))
+	var/use_delay = repeating ? 1 SECONDS : 0
+	if(user == attacked_humanoid)
+		use_delay = 5 SECONDS
+
+	if(!use_tool(attacked_humanoid, user, use_delay, volume = 50, amount = 1))
+		return ITEM_INTERACT_BLOCKING
+
+	if(!attacked_humanoid.item_heal(user, brute_heal = 15, burn_heal = 0, heal_message_brute = "dents", heal_message_burn = "burnt wires", required_bodytype = BODYTYPE_ROBOTIC))
+		return ITEM_INTERACT_BLOCKING
+
+	INVOKE_ASYNC(src, PROC_REF(try_heal_loop), interacting_with, user, TRUE)
+	return ITEM_INTERACT_SUCCESS
+// [/HORIZON-ADD]
+
+/obj/item/gun/energy/plasmacutter/use_tool(atom/target, mob/living/user, delay, amount=1, volume=0, datum/callback/extra_checks)
+	//if(!amount)
+	//	amount = 1
+	//	return ..()
+	var/mutable_appearance/sparks = mutable_appearance('_horizon/icons/effects/cutting_effect.dmi', adv ? "advanced_cutting_effect" : "cutting_effect", GASFIRE_LAYER, src, ABOVE_LIGHTING_PLANE)
 	target.add_overlay(sparks)
 	LAZYADD(update_overlays_on_z, sparks)
 	. = ..()
@@ -198,6 +237,10 @@
 	force = 15
 	ammo_type = list(/obj/item/ammo_casing/energy/plasma/adv)
 	custom_materials = list(/datum/material/iron = SHEET_MATERIAL_AMOUNT * 1.5, /datum/material/plasma = SHEET_MATERIAL_AMOUNT, /datum/material/glass = HALF_SHEET_MATERIAL_AMOUNT, /datum/material/gold = HALF_SHEET_MATERIAL_AMOUNT)
+	// [HORIZON-ADD] SALVAGE_TOOL
+	toolspeed = 0.5
+	adv = TRUE
+	// [/HORIZON-ADD]
 
 #define AMMO_SELECT_BLUE 1
 #define AMMO_SELECT_ORANGE 2
@@ -215,33 +258,16 @@
 	custom_materials = list(/datum/material/iron = SHEET_MATERIAL_AMOUNT * 2.5, /datum/material/bluespace = SHEET_MATERIAL_AMOUNT * 1.5, /datum/material/silver = SHEET_MATERIAL_AMOUNT, /datum/material/diamond = SHEET_MATERIAL_AMOUNT)
 	var/obj/effect/portal/p_blue
 	var/obj/effect/portal/p_orange
-	var/firing_core = FALSE
+	var/spawn_with_core = FALSE
 	gun_flags = NOT_A_REAL_GUN
+
+/obj/item/gun/energy/wormhole_projector/Initialize(mapload)
+	. = ..()
+	AddComponent(/datum/component/anomaly_locked_gun, list(/obj/item/assembly/signaler/anomaly/bluespace), init_core = spawn_with_core)
 
 /obj/item/gun/energy/wormhole_projector/examine(mob/user)
 	. = ..()
 	. += span_notice("<b>Left-click</b> to fire blue wormholes and <b><font color=orange>right-click</font></b> to fire orange wormholes.")
-
-/obj/item/gun/energy/wormhole_projector/item_interaction(mob/living/user, obj/item/tool, list/modifiers)
-	if(!istype(tool, /obj/item/assembly/signaler/anomaly/bluespace))
-		return NONE
-	if(firing_core)
-		user.balloon_alert(user, "already has a core!")
-		return ITEM_INTERACT_BLOCKING
-	to_chat(user, span_notice("You insert [tool] into the wormhole projector and the weapon gently hums to life."))
-	firing_core = TRUE
-	playsound(src.loc, 'sound/machines/click.ogg', 50, TRUE)
-	qdel(tool)
-	return ITEM_INTERACT_SUCCESS
-
-/obj/item/gun/energy/wormhole_projector/can_shoot()
-	if(!firing_core)
-		return FALSE
-	return ..()
-
-/obj/item/gun/energy/wormhole_projector/shoot_with_empty_chamber(mob/living/user)
-	. = ..()
-	to_chat(user, span_danger("The display says, 'NO CORE INSTALLED'."))
 
 /obj/item/gun/energy/wormhole_projector/update_icon_state()
 	. = ..()
@@ -308,10 +334,10 @@
 		qdel(p_blue)
 		p_blue = new_portal
 	crosslink()
-	playsound(new_portal, SFX_PORTAL_CREATED, 50, TRUE, SHORT_RANGE_SOUND_EXTRARANGE)
+	playsound(new_portal, /datum/sound_effect/portal_created, 50, TRUE, SHORT_RANGE_SOUND_EXTRARANGE)
 
 /obj/item/gun/energy/wormhole_projector/core_inserted
-	firing_core = TRUE
+	spawn_with_core = TRUE
 
 #undef AMMO_SELECT_BLUE
 #undef AMMO_SELECT_ORANGE
@@ -371,26 +397,12 @@
 		/datum/material/diamond = SHEET_MATERIAL_AMOUNT * 1.5,
 		/datum/material/bluespace = SHEET_MATERIAL_AMOUNT * 1.5,
 	)
-	var/power = 4
-	var/firing_core = FALSE
 	gun_flags = NOT_A_REAL_GUN
+	var/power = 4
 
-/obj/item/gun/energy/gravity_gun/item_interaction(mob/living/user, obj/item/tool, list/modifiers)
-	if(!istype(tool, /obj/item/assembly/signaler/anomaly/grav))
-		return NONE
-	if(firing_core)
-		user.balloon_alert(user, "already has a core!")
-		return ITEM_INTERACT_BLOCKING
-	to_chat(user, span_notice("You insert [tool] into the gravitational manipulator and the weapon gently hums to life."))
-	firing_core = TRUE
-	playsound(src.loc, 'sound/machines/click.ogg', 50, TRUE)
-	qdel(tool)
-	return ITEM_INTERACT_SUCCESS
-
-/obj/item/gun/energy/gravity_gun/can_shoot()
-	if(!firing_core)
-		return FALSE
-	return ..()
+/obj/item/gun/energy/gravity_gun/Initialize(mapload)
+	. = ..()
+	AddComponent(/datum/component/anomaly_locked_gun, list(/obj/item/assembly/signaler/anomaly/grav))
 
 /**
 -----------------Tesla Cannon--------------------------------
@@ -419,13 +431,14 @@ it is often confused with the mech weapon of the same name, since it is a bit mo
 	display_empty =  FALSE
 	weapon_weight = WEAPON_HEAVY
 	w_class = WEIGHT_CLASS_BULKY
-	///if our stpck is extended and we are ready to fire.
 	custom_materials = list(/datum/material/iron = SHEET_MATERIAL_AMOUNT * 5, /datum/material/glass = SHEET_MATERIAL_AMOUNT * 5, /datum/material/silver = SHEET_MATERIAL_AMOUNT * 5)
+	///if our stock is extended and we are ready to fire.
 	var/ready_to_fire = FALSE
 
 /obj/item/gun/energy/tesla_cannon/Initialize(mapload)
 	. = ..()
 	AddComponent(/datum/component/automatic_fire, autofire_shot_delay =  100 MILLISECONDS, firing_sound_loop = /datum/looping_sound/tesla_cannon)
+	AddComponent(/datum/component/anomaly_locked_gun, list(/obj/item/assembly/signaler/anomaly/flux))
 
 /obj/item/gun/energy/tesla_cannon/can_trigger_gun(mob/living/user, akimbo_usage)
 	if(ready_to_fire)
@@ -540,3 +553,4 @@ it is often confused with the mech weapon of the same name, since it is a bit mo
 /obj/item/gun/energy/photon/Initialize(mapload)
 	. = ..()
 	set_light_on(TRUE) // The gun quite literally shoots mini-suns.
+	AddComponent(/datum/component/anomaly_locked_gun, list(/obj/item/assembly/signaler/anomaly/flux))

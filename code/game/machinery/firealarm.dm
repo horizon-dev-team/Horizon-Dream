@@ -8,7 +8,7 @@
 	icon = 'icons/obj/machines/wallmounts.dmi'
 	icon_state = "fire_bitem"
 	result_path = /obj/machinery/firealarm
-	pixel_shift = 26
+	pixel_shift = 18 // [HORIZON-EDIT]
 
 /obj/item/wallframe/firealarm/try_build(atom/support, mob/user)
 	var/area/A = get_area(user)
@@ -223,7 +223,7 @@
 	if(user)
 		balloon_alert(user, "circuitry fried")
 		user.log_message("emagged [src].", LOG_ATTACK)
-	playsound(src, SFX_SPARKS, 50, TRUE, SHORT_RANGE_SOUND_EXTRARANGE)
+	playsound(src, /datum/sound_effect/sparks, 50, TRUE, SHORT_RANGE_SOUND_EXTRARANGE)
 	set_status()
 	return TRUE
 
@@ -621,7 +621,7 @@
 		reset()
 	user?.log_message("enabled firelock sensors using [src].", LOG_GAME)
 
-MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/firealarm, 26)
+MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/firealarm, 18) // [HORIZON-EDIT]
 
 /*
  * Return of Party button

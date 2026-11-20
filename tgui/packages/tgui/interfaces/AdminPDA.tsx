@@ -32,7 +32,7 @@ export function AdminPDA(props) {
   const invisibleState = useState<BooleanLike>(0);
 
   return (
-    <Window title="Send PDA Message" width={300} height={575} theme="admin">
+    <Window title="Send PDA Message" width={300} height={575} theme="horizon">
       <Window.Content>
         <ReceiverChoice
           invisibleState={invisibleState}

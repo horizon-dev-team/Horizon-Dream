@@ -10,11 +10,11 @@ export function LockedExperiment(props) {
         disabled
       >
         <Flex align="center" justify="space-between">
-          <Flex.Item color="rgba(0, 0, 0, 0.6)">
+          <Flex.Item class="Techweb__Locked">
             <Icon name="lock" />
             Undiscovered Experiment
           </Flex.Item>
-          <Flex.Item color="rgba(0, 0, 0, 0.5)">???</Flex.Item>
+          <Flex.Item class="Techweb__Locked">???</Flex.Item>
         </Flex>
       </Button>
       <Box className="ExperimentConfigure__ExperimentContent">

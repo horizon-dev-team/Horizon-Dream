@@ -32,7 +32,7 @@
 	if(!SPT_PROB(20, seconds_per_tick))
 		return
 	living_pawn.do_attack_animation(target, ATTACK_EFFECT_DISARM)
-	playsound(target, 'sound/items/weapons/thudswoosh.ogg', 50, TRUE, -1)
+	playsound(target, 'sound/items/weapons/thudswoosh.ogg', 50, TRUE, -1, mixer_channel = CHANNEL_MOB_SOUNDS) // [HORIZON-EDIT] Master_Sounds
 	target.visible_message(span_danger("[living_pawn] paws ineffectually at [target]!"), span_danger("[living_pawn] paws ineffectually at you!"))
 
 

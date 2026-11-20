@@ -60,6 +60,7 @@ type Event = {
   description: string;
   type: string;
   category: string;
+  disabled: BooleanLike;
   has_customization: BooleanLike;
 };
 
@@ -82,7 +83,7 @@ export function ForceEvent(props) {
   const searchQueryState = useState('');
 
   return (
-    <Window theme="admin" title="Force Event" width={450} height={450}>
+    <Window theme="horizon" title="Force Event" width={450} height={450}>
       <Window.Content>
         <ForceEventContext.Provider
           value={{ announceState, categoryState, searchQueryState }}
@@ -178,26 +179,38 @@ function EventSection(props) {
             <Stack>
               {eventPage.map((event) => (
                 <Stack.Item grow key={event.type}>
-                  <Button
-                    className="Button__rightIcon"
-                    tooltip={
-                      event.description +
-                      (event.has_customization
-                        ? ' Includes admin customization.'
-                        : '')
-                    }
-                    fluid
-                    icon={event.has_customization ? 'gear' : undefined}
-                    iconPosition="right"
-                    onClick={() =>
-                      act('forceevent', {
-                        type: event.type,
-                        announce: announce,
-                      })
-                    }
-                  >
-                    {event.name}
-                  </Button>
+                  <Stack fill>
+                    <Stack.Item>
+                      <Button.Checkbox
+                        fluid
+                        checked={!event.disabled}
+                        onClick={() => act('toggleevent', { type: event.type })}
+                        tooltip="If unchecked, this event cannot randomly trigger."
+                      />
+                    </Stack.Item>
+                    <Stack.Item grow>
+                      <Button
+                        className="Button__rightIcon"
+                        tooltip={
+                          event.description +
+                          (event.has_customization
+                            ? ' Includes admin customization.'
+                            : '')
+                        }
+                        fluid
+                        icon={event.has_customization ? 'gear' : undefined}
+                        iconPosition="right"
+                        onClick={() =>
+                          act('forceevent', {
+                            type: event.type,
+                            announce: announce,
+                          })
+                        }
+                      >
+                        {event.name}
+                      </Button>
+                    </Stack.Item>
+                  </Stack>
                 </Stack.Item>
               ))}
             </Stack>

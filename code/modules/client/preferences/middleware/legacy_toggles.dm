@@ -18,7 +18,6 @@
 		"deadmin_position_silicon" = DEADMIN_POSITION_SILICON,
 		"disable_arrivalrattle" = DISABLE_ARRIVALRATTLE,
 		"disable_deathrattle" = DISABLE_DEATHRATTLE,
-		"member_public" = MEMBER_PUBLIC,
 		"sound_adminhelp" = SOUND_ADMINHELP,
 		"sound_prayers" = SOUND_PRAYERS,
 		"split_admin_tabs" = SPLIT_ADMIN_TABS,
@@ -77,9 +76,6 @@
 			continue
 
 		if (is_admin && (toggle_name in deadmin_flags) && (preferences.toggles & DEADMIN_ALWAYS))
-			continue
-
-		if (toggle_name == "member_public" && !preferences.unlock_content)
 			continue
 
 		new_game_preferences[toggle_name] = (preferences.toggles & legacy_toggles[toggle_name]) != 0

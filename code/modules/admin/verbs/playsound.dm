@@ -32,11 +32,17 @@ ADMIN_VERB(play_sound, R_SOUND, "Play Global Sound", "Play a sound to all connec
 	message_admins("[key_name_admin(user)] played sound [sound]")
 
 	for(var/mob/M in GLOB.player_list)
-		var/volume_modifier = M.client.prefs.read_preference(/datum/preference/numeric/volume/sound_midi)
-		if(volume_modifier > 0)
-			admin_sound.volume = vol * M.client.admin_music_volume * (volume_modifier/100)
-			SEND_SOUND(M, admin_sound)
-			admin_sound.volume = vol
+		// [HORIZON-EDIT] Master_Sounds
+		var/client/player_client = M.client
+		if(!player_client?.prefs?.channel_volume?["[CHANNEL_ADMIN]"])
+			continue
+		var/mixed_volume = calculate_mixed_volume(player_client, vol * player_client.admin_music_volume, CHANNEL_ADMIN)
+		if(mixed_volume <= 0)
+			continue
+		admin_sound.volume = mixed_volume
+		SEND_SOUND(M, admin_sound)
+		admin_sound.volume = vol
+		// [/HORIZON-EDIT]
 
 	BLACKBOX_LOG_ADMIN_VERB("Play Global Sound")
 
@@ -146,8 +152,10 @@ GLOBAL_VAR_INIT(web_sound_cooldown, 0)
 
 		var/list/recipients = list()
 		for(var/client/client as anything in GLOB.clients)
-			if(client.prefs.read_preference(/datum/preference/numeric/volume/sound_midi) > 0)
+			// [HORIZON-EDIT] Master_Sounds
+			if(calculate_mixed_volume(client, 100, CHANNEL_ADMIN_SOUNDS) > 0)
 				recipients += client
+			// [/HORIZON-EDIT]
 		recipients |= user.client
 		to_chat(recipients, fieldset_block("Now Playing: [span_bold(music_extra_data["title"])] by [span_bold(music_extra_data["artist"])]", jointext(to_chat_message, ""), "boxed_message"))
 
@@ -170,7 +178,8 @@ GLOBAL_VAR_INIT(web_sound_cooldown, 0)
 		for(var/m in GLOB.player_list)
 			var/mob/M = m
 			var/client/C = M.client
-			if(C.prefs.read_preference(/datum/preference/numeric/volume/sound_midi))
+			// [HORIZON-EDIT] Master_Sounds
+			if(calculate_mixed_volume(C, 100, CHANNEL_ADMIN_SOUNDS) > 0)
 				// Stops playing lobby music and admin loaded music automatically.
 				SEND_SOUND(C, sound(null, channel = CHANNEL_LOBBYMUSIC))
 				SEND_SOUND(C, sound(null, channel = CHANNEL_ADMIN))
@@ -178,6 +187,7 @@ GLOBAL_VAR_INIT(web_sound_cooldown, 0)
 					C.tgui_panel?.play_music(web_sound_url, music_extra_data)
 				else
 					C.tgui_panel?.stop_music()
+			// [/HORIZON-EDIT]
 
 	CLIENT_COOLDOWN_START(GLOB, web_sound_cooldown, duration)
 

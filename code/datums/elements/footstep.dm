@@ -62,25 +62,21 @@
 	steps_for_living -= source
 	return ..()
 
+/datum/element/footstep/proc/play_craw_step(mob/living/source)
+	var/turf/open/turf = get_turf(source)
+	if(!istype(turf) || !turf.footstep)
+		return
+
+	var/sound = 'sound/effects/footstep/crawl1.ogg'
+	if(HAS_TRAIT(source, TRAIT_FLOPPING))
+		sound = pick(/datum/sound_effect/fish_pickup, 'sound/mobs/non-humanoids/fish/fish_drop1.ogg')
+	playsound(turf, sound, 15 * volume, falloff_distance = 1, vary = sound_vary, mixer_channel = CHANNEL_FOOTSTEPS) // [HORIZON-EDIT] Master_Sounds
+
 ///Prepares a footstep for living mobs. Determines if it should get played. Returns the turf it should get played on. Note that it is always a /turf/open
 /datum/element/footstep/proc/prepare_step(mob/living/source)
 	var/turf/open/turf = get_turf(source)
 	if(!istype(turf))
 		return
-
-	if(source.buckled || source.throwing || source.movement_type & (VENTCRAWLING | FLYING) || HAS_TRAIT(source, TRAIT_IMMOBILIZED) || CHECK_MOVE_LOOP_FLAGS(source, MOVEMENT_LOOP_OUTSIDE_CONTROL))
-		return
-
-	if(source.body_position == LYING_DOWN) //play crawling sound if we're lying
-		if(turf.footstep)
-			var/sound = 'sound/effects/footstep/crawl1.ogg'
-			if(HAS_TRAIT(source, TRAIT_FLOPPING))
-				sound = pick(SFX_FISH_PICKUP, 'sound/mobs/non-humanoids/fish/fish_drop1.ogg')
-			playsound(turf, sound, 15 * volume, falloff_distance = 1, vary = sound_vary)
-		return
-
-	if(iscarbon(source) && source.move_intent == MOVE_INTENT_WALK)
-		return // stealth
 
 	steps_for_living[source] += 1
 	var/steps = steps_for_living[source]
@@ -119,10 +115,14 @@
 /datum/element/footstep/proc/play_simplestep(mob/living/source, atom/oldloc, direction, forced, list/old_locs, momentum_change)
 	SIGNAL_HANDLER
 
-	if(source.moving_diagonally == SECOND_DIAG_STEP)
-		return // to prevent a diagonal step from counting as 2
+	if(forced || SHOULD_ATOM_DISABLE_FOOTSTEPS(source))
+		return
 
-	if (forced || SHOULD_DISABLE_FOOTSTEPS(source))
+	if(source.body_position == LYING_DOWN)
+		play_craw_step(source)
+		return
+
+	if(HAS_TRAIT(source, TRAIT_SILENT_FOOTSTEPS) || SHOULD_MOB_DISABLE_FOOTSTEPS(source))
 		return
 
 	var/list/prepared_steps = prepare_step(source)
@@ -131,21 +131,26 @@
 
 	if(isfile(footstep_sounds) || istext(footstep_sounds))
 		/// the volume for this is defined on attach when the sound gets set footstep_sounds
-		playsound(source.loc, footstep_sounds, volume, falloff_distance = 1, vary = sound_vary)
+		playsound(source.loc, footstep_sounds, volume, falloff_distance = 1, vary = sound_vary, mixer_channel = CHANNEL_FOOTSTEPS) // [HORIZON-EDIT] Master_Sounds
 		return
 
 	var/turf_footstep = prepared_steps[footstep_type]
 	if(isnull(turf_footstep) || !footstep_sounds[turf_footstep])
 		return
-	playsound(source.loc, pick(footstep_sounds[turf_footstep][1]), footstep_sounds[turf_footstep][2] * volume, TRUE, footstep_sounds[turf_footstep][3] + e_range, falloff_distance = 1, vary = sound_vary)
+	playsound(source.loc, pick(footstep_sounds[turf_footstep][1]), footstep_sounds[turf_footstep][2] * volume, TRUE, footstep_sounds[turf_footstep][3] + e_range, falloff_distance = 1, vary = sound_vary, mixer_channel = CHANNEL_FOOTSTEPS) // [HORIZON-EDIT] Master_Sounds
 
 /datum/element/footstep/proc/play_humanstep(mob/living/carbon/human/source, atom/oldloc, direction, forced, list/old_locs, momentum_change)
 	SIGNAL_HANDLER
 
-	if(source.moving_diagonally == SECOND_DIAG_STEP)
-		return // to prevent a diagonal step from counting as 2
+	if(forced || SHOULD_ATOM_DISABLE_FOOTSTEPS(source) || !momentum_change)
+		return
 
-	if (forced || SHOULD_DISABLE_FOOTSTEPS(source) || !momentum_change)
+	if(source.body_position == LYING_DOWN)
+		if(!source.buckled)
+			play_craw_step(source)
+		return
+
+	if(HAS_TRAIT(source, TRAIT_SILENT_FOOTSTEPS) || SHOULD_MOB_DISABLE_FOOTSTEPS(source))
 		return
 
 	var/list/prepared_steps = prepare_step(source)
@@ -180,6 +185,28 @@
 				footstep_sounds = GLOB.heavyfootstep[prepared_steps[footstep_type]]
 			if(FOOTSTEP_MOB_SHOE)
 				footstep_sounds = GLOB.footstep[prepared_steps[footstep_type]]
+			if(FOOTSTEP_MOB_SYNTHETIC)
+				var/barefoot_type = prepared_steps[FOOTSTEP_MOB_BAREFOOT]
+				// these categories will use the synthetic step over the normal barefoot steps
+				var/static/list/synthetic_footstep_types = list(
+					FOOTSTEP_CARPET_BAREFOOT = 1,
+					FOOTSTEP_HARD_BAREFOOT = 1,
+					FOOTSTEP_WOOD_BAREFOOT = 1,
+				)
+				// the actual synthetic footstep sound
+				var/static/list/synthetic_footsteps = list(
+					/*sounds = */list(
+						'sound/items/modsuit/rigstep.ogg' = 1,
+						'sound/items/modsuit/rigstep.ogg' = 1,
+					),
+					/*volume = */50,
+					/*extrarange= */2,
+				)
+
+				if(synthetic_footstep_types[barefoot_type])
+					footstep_sounds = synthetic_footsteps
+				else
+					footstep_sounds = GLOB.barefootstep[barefoot_type]
 			if(null)
 				return
 			else
@@ -210,6 +237,7 @@
 		vary = sound_vary,
 		extrarange = picked_range,
 		falloff_distance = 1,
+		mixer_channel = CHANNEL_FOOTSTEPS, // [HORIZON-EDIT] Master_Sounds
 	)
 
 	if(heard_clients)
@@ -220,10 +248,10 @@
 /datum/element/footstep/proc/play_simplestep_machine(atom/movable/source, atom/oldloc, direction, forced, list/old_locs, momentum_change)
 	SIGNAL_HANDLER
 
-	if(source.moving_diagonally == SECOND_DIAG_STEP)
-		return // to prevent a diagonal step from counting as 2
+	if(forced || SHOULD_ATOM_DISABLE_FOOTSTEPS(source))
+		return
 
-	if (forced || SHOULD_DISABLE_FOOTSTEPS(source))
+	if(HAS_TRAIT(source, TRAIT_SILENT_FOOTSTEPS))
 		return
 
 	var/turf/open/source_loc = get_turf(source)
@@ -233,4 +261,4 @@
 	if(CHECK_MOVE_LOOP_FLAGS(source, MOVEMENT_LOOP_OUTSIDE_CONTROL))
 		return
 
-	playsound(source_loc, footstep_sounds, 50, falloff_distance = 1, vary = sound_vary)
+	playsound(source_loc, footstep_sounds, 50, falloff_distance = 1, vary = sound_vary, mixer_channel = CHANNEL_FOOTSTEPS) // [HORIZON-EDIT] Master_Sounds

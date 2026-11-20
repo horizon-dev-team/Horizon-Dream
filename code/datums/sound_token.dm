@@ -38,11 +38,13 @@
 	var/delete_on_end = FALSE
 	///Do we repeat the sound using sound.repeat?
 	var/repeating = FALSE
+	///Tracks our source and anything holding it, so the sound follows whoever carries it around.
+	var/datum/movement_detector/move_tracker
 
-/datum/sound_token/New(atom/_source, _sound, _range = 10, _volume = 50, _falloff_exponent = SOUND_FALLOFF_EXPONENT, _falloff_distance = SOUND_DEFAULT_FALLOFF_DISTANCE, _allowed_listeners, _sound_duration_override, _delete_on_end, _repeating)
+/datum/sound_token/New(atom/_source, _sound, _range = 10, _volume = 50, _falloff_exponent = SOUND_FALLOFF_EXPONENT, _falloff_distance = SOUND_DEFAULT_FALLOFF_DISTANCE, _allowed_listeners, _sound_duration_override, _delete_on_end, _repeating, _channel)
 	source = _source
 	RegisterSignal(source, COMSIG_QDELETING, PROC_REF(source_deleted))
-	RegisterSignal(source, COMSIG_MOVABLE_MOVED, PROC_REF(source_moved))
+	move_tracker = new(source, CALLBACK(src, PROC_REF(source_moved)))
 	RegisterSignal(source, COMSIG_ENTER_AREA, PROC_REF(on_enter_area))
 
 	range = _range
@@ -53,6 +55,7 @@
 	if(_delete_on_end)
 		delete_on_end = _delete_on_end
 	repeating = _repeating
+	sound_channel = _channel
 
 	if(_allowed_listeners)
 		for(var/allowed_mob in _allowed_listeners)
@@ -73,6 +76,7 @@
 	for(var/listener in listeners)
 		remove_listener(listener)
 	listeners = null
+	QDEL_NULL(move_tracker)
 	source = null
 	return ..()
 
@@ -80,12 +84,13 @@
 /datum/sound_token/proc/update_sound(_sound, start_playing = FALSE, _repeating = null)
 	if(!isnull(_repeating))
 		repeating = _repeating
-	sound = sound(_sound)
+	var/resolved_sound = get_sfx(_sound)
+	sound = sound(resolved_sound)
 	sound.repeat = repeating
 	if(!sound_channel)
 		sound_channel = SSsounds.reserve_sound_channel_for_datum(src)
 	sound.channel = sound_channel
-	sound_duration = sound_duration_override || SSsounds.get_sound_length(_sound)
+	sound_duration = sound_duration_override || SSsounds.get_sound_length(resolved_sound)
 	start_time = REALTIMEOFDAY
 	if(start_playing)
 		force_update_all_listeners(FALSE)
@@ -173,7 +178,7 @@
 		SEND_SOUND(listener_mob, sound)
 		return
 
-	if(!listener_mob.playsound_local(get_turf(source), vol = volume, falloff_exponent = falloff_exponent, channel = sound_channel, sound_to_use = sound, max_distance = range, falloff_distance = falloff_distance, use_reverb = TRUE))
+	if(!listener_mob.playsound_local(get_turf(source), vol = volume, falloff_exponent = falloff_exponent, channel = sound_channel, sound_to_use = sound, max_distance = range, falloff_distance = falloff_distance, use_reverb = TRUE, mixer_channel = sound_channel))
 		sound.status = SOUND_UPDATE|SOUND_MUTE
 		SEND_SOUND(listener_mob, sound)
 	sound.offset = null
@@ -258,7 +263,7 @@
 	var/offset = elapsed * freq_factor * pitch_factor
 	if(repeating && sound_duration)
 		offset %= sound_duration
-	return offset
+	return offset / (1 SECONDS) // sound.offset is in seconds, everything above is in deciseconds
 
 ///Update tracked cells; happens on movement. We need to check if anyone is now out of cell range and kick them out.
 /datum/sound_token/proc/update_tracked_cells()

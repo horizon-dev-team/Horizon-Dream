@@ -48,7 +48,7 @@
 	/// The amount restored by the gun to the cell per self charge tick
 	var/self_charge_amount = STANDARD_ENERGY_GUN_SELF_CHARGE_RATE
 	/// sound played when fire mode select is done
-	var/fire_mode_switch_sound = SFX_FIRE_MODE_SWITCH
+	var/fire_mode_switch_sound = /datum/sound_effect/fire_mode_switch
 
 	// EMP related vars
 
@@ -196,7 +196,7 @@
 
 /obj/item/gun/energy/can_shoot()
 	var/obj/item/ammo_casing/energy/shot = ammo_type[select]
-	return !QDELETED(cell) ? (cell.charge >= shot.e_cost) : FALSE
+	return ..() && !QDELETED(cell) && (cell.charge >= shot.e_cost)
 
 /obj/item/gun/energy/recharge_newshot(no_cyborg_drain)
 	if (!ammo_type || !cell)
@@ -218,7 +218,7 @@
 				chambered.newshot()
 				return ..()
 
-/obj/item/gun/energy/handle_chamber()
+/obj/item/gun/energy/handle_chamber(mob/living/user, empty_chamber = TRUE, from_firing = TRUE, chamber_next_round = TRUE) // [HORIZON-EDIT] PHYSICS
 	if(chambered && !chambered.loaded_projectile) //if loaded_projectile is null, i.e the shot has been fired...
 		var/obj/item/ammo_casing/energy/shot = chambered
 		cell.use(shot.e_cost)//... drain the cell cell
@@ -227,12 +227,12 @@
 
 /obj/item/gun/energy/process_fire(atom/target, mob/living/user, message = TRUE, params = null, zone_override = "", bonus_spread = 0)
 	if(!chambered && can_shoot())
-		process_chamber() // If the gun was drained and then recharged, load a new shot.
+		process_chamber(user) // If the gun was drained and then recharged, load a new shot.	// [HORIZON-EDIT] PHYSICS
 	return ..()
 
 /obj/item/gun/energy/process_burst(mob/living/user, atom/target, message = TRUE, params = null, zone_override="", randomized_gun_spread = 0, randomized_bonus_spread = 0, rand_spr = 0, iteration = 0)
 	if(!chambered && can_shoot())
-		process_chamber() // Ditto.
+		process_chamber(user) // Ditto. // [HORIZON-EDIT] PHYSICS
 	return ..()
 
 /obj/item/gun/energy/proc/select_fire(mob/living/user)

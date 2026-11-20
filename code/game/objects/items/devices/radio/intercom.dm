@@ -191,7 +191,7 @@
 		return .
 
 	balloon_alert(user, "[message] broken")
-	playsound(src, SFX_SPARKS, 75, TRUE, SILENCED_SOUND_EXTRARANGE)
+	playsound(src, /datum/sound_effect/sparks, 75, TRUE, SILENCED_SOUND_EXTRARANGE)
 	if(freqlock == RADIO_FREQENCY_EMAGGABLE_LOCK)
 		freqlock = RADIO_FREQENCY_UNLOCKED
 	if(keylock == RADIO_KEYSLOT_EMAGGABLE_LOCK)
@@ -433,7 +433,7 @@
 	keyslot = /obj/item/encryptionkey/heads/rd
 	stripe_color = "#D381C9"
 
-#define INTERCOM_OFFSET 27
+#define INTERCOM_OFFSET 22 // [HORIZON-EDIT]
 
 MAPPING_DIRECTIONAL_HELPERS(/obj/item/radio/intercom, INTERCOM_OFFSET)
 MAPPING_DIRECTIONAL_HELPERS(/obj/item/radio/intercom/prison, INTERCOM_OFFSET)

@@ -1,4 +1,3 @@
-
 /// Not actually hitscan but close as we get without actual hitscan.
 #define MOVES_HITSCAN -1
 /// How many pixels to move the muzzle flash up so your character doesn't look like they're shitting out lasers.
@@ -284,6 +283,7 @@
 		generate_hitscan_tracers()
 	STOP_PROCESSING(SSprojectiles, src)
 	firer = null
+	fired_from = null
 	original = null
 	QDEL_NULL(embed_data)
 	if (movement_vector)
@@ -367,6 +367,8 @@
 		impact_x = entry_x + movement_vector?.pixel_x * rand(0, ICON_SIZE_X / 2)
 		impact_y = entry_y + movement_vector?.pixel_y * rand(0, ICON_SIZE_Y / 2)
 
+	SEND_SIGNAL(target, COMSIG_ATOM_PROJECTILE_IMPACT, src, impact_x, impact_y) // [HORIZON-ADD] Ballistic_Impact
+
 	if(isturf(target) && hitsound_wall)
 		playsound(src, hitsound_wall, clamp(vol_by_damage() + (suppressed ? 0 : 20), 0, 100), TRUE, -1)
 
@@ -423,11 +425,12 @@
 /obj/projectile/proc/firer_deleted(datum/source)
 	SIGNAL_HANDLER
 	// Shooting yourself point-blank
-	if (firer == original)
+	if (source == original)
 		original = null
-	if (firer == fired_from)
+	if (source == fired_from)
 		fired_from = null
-	firer = null
+	if (source == firer)
+		firer = null
 
 /obj/projectile/proc/original_deleted(datum/source)
 	SIGNAL_HANDLER
@@ -436,6 +439,16 @@
 /obj/projectile/proc/fired_from_deleted(datum/source)
 	SIGNAL_HANDLER
 	fired_from = null
+
+/// Changes who fired us after we've been fired, moving the qdel listener over to the new firer
+/obj/projectile/proc/set_firer(atom/movable/new_firer)
+	if (firer == new_firer)
+		return
+	if (firer && firer != fired_from && firer != original)
+		UnregisterSignal(firer, COMSIG_QDELETING)
+	firer = new_firer
+	if (firer)
+		RegisterSignal(firer, COMSIG_QDELETING, PROC_REF(firer_deleted), override = TRUE)
 
 /obj/projectile/proc/on_ricochet(atom/target)
 	ricochets++
@@ -1377,7 +1390,7 @@
 	// redirect the projectile
 	original = locate(new_x, new_y, z)
 	starting = current_tile
-	firer = hit_atom
+	set_firer(hit_atom)
 	yo = new_y - current_tile.y
 	xo = new_x - current_tile.x
 	var/new_angle_s = angle + rand(120, 240)

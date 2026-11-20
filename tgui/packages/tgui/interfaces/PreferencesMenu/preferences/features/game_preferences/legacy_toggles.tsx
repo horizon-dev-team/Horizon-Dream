@@ -79,14 +79,6 @@ export const disable_deathrattle: FeatureToggle = {
   component: CheckboxInputInverse,
 };
 
-export const member_public: FeatureToggle = {
-  name: 'Publicize BYOND membership',
-  category: 'CHAT',
-  description:
-    'When enabled, a BYOND logo will be shown next to your name in OOC.',
-  component: CheckboxInput,
-};
-
 export const sound_adminhelp: FeatureToggle = {
   name: 'Enable adminhelp sounds',
   category: 'ADMIN',

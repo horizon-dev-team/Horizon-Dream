@@ -13,6 +13,7 @@
 	var/datum/pipeline/parent = null
 
 	paintable = TRUE
+	plane = WALL_PLANE // [HORIZON-ADD] Shadow-Render
 
 	/// Determines if this pipe will be given gas visuals
 	var/has_gas_visuals = TRUE
@@ -68,11 +69,11 @@
 /obj/machinery/atmospherics/pipe/destroy_network()
 	QDEL_NULL(parent)
 
-/obj/machinery/atmospherics/pipe/get_rebuild_targets()
+/obj/machinery/atmospherics/pipe/get_rebuild_target()
 	if(!QDELETED(parent))
 		return
 	replace_pipenet(parent, new /datum/pipeline)
-	return list(parent)
+	return parent
 
 /obj/machinery/atmospherics/pipe/return_air()
 	if(air_temporary)

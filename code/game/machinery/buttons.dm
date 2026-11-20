@@ -214,7 +214,7 @@
 		return
 	req_access = list()
 	req_one_access = list()
-	playsound(src, SFX_SPARKS, 100, TRUE, SHORT_RANGE_SOUND_EXTRARANGE)
+	playsound(src, /datum/sound_effect/sparks, 100, TRUE, SHORT_RANGE_SOUND_EXTRARANGE)
 	obj_flags |= EMAGGED
 
 	// The device inside can be emagged by swiping the button
@@ -222,6 +222,14 @@
 	if(!device?.emag_act(user, emag_card))
 		balloon_alert(user, "access overridden")
 	return TRUE
+
+/obj/machinery/button/emp_act(severity)
+	. = ..()
+	if(. & EMP_PROTECT_SELF)
+		return
+
+	if(prob(75 / severity) && device)
+		attempt_press(null, FALSE)
 
 /obj/machinery/button/attack_ai(mob/user)
 	if(!silicon_access_disabled && !panel_open)
@@ -291,14 +299,14 @@
 	board = null
 	update_appearance(UPDATE_ICON)
 
-/obj/machinery/button/proc/attempt_press(mob/user)
+/obj/machinery/button/proc/attempt_press(mob/user, require_id_check=TRUE)
 	if((machine_stat & (NOPOWER|BROKEN)))
 		return FALSE
 
 	if(device && device.next_activate > world.time)
 		return FALSE
 
-	if(!allowed(user))
+	if(require_id_check && !allowed(user))
 		balloon_alert(user, "access denied")
 		flick_overlay_view("[base_icon_state]-overlay-error", 1 SECONDS)
 		return FALSE
@@ -393,7 +401,7 @@
 	var/specialfunctions = OPEN // Bitflag, see assembly file
 	var/sync_doors = TRUE
 
-MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/button/door, 24)
+MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/button/door, 22) // [HORIZON-EDIT]
 
 /obj/machinery/button/door/indestructible
 	resistance_flags = INDESTRUCTIBLE | LAVA_PROOF | FIRE_PROOF | UNACIDABLE | ACID_PROOF
@@ -418,22 +426,22 @@ MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/button/door, 24)
 /obj/machinery/button/door/incinerator_vent_atmos_main
 	name = "turbine vent control"
 	id = INCINERATOR_ATMOS_MAINVENT
-	req_one_access = list(ACCESS_ATMOSPHERICS, ACCESS_MAINT_TUNNELS)
+	req_one_access = list(ACCESS_ATMOSPHERICS, ACCESS_ATMOS_EQUIP, ACCESS_MAINT_TUNNELS)
 
 /obj/machinery/button/door/incinerator_vent_atmos_aux
 	name = "combustion chamber vent control"
 	id = INCINERATOR_ATMOS_AUXVENT
-	req_one_access = list(ACCESS_ATMOSPHERICS, ACCESS_MAINT_TUNNELS)
+	req_one_access = list(ACCESS_ATMOSPHERICS, ACCESS_ATMOS_EQUIP, ACCESS_MAINT_TUNNELS)
 
 /obj/machinery/button/door/atmos_test_room_mainvent_1
 	name = "test chamber 1 vent control"
 	id = TEST_ROOM_ATMOS_MAINVENT_1
-	req_one_access = list(ACCESS_ATMOSPHERICS)
+	req_one_access = list(ACCESS_ATMOSPHERICS, ACCESS_ATMOS_EQUIP)
 
 /obj/machinery/button/door/atmos_test_room_mainvent_2
 	name = "test chamber 2 vent control"
 	id = TEST_ROOM_ATMOS_MAINVENT_2
-	req_one_access = list(ACCESS_ATMOSPHERICS)
+	req_one_access = list(ACCESS_ATMOSPHERICS, ACCESS_ATMOS_EQUIP)
 
 /obj/machinery/button/door/incinerator_vent_syndicatelava_main
 	name = "turbine vent control"
@@ -520,7 +528,7 @@ MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/button/door, 24)
 	icon_state = "button"
 	result_path = /obj/machinery/button
 	custom_materials = list(/datum/material/iron = SHEET_MATERIAL_AMOUNT)
-	pixel_shift = 24
+	pixel_shift = 22 // [HORIZON-EDIT]
 
 /obj/item/wallframe/button/find_support_structure(atom/structure)
 	return istype(structure, /obj/structure/table) ? structure : ..()

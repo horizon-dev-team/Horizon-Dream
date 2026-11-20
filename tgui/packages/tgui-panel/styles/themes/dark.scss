@@ -1,0 +1,14 @@
+/**
+ * Horizon Dark Theme
+ */
+
+@use 'sass:meta';
+
+.theme-dark:root {
+  --color-primary: hsl(0, 0%, 25%);
+  --button-background-selected: hsl(77, 62%, 39%);
+  --progress-bar-fill: hsl(40, 52%, 50%);
+  --color-label: hsl(from var(--color-primary) h 0 57.5);
+  --button-border-radius: 0;
+  --border-primary-saturation: 0;
+}

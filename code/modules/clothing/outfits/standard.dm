@@ -185,10 +185,8 @@
 	l_hand = /obj/item/fireaxe
 
 /datum/outfit/psycho/post_equip(mob/living/carbon/human/H)
-	for(var/obj/item/carried_item in H.get_equipped_items(INCLUDE_POCKETS | INCLUDE_ACCESSORIES))
+	for(var/obj/item/carried_item in H.get_equipped_items(INCLUDE_POCKETS | INCLUDE_ACCESSORIES | INCLUDE_HELD))
 		carried_item.add_mob_blood(H)//Oh yes, there will be blood...
-	for(var/obj/item/I in H.held_items)
-		I.add_mob_blood(H)
 	H.regenerate_icons()
 
 /datum/outfit/assassin
@@ -198,7 +196,7 @@
 	id_trim = /datum/id_trim/reaper_assassin
 	uniform = /obj/item/clothing/under/costume/buttondown/slacks/service
 	neck = /obj/item/clothing/neck/tie/red/hitman/tied
-	belt = /obj/item/modular_computer/pda/heads
+	belt = /obj/item/modular_computer/pda/crew/heads
 	ears = /obj/item/radio/headset
 	gloves = /obj/item/clothing/gloves/color/black
 	glasses = /obj/item/clothing/glasses/sunglasses
@@ -224,7 +222,7 @@
 	sec_briefcase.contents += new /obj/item/ammo_box/speedloader/c357
 	sec_briefcase.contents += new /obj/item/grenade/c4/x4
 
-	var/obj/item/modular_computer/pda/heads/pda = H.belt
+	var/obj/item/modular_computer/pda/crew/heads/pda = H.belt
 	pda.imprint_id(H.real_name, "Reaper")
 
 	var/obj/item/card/id/W = H.wear_id
@@ -413,11 +411,11 @@
 	lock.true_owner_ckey = agent.ckey
 
 /datum/outfit/debug //Debug objs plus MODsuit
-	name = "Debug outfit"
+	name = "(Dev) Debug outfit" // [HORIZON-EDIT] Debug_tools
 
 	id = /obj/item/card/id/advanced/debug
-	uniform = /obj/item/clothing/under/misc/patriotsuit
-	suit_store = /obj/item/tank/internals/oxygen
+	uniform = /obj/item/clothing/under/rank/centcom/military // [HORIZON-EDIT]
+	suit_store = /obj/item/tactical_recharger/pulse // [HORIZON-EDIT]
 	back = /obj/item/mod/control/pre_equipped/debug
 	backpack_contents = list(
 		/obj/item/melee/energy/axe = 1,
@@ -427,15 +425,16 @@
 		/obj/item/debug/human_spawner = 1,
 		/obj/item/debug/omnitool = 1,
 )
-	belt = /obj/item/storage/belt/utility/full/powertools
+	belt = /obj/item/storage/belt/utility/full/powertools/holding // [HORIZON-EDIT]
 	ears = /obj/item/radio/headset/headset_cent/commander
-	glasses = /obj/item/clothing/glasses/debug
+	glasses = /obj/item/clothing/glasses/hud/debug // [HORIZON-EDIT]
 	gloves = /obj/item/clothing/gloves/combat
 	mask = /obj/item/clothing/mask/gas/welding/up
 	shoes = /obj/item/clothing/shoes/magboots/advance
 
 	box = /obj/item/storage/box/debugtools
-	internals_slot = ITEM_SLOT_SUITSTORE
+	l_pocket = /obj/item/tank/internals/emergency_oxygen/double // [HORIZON-ADD]
+	internals_slot = ITEM_SLOT_LPOCKET // [HORIZON-EDIT]
 
 /datum/outfit/debug/post_equip(mob/living/carbon/human/H, visuals_only = FALSE)
 	var/obj/item/card/id/W = H.wear_id
@@ -461,7 +460,7 @@
 )
 	belt = /obj/item/storage/belt/utility/full/powertools
 	ears = /obj/item/radio/headset/headset_cent/commander
-	glasses = /obj/item/clothing/glasses/debug
+	glasses = /obj/item/clothing/glasses/hud/debug // [HORIZON-EDIT]
 	gloves = /obj/item/clothing/gloves/combat
 	mask = /obj/item/clothing/mask/gas/welding/up
 	shoes = /obj/item/clothing/shoes/magboots/advance

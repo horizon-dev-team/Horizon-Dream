@@ -29,7 +29,7 @@ function UIStyleInput(
         <Stack key={name}>
           <Stack.Item>
             <Box
-              className={classes(['preferences64x32', icon])}
+              className={classes(['preferences96x32', icon])}
               style={{
                 transform: 'scale(0.8)',
               }}

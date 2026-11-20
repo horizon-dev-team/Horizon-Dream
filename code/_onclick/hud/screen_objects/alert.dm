@@ -544,11 +544,12 @@
 	if(!QDELETED(rube) && !QDELETED(offerer))
 		offerer.visible_message(span_danger("[offerer] pulls away from [rube]'s slap at the last second, dodging the high-five entirely!"), span_nicegreen("[rube] fails to make contact with your hand, making an utter fool of [rube.p_them()]self!"), span_hear("You hear a disappointing sound of flesh not hitting flesh!"), ignored_mobs=rube)
 		to_chat(rube, span_userdanger("[uppertext("NO! [offerer] PULLS [offerer.p_their()] HAND AWAY FROM YOURS! YOU'RE TOO SLOW!")]"))
-		playsound(offerer, 'sound/items/weapons/thudswoosh.ogg', 100, TRUE, 1)
+		playsound(offerer, 'sound/items/weapons/thudswoosh.ogg', 100, TRUE, 1, mixer_channel = CHANNEL_MOB_EMOTES) // [HORIZON-EDIT] Master_Sounds
 		rube.Knockdown(1 SECONDS)
 		offerer.add_mood_event("high_five", /datum/mood_event/down_low)
 		rube.add_mood_event("high_five", /datum/mood_event/too_slow)
 		offerer.remove_status_effect(/datum/status_effect/offering/no_item_received/high_five)
+		offerer.client?.give_award(/datum/award/achievement/misc/down_low_too_slow, offerer)
 
 	qdel(src)
 

@@ -40,15 +40,28 @@
 		RegisterSignal(parent, COMSIG_MOVABLE_MOVED, PROC_REF(on_move))
 	on_move(parent, null, NORTH)
 
+	if(particle_flags & PARTICLE_FLICK) // [HORIZON-EDIT]
+		addtimer(CALLBACK(src, PROC_REF(delete_particle)), isnum(particles.lifespan) ? particles.lifespan : 0.5 SECONDS) //Stopping the spawning right before the first particle dies. Doesn't work with generators.
+
 /obj/effect/abstract/particle_holder/Destroy(force)
 	QDEL_NULL(particles)
 	parent = null
 	return ..()
 
+// [HORIZON-ADD]
+/obj/effect/abstract/particle_holder/proc/delete_particle()
+	if(particle_flags & PARTICLE_FADEOUT)
+		particles.spawning = 0
+		QDEL_IN(src, PARTICLE_FADEOUT_SECONDS)
+		return
+
+	qdel(src)
+// [/HORIZON-ADD]
+
 /// Non movables don't delete contents on destroy, so we gotta do this
 /obj/effect/abstract/particle_holder/proc/parent_deleted(datum/source)
 	SIGNAL_HANDLER
-	qdel(src)
+	delete_particle() // [HORIZON-EDIT]
 
 /// signal called when a parent that's been hooked into this moves
 /// does a variety of checks to ensure overrides work out properly

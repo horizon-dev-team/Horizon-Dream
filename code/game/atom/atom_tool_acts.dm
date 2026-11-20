@@ -117,6 +117,8 @@
 			act_result = is_left_clicking ? welder_act(user, tool) : welder_act_secondary(user, tool)
 		if(TOOL_ANALYZER)
 			act_result = is_left_clicking ? analyzer_act(user, tool) : analyzer_act_secondary(user, tool)
+		if(TOOL_DECONSTRUCT) // [HORIZON-ADD] SALVAGE_TOOL
+			act_result = is_left_clicking ? deconstruct_act(user, tool, modifiers) : welder_act_secondary(user, tool)
 
 	if(!act_result)
 		return NONE
@@ -140,6 +142,23 @@
  */
 /atom/proc/item_interaction(mob/living/user, obj/item/tool, list/modifiers)
 	return NONE
+
+
+// [HORIZON-ADD] SALVAGE_TOOL
+/**
+ * Called when the target is cut with a TOOL_DECONSTRUCT tool (directly via the tool_act switch),
+ * Or with a dual-use cutting tool (TRAIT_CUTTING_TOOL) via /datum/element/cutting_tool_target.
+ *
+ * The target overrides this proc with its own logic (delay, what to drop).
+ * The base implementation checks INDESTRUCTIBLE and returns NONE — the chain continues to the default act.
+ * Return ITEM_INTERACT_SUCCESS to consume a click, ITEM_INTERACT_BLOCKING to block the chain.
+ */
+/atom/proc/deconstruct_act(mob/living/user, obj/item/I, list/modifiers)
+	if(resistance_flags & INDESTRUCTIBLE)
+		to_chat(user, span_warning("[src] cannot be deconstructed!"))
+		return ITEM_INTERACT_BLOCKING
+	return NONE
+// [/HORIZON-ADD]
 
 /**
  * Called when this atom has an item used on it WITH RIGHT CLICK,
@@ -192,14 +211,18 @@
 	var/is_right_clicking = LAZYACCESS(modifiers, RIGHT_CLICK)
 	var/is_left_clicking = !is_right_clicking
 	var/early_sig_return = NONE
+// [HORIZON-EDIT]
 	if(is_left_clicking)
 		// See [base_item_interaction] for defails on why this is using `||` (TL;DR it's short circuiting)
 		early_sig_return = SEND_SIGNAL(src, COMSIG_ATOM_RANGED_ITEM_INTERACTION, user, tool, modifiers) \
-			|| SEND_SIGNAL(tool, COMSIG_RANGED_ITEM_INTERACTING_WITH_ATOM, user, src, modifiers)
+			|| SEND_SIGNAL(tool, COMSIG_RANGED_ITEM_INTERACTING_WITH_ATOM, user, src, modifiers) \
+			|| SEND_SIGNAL(user, COMSIG_MOB_RANGED_ITEM_INTERACTION, src, modifiers)
 	else
 		// See above
 		early_sig_return = SEND_SIGNAL(src, COMSIG_ATOM_RANGED_ITEM_INTERACTION_SECONDARY, user, tool, modifiers) \
-			|| SEND_SIGNAL(tool, COMSIG_RANGED_ITEM_INTERACTING_WITH_ATOM_SECONDARY, user, src, modifiers)
+			|| SEND_SIGNAL(tool, COMSIG_RANGED_ITEM_INTERACTING_WITH_ATOM_SECONDARY, user, src, modifiers) \
+			|| SEND_SIGNAL(user, COMSIG_MOB_RANGED_ITEM_INTERACTION_SECONDARY, src, modifiers)
+// [/HORIZON-EDIT]
 	if(early_sig_return)
 		return early_sig_return
 

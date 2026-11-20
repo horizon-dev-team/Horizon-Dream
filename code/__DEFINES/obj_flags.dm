@@ -78,8 +78,8 @@
 #define SKIP_FANTASY_ON_SPAWN (1<<17)
 /// If an item has had its /datum/element/weapon_description initialized or not.
 #define WEAPON_DESCRIPTION_INITIALIZED (1<<18)
-/// If an item causes bluespace interference when teleported with.
-#define BLUESPACE_INTERFERENCE (1<<19)
+/// MODsuits can overslot these items
+#define CAN_BE_OVERSLOT (1<<19)
 //if throwed, it wont have a randomized transform
 #define NO_ROTATE_RANDOM_THROW (1<<20)	// [HORIZON-ADD] - Rotate_Item
 
@@ -132,6 +132,7 @@
 #define NOT_A_REAL_GUN (1<<1)
 /// This gun shouldn't be allowed to go in a turret (it probably causes a bug/exploit)
 #define TURRET_INCOMPATIBLE (1<<2)
+#define GUN_SMOKE_PARTICLES (1<<3) // [HORIZON-ADD] Ballistic_Impact
 
 /// Flags for sharpness in obj/item
 #define SHARP_EDGED (1<<0)

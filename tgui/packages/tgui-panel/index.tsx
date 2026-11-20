@@ -6,6 +6,7 @@
 
 import './styles/main.scss';
 import './styles/themes/light.scss';
+import './styles/themes/dark.scss';
 
 import { createRoot } from 'react-dom/client';
 import { setupGlobalEvents } from 'tgui-core/events';
@@ -42,17 +43,6 @@ function setupApp() {
   Byond.subscribe((type, payload) => {
     bus.dispatch({ type, payload });
     wsSend({ type, payload });
-  });
-
-  // Unhide the panel
-  Byond.winset('output_selector.legacy_output_selector', {
-    left: 'output_browser',
-  });
-
-  Byond.winget('output_browser').then((output: { size: string }) => {
-    Byond.winset('browseroutput', {
-      size: output.size,
-    });
   });
 
   // Enable hot module reloading

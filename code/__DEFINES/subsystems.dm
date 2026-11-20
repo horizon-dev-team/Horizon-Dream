@@ -20,7 +20,7 @@
  *
  * make sure you add an update to the schema_version stable in the db changelog
  */
-#define DB_MINOR_VERSION 34
+#define DB_MINOR_VERSION 35
 
 
 //! ## Timing subsystem
@@ -148,6 +148,7 @@
 #define FIRE_PRIORITY_PROCESS 25
 #define FIRE_PRIORITY_THROWING 25
 #define FIRE_PRIORITY_REAGENTS 26
+#define FIRE_PRIORITY_MOVABLE_PHYSICS 27 // [HORIZON-ADD] MOVABLE_PHYSICS
 #define FIRE_PRIORITY_SPACEDRIFT 30
 #define FIRE_PRIORITY_SMOOTHING 35
 #define FIRE_PRIORITY_OBJ 40

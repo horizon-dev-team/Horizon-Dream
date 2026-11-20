@@ -4,6 +4,7 @@
 /obj/machinery/power/smes
 	name = "power storage unit"
 	desc = "A high-capacity superconducting magnetic energy storage (SMES) unit."
+	icon = '_horizon/icons/obj/machines/smes.dmi'	// [HORIZON-ADD]
 	icon_state = "smes"
 	base_icon_state = "smes"
 	density = TRUE
@@ -37,11 +38,17 @@
 	var/output_level_max = 200 KILO WATTS
 	/// amount of power actually outputted. may be less than output_level if the powernet returns excess power
 	var/output_used = 0
-
+	/// the emissive light mask icon
+	var/light_mask = "smes-emissive"
 	///Should we show display lights
 	var/show_display_lights = TRUE
 	/// Terminal for charging this smes
 	var/obj/machinery/power/terminal/terminal = null
+
+// [HORIZON-ADD]
+	var/emp_timer = TIMER_ID_NULL
+	var/is_emped = FALSE // to prevent output when emped
+// [/HORIZON-ADD]
 
 /obj/machinery/power/smes/Initialize(mapload)
 	. = ..()
@@ -138,16 +145,29 @@
 
 /obj/machinery/power/smes/update_overlays()
 	. = ..()
-	if(panel_open || !is_operational)
+// [HORIZON-EDIT]
+	if(panel_open || !is_operational || !show_display_lights)
 		return
 
-	if(show_display_lights)
-		. += "smes-op[outputting ? 1 : 0]"
-		. += "smes-oc[inputting ? 1 : 0]"
+	var/clevel = chargedisplay()
+	var/temp
+	if(clevel > 0)
+		. += mutable_appearance(icon, "charge[clevel]")
+		. += emissive_appearance(icon, "charge[clevel]", src)
+	if(is_emped)
+		. += mutable_appearance(icon, "emp")
+		. += emissive_appearance(icon, "emp", src)
+	else
+		if(inputting)
+			temp = "input-[outputting ? "[clevel == 5 ? 2 : 1]" : "[input_attempt ? 0 : "off"]"]"
+			. += mutable_appearance(icon, "[temp]")
+			. += emissive_appearance(icon, "[temp]", src)
 
-		var/clevel = chargedisplay()
-		if(clevel > 0)
-			. += "smes-og[clevel]"
+		if(outputting)
+			temp = "output[outputting ? "[clevel == 5 ? 2 : 1]" : "0"]"
+			. += mutable_appearance(icon, "[temp]")
+			. += emissive_appearance(icon, "[temp]", src)
+// [/HORIZON-EDIT]
 
 /obj/machinery/power/smes/get_save_vars()
 	. = ..()
@@ -288,7 +308,7 @@
 
 /obj/machinery/power/smes/update_icon_state()
 	. = ..()
-	icon_state = panel_open ? "[base_icon_state]-o" : base_icon_state
+	icon_state = panel_open ? "[base_icon_state]-open" : base_icon_state // [HORIZON-EDIT]
 
 /obj/machinery/power/smes/screwdriver_act(mob/living/user, obj/item/tool)
 	return default_deconstruction_screwdriver(user, tool)
@@ -463,10 +483,11 @@
 			return TRUE
 
 		if("tryoutput")
-			output_attempt = !output_attempt
-			log_smes(ui.user)
-			update_appearance(UPDATE_OVERLAYS)
-			return TRUE
+			if(!is_emped)	// [HORIZON-ADD]
+				output_attempt = !output_attempt
+				log_smes(ui.user)
+				update_appearance(UPDATE_OVERLAYS)
+				return TRUE
 
 		if("input")
 			var/target = params["target"]
@@ -517,15 +538,28 @@
 	. = ..()
 	if(. & EMP_PROTECT_SELF)
 		return
+// [HORIZON-EDIT]
+	emp_timer = addtimer(CALLBACK(src, PROC_REF(emp_end), output_attempt), 10 SECONDS, TIMER_UNIQUE | TIMER_OVERRIDE)
+	is_emped = TRUE
 	input_attempt = rand(0, 1)
 	inputting = input_attempt
-	output_attempt = rand(0, 1)
+	output_attempt = FALSE
+// [HORIZON-EDIT]
 	outputting = output_attempt
 	output_level = rand(0, output_level_max)
 	input_level = rand(0, input_level_max)
 	adjust_charge(-STANDARD_BATTERY_CHARGE / severity)
 	update_appearance(UPDATE_OVERLAYS)
 	log_smes()
+
+// [HORIZON-ADD]
+/obj/machinery/power/smes/proc/emp_end(previous_output)
+	is_emped = FALSE
+	output_attempt = previous_output
+	outputting = output_attempt
+	update_icon()
+	log_smes()
+// [/HORIZON-ADD]
 
 // Variant of SMES that starts with super power cells for higher longevity
 /obj/machinery/power/smes/super

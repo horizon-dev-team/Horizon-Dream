@@ -70,7 +70,7 @@
 /obj/machinery/newscaster/pai/ui_state(mob/user)
 	return GLOB.deep_inventory_state
 
-MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/newscaster, 30)
+MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/newscaster, 24) // [HORIZON-EDIT]
 
 /obj/machinery/newscaster/Initialize(mapload)
 	. = ..()
@@ -95,11 +95,16 @@ MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/newscaster, 30)
 	if(machine_stat & (NOPOWER|BROKEN))
 		set_light(0)
 		return
-	set_light(1.5, 0.7, "#34D352") // green light
+	set_light(1.5, 0.7, "#247EB2") // blue light // [HORIZON-EDIT]
 
 /obj/machinery/newscaster/update_overlays()
 	. = ..()
 
+// [HORIZON-ADD]
+	var/hp_percent = atom_integrity * 100 / max_integrity
+	if(hp_percent < 50)
+		. += "crack1"
+// [/HORIZON-ADD]
 
 	if(!(machine_stat & (NOPOWER|BROKEN)))
 		var/state = "[base_icon_state]_[GLOB.news_network.wanted_issue.active ? "wanted" : "normal"]"
@@ -110,6 +115,7 @@ MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/newscaster, 30)
 			. += mutable_appearance(icon, "[base_icon_state]_alert")
 			. += emissive_appearance(icon, "[base_icon_state]_alert", src, alpha = src.alpha,)
 
+/* // [HORIZON-REMOVE]
 	var/hp_percent = atom_integrity * 100 / max_integrity
 	switch(hp_percent)
 		if(75 to 100)
@@ -123,6 +129,7 @@ MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/newscaster, 30)
 		else
 			. += "crack3"
 			. += emissive_blocker(icon, "crack3", src, alpha = src.alpha)
+*/ // [/HORIZON-REMOVE]
 
 /obj/machinery/newscaster/ui_interact(mob/user, datum/tgui/ui)
 	. = ..()
@@ -620,7 +627,7 @@ MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/newscaster, 30)
 		return TRUE
 	SSblackbox.record_feedback("amount", "newspapers_printed", 1)
 	var/obj/item/newspaper/new_newspaper = new(loc)
-	playsound(loc, SFX_PAGE_TURN, 50, TRUE)
+	playsound(loc, /datum/sound_effect/page_turn, 50, TRUE)
 	try_put_in_hand(new_newspaper, user)
 	paper_remaining--
 
@@ -887,6 +894,6 @@ MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/newscaster, 30)
 	icon_state = "newscaster_assembly"
 	custom_materials = list(/datum/material/iron= SHEET_MATERIAL_AMOUNT * 7)
 	result_path = /obj/machinery/newscaster
-	pixel_shift = 30
+	pixel_shift = 24 // [HORIZON-EDIT]
 
 #undef ALERT_DELAY

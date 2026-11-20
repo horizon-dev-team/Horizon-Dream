@@ -8,7 +8,8 @@
 	density = TRUE
 	anchored = FALSE
 	use_power = NO_POWER_USE
-
+	/// the emissive light mask icon
+	var/light_mask = "portgen-emissive"
 	var/active = FALSE
 	var/power_gen = 5 KILO JOULES
 	var/power_output = 1
@@ -59,6 +60,21 @@
 /obj/machinery/power/port_gen/update_icon_state()
 	icon_state = "[base_icon_state]_[active]"
 	return ..()
+
+/obj/machinery/power/port_gen/update_overlays()
+	. = ..()
+	// [HORIZON-ADD]
+	if(anchored)
+		. += mutable_appearance('_horizon/icons/obj/machines/pacman.dmi', "portgen_anchored")
+
+	if(panel_open)
+		. += mutable_appearance('_horizon/icons/obj/machines/pacman.dmi', "portgen_open")
+	// [/HORIZON-ADD]
+
+	if(panel_open || !is_operational || !active)
+		return
+
+	. += emissive_appearance(icon, light_mask, src, alpha = src.alpha)
 
 /obj/machinery/power/port_gen/process()
 	if(active)
@@ -194,6 +210,7 @@
 	toggle_panel_open()
 	tool.play_tool_sound(src)
 	to_chat(user, span_notice("You [panel_open ? "open" : "close"] the access panel."))
+	update_appearance(UPDATE_OVERLAYS) // [HORIZON-ADD]
 	return ITEM_INTERACT_SUCCESS
 
 /obj/machinery/power/port_gen/wrench_act(mob/living/user, obj/item/tool)
@@ -202,11 +219,13 @@
 	if(!anchored && !isinspace())
 		set_anchored(TRUE)
 		to_chat(user, span_notice("You secure the generator to the floor."))
+		update_appearance(UPDATE_OVERLAYS) // [HORIZON-ADD]
 		return ITEM_INTERACT_SUCCESS
 
 	set_anchored(FALSE)
 	to_chat(user, span_notice("You unsecure the generator from the floor."))
 	playsound(src, 'sound/items/deconstruct.ogg', 50, TRUE)
+	update_appearance(UPDATE_OVERLAYS) // [HORIZON-ADD]
 	return ITEM_INTERACT_SUCCESS
 
 /obj/machinery/power/port_gen/crowbar_act(mob/living/user, obj/item/tool)
@@ -282,6 +301,18 @@
 	time_per_sheet = 60
 	power_gen = 30 KILO JOULES
 	sheet_path = /obj/item/stack/sheet/mineral/uranium
+
+/obj/machinery/power/port_gen/pacman/wood
+	name = "\improper P.L.A.N.K.M.A.N.-type portable generator"
+	desc = "Burns wood to generate some power. Do not touch when powered."
+	circuit = /obj/item/circuitboard/machine/plankman
+	icon_state = "portgen3_0"
+	base_icon_state = "portgen3"
+	max_sheets = 75
+	time_per_sheet = 360
+	power_gen = 5 KILO JOULES
+	sheet_path = /obj/item/stack/sheet/mineral/wood
+	light_mask = "portgen3-emissive"
 
 /obj/machinery/power/port_gen/pacman/pre_loaded
 	sheets = 15

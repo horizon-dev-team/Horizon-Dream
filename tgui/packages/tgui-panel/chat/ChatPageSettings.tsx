@@ -31,7 +31,6 @@ export function ChatPageSettings(props) {
         {!page.isMain && (
           <Stack.Item>
             <Button
-              color="blue"
               icon="angles-left"
               tooltip="Reorder tab to the left"
               onClick={moveChatLeft}
@@ -52,7 +51,6 @@ export function ChatPageSettings(props) {
         {!page.isMain && (
           <Stack.Item ml={0.5}>
             <Button
-              color="blue"
               icon="angles-right"
               tooltip="Reorder tab to the right"
               onClick={moveChatRight}

@@ -29,6 +29,7 @@
 	misfire_probability_cap = 35 // Even if the misfire probability and increment are both zero, we've some shots that may do that.
 
 	pb_knockback = 2
+	gun_flags = GUN_SMOKE_PARTICLES // [HORIZON-ADD] Ballistic_Impact
 
 /obj/item/gun/ballistic/shotgun/blow_up(mob/user)
 	. = 0
@@ -91,6 +92,7 @@
 	projectile_damage_multiplier = 1.5
 	accepted_magazine_type = /obj/item/ammo_box/magazine/internal/shot/com
 	w_class = WEIGHT_CLASS_HUGE
+	pressure_threshold = AMMO_CASING_PRESSURE_EXTREME
 
 //component for seclight attachment
 /obj/item/gun/ballistic/shotgun/automatic/combat/add_seclight_point()
@@ -102,11 +104,12 @@
 
 /obj/item/gun/ballistic/shotgun/automatic/combat/compact
 	name = "compact combat shotgun"
-	desc = "A compact version of the semi automatic combat shotgun. Lower magazine capacity, but more easily carried."
+	desc = "A compact version of the semi automatic combat shotgun. Lower magazine capacity and worse pressure handling, but more easily carried."
 	icon_state = "cshotgunc"
 	accepted_magazine_type = /obj/item/ammo_box/magazine/internal/shot/com/compact
 	w_class = WEIGHT_CLASS_BULKY
 	weapon_weight = WEAPON_MEDIUM
+	pressure_threshold = AMMO_CASING_PRESSURE_MEDIUM
 
 //component for seclight attachment
 /obj/item/gun/ballistic/shotgun/automatic/combat/compact/add_seclight_point()
@@ -214,6 +217,8 @@
 	internal_magazine = FALSE
 	tac_reloads = TRUE
 	burst_fire_selection = TRUE
+	casing_ejector = TRUE // [HORIZON-ADD]
+	pressure_threshold = AMMO_CASING_PRESSURE_EXTREME
 	/// The type of secondary magazine for the bulldog
 	var/secondary_magazine_type
 	/// The secondary magazine
@@ -248,7 +253,7 @@
 		if(!secondary_magazine.ammo_count())
 			. += "[icon_state]_secondary_mag_empty"
 
-/obj/item/gun/ballistic/shotgun/bulldog/handle_chamber(empty_chamber = TRUE, from_firing = TRUE, chamber_next_round = TRUE)
+/obj/item/gun/ballistic/shotgun/bulldog/handle_chamber(mob/living/user, empty_chamber = TRUE, from_firing = TRUE, chamber_next_round = TRUE) // [HORIZON-EDIT] PHYSICS
 	if(!secondary_magazine)
 		return ..()
 	var/secondary_shells_left = LAZYLEN(secondary_magazine.stored_ammo)
@@ -355,13 +360,16 @@
 	can_be_sawn_off = TRUE
 	pb_knockback = 3 // it's a super shotgun!
 
+/obj/item/gun/ballistic/shotgun/doublebarrel/presawn
+	WHEN_MAP(icon_state = "dshotgun_sawn")
+	spawn_sawn_off = TRUE
+
 /obj/item/gun/ballistic/shotgun/doublebarrel/setup_reskins()
 	AddComponent(/datum/component/reskinable_item, /datum/atom_skin/bar_shotgun)
 
-/obj/item/gun/ballistic/shotgun/doublebarrel/sawoff(mob/user)
+/obj/item/gun/ballistic/shotgun/doublebarrel/do_sawoff()
 	. = ..()
-	if(.)
-		weapon_weight = WEAPON_MEDIUM
+	weapon_weight = WEAPON_MEDIUM
 
 /obj/item/gun/ballistic/shotgun/doublebarrel/slugs
 	name = "hunting shotgun"
@@ -447,7 +455,6 @@
 	worn_icon_state = "donk_musket"
 	desc = "A large-bore boltloading firearm with a classy wooden frame. Cheap, accurate, and easy to maintain. Reload and rack after every shot."
 	semi_auto = TRUE
-	alternative_caliber = CALIBER_50BMG
 	casing_ejector = TRUE
 	bolt_type = BOLT_TYPE_LOCKING
 	bolt_wording = "bolt"

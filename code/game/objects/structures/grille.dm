@@ -31,6 +31,7 @@
 /obj/structure/grille/Initialize(mapload)
 	. = ..()
 	AddElement(/datum/element/atmos_sensitive, mapload)
+	AddElement(/datum/element/cutting_tool_target) // [HORIZON-ADD] SALVAGE_TOOL
 	register_context()
 
 /obj/structure/grille/Destroy()
@@ -47,13 +48,6 @@
 	. = ..()
 	if((updates & UPDATE_SMOOTHING) && (smoothing_flags & USES_SMOOTHING))
 		QUEUE_SMOOTH(src)
-
-/obj/structure/grille/update_icon_state()
-	if (broken)
-		icon_state = "broken[base_icon_state]"
-	else
-		icon_state = "[base_icon_state][((atom_integrity / max_integrity) <= 0.5) ? "50_[rand(0, 3)]" : null]"
-	return ..()
 
 /obj/structure/grille/examine(mob/user)
 	. = ..()
@@ -160,13 +154,13 @@
 	if(!ismob(AM))
 		return
 	var/mob/M = AM
-	shock(M, 70)
+	shock(M, 70, allow_modifiers = FALSE)
 
 /obj/structure/grille/attack_animal(mob/user, list/modifiers)
 	. = ..()
 	if(!.)
 		return
-	if(!shock(user, 70) && !QDELETED(src)) //Last hit still shocks but shouldn't deal damage to the grille
+	if(!shock(user, 70, allow_modifiers = FALSE) && !QDELETED(src)) //Last hit still shocks but shouldn't deal damage to the grille
 		take_damage(rand(5,10), BRUTE, MELEE, 1)
 
 /obj/structure/grille/attack_paw(mob/user, list/modifiers)
@@ -176,7 +170,7 @@
 	return 60
 
 /obj/structure/grille/attack_hulk(mob/living/carbon/human/user)
-	if(shock(user, 70))
+	if(shock(user, 70, allow_modifiers = FALSE))
 		return
 	. = ..()
 
@@ -188,14 +182,14 @@
 	user.do_attack_animation(src, ATTACK_EFFECT_KICK)
 	user.visible_message(span_warning("[user] hits [src]."), null, null, COMBAT_MESSAGE_RANGE)
 	log_combat(user, src, "hit")
-	if(!shock(user, 70))
+	if(!shock(user, 70, allow_modifiers = FALSE))
 		take_damage(rand(5,10), BRUTE, MELEE, 1)
 
 /obj/structure/grille/attack_alien(mob/living/user, list/modifiers)
 	user.do_attack_animation(src)
 	user.changeNext_move(CLICK_CD_MELEE)
 	user.visible_message(span_warning("[user] mangles [src]."), null, null, COMBAT_MESSAGE_RANGE)
-	if(!shock(user, 70))
+	if(!shock(user, 70, allow_modifiers = FALSE))
 		take_damage(20, BRUTE, MELEE, 1)
 
 /obj/structure/grille/CanAllowThrough(atom/movable/mover, border_dir)
@@ -212,7 +206,7 @@
 
 /obj/structure/grille/wirecutter_act_secondary(mob/living/user, obj/item/tool)
 	add_fingerprint(user)
-	if(shock(user, 100))
+	if(shock(user, allow_modifiers = FALSE))
 		return
 	tool.play_tool_sound(src, 100)
 	deconstruct(TRUE)
@@ -222,7 +216,7 @@
 	if(!isturf(loc))
 		return FALSE
 	add_fingerprint(user)
-	if(shock(user, 90))
+	if(shock(user, 90, allow_modifiers = FALSE))
 		return FALSE
 	if(!tool.use_tool(src, user, 0, volume=100))
 		return FALSE
@@ -235,7 +229,7 @@
 	if(istype(tool, /obj/item/stack/rods) && broken)
 		if(!do_after(user, 1 SECONDS, target = src))
 			return ITEM_INTERACT_BLOCKING
-		if(shock(user, 90))
+		if(shock(user, 90, allow_modifiers = FALSE))
 			return ITEM_INTERACT_BLOCKING
 		var/obj/item/stack/rods/grille_to_be = tool
 		user.visible_message(span_notice("[user] rebuilds the broken grille."), \
@@ -308,7 +302,7 @@
 		return ITEM_INTERACT_SUCCESS
 //window placing end
 
-	if((tool.obj_flags & CONDUCTS_ELECTRICITY) && shock(user, 70))
+	if((tool.obj_flags & CONDUCTS_ELECTRICITY) && shock(user, 70, allow_modifiers = FALSE))
 		return ITEM_INTERACT_BLOCKING
 
 	return NONE
@@ -327,6 +321,23 @@
 /obj/structure/grille/atom_deconstruct(disassembled = TRUE)
 	var/obj/rods = new rods_type(drop_location(), rods_amount)
 	transfer_fingerprints_to(rods)
+
+// [HORIZON-ADD] SALVAGE_TOOL
+/obj/structure/grille/deconstruct_act(mob/living/user, obj/item/I)
+	. = ..() // INDESTRUCTIBLE check
+	if(.)
+		return
+	if(!I.tool_start_check(user, amount = 1))
+		return ITEM_INTERACT_BLOCKING
+	user.visible_message(span_notice("[user] starts slicing through [src] with [I]."),
+		span_notice("You start slicing through [src]..."))
+	if(!I.use_tool(src, user, 1 SECONDS, volume = 50, amount = 1))
+		return ITEM_INTERACT_BLOCKING
+	user.visible_message(span_warning("[user] slices [src] apart!"),
+		span_notice("You slice [src] apart."))
+	deconstruct(FALSE)
+	return ITEM_INTERACT_SUCCESS
+// [/HORIZON-ADD]
 
 /obj/structure/grille/atom_break()
 	. = ..()
@@ -351,7 +362,7 @@
 	update_appearance()
 	return TRUE
 
-/obj/structure/grille/shock(mob/living/shocking, chance = 100, shock_source, siemens_coeff = 1)
+/obj/structure/grille/shock(mob/living/shocking, chance, shock_source, siemens_coeff, allow_modifiers)
 	if(!anchored || broken) // anchored/broken grilles are never connected
 		return FALSE
 	var/turf/grill_loc = get_turf(src)
@@ -418,6 +429,7 @@
 	return !!powernet.get_electrocute_damage()
 
 /obj/structure/grille/broken // Pre-broken grilles for map placement
+	icon = '_horizon/icons/obj/smooth_structures/grille_broken.dmi'
 	icon_state = "brokengrille"
 	density = FALSE
 	broken = TRUE

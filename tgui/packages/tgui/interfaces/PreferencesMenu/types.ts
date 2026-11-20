@@ -132,6 +132,7 @@ export enum JoblessRole {
 export enum GamePreferencesSelectedPage {
   Settings,
   Keybindings,
+  VolumeMixer,
 }
 
 export const createSetPreference =
@@ -179,8 +180,6 @@ export type PreferencesMenuData = {
 
   character_preferences: CharacterPreferencesData;
 
-  content_unlocked: BooleanLike;
-
   job_bans?: string[];
   job_days_left?: Record<string, number>;
   job_required_experience?: Record<
@@ -198,7 +197,6 @@ export type PreferencesMenuData = {
   selected_quirks: string[];
   selected_personalities: typePath[] | null;
   max_personalities: number;
-  mood_enabled: BooleanLike;
   species_disallowed_quirks: string[];
 
   antag_bans?: string[];
@@ -209,6 +207,16 @@ export type PreferencesMenuData = {
   name_to_use: string;
 
   window: PrefsWindow;
+
+  channels: Channel[];
+};
+
+export type Channel = {
+  num: number;
+  name: string;
+  desc: string;
+  volume: number;
+  category?: string;
 };
 
 export type ServerData = {

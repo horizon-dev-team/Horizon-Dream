@@ -105,36 +105,27 @@
 	var/must_hold_to_load = FALSE
 	///Whether the gun can be sawn off by sawing tools
 	var/can_be_sawn_off = FALSE
-	var/suppressor_x_offset ///pixel offset for the suppressor overlay on the x axis.
-	var/suppressor_y_offset ///pixel offset for the suppressor overlay on the y axis.
+	///Added recoil of sawn off guns
+	var/sawoff_bonus_recoil = 1
+	///Starts presawn-off
+	var/spawn_sawn_off = FALSE
+	///pixel offset for the suppressor overlay on the x axis.
+	var/suppressor_x_offset
+	///pixel offset for the suppressor overlay on the y axis.
+	var/suppressor_y_offset
 	/// Check if you are able to see if a weapon has a bullet loaded in or not.
 	var/hidden_chambered = FALSE
 
-	// Gun internal magazine modification and misfiring
-
-	///Can we modify our ammo type in this gun's internal magazine?
-	var/can_modify_ammo = FALSE
-	///our initial ammo type. Should match initial caliber, but a bit of redundency doesn't hurt.
-	var/initial_caliber
-	///our alternative ammo type.
-	var/alternative_caliber
-	///our initial fire sound. same reasons for initial caliber
-	var/initial_fire_sound
-	///our alternative fire sound, in case we want our gun to be louder or quieter or whatever
-	var/alternative_fire_sound
-	///If only our alternative ammuntion misfires and not our main ammunition, we set this to TRUE
-	var/alternative_ammo_misfires = FALSE
-
 	/// Misfire Variables ///
 
-	/// Whether our ammo misfires now or when it's set by the wrench_act. TRUE means it misfires.
-	var/can_misfire = FALSE
+	/// Pressure threshold of our gun. If the pressure of the ammo casing is higher than the threshold of the gun, it will start to daamage the gun.
+	var/pressure_threshold = AMMO_CASING_PRESSURE_MEDIUM
 	///How likely is our gun to misfire?
 	var/misfire_probability = 0
-	///How much does shooting the gun increment the misfire probability?
-	var/misfire_percentage_increment = 0
 	///What is the cap on our misfire probability? Do not set this to 100.
-	var/misfire_probability_cap = 25
+	var/misfire_probability_cap = 50
+	///Even if the above variables would indicate this gun should misfire, never misfire this gun
+	var/never_misfire = FALSE
 
 	/// Fire Selector Variables ///
 	/// Tracks the firemode of burst weapons. TRUE means it is in burst mode.
@@ -144,7 +135,7 @@
 	/// Suppressor attached to the gun, if any
 	var/obj/item/suppressor/suppressor = null
 	/// Sound played when the burst mode is changed
-	var/burst_select_sound = SFX_FIRE_MODE_SWITCH
+	var/burst_select_sound = /datum/sound_effect/fire_mode_switch
 
 /obj/item/gun/ballistic/Initialize(mapload)
 	. = ..()
@@ -162,6 +153,9 @@
 		chamber_round()
 	else
 		chamber_round(replace_new_round = TRUE)
+	if(spawn_sawn_off)
+		do_sawoff()
+
 	update_appearance()
 	RegisterSignal(src, COMSIG_ITEM_RECHARGED, PROC_REF(instant_reload))
 
@@ -173,6 +167,8 @@
 		if(gun.magazine?.item_flags & ABSTRACT) //we cannot insert an internal magazine into the new gun, so we insert the individual casings instead.
 			for(var/i in 1 to length(gun.magazine.stored_ammo))
 				var/obj/item/ammo_casing/round = gun.magazine.get_round()
+				if(isnull(round))
+					continue
 				if(!magazine.give_round(round))
 					round.forceMove(drop_location())
 		else if(gun.magazine && istype(gun.magazine, accepted_magazine_type)) //insert the new magazine into the gun
@@ -352,7 +348,7 @@
 // if world.time is past the casing's fired timestamp plus this offset, casing is considered cold, and won't burn hands.
 #define CASING_HOT_DELAY (5 SECONDS)
 
-/obj/item/gun/ballistic/handle_chamber(empty_chamber = TRUE, from_firing = TRUE, chamber_next_round = TRUE)
+/obj/item/gun/ballistic/handle_chamber(mob/living/user, empty_chamber = TRUE, from_firing = TRUE, chamber_next_round = TRUE) // [HORIZON-EDIT] PHYSICS
 	if(!semi_auto && from_firing)
 		return
 	var/obj/item/ammo_casing/casing = chambered //Find chambered round
@@ -360,56 +356,17 @@
 		if(QDELING(casing))
 			stack_trace("Trying to move a qdeleted casing of type [casing.type]!")
 			chambered = null
+// [HORIZON-EDIT] PHYSICS
 		else if(casing_ejector || !from_firing)
 			casing.forceMove(drop_location()) //Eject casing onto ground.
 			if(!QDELETED(casing))
+				var/bounce_angle
+				if(user)
+					var/sign_x = (istype(user) && !(user.get_held_index_of_item(src) % RIGHT_HANDS)) ? 1 : -1
+					bounce_angle = SIMPLIFY_DEGREES(dir2angle(user.dir) + (sign_x * 90) + rand(-45, 45))
+				casing.bounce_away(bounce_angle = bounce_angle, still_warm = TRUE) // [HORIZON-EDIT] PHYSICS
+// [/HORIZON-EDIT]
 				SEND_SIGNAL(casing, COMSIG_CASING_EJECTED)
-				var/hitting_ground = TRUE
-				if(ishuman(loc))
-					var/mob/living/carbon/human/wielder = loc
-					var/caught_casing = can_catch_casing(casing, wielder, from_firing)
-					switch(caught_casing)
-						if(CASING_CATCH_NO_ATTEMPT)
-							hitting_ground = TRUE
-						if(CASING_CATCH_FAILED_SPICY)
-							hitting_ground = TRUE
-							wielder.visible_message(
-								span_warning("[wielder] reaches out for \the [casing] as it ejects from [src], and catches it... before fumbling it because it's a hot casing. Uncool!"),
-								span_warning("You reach out and catch \the [casing] as it ejects from [src]... before dropping it, because it's a hot casing! Ouch! Uncool!"),
-								span_notice("You hear someone reaching for something before a hiss of pain and the sound of something clattering."),
-							)
-							var/obj/item/bodypart/affecting = wielder.get_inactive_hand()
-							wielder.apply_damage(2, BURN, affecting, wound_bonus = CANT_WOUND)
-						if(CASING_CATCH_FAILED_CLUMSY)
-							hitting_ground = TRUE
-							wielder.visible_message(
-								span_warning("[wielder] reaches out for \the [casing] as it ejects from [src]... before fumbling it in an incredibly unlikely, comical manner! Uncool!"),
-								span_warning("You reach out and catch \the [casing] as it ejects from [src]... before fumbling it in an incredibly unlikely, comical manner! Uncool!"),
-								span_notice("You hear someone reaching for something, shortly followed by an embarassingly loud, comedic clattering."),
-							)
-							if(!(world.time >= casing.shot_timestamp + CASING_HOT_DELAY))
-								var/obj/item/bodypart/affecting = wielder.get_inactive_hand()
-								to_chat(wielder, span_warning("As if to add insult to injury, \the [casing] lands in the perfect way... to burn your [affecting.plaintext_zone]."))
-								wielder.apply_damage(5, BURN, affecting, wound_bonus = CANT_WOUND)
-						if(CASING_CATCH_FAILED_PLACEMENT)
-							hitting_ground = TRUE
-							wielder.visible_message(
-								span_warning("[wielder] reaches out for \the [casing] as it ejects from [src] and fumbles it due to [wielder.p_their()] full hands. Uncool!"),
-								span_warning("You try and reach out for \the [casing] as it ejects from [src], and fumble it because your hands are full. Uncool!"),
-								span_notice("You hear someone reaching for something, before a metallic clattering."),
-							)
-						if(CASING_CATCH_SUCCESSFUL)
-							hitting_ground = FALSE
-							casing.update_appearance()
-							to_chat(wielder, span_notice("You reach out and catch \the [casing] as it ejects from [src]. Awesome."))
-						if(CASING_CATCH_SUCCESSFUL_OUCH)
-							hitting_ground = FALSE
-							casing.update_appearance()
-							var/obj/item/bodypart/affecting = wielder.get_inactive_hand()
-							to_chat(wielder, span_notice("You reach out and catch \the [casing] as it ejects from [src]. Awesome. Your [affecting.plaintext_zone] hurts, though."))
-							wielder.apply_damage(4, BURN, affecting, wound_bonus = CANT_WOUND)
-				if(hitting_ground)
-					casing.bounce_away(TRUE)
 		else if(empty_chamber)
 			clear_chambered()
 	if (chamber_next_round && (magazine?.max_ammo > 1))
@@ -477,7 +434,7 @@
 		bolt_locked = FALSE
 	if (user)
 		balloon_alert(user, "[bolt_wording] racked")
-	process_chamber(!chambered, FALSE)
+	process_chamber(user, empty_chamber = !chambered, from_firing = FALSE) // [HORIZON-EDIT] PHYSICS
 	if (bolt_type == BOLT_TYPE_LOCKING && !chambered)
 		bolt_locked = TRUE
 		playsound(src, lock_back_sound, lock_back_sound_volume, lock_back_sound_vary)
@@ -535,7 +492,7 @@
 		balloon_alert(user, "[magazine_wording] unloaded")
 
 /obj/item/gun/ballistic/can_shoot()
-	return chambered?.loaded_projectile
+	return ..() && chambered?.loaded_projectile
 
 /obj/item/gun/ballistic/item_interaction(mob/living/user, obj/item/tool, list/modifiers)
 	. = ..()
@@ -584,7 +541,7 @@
 		install_suppressor(tool)
 		return ITEM_INTERACT_SUCCESS
 
-	if (can_be_sawn_off && sawoff(user, tool))
+	if (can_be_sawn_off && try_sawoff(user, tool))
 		return ITEM_INTERACT_SUCCESS
 
 /obj/item/gun/ballistic/proc/load_gun(obj/item/ammo, mob/living/user)
@@ -612,26 +569,42 @@
 	return TRUE
 
 /obj/item/gun/ballistic/process_fire(atom/target, mob/living/user, message = TRUE, params = null, zone_override = "", bonus_spread = 0)
-	var/could_it_misfire = can_misfire || chambered.can_misfire
-	if(target != user && chambered.loaded_projectile && could_it_misfire && prob(misfire_probability) && blow_up(user))
-		to_chat(user, span_userdanger("[src] misfires!"))
+	// If our ammo is overpressurized, we misfire
+	var/overpressurized_ammo = chambered.casing_pressure > pressure_threshold
+	if(target != user && !never_misfire && chambered.loaded_projectile && prob(misfire_probability))
+		if(overpressurized_ammo && blow_up(user))
+			to_chat(user, span_userdanger("[src] misfires!"))
+		else
+			balloon_alert_to_hearers("*click*")
+			playsound(src, dry_fire_sound, dry_fire_sound_volume, TRUE)
 		return
 
-	if (sawn_off)
+	if(sawn_off)
 		bonus_spread += SAWN_OFF_ACC_PENALTY
 
 	return ..()
 
+/obj/item/gun/ballistic/calculate_recoil(mob/living/user, recoil_amount)
+	if(sawn_off)
+		recoil_amount += sawoff_bonus_recoil
+	. = ..()
+
 /obj/item/gun/ballistic/shoot_live_shot(mob/living/user, pointblank = 0, atom/pbtarget = null, message = 1)
 	if(isnull(chambered))
 		return ..()
-	if(can_misfire)
-		misfire_probability += misfire_percentage_increment
-		misfire_probability = clamp(misfire_probability, 0, misfire_probability_cap)
-	if(chambered.can_misfire)
-		misfire_probability += chambered.misfire_increment
-		misfire_probability = clamp(misfire_probability, 0, misfire_probability_cap)
+	if(chambered.casing_pressure > pressure_threshold)
+		handle_misfire_incrementation(user)
 	return ..()
+
+/obj/item/gun/ballistic/proc/handle_misfire_incrementation(mob/living/user)
+	if(isnull(chambered))
+		return
+
+	if(never_misfire)
+		return
+
+	misfire_probability += chambered.misfire_increment
+	misfire_probability = clamp(misfire_probability, 0, misfire_probability_cap)
 
 ///Installs a new suppressor, assumes that the suppressor is already in the contents of src
 /obj/item/gun/ballistic/proc/install_suppressor(obj/item/suppressor/new_suppressor)
@@ -708,13 +681,19 @@
 
 /obj/item/gun/ballistic/proc/unload_ammo(mob/living/user, forced = FALSE)
 	var/num_unloaded = 0
-	var/turf/drop_turf = get_turf(drop_location())
 	for(var/obj/item/ammo_casing/casing as anything in get_ammo_list(FALSE))
 		casing.forceMove(drop_location())
-		casing.bounce_away(FALSE, NONE)
+// [HORIZON-EDIT] PHYSICS
+		var/bounce_angle
+		if(user)
+			var/sign_x = (istype(user) && !(user.get_held_index_of_item(src) % RIGHT_HANDS)) ? 1 : -1
+			bounce_angle = SIMPLIFY_DEGREES(dir2angle(user.dir) + (sign_x * 90) + rand(-45, 45))
+		casing.bounce_away(bounce_angle = bounce_angle, still_warm = FALSE, sound_delay = 0)
 		num_unloaded++
+		var/turf/drop_turf = get_turf(drop_location())
 		if(drop_turf && is_station_level(drop_turf.z))
 			SSblackbox.record_feedback("tally", "station_mess_created", 1, casing.name)
+// [/HORIZON-EDIT]
 
 	if (!num_unloaded)
 		if (!forced)
@@ -737,12 +716,21 @@
 		. += "The [bolt_wording] is locked back and needs to be released before firing or de-fouling."
 	if (suppressor)
 		. += "It has a suppressor [can_unsuppress ? "attached that can be removed with <b>alt+click</b>." : "that is integral or can't otherwise be removed."]"
-	if(can_misfire)
-		. += span_danger("You get the feeling this might explode if you fire it...")
-		if(misfire_probability > 0)
-			. += span_danger("Given the state of the gun, there is a [misfire_probability]% chance it'll misfire.")
-	else if(misfire_probability > 0)
-		. += span_warning("You get a feeling this might explode if you fire it with the wrong ammunitions...")
+
+	var/pressure_readout = "an indescribable"
+	switch(pressure_threshold)
+		if(-INFINITY to AMMO_CASING_PRESSURE_LOW)
+			pressure_readout = "a low"
+		if(AMMO_CASING_PRESSURE_MEDIUM)
+			pressure_readout = "a standard"
+		if(AMMO_CASING_PRESSURE_EXTREME to INFINITY)
+			pressure_readout = "an extreme"
+
+	. += "It should be able to handle [pressure_readout] amount of chamber pressure."
+
+	if(chambered && !hidden_chambered && chambered.casing_pressure > pressure_threshold && !never_misfire)
+		. += span_danger("You get the feeling this might explode if you fire it with the currently loaded round...")
+	if(misfire_probability > 0 && !never_misfire)
 		. += span_warning("Given the state of the gun, there is a [EXAMINE_HINT("[misfire_probability]%")] chance it'll misfire.")
 
 ///Gets the number of bullets in the gun
@@ -799,7 +787,7 @@ GLOBAL_LIST_INIT(gun_saw_types, typecacheof(list(
 	)))
 
 ///Handles all the logic of sawing off guns,
-/obj/item/gun/ballistic/proc/sawoff(mob/user, obj/item/saw, handle_modifications = TRUE)
+/obj/item/gun/ballistic/proc/try_sawoff(mob/user, obj/item/saw)
 	if(!saw.get_sharpness() || (!is_type_in_typecache(saw, GLOB.gun_saw_types) && saw.tool_behaviour != TOOL_SAW)) //needs to be sharp. Otherwise turned off eswords can cut this.
 		return
 	if(sawn_off)
@@ -820,10 +808,14 @@ GLOBAL_LIST_INIT(gun_saw_types, typecacheof(list(
 	if(sawn_off)
 		return
 	user.visible_message(span_notice("[user] shortens [src]!"), span_notice("You shorten [src]."))
+	. = do_sawoff()
+	update_appearance()
+
+/obj/item/gun/ballistic/proc/do_sawoff()
+	SHOULD_CALL_PARENT(TRUE)
 	sawn_off = TRUE
 	SEND_SIGNAL(src, COMSIG_GUN_SAWN_OFF)
-	if(!handle_modifications)
-		return TRUE
+
 	name = "sawn-off [src.name]"
 	desc = sawn_desc
 	update_weight_class(WEIGHT_CLASS_NORMAL)
@@ -836,43 +828,7 @@ GLOBAL_LIST_INIT(gun_saw_types, typecacheof(list(
 	worn_icon_state = "gun"
 	slot_flags &= ~ITEM_SLOT_BACK //you can't sling it on your back
 	slot_flags |= ITEM_SLOT_BELT //but you can wear it on your belt (poorly concealed under a trenchcoat, ideally)
-	recoil = SAWN_OFF_RECOIL
-	update_appearance()
 	return TRUE
-
-/obj/item/gun/ballistic/wrench_act(mob/living/user, obj/item/I)
-	if(!can_modify_ammo)
-		return
-
-	if(!user.is_holding(src))
-		balloon_alert(user, "hold to modify!")
-		return TRUE
-
-	if(get_ammo())
-		balloon_alert(user, "can't modify while loaded!")
-		return
-
-	if(!bolt_locked && bolt_type == BOLT_TYPE_LOCKING)
-		balloon_alert(user, "the bolt is in the way!")
-		return
-
-	balloon_alert(user, "tinkering...")
-	I.play_tool_sound(src)
-	if(!I.use_tool(src, user, 3 SECONDS))
-		return TRUE
-
-	if(magazine.caliber == initial_caliber)
-		magazine.caliber = alternative_caliber
-		if(alternative_ammo_misfires)
-			can_misfire = TRUE
-		fire_sound = alternative_fire_sound
-		to_chat(user, span_notice("You modify [src]. Now it will fire [alternative_caliber] rounds."))
-	else
-		magazine.caliber = initial_caliber
-		if(alternative_ammo_misfires)
-			can_misfire = FALSE
-		fire_sound = initial_fire_sound
-		to_chat(user, span_notice("You reset [src]. Now it will fire [initial_caliber] rounds."))
 
 ///used for sawing guns, causes the gun to fire without the input of the user
 /obj/item/gun/ballistic/proc/blow_up(mob/user)

@@ -212,17 +212,26 @@
 		if(0 to 25)
 			. += span_boldwarning("It's falling apart!")
 
+// [HORIZON-EDIT] PHYSICS
 //called after the gun has successfully fired its chambered ammo.
-/obj/item/gun/proc/process_chamber(empty_chamber = TRUE, from_firing = TRUE, chamber_next_round = TRUE)
-	handle_chamber(empty_chamber, from_firing, chamber_next_round)
+/obj/item/gun/proc/process_chamber(mob/living/user, empty_chamber = TRUE, from_firing = TRUE, chamber_next_round = TRUE)
+	handle_chamber(user, empty_chamber, from_firing, chamber_next_round)
 	SEND_SIGNAL(src, COMSIG_GUN_CHAMBER_PROCESSED)
 
-/obj/item/gun/proc/handle_chamber(empty_chamber = TRUE, from_firing = TRUE, chamber_next_round = TRUE)
+/obj/item/gun/proc/handle_chamber(mob/living/user, empty_chamber = TRUE, from_firing = TRUE, chamber_next_round = TRUE)
 	return
+// [/HORIZON-EDIT]
 
-//check if there's enough ammo/energy/whatever to shoot one time
-//i.e if clicking would make it shoot
+/**
+ * Check if there's enough ammo/energy/whatever to shoot one time
+ * i.e if clicking would make it shoot
+ */
 /obj/item/gun/proc/can_shoot()
+	SHOULD_CALL_PARENT(TRUE)
+	SHOULD_BE_PURE(TRUE)
+	if(SEND_SIGNAL(src, COMSIG_GUN_CAN_SHOOT) & COMPONENT_CANCEL_GUN_FIRE)
+		return FALSE
+
 	return TRUE
 
 /obj/item/gun/proc/tk_firing(mob/living/user)
@@ -295,8 +304,17 @@
 			visible_message_flags = ALWAYS_SHOW_SELF_MESSAGE,
 		)
 
-	if(chambered?.integrity_damage)
-		take_damage(chambered.integrity_damage, sound_effect = FALSE)
+	// [HORIZON-ADD] Ballistic_Impact
+	if(CHECK_BITFIELD(gun_flags, GUN_SMOKE_PARTICLES))
+		var/x_component = sin((get_angle(user, pbtarget))) * 40
+		var/y_component = cos((get_angle(user, pbtarget))) * 40
+		var/obj/effect/abstract/particle_holder/gun_smoke = new(get_turf(src), /particles/firing_smoke)
+		gun_smoke.particles.velocity = list(x_component, y_component)
+		addtimer(VARSET_CALLBACK(gun_smoke.particles, count, 0), 5)
+		addtimer(VARSET_CALLBACK(gun_smoke.particles, drift, 0), 3)
+		QDEL_IN(gun_smoke, 0.6 SECONDS)
+	// [/HORIZON-ADD]
+
 	return TRUE
 
 /obj/item/gun/atom_destruction(damage_flag)
@@ -384,6 +402,8 @@
 /obj/item/gun/proc/try_fire_gun(atom/target, mob/living/user, params)
 	return fire_gun(target, user, user.Adjacent(target), params)
 
+#define AKIMBO_PENALTY_SCALING 0.75
+
 /obj/item/gun/proc/fire_gun(atom/target, mob/living/user, flag, params)
 	if(QDELETED(target))
 		return NONE
@@ -424,17 +444,27 @@
 		return ITEM_INTERACT_BLOCKING
 	//DUAL (or more!) WIELDING
 	var/bonus_spread = 0
-	var/loop_counter = 0
 	if(user.combat_mode && !HAS_TRAIT(user, TRAIT_NO_GUN_AKIMBO))
-		for(var/obj/item/gun/gun in user.held_items)
+		// We need to iterate once to get the total spread
+		// While we're at it let's cache the guns
+		var/list/obj/item/gun/valid_guns = list()
+		for(var/obj/item/gun/gun as anything in user.get_held_items_of_type(/obj/item/gun))
 			if(gun == src || gun.weapon_weight >= WEAPON_MEDIUM)
 				continue
 			else if(gun.can_trigger_gun(user, akimbo_usage = TRUE))
-				bonus_spread += dual_wield_spread
-				loop_counter++
-				addtimer(CALLBACK(gun, TYPE_PROC_REF(/obj/item/gun, process_fire), target, user, TRUE, params, null, bonus_spread), loop_counter)
+				valid_guns += gun
+				bonus_spread += gun.dual_wield_spread * (1 + AKIMBO_PENALTY_SCALING * (length(valid_guns) + 1))
+
+		var/gun_count = length(valid_guns)
+		if(gun_count)
+			bonus_spread += src.dual_wield_spread // no scaling since it's technically the first shot
+			for(var/i in 1 to gun_count)
+				var/obj/item/gun/gun = valid_guns[i]
+				addtimer(CALLBACK(gun, TYPE_PROC_REF(/obj/item/gun, process_fire), target, user, TRUE, params, null, bonus_spread), i)
 
 	return process_fire(target, user, TRUE, params, null, bonus_spread)
+
+#undef AKIMBO_PENALTY_SCALING
 
 /obj/item/gun/proc/check_botched(mob/living/user, atom/target)
 	if(clumsy_check)
@@ -505,7 +535,7 @@
 	if (iteration >= burst_size)
 		firing_burst = FALSE
 
-	process_chamber()
+	process_chamber(user) // [HORIZON-EDIT] PHYSICSS
 	update_appearance()
 	return TRUE
 
@@ -593,7 +623,7 @@
 		shoot_live_shot(user, get_dist(user, target) <= 1, target, message)
 		// If gun gets destroyed as a result of firing
 		if (!QDELETED(src))
-			process_chamber()
+			process_chamber(user) // [HORIZON-EDIT] PHYSICS
 			update_appearance()
 			fire_cd = TRUE
 			addtimer(CALLBACK(src, PROC_REF(reset_fire_cd)), modified_fire_delay)

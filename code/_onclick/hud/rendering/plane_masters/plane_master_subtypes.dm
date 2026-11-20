@@ -67,25 +67,28 @@
 	. = ..()
 	add_relay_to(GET_NEW_PLANE(RENDER_PLANE_EMISSIVE, offset), relay_layer = EMISSIVE_SPACE_LAYER)
 
-/atom/movable/screen/plane_master/parallax_white/set_home(datum/plane_master_group/home)
+/atom/movable/screen/plane_master/parallax_white/show_to(mob/mymob)
 	. = ..()
-	if(home)
-		RegisterSignal(home, COMSIG_GROUP_HUD_CHANGED, PROC_REF(hud_changed))
-		hud_changed(null, null, home.our_hud)
-
-/atom/movable/screen/plane_master/parallax_white/proc/hud_changed(datum/source, datum/hud/old_hud, datum/hud/new_hud)
-	SIGNAL_HANDLER
-	if(old_hud)
-		UnregisterSignal(old_hud, list(SIGNAL_ADDTRAIT(TRAIT_PARALLAX_DISPLAYED), SIGNAL_REMOVETRAIT(TRAIT_PARALLAX_DISPLAYED)), PROC_REF(parallax_updated))
-	if(new_hud)
-		RegisterSignals(new_hud, list(SIGNAL_ADDTRAIT(TRAIT_PARALLAX_DISPLAYED), SIGNAL_REMOVETRAIT(TRAIT_PARALLAX_DISPLAYED)), PROC_REF(parallax_updated))
-		parallax_updated(new_hud)
-
-/atom/movable/screen/plane_master/parallax_white/proc/parallax_updated(datum/source)
-	SIGNAL_HANDLER
-	if(isnull(home.our_hud?.mymob))
+	if(!.)
 		return
-	if(HAS_TRAIT(home.our_hud, TRAIT_PARALLAX_DISPLAYED))
+
+	if(isnull(mymob.client))
+		return
+
+	RegisterSignals(mymob.client, list(SIGNAL_ADDTRAIT(TRAIT_PARALLAX_DISPLAYED(assigned_map)), SIGNAL_REMOVETRAIT(TRAIT_PARALLAX_DISPLAYED(assigned_map))), PROC_REF(parallax_updated), override = TRUE)
+	parallax_updated(mymob.client)
+
+/atom/movable/screen/plane_master/parallax_white/hide_from(mob/oldmob)
+	. = ..()
+	if(isnull(oldmob.client))
+		return
+	UnregisterSignal(oldmob.client, list(SIGNAL_ADDTRAIT(TRAIT_PARALLAX_DISPLAYED(assigned_map)), SIGNAL_REMOVETRAIT(TRAIT_PARALLAX_DISPLAYED(assigned_map))))
+
+/atom/movable/screen/plane_master/parallax_white/proc/parallax_updated(client/source)
+	SIGNAL_HANDLER
+	if(isnull(source))
+		return
+	if(HAS_TRAIT(source, TRAIT_PARALLAX_DISPLAYED(assigned_map)))
 		// Gives parallax a fullwhite backdrop to multiply against
 		color = list(
 			0, 0, 0, 0,
@@ -122,28 +125,34 @@
 		narsie_start_midway(GLOB.narsie_effect_last_modified) // We assume we're on the start, so we can use this number
 	offset_increase(0, SSmapping.max_plane_offset)
 
-/atom/movable/screen/plane_master/parallax/set_home(datum/plane_master_group/home)
+/atom/movable/screen/plane_master/parallax/show_to(mob/mymob)
 	. = ..()
-	if(home)
-		RegisterSignal(home, COMSIG_GROUP_HUD_CHANGED, PROC_REF(hud_changed))
-		hud_changed(null, null, home.our_hud)
-
-/atom/movable/screen/plane_master/parallax/proc/hud_changed(datum/source, datum/hud/old_hud, datum/hud/new_hud)
-	SIGNAL_HANDLER
-	if(old_hud)
-		UnregisterSignal(old_hud, list(SIGNAL_ADDTRAIT(TRAIT_PARALLAX_DISPLAYED), SIGNAL_REMOVETRAIT(TRAIT_PARALLAX_DISPLAYED)), PROC_REF(parallax_updated))
-	if(new_hud)
-		RegisterSignals(new_hud, list(SIGNAL_ADDTRAIT(TRAIT_PARALLAX_DISPLAYED), SIGNAL_REMOVETRAIT(TRAIT_PARALLAX_DISPLAYED)), PROC_REF(parallax_updated))
-		parallax_updated(new_hud)
-
-/atom/movable/screen/plane_master/parallax/proc/parallax_updated(datum/source)
-	SIGNAL_HANDLER
-	if(isnull(home.our_hud?.mymob))
+	if(!.)
 		return
-	if(HAS_TRAIT(home.our_hud, TRAIT_PARALLAX_DISPLAYED))
-		show_to(home.our_hud.mymob)
+
+	// Huds have a 1 to 1 for mobs so we're just gonna hook to this mob's potential clients forever!
+	// We have to do it this way instead of just using show_to/hide from because otherwise we immediately remove the signals as soon as we hide ourselves
+	// Perhaps we need separate "hook to mob" and "display" procs?
+	var/list/parallax_signals = list(
+		SIGNAL_ADDTRAIT(TRAIT_PARALLAX_DISPLAYED(assigned_map)) = PROC_REF(parallax_updated),
+		SIGNAL_REMOVETRAIT(TRAIT_PARALLAX_DISPLAYED(assigned_map)) = PROC_REF(parallax_updated)
+	)
+	AddComponent(/datum/component/connect_client_behalf, mymob, parallax_signals)
+	if(!isnull(mymob.client))
+		update_connections(mymob.client, TRUE)
+
+/atom/movable/screen/plane_master/parallax/proc/parallax_updated(client/source)
+	SIGNAL_HANDLER
+	update_connections(source)
+
+/atom/movable/screen/plane_master/parallax/proc/update_connections(client/updating, displayed_already = FALSE)
+	if(isnull(updating?.mob))
+		return
+	if(HAS_TRAIT(updating, TRAIT_PARALLAX_DISPLAYED(assigned_map)))
+		if(!displayed_already)
+			show_to(updating.mob)
 	else
-		hide_from(home.our_hud.mymob)
+		hide_from(updating.mob)
 
 /atom/movable/screen/plane_master/parallax/proc/on_offset_increase(datum/source, old_offset, new_offset)
 	SIGNAL_HANDLER
@@ -278,13 +287,13 @@
 	name = "Game"
 	documentation = "Holds most non floor/wall things. Anything on this plane \"wants\" to interlayer depending on position."
 	plane = GAME_PLANE
-	render_relay_planes = list(RENDER_PLANE_GAME_WORLD)
+	render_relay_planes = list(RENDER_PLANE_MASKED_WORLD) // [HORIZON-EDIT] Shadow-Render
 
 /atom/movable/screen/plane_master/game_world_above
 	name = "Upper Game"
 	documentation = "For stuff you want to draw like the game plane, but not ever below its contents"
 	plane = ABOVE_GAME_PLANE
-	render_relay_planes = list(RENDER_PLANE_GAME_WORLD)
+	render_relay_planes = list(RENDER_PLANE_MASKED_WORLD) // [HORIZON-EDIT] Shadow-Render
 
 /atom/movable/screen/plane_master/seethrough
 	name = "Seethrough"
@@ -329,14 +338,15 @@
 	if(!.)
 		return
 	home.AddComponent(/datum/component/hide_weather_planes, src)
-	RegisterSignal(home, COMSIG_GROUP_HUD_CHANGED, PROC_REF(hud_changed))
-	update_state(home.our_hud?.mymob)
+	RegisterSignal(home, COMSIG_PLANE_GROUP_HUD_CHANGED, PROC_REF(hud_changed))
+	update_state()
 
 /atom/movable/screen/plane_master/weather/proc/hud_changed(datum/source, datum/hud/old_hud, datum/hud/new_hud)
 	SIGNAL_HANDLER
-	update_state(new_hud?.mymob)
+	update_state()
 
-/atom/movable/screen/plane_master/weather/proc/update_state(mob/mymob)
+/atom/movable/screen/plane_master/weather/proc/update_state()
+	var/mob/mymob = home.our_hud?.mymob
 	if(!istype(mymob))
 		return
 
@@ -378,6 +388,12 @@
 	documentation = "I mean like, what do you want me to say? Points draw over pretty much everything else, so they get their own plane. Remember we layer render relays to draw planes in their proper order on render plates."
 	plane = POINT_PLANE
 	mouse_opacity = MOUSE_OPACITY_TRANSPARENT
+
+// [HORIZON-ADD] Shadow-Render
+/atom/movable/screen/plane_master/point/Initialize(mapload, datum/hud/hud_owner, datum/plane_master_group/home, offset)
+	. = ..()
+	add_filter("wall_fov_mask", 1, alpha_mask_filter(render_source = OFFSET_RENDER_TARGET(WALLS_FOV_PLANE_15_RENDER_TARGET, offset), flags = MASK_INVERSE))
+// [/HORIZON-ADD]
 
 ///Contains all turf lighting
 /atom/movable/screen/plane_master/turf_lighting
@@ -449,6 +465,7 @@
 	// Blue channel is dedicated to specular, i.e. our bootleg implementation of shiny objects
 	// We map it onto alpha so we can use the mask plate in an alpha mask filter to cut out only the shiny bits
 	add_relay_to(GET_NEW_PLANE(RENDER_PLANE_SPECULAR_MASK, offset), relay_color = list(0,0,0,0, 0,0,0,0, 0,0,0,1, 0,0,0,0, 1,1,1,0))
+	add_filter("wall_fov_mask", 1, alpha_mask_filter(render_source = OFFSET_RENDER_TARGET(WALLS_FOV_PLANE_15_RENDER_TARGET, offset), flags = MASK_INVERSE)) // [HORIZON-EDIT] Shadow-Render
 
 /atom/movable/screen/plane_master/pipecrawl
 	name = "Pipecrawl"
@@ -477,32 +494,28 @@
 /atom/movable/screen/plane_master/camera_static/set_home(datum/plane_master_group/home)
 	. = ..()
 	if(home)
-		RegisterSignal(home, COMSIG_GROUP_HUD_CHANGED, PROC_REF(hud_changed))
-		hud_changed(null, null, home.our_hud)
+		RegisterSignal(home, COMSIG_PLANE_GROUP_PERSPECTIVE_CHANGED, PROC_REF(perspective_changed))
+		update_perspective()
 
-/atom/movable/screen/plane_master/camera_static/proc/hud_changed(datum/source, datum/hud/old_hud, datum/hud/new_hud)
+/atom/movable/screen/plane_master/camera_static/proc/perspective_changed(datum/source, atom/old_perspective, atom/new_perspective)
 	SIGNAL_HANDLER
-	if(old_hud)
-		UnregisterSignal(old_hud, COMSIG_HUD_EYE_CHANGED, PROC_REF(eye_changed))
-	if(new_hud)
-		RegisterSignal(new_hud, COMSIG_HUD_EYE_CHANGED, PROC_REF(eye_changed))
-		eye_changed(new_hud, null, new_hud.mymob?.canon_client?.eye)
+	update_perspective()
 
-/atom/movable/screen/plane_master/camera_static/proc/eye_changed(datum/hud/source, atom/old_eye, atom/new_eye)
-	SIGNAL_HANDLER
+/atom/movable/screen/plane_master/camera_static/proc/update_perspective()
+	var/atom/perspective = home.get_perspective()
 
-	if(istype(new_eye, /obj/effect/landmark/ai_multicam_room))
+	if(istype(perspective, /obj/effect/landmark/ai_multicam_room))
 		if(force_hidden)
-			unhide_plane(source.mymob)
+			unhide_plane(home.our_hud?.mymob)
 		return
 
-	if(!iscameramob(new_eye))
+	if(!iscameramob(perspective))
 		if(!force_hidden)
-			hide_plane(source.mymob)
+			hide_plane(home.our_hud?.mymob)
 		return
 
 	if(force_hidden)
-		unhide_plane(source.mymob)
+		unhide_plane(home.our_hud?.mymob)
 
 /atom/movable/screen/plane_master/high_game
 	name = "High Game"
@@ -512,6 +525,16 @@
 	plane = HIGH_GAME_PLANE
 	mouse_opacity = MOUSE_OPACITY_TRANSPARENT
 	render_relay_planes = list(RENDER_PLANE_GAME)
+
+// [HORIZON-ADD] Shadow-Render
+/atom/movable/screen/plane_master/high_game/Initialize(mapload, datum/hud/hud_owner, datum/plane_master_group/home, offset)
+	. = ..()
+	// The wall shadow mask is relayed onto the same RENDER_PLANE_GAME with a very high layer and would paint over us.
+	// Mining scanner pings and atmos debug are meant to be seen through shadows, so our relay goes above it (the thermal relay sits at +1)
+	var/atom/movable/render_plane_relay/relay = get_relay_to(GET_NEW_PLANE(RENDER_PLANE_GAME, offset))
+	if(relay)
+		relay.layer = WALLS_FOV_PLANE_16 + abs(LOWEST_EVER_PLANE * 30) + 2
+// [/HORIZON-ADD]
 
 /atom/movable/screen/plane_master/ghost
 	name = "Ghost"
@@ -607,3 +630,359 @@
 	SIGNAL_HANDLER
 	var/mob/our_mob = home?.our_hud?.mymob
 	hide_plane(our_mob)
+
+// [HORIZON-ADD] Shadow-Render
+// MARK: Wall mask FOV
+#define FOV_WALL_ICON '_horizon/icons/walls_fov_ultra_wide.dmi'
+
+/atom/movable/screen/plane_master/mobs
+	name = "Mobs Plane"
+	plane = MOB_PLANE
+	render_relay_planes = list(RENDER_PLANE_MASKED_WORLD)
+
+/atom/movable/screen/plane_master/wall_above
+	name = "Above Wall"
+	plane = ABOVE_WALL_PLANE
+	render_relay_planes = list(RENDER_PLANE_GAME_WORLD)
+
+/atom/movable/screen/plane_master/mobs/show_to(mob/mymob)
+	. = ..()
+	if(!. || !mymob)
+		return
+	RegisterSignal(mymob, SIGNAL_ADDTRAIT(TRAIT_THERMAL_VISION), PROC_REF(update_thermals), override = TRUE)
+	RegisterSignal(mymob, SIGNAL_REMOVETRAIT(TRAIT_THERMAL_VISION), PROC_REF(update_thermals), override = TRUE)
+	update_thermals(mymob)
+
+/atom/movable/screen/plane_master/mobs/proc/update_thermals(mob/source)
+	SIGNAL_HANDLER
+	var/thermal_plane = GET_NEW_PLANE(RENDER_PLANE_GAME, offset)
+	if(!HAS_TRAIT(source, TRAIT_THERMAL_VISION))
+		remove_relay_from(thermal_plane)
+		return
+	if(get_relay_to(thermal_plane))
+		return
+	add_relay_to(thermal_plane, relay_layer = WALLS_FOV_PLANE_16 + abs(LOWEST_EVER_PLANE * 30) + 1)
+	var/atom/movable/render_plane_relay/relay = get_relay_to(thermal_plane)
+
+	// No MASK_INVERSE: the hub already shows the clear part. This relay is only the cut-out part.
+	relay.add_filter("thermal_wall_mask", 1, alpha_mask_filter(render_source = OFFSET_RENDER_TARGET(WALLS_FOV_PLANE_15_RENDER_TARGET, offset)))
+	relay.mouse_opacity = MOUSE_OPACITY_TRANSPARENT
+	relay.color = list(1,0,0,0, 0,0.35,0,0, 0,0,0.35,0, 0,0,0,1, 0,0,0,0)
+
+/atom/movable/screen/plane_master/above_floor
+	name = "Above Floor Plane"
+	plane = ABOVE_FLOOR_PLANE
+	render_relay_planes = list(RENDER_PLANE_GAME_WORLD)
+
+/atom/movable/screen/plane_master/above_floor/Initialize(mapload, datum/hud/hud_owner, datum/plane_master_group/home, offset)
+	. = ..()
+	add_filter("wall_fov_mask", 1, alpha_mask_filter(render_source = OFFSET_RENDER_TARGET(WALLS_FOV_PLANE_15_RENDER_TARGET, offset), flags = MASK_INVERSE))
+
+/atom/movable/screen/plane_master/rendering_plate/masked_game_hub
+	name = "Masked Game Hub"
+	documentation = "Collects all planes above WALL_PLANE (mobs, items, effects), \
+		applies a wall shadow mask to them, and brings them into the main game world. \
+		When equipping mesons, the mask is disabled."
+	plane = RENDER_PLANE_MASKED_WORLD
+	render_relay_planes = list(RENDER_PLANE_GAME_WORLD)
+	appearance_flags = PLANE_MASTER
+	blend_mode = BLEND_OVERLAY
+
+/atom/movable/screen/plane_master/rendering_plate/masked_game_hub/show_to(mob/mymob)
+	. = ..()
+	if(!. || !mymob)
+		return
+	RegisterSignal(mymob, SIGNAL_ADDTRAIT(TRAIT_MESON_VISION), PROC_REF(update_wall_fov), override = TRUE)
+	RegisterSignal(mymob, SIGNAL_REMOVETRAIT(TRAIT_MESON_VISION), PROC_REF(update_wall_fov), override = TRUE)
+	update_wall_fov(mymob)
+
+/atom/movable/screen/plane_master/rendering_plate/masked_game_hub/proc/update_wall_fov(mob/source)
+	SIGNAL_HANDLER
+	add_filter("wall_fov_mask", 1, alpha_mask_filter(render_source = OFFSET_RENDER_TARGET(WALLS_FOV_PLANE_15_RENDER_TARGET, offset), flags = MASK_INVERSE))
+
+// MARK: Shadow-Planes
+/atom/movable/screen/plane_master/wall_fov
+	name = "Master Horizon-Shadows Plane"
+	plane = WALL_FOV_PLANE
+	appearance_flags = PLANE_MASTER|NO_CLIENT_COLOR
+	render_target = WALL_FOV_RENDER_TARGET
+	mouse_opacity = MOUSE_OPACITY_TRANSPARENT
+	render_relay_planes = list()
+	color = list(1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,2)
+	multiz_scaled = FALSE
+
+/*
+// MARK: Под дебаг теней / For debug shadows
+/atom/movable/screen/plane_master/wall_fov/show_to(mob/mymob)
+	..()
+	if(!isobserver(mymob))
+		return
+	hide_from(mymob)
+*/
+
+/atom/movable/screen/plane_master/wall_fov/proc/set_displace_offset(dx, dy, duration)
+	var/filter = get_filter("wall_displace")
+	if(!filter)
+		return
+	animate(filter, duration, x = dx, y = dy, easing = LINEAR_EASING)
+
+/atom/movable/screen/plane_master/wall_fov/shadows_plane
+	name = "Wall Fov Shadows Plane"
+	plane = ATOMS_FOV_SHADOWS_PLANE
+	render_target = ATOMS_FOV_SHADOWS_RENDER_TARGET
+	render_relay_planes = list()
+
+/atom/movable/screen/plane_master/wall_fov/plane0
+	name = "Wall Fov - plane0"
+	plane = WALLS_FOV_PLANE_0
+	render_target = WALLS_FOV_PLANE_0_RENDER_TARGET
+
+/atom/movable/screen/plane_master/wall_fov/plane0/Initialize(mapload, datum/hud/hud_owner, datum/plane_master_group/home, offset)
+	. = ..()
+	add_filter("wall_underlay", 1, list(type = "layer", render_source = OFFSET_RENDER_TARGET(ATOMS_FOV_SHADOWS_RENDER_TARGET, offset), flags = FILTER_UNDERLAY))
+	add_filter("wall_displace", 2, list(type = "displace", icon = icon(FOV_WALL_ICON, "0"), size = 1))
+	add_filter("wall_alpha", 3, list(type = "alpha", render_source = OFFSET_RENDER_TARGET(ATOMS_FOV_SHADOWS_RENDER_TARGET, offset), flags = MASK_INVERSE))
+
+/atom/movable/screen/plane_master/wall_fov/plane1
+	name = "Wall Fov - plane1"
+	plane = WALLS_FOV_PLANE_1
+	render_target = WALLS_FOV_PLANE_1_RENDER_TARGET
+
+/atom/movable/screen/plane_master/wall_fov/plane1/Initialize(mapload, datum/hud/hud_owner, datum/plane_master_group/home, offset)
+	. = ..()
+	add_filter("wall_underlay", 1, list(type = "layer", render_source = OFFSET_RENDER_TARGET(WALLS_FOV_PLANE_0_RENDER_TARGET, offset), flags = FILTER_UNDERLAY))
+	add_filter("wall_displace", 2, list(type = "displace", icon = icon(FOV_WALL_ICON, "1"), size = 1))
+	add_filter("wall_overlay", 3, list(type = "layer", render_source = OFFSET_RENDER_TARGET(WALLS_FOV_PLANE_0_RENDER_TARGET, offset)))
+
+/atom/movable/screen/plane_master/wall_fov/plane2
+	name = "Wall Fov - plane2"
+	plane = WALLS_FOV_PLANE_2
+	render_target = WALLS_FOV_PLANE_2_RENDER_TARGET
+
+/atom/movable/screen/plane_master/wall_fov/plane2/Initialize(mapload, datum/hud/hud_owner, datum/plane_master_group/home, offset)
+	. = ..()
+	add_filter("wall_underlay", 1, list(type = "layer", render_source = OFFSET_RENDER_TARGET(WALLS_FOV_PLANE_1_RENDER_TARGET, offset), flags = FILTER_UNDERLAY))
+	add_filter("wall_displace", 2, list(type = "displace", icon = icon(FOV_WALL_ICON, "2"), size = 2))
+	add_filter("wall_overlay", 3, list(type = "layer", render_source = OFFSET_RENDER_TARGET(WALLS_FOV_PLANE_1_RENDER_TARGET, offset)))
+
+/atom/movable/screen/plane_master/wall_fov/plane3
+	name = "Wall Fov - plane3"
+	plane = WALLS_FOV_PLANE_3
+	render_target = WALLS_FOV_PLANE_3_RENDER_TARGET
+
+/atom/movable/screen/plane_master/wall_fov/plane3/Initialize(mapload, datum/hud/hud_owner, datum/plane_master_group/home, offset)
+	. = ..()
+	add_filter("wall_underlay", 1, list(type = "layer", render_source = OFFSET_RENDER_TARGET(WALLS_FOV_PLANE_2_RENDER_TARGET, offset), flags = FILTER_UNDERLAY))
+	add_filter("wall_displace", 2, list(type = "displace", icon = icon(FOV_WALL_ICON, "3"), size = 4))
+	add_filter("wall_overlay", 3, list(type = "layer", render_source = OFFSET_RENDER_TARGET(WALLS_FOV_PLANE_2_RENDER_TARGET, offset)))
+
+/atom/movable/screen/plane_master/wall_fov/plane4
+	name = "Wall Fov - plane4"
+	plane = WALLS_FOV_PLANE_4
+	render_target = WALLS_FOV_PLANE_4_RENDER_TARGET
+
+/atom/movable/screen/plane_master/wall_fov/plane4/Initialize(mapload, datum/hud/hud_owner, datum/plane_master_group/home, offset)
+	. = ..()
+	add_filter("wall_underlay", 1, list(type = "layer", render_source = OFFSET_RENDER_TARGET(WALLS_FOV_PLANE_3_RENDER_TARGET, offset), flags = FILTER_UNDERLAY))
+	add_filter("wall_displace", 2, list(type = "displace", icon = icon(FOV_WALL_ICON, "4"), size = 6))
+	add_filter("wall_overlay", 3, list(type = "layer", render_source = OFFSET_RENDER_TARGET(WALLS_FOV_PLANE_3_RENDER_TARGET, offset)))
+
+/atom/movable/screen/plane_master/wall_fov/plane5
+	name = "Wall Fov - plane5"
+	plane = WALLS_FOV_PLANE_5
+	render_target = WALLS_FOV_PLANE_5_RENDER_TARGET
+
+/atom/movable/screen/plane_master/wall_fov/plane5/Initialize(mapload, datum/hud/hud_owner, datum/plane_master_group/home, offset)
+	. = ..()
+	add_filter("wall_underlay", 1, list(type = "layer", render_source = OFFSET_RENDER_TARGET(WALLS_FOV_PLANE_4_RENDER_TARGET, offset), flags = FILTER_UNDERLAY))
+	add_filter("wall_displace", 2, list(type = "displace", icon = icon(FOV_WALL_ICON, "5"), size = 8))
+	add_filter("wall_overlay", 3, list(type = "layer", render_source = OFFSET_RENDER_TARGET(WALLS_FOV_PLANE_4_RENDER_TARGET, offset)))
+
+/atom/movable/screen/plane_master/wall_fov/plane6
+	name = "Wall Fov - plane6"
+	plane = WALLS_FOV_PLANE_6
+	render_target = WALLS_FOV_PLANE_6_RENDER_TARGET
+
+/atom/movable/screen/plane_master/wall_fov/plane6/Initialize(mapload, datum/hud/hud_owner, datum/plane_master_group/home, offset)
+	. = ..()
+	add_filter("wall_underlay", 1, list(type = "layer", render_source = OFFSET_RENDER_TARGET(WALLS_FOV_PLANE_5_RENDER_TARGET, offset), flags = FILTER_UNDERLAY))
+	add_filter("wall_displace", 2, list(type = "displace", icon = icon(FOV_WALL_ICON, "6"), size = 12))
+	add_filter("wall_overlay", 3, list(type = "layer", render_source = OFFSET_RENDER_TARGET(WALLS_FOV_PLANE_5_RENDER_TARGET, offset)))
+
+/atom/movable/screen/plane_master/wall_fov/plane7
+	name = "Wall Fov - plane7"
+	plane = WALLS_FOV_PLANE_7
+	render_target = WALLS_FOV_PLANE_7_RENDER_TARGET
+
+/atom/movable/screen/plane_master/wall_fov/plane7/Initialize(mapload, datum/hud/hud_owner, datum/plane_master_group/home, offset)
+	. = ..()
+	add_filter("wall_underlay", 1, list(type = "layer", render_source = OFFSET_RENDER_TARGET(WALLS_FOV_PLANE_6_RENDER_TARGET, offset), flags = FILTER_UNDERLAY))
+	add_filter("wall_displace", 2, list(type = "displace", icon = icon(FOV_WALL_ICON, "7"), size = 16))
+	add_filter("wall_overlay", 3, list(type = "layer", render_source = OFFSET_RENDER_TARGET(WALLS_FOV_PLANE_6_RENDER_TARGET, offset)))
+
+/atom/movable/screen/plane_master/wall_fov/plane8
+	name = "Wall Fov - plane8"
+	plane = WALLS_FOV_PLANE_8
+	render_target = WALLS_FOV_PLANE_8_RENDER_TARGET
+
+/atom/movable/screen/plane_master/wall_fov/plane8/Initialize(mapload, datum/hud/hud_owner, datum/plane_master_group/home, offset)
+	. = ..()
+	add_filter("wall_underlay", 1, list(type = "layer", render_source = OFFSET_RENDER_TARGET(WALLS_FOV_PLANE_7_RENDER_TARGET, offset), flags = FILTER_UNDERLAY))
+	add_filter("wall_displace", 2, list(type = "displace", icon = icon(FOV_WALL_ICON, "8"), size = 24))
+	add_filter("wall_overlay", 3, list(type = "layer", render_source = OFFSET_RENDER_TARGET(WALLS_FOV_PLANE_7_RENDER_TARGET, offset)))
+
+/atom/movable/screen/plane_master/wall_fov/plane9
+	name = "Wall Fov - plane9"
+	plane = WALLS_FOV_PLANE_9
+	render_target = WALLS_FOV_PLANE_9_RENDER_TARGET
+
+/atom/movable/screen/plane_master/wall_fov/plane9/Initialize(mapload, datum/hud/hud_owner, datum/plane_master_group/home, offset)
+	. = ..()
+	add_filter("wall_underlay", 1, list(type = "layer", render_source = OFFSET_RENDER_TARGET(WALLS_FOV_PLANE_8_RENDER_TARGET, offset), flags = FILTER_UNDERLAY))
+	add_filter("wall_displace", 2, list(type = "displace", icon = icon(FOV_WALL_ICON, "9"), size = 32))
+	add_filter("wall_overlay", 3, list(type = "layer", render_source = OFFSET_RENDER_TARGET(WALLS_FOV_PLANE_8_RENDER_TARGET, offset)))
+
+/atom/movable/screen/plane_master/wall_fov/plane10
+	name = "Wall Fov - plane10"
+	plane = WALLS_FOV_PLANE_10
+	render_target = WALLS_FOV_PLANE_10_RENDER_TARGET
+
+/atom/movable/screen/plane_master/wall_fov/plane10/Initialize(mapload, datum/hud/hud_owner, datum/plane_master_group/home, offset)
+	. = ..()
+	add_filter("wall_underlay", 1, list(type = "layer", render_source = OFFSET_RENDER_TARGET(WALLS_FOV_PLANE_9_RENDER_TARGET, offset), flags = FILTER_UNDERLAY))
+	add_filter("wall_displace", 2, list(type = "displace", icon = icon(FOV_WALL_ICON, "10"), size = 48))
+	add_filter("wall_overlay", 3, list(type = "layer", render_source = OFFSET_RENDER_TARGET(WALLS_FOV_PLANE_9_RENDER_TARGET, offset)))
+
+/atom/movable/screen/plane_master/wall_fov/plane11
+	name = "Wall Fov - plane11"
+	plane = WALLS_FOV_PLANE_11
+	render_target = WALLS_FOV_PLANE_11_RENDER_TARGET
+
+/atom/movable/screen/plane_master/wall_fov/plane11/Initialize(mapload, datum/hud/hud_owner, datum/plane_master_group/home, offset)
+	. = ..()
+	add_filter("wall_underlay", 1, list(type = "layer", render_source = OFFSET_RENDER_TARGET(WALLS_FOV_PLANE_10_RENDER_TARGET, offset), flags = FILTER_UNDERLAY))
+	add_filter("wall_displace", 2, list(type = "displace", icon = icon(FOV_WALL_ICON, "11"), size = 64))
+	add_filter("wall_overlay", 3, list(type = "layer", render_source = OFFSET_RENDER_TARGET(WALLS_FOV_PLANE_10_RENDER_TARGET, offset)))
+
+/atom/movable/screen/plane_master/wall_fov/plane12
+	name = "Wall Fov - plane12"
+	plane = WALLS_FOV_PLANE_12
+	render_target = WALLS_FOV_PLANE_12_RENDER_TARGET
+
+/atom/movable/screen/plane_master/wall_fov/plane12/Initialize(mapload, datum/hud/hud_owner, datum/plane_master_group/home, offset)
+	. = ..()
+	add_filter("wall_underlay", 1, list(type = "layer", render_source = OFFSET_RENDER_TARGET(WALLS_FOV_PLANE_11_RENDER_TARGET, offset), flags = FILTER_UNDERLAY))
+	add_filter("wall_displace", 2, list(type = "displace", icon = icon(FOV_WALL_ICON, "12"), size = 96))
+	add_filter("wall_overlay", 3, list(type = "layer", render_source = OFFSET_RENDER_TARGET(WALLS_FOV_PLANE_11_RENDER_TARGET, offset)))
+
+/atom/movable/screen/plane_master/wall_fov/plane13
+	name = "Wall Fov - plane13"
+	plane = WALLS_FOV_PLANE_13
+	render_target = WALLS_FOV_PLANE_13_RENDER_TARGET
+
+/atom/movable/screen/plane_master/wall_fov/plane13/Initialize(mapload, datum/hud/hud_owner, datum/plane_master_group/home, offset)
+	. = ..()
+	add_filter("wall_underlay", 1, list(type = "layer", render_source = OFFSET_RENDER_TARGET(WALLS_FOV_PLANE_12_RENDER_TARGET, offset), flags = FILTER_UNDERLAY))
+	add_filter("wall_displace", 2, list(type = "displace", icon = icon(FOV_WALL_ICON, "13"), size = 128))
+	add_filter("wall_overlay", 3, list(type = "layer", render_source = OFFSET_RENDER_TARGET(WALLS_FOV_PLANE_12_RENDER_TARGET, offset)))
+
+/atom/movable/screen/plane_master/wall_fov/plane14
+	name = "Wall Fov - plane14"
+	plane = WALLS_FOV_PLANE_14
+	render_target = WALLS_FOV_PLANE_14_RENDER_TARGET
+
+/atom/movable/screen/plane_master/wall_fov/plane14/Initialize(mapload, datum/hud/hud_owner, datum/plane_master_group/home, offset)
+	. = ..()
+	add_filter("wall_underlay", 1, list(type = "layer", render_source = OFFSET_RENDER_TARGET(WALLS_FOV_PLANE_13_RENDER_TARGET, offset), flags = FILTER_UNDERLAY))
+	add_filter("wall_displace", 2, list(type = "displace", icon = icon(FOV_WALL_ICON, "14"), size = 192))
+	add_filter("wall_overlay", 3, list(type = "layer", render_source = OFFSET_RENDER_TARGET(WALLS_FOV_PLANE_13_RENDER_TARGET, offset)))
+
+/atom/movable/screen/plane_master/wall_fov/plane15
+	name = "Wall Fov - plane15 (mask base)"
+	plane = WALLS_FOV_PLANE_15
+	render_target = WALLS_FOV_PLANE_15_RENDER_TARGET
+	color = null
+
+/atom/movable/screen/plane_master/wall_fov/plane15/Initialize(mapload, datum/hud/hud_owner, datum/plane_master_group/home, offset)
+	. = ..()
+	add_filter("wall_underlay", 1, list(type = "layer", render_source = OFFSET_RENDER_TARGET(WALLS_FOV_PLANE_14_RENDER_TARGET, offset), flags = FILTER_UNDERLAY))
+	add_filter("wall_displace", 2, list(type = "displace", icon = icon(FOV_WALL_ICON, "15"), size = 256))
+	add_filter("wall_overlay", 3, list(type = "layer", render_source = OFFSET_RENDER_TARGET(WALLS_FOV_PLANE_14_RENDER_TARGET, offset)))
+
+/atom/movable/screen/plane_master/wall_fov/plane15/set_home(datum/plane_master_group/home)
+	. = ..()
+	if(!.)
+		return
+	RegisterSignal(home, COMSIG_PLANE_GROUP_HUD_CHANGED, PROC_REF(hud_changed))
+	hud_changed(null, null, home.our_hud)
+
+/atom/movable/screen/plane_master/wall_fov/plane15/show_to(mob/mymob)
+	..()
+	if(!isobserver(mymob))
+		return
+	set_alpha(100)
+
+/atom/movable/screen/plane_master/wall_fov/plane15/proc/hud_changed(datum/source, datum/hud/old_hud, datum/hud/new_hud)
+	SIGNAL_HANDLER
+	if(old_hud)
+		UnregisterSignal(old_hud, COMSIG_HUD_Z_CHANGED, PROC_REF(on_offset_change))
+	if(new_hud)
+		RegisterSignal(new_hud, COMSIG_HUD_Z_CHANGED, PROC_REF(on_offset_change))
+	offset_change(0)
+
+/atom/movable/screen/plane_master/wall_fov/plane15/proc/on_offset_change(datum/source, old_offset = null, new_offset = null)
+	SIGNAL_HANDLER
+	if(new_offset == null)
+		new_offset = old_offset
+	offset_change(new_offset)
+
+/atom/movable/screen/plane_master/wall_fov/plane15/proc/offset_change(mob_offset)
+	var/mob/our_mob = home?.our_hud?.mymob
+	if(!our_mob)
+		return
+	var/atom/eye = our_mob.canon_client?.eye || our_mob
+	var/turf/eye_turf = get_turf(eye)
+	if(!eye_turf)
+		eye_turf = get_turf(our_mob)
+	if(!eye_turf)
+		return
+	var/viewed_z_offset = GET_Z_PLANE_OFFSET(eye_turf.z)
+	var/mob_z_offset = GET_Z_PLANE_OFFSET(our_mob.z)
+	if(offset == mob_z_offset || offset == viewed_z_offset)
+		enable_alpha()
+	else
+		disable_alpha()
+
+/atom/movable/screen/plane_master/wall_fov/shadow_mask
+	name = "Wall Fov - shadow mask (visuals)"
+	plane = WALLS_FOV_PLANE_16
+	render_target = WALLS_FOV_PLANE_16_RENDER_TARGET
+	render_relay_planes = list(RENDER_PLANE_GAME)
+	color = list(1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,2)
+
+/atom/movable/screen/plane_master/wall_fov/shadow_mask/Initialize(mapload, datum/hud/hud_owner, datum/plane_master_group/home, offset)
+	. = ..()
+	var/offset_target = OFFSET_RENDER_TARGET(WALLS_FOV_PLANE_15_RENDER_TARGET, offset)
+	add_filter("wall_underlay", 1, list(type = "layer", render_source = offset_target, flags = FILTER_UNDERLAY))
+	add_filter("wall_blur_hard", 2, list(type = "blur", size = 8))
+	add_filter("wall_blur_soft", 3, list(type = "blur", size = 3))
+	add_filter("wall_overlay", 4, list(type = "layer", render_source = offset_target))
+	add_filter("wall_blur_finale", 5, list(type = "blur", size = 1))
+
+/atom/movable/screen/plane_master/wall_fov/shadow_mask/show_to(mob/mymob)
+	. = ..()
+	if(!. || !mymob)
+		return
+	RegisterSignal(mymob, SIGNAL_ADDTRAIT(TRAIT_MESON_VISION), PROC_REF(update_mesons), override = TRUE)
+	RegisterSignal(mymob, SIGNAL_REMOVETRAIT(TRAIT_MESON_VISION), PROC_REF(update_mesons), override = TRUE)
+	update_mesons(mymob)
+
+/atom/movable/screen/plane_master/wall_fov/shadow_mask/proc/update_mesons(mob/source)
+	SIGNAL_HANDLER
+	if(HAS_TRAIT(source, TRAIT_MESON_VISION))
+		set_alpha(150)
+	else
+		set_alpha(255)
+
+#undef FOV_WALL_ICON
+// [/HORIZON-ADD]

@@ -20,7 +20,7 @@ SUBSYSTEM_DEF(security_level)
 	if(!current_security_level.looping_sound) // No sound? No play.
 		can_fire = FALSE
 		return
-	sound_to_playing_players(current_security_level.looping_sound, volume_preference = /datum/preference/numeric/volume/sound_ambience_volume)
+	sound_to_playing_players(current_security_level.looping_sound) // [HORIZON-EDIT] Master_Sounds
 
 
 /**
@@ -52,9 +52,6 @@ SUBSYSTEM_DEF(security_level)
 		can_fire = TRUE
 	else
 		can_fire = FALSE
-
-	if(SSshuttle.emergency.mode == SHUTTLE_CALL || SSshuttle.emergency.mode == SHUTTLE_RECALL) // By god this is absolutely shit
-		SSshuttle.emergency.alert_coeff_change(selected_level.shuttle_call_time_mod)
 
 	SEND_SIGNAL(src, COMSIG_SECURITY_LEVEL_CHANGED, selected_level.number_level)
 	SSblackbox.record_feedback("tally", "security_level_changes", 1, selected_level.name)

@@ -325,7 +325,7 @@
 	if(incidents_left == INFINITY || bless_result != BLESSING_SUCCESS || !bless_fixable)
 		return
 
-	playsound(our_guy, 'sound/effects/pray_chaplain.ogg', 40, TRUE)
+	playsound(our_guy, 'sound/effects/pray_chaplain.ogg', 40, TRUE, mixer_channel = CHANNEL_UI) // [HORIZON-EDIT] Master_Sounds
 	to_chat(our_guy, span_green("You feel fantastic!"))
 	qdel(src)
 

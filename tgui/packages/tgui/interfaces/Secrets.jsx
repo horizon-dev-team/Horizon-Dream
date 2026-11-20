@@ -529,7 +529,7 @@ const FunForYouTab = (props) => {
       <Stack.Item>
         <NoticeBox danger mb={0}>
           <Button
-            color="black"
+            color="average"
             icon="fire"
             fluid
             content="The floor is lava! (DANGEROUS: extremely lame)"
@@ -540,7 +540,7 @@ const FunForYouTab = (props) => {
       <Stack.Item>
         <NoticeBox danger mb={0}>
           <Button
-            color="black"
+            color="average"
             icon="fire"
             fluid
             content="Chinese Cartoons! (DANGEROUS: no going back, also fuck you)"
@@ -667,7 +667,7 @@ export const Secrets = (props) => {
   const TabComponent = TAB2NAME[tabIndex - 1].component();
 
   return (
-    <Window title="Secrets Panel" width={500} height={520} theme="admin">
+    <Window title="Secrets Panel" width={500} height={520} theme="horizon">
       <Window.Content>
         <Flex direction="column" height="100%">
           <Flex.Item mb={1}>

@@ -14,7 +14,7 @@
 	var/visor_flags_inv = NONE //same as visor_flags, but for flags_inv
 	var/visor_flags_cover = NONE //same as above, but for flags_cover
 	///What to toggle when toggled with adjust_visor()
-	var/visor_vars_to_toggle = VISOR_FLASHPROTECT | VISOR_TINT | VISOR_VISIONFLAGS | VISOR_INVISVIEW
+	var/visor_vars_to_toggle = VISOR_FLASHPROTECT | VISOR_TINT | VISOR_INVISVIEW
 	///Sound this item makes when its visor is flipped down
 	var/visor_toggle_down_sound = null
 	///Sound this item makes when its visor is flipped up
@@ -242,8 +242,7 @@
 	if(!istype(user))
 		return
 	UnregisterSignal(user, COMSIG_MOVABLE_MOVED)
-	for(var/trait in clothing_traits)
-		REMOVE_CLOTHING_TRAIT(user, trait)
+	remove_clothing_traits(user)
 	if(iscarbon(user) && tint)
 		var/mob/living/carbon/carbon_user = user
 		carbon_user.update_tint()
@@ -261,8 +260,7 @@
 	if(slot_flags & slot) //Was equipped to a valid slot for this item?
 		if(iscarbon(user) && LAZYLEN(zones_disabled))
 			RegisterSignal(user, COMSIG_MOVABLE_MOVED, PROC_REF(bristle), override = TRUE)
-		for(var/trait in clothing_traits)
-			ADD_CLOTHING_TRAIT(user, trait)
+		give_clothing_traits(user, slot)
 		if(iscarbon(user) && tint)
 			var/mob/living/carbon/carbon_user = user
 			carbon_user.update_tint()
@@ -271,6 +269,16 @@
 				if(variable in user.vars)
 					LAZYSET(user_vars_remembered, variable, user.vars[variable])
 					user.vv_edit_var(variable, user_vars_to_edit[variable])
+
+/// Gives the wearer all the clothing traits associated with this item
+/obj/item/clothing/proc/give_clothing_traits(mob/living/wearer, slot)
+	for(var/trait in clothing_traits)
+		ADD_CLOTHING_TRAIT(wearer, trait)
+
+/// Removes all the clothing traits associated with this item from the wearer
+/obj/item/clothing/proc/remove_clothing_traits(mob/living/wearer)
+	for(var/trait in clothing_traits)
+		REMOVE_CLOTHING_TRAIT(wearer, trait)
 
 // If the item is a piece of clothing and is being worn, make sure it updates on the player
 /obj/item/clothing/update_greyscale()
@@ -365,6 +373,30 @@
 	if(is_laundered)
 		. += "[src] looks crisp and pristine."
 
+// [HORIZON-ADD]
+/obj/item/clothing/get_extra_tooltip(mob/user)
+	var/datum/armor/armor = src.get_armor()
+	if(!armor.has_any_armor())
+		return ""
+
+	var/list/armor_lines = list()
+	armor_lines += "<br><tr><td><b>ARMOR:</b></td></tr>"
+	for(var/damage_key in ARMOR_LIST_DAMAGE)
+		var/rating = armor.get_rating(damage_key)
+		if(rating)
+			armor_lines += "<tr><td>[armor_to_protection_name(damage_key)]</td><td>[armor_to_protection_class(rating)]</td></tr>"
+	armor_lines += "<tr><td><b>DURABILITY:</b></td></tr>"
+	for(var/durability_key in ARMOR_LIST_DURABILITY)
+		var/rating = armor.get_rating(durability_key)
+		if(rating)
+			armor_lines += "<tr><td>[armor_to_protection_name(durability_key)]</td><td>[armor_to_protection_class(rating)]</td></tr>"
+
+	if(armor_lines.len)
+		return span_smallnotice("[armor_lines.Join(" ")]")
+
+	return ""
+// [/HORIZON-ADD]
+
 /obj/item/clothing/examine_tags(mob/user)
 	. = ..()
 	if (clothing_flags & THICKMATERIAL)
@@ -408,8 +440,9 @@
 /obj/item/clothing/Topic(href, href_list)
 	. = ..()
 
+// [HORIZON-EDIT]
 	if(href_list["list_armor"])
-		var/list/readout = list()
+		var/list/readout = list("<table class='examine_block'>")
 
 		var/datum/armor/armor = get_armor()
 		var/added_damage_header = FALSE
@@ -418,9 +451,9 @@
 			if(!rating)
 				continue
 			if(!added_damage_header)
-				readout += "<b><u>ARMOR (I-X)</u></b>"
+				readout += "<tr><td><b><u>ARMOR:</u></b></td></tr>"
 				added_damage_header = TRUE
-			readout += "[armor_to_protection_name(damage_key)] [armor_to_protection_class(rating)]"
+			readout += "<tr><td>[armor_to_protection_name(damage_key)]</td><td>[armor_to_protection_class(rating)]</td></tr>"
 
 		var/added_durability_header = FALSE
 		for(var/durability_key in ARMOR_LIST_DURABILITY)
@@ -428,9 +461,11 @@
 			if(!rating)
 				continue
 			if(!added_durability_header)
-				readout += "<b><u>DURABILITY (I-X)</u></b>"
+				readout += "<tr><td><b><u>DURABILITY:</u></b></td></tr>"
 				added_durability_header = TRUE
-			readout += "[armor_to_protection_name(durability_key)] [armor_to_protection_class(rating)]"
+			readout += "<tr><td>[armor_to_protection_name(durability_key)]</td><td>[armor_to_protection_class(rating)]</td></tr>"
+		readout += "</table>"
+// [/HORIZON-EDIT]
 
 		if((flags_cover & HEADCOVERSMOUTH) || (flags_cover & PEPPERPROOF))
 			var/list/things_blocked = list()
@@ -477,9 +512,10 @@
 		if(!length(readout))
 			readout += "No armor or durability information available."
 
-		var/formatted_readout = span_notice("<b>PROTECTION CLASSES</b><hr>[jointext(readout, "\n")]")
+		var/formatted_readout = span_notice("<b>PROTECTION CLASSES (I-X; s - HALF)</b><hr>[jointext(readout, "\n")]") // [HORIZON-EDIT]
 		to_chat(usr, boxed_message(formatted_readout))
 
+// [HORIZON-EDIT]
 /**
  * Rounds armor_value down to the nearest 10, divides it by 10 and then converts it to Roman numerals.
  *
@@ -487,10 +523,16 @@
  * * armor_value - Number we're converting
  */
 /obj/item/clothing/proc/armor_to_protection_class(armor_value)
-	if (armor_value < 0)
-		. = "-"
-	. += "\Roman[round(abs(armor_value), 10) / 10]"
-	return .
+	var/is_negative = armor_value < 0
+	armor_value = abs(armor_value)
+	var/class_num = round(armor_value / 10)
+	var/value = "\Roman[class_num]"
+	if(armor_value % 10 >= 5 && class_num < 10)
+		value += class_num > 0 ? "<sub>s</sub>" : "s"
+	if(is_negative)
+		value = span_red("-[value]")
+	return value
+// [/HORIZON-EDIT]
 
 /obj/item/clothing/atom_break(damage_flag)
 	. = ..()

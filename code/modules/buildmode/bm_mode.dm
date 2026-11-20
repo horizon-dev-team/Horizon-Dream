@@ -36,7 +36,7 @@
 	return "buildmode_[key]"
 
 /datum/buildmode_mode/proc/show_help(client/c)
-	CRASH("No help defined, yell at a coder")
+	CRASH("No help defined for [src.type], yell at a coder")
 
 /datum/buildmode_mode/proc/change_settings(client/c)
 	to_chat(c, span_warning("There is no configuration available for this mode"))

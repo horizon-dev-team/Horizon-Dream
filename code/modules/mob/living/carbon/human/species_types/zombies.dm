@@ -108,11 +108,11 @@
 		return FALSE
 
 	var/mob/living/carbon/human/new_zombie = owner
-	LAZYADD(new_zombie.physiology.max_stun_len, max_stun_length)
+	RegisterSignal(new_zombie, COMSIG_HUMAN_SPEC_STUN, PROC_REF(on_spec_stun))
 	if(!isnull(movespeed_mod))
 		new_zombie.add_movespeed_modifier(movespeed_mod)
-	new_zombie.physiology.stamina_mod *= stamina_modifier // Zombie stam resist
-	new_zombie.physiology.damage_resistance += damage_modifier
+	MODIFY_PHYSIOLOGY(new_zombie, STAMINA, stamina_modifier) // Zombie stam resist
+	new_zombie.damage_resistance += damage_modifier
 	new_zombie.add_traits(unique_traits | zombie_traits, TRAIT_STATUS_EFFECT(id))
 	new_zombie.lighting_cutoff_red = 25
 	new_zombie.lighting_cutoff_green = 35
@@ -127,7 +127,7 @@
 	if(isnull(infection))
 		infection = new()
 		infection.Insert(new_zombie)
-		RegisterSignal(infection, COMSIG_ORGAN_REMOVED, PROC_REF(organ_removed))
+	RegisterSignal(infection, COMSIG_ORGAN_REMOVED, PROC_REF(organ_removed))
 
 	var/obj/item/bodypart/head/head = new_zombie.get_bodypart(BODY_ZONE_HEAD)
 	if(!QDELETED(head))
@@ -184,11 +184,11 @@
 
 	qdel(was_zombie.GetComponent(/datum/component/mutant_hands))
 	qdel(was_zombie.GetComponent(/datum/component/regenerator))
-	LAZYREMOVE(was_zombie.physiology.max_stun_len, max_stun_length)
+	UnregisterSignal(was_zombie, COMSIG_HUMAN_SPEC_STUN)
 	if(!isnull(movespeed_mod))
 		was_zombie.remove_movespeed_modifier(movespeed_mod)
-	was_zombie.physiology.stamina_mod /= stamina_modifier
-	was_zombie.physiology.damage_resistance -= damage_modifier
+	MODIFY_PHYSIOLOGY(was_zombie, STAMINA, 1 / stamina_modifier)
+	was_zombie.damage_resistance -= damage_modifier
 	was_zombie.remove_traits(zombie_traits | unique_traits, TRAIT_STATUS_EFFECT(id))
 	was_zombie.lighting_cutoff_red = initial(was_zombie.lighting_cutoff_red)
 	was_zombie.lighting_cutoff_green = initial(was_zombie.lighting_cutoff_green)
@@ -216,6 +216,11 @@
 	if(owner.mob_biotypes & MOB_ORGANIC)
 		owner.mob_biotypes &= ~MOB_ORGANIC
 		removed_biotypes = MOB_ORGANIC
+
+/// Caps the stun duration supplied by COMSIG_HUMAN_SPEC_STUN.
+/datum/status_effect/zombie/proc/on_spec_stun(datum/source, list/amount)
+	SIGNAL_HANDLER
+	amount[1] = min(amount[1], max_stun_length)
 
 /datum/status_effect/zombie/proc/remove_zombie_biotypes()
 	owner.mob_biotypes &= ~added_biotypes

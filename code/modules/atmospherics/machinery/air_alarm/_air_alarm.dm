@@ -8,7 +8,7 @@
 	idle_power_usage = BASE_MACHINE_IDLE_CONSUMPTION * 0.05
 	active_power_usage = BASE_MACHINE_ACTIVE_CONSUMPTION * 0.02
 	power_channel = AREA_USAGE_ENVIRON
-	req_access = list(ACCESS_ENGINEERING)
+	req_access = list(ACCESS_ATMOS_EQUIP)
 	max_integrity = 250
 	integrity_failure = 0.33
 	armor_type = /datum/armor/machinery_airalarm
@@ -485,7 +485,7 @@ GLOBAL_LIST_EMPTY_TYPED(air_alarms, /obj/machinery/airalarm)
 			var/threshold_type = params["threshold_type"]
 			var/value = params["value"]
 			tlv.set_value(threshold_type, value)
-			investigate_log("threshold value for [threshold]:[threshold_type] was set to [value] by [key_name(user)]", INVESTIGATE_ATMOS)
+			investigate_log("threshold value for [threshold]:[threshold_type] was set to [html_encode(value)] by [key_name(user)]", INVESTIGATE_ATMOS)
 
 			check_enviroment()
 
@@ -553,20 +553,28 @@ GLOBAL_LIST_EMPTY_TYPED(air_alarms, /obj/machinery/airalarm)
 
 /obj/machinery/airalarm/update_overlays()
 	. = ..()
-
-	if(panel_open || (machine_stat & (NOPOWER|BROKEN)) || shorted)
+// [HORIZON-EDIT]
+	if((machine_stat & (NOPOWER|BROKEN)) || shorted)
 		return
 
-	var/state
-	if(danger_level == AIR_ALARM_ALERT_HAZARD)
-		state = "alarm1"
-	else if(danger_level == AIR_ALARM_ALERT_WARNING || area_danger)
-		state = "alarm2"
-	else
-		state = "alarm0"
+	if(!panel_open)
+		var/state
+		switch(danger_level)
+			if(AIR_ALARM_ALERT_NONE)
+				state = "alarm0"
+			if(AIR_ALARM_ALERT_WARNING)
+				state = "alarm1"
+			if(AIR_ALARM_ALERT_HAZARD)
+				state = "alarm2"
 
-	. += mutable_appearance(icon, state)
-	. += emissive_appearance(icon, state, src, alpha = src.alpha)
+		. += mutable_appearance(icon, state)
+		. += emissive_appearance(icon, "light_emissive", src, alpha = src.alpha)
+
+	if(danger_level == AIR_ALARM_ALERT_WARNING || area_danger) //When there's any danger level, light up the "AIR" sign too
+		. += mutable_appearance(icon, "alarm_sign")
+
+	. += emissive_appearance(icon, "light_emissive_sign", src, alpha = src.alpha)
+// [/HORIZON-EDIT]
 
 /// Check the current air and update our danger level.
 /// [/obj/machinery/airalarm/var/danger_level]
@@ -649,7 +657,7 @@ GLOBAL_LIST_EMPTY_TYPED(air_alarms, /obj/machinery/airalarm)
 		selected_mode.apply(my_area)
 	SEND_SIGNAL(src, COMSIG_AIRALARM_UPDATE_MODE, source)
 
-MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/airalarm, 27)
+MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/airalarm, 20) // [HORIZON-EDIT]
 
 /obj/machinery/airalarm/proc/speak(warning_message)
 	if(machine_stat & (BROKEN|NOPOWER))

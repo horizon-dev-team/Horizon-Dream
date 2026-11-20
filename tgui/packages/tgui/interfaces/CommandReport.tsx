@@ -31,7 +31,7 @@ export function CommandReport() {
       title="Create Command Report"
       width={325}
       height={685}
-      theme="admin"
+      theme="ntos_darkmode"
     >
       <Window.Content>
         <Stack fill vertical>

@@ -9,17 +9,17 @@
 #
 # CODEOWNERS используются у нас ТОЛЬКО ДЛЯ УВЕДОМЛЕНИЙ, если вы хотите закрепить за собой обязательность
 # ревью PR-а перед мержем - напишите об этом дополнительно в PR, желательно в первые сутки его открытия!
-#
 ##
 
 components:
   ## Конфигурация ##
-  .github/:  KOCMODECAHTHUK
-  bin/:  KOCMODECAHTHUK
+  .github/: KOCMODECAHTHUK
+  bin/: KOCMODECAHTHUK
   cfg/: KOCMODECAHTHUK
   config/: KOCMODECAHTHUK
-  SQL/:  KOCMODECAHTHUK
-  tools/:  KOCMODECAHTHUK
+  SQL/: KOCMODECAHTHUK
+  tools/: KOCMODECAHTHUK
+  tgui/packages/tgui-lobby: KOCMODECAHTHUK
 
   ## Папки ##
   _horizon/: horizon-dev-team/HORIZON-TEAM

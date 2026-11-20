@@ -15,7 +15,7 @@ import {
 import { type Box, KeyListener } from 'tgui-core/components';
 import { UI_DISABLED, UI_INTERACTIVE } from 'tgui-core/constants';
 import { globalEvents } from 'tgui-core/events';
-import { KEY_ALT } from 'tgui-core/keycodes';
+import { KEY_ALT, KEY_CTRL } from 'tgui-core/keycodes';
 import { type BooleanLike, classes } from 'tgui-core/react';
 import { decodeHtmlEntities } from 'tgui-core/string';
 import { useBackend } from '../backend';
@@ -72,8 +72,10 @@ export function Window(props: Props) {
   const { scale } = config?.window || false;
 
   useEffect(() => {
+    let cancelled = false;
+
     if (!suspended && isReadyToRender) {
-      const updateGeometry = () => {
+      const updateGeometry = async () => {
         const options = {
           ...config.window,
           size: DEFAULT_SIZE,
@@ -85,7 +87,10 @@ export function Window(props: Props) {
         if (config.window?.key) {
           setWindowKey(config.window.key);
         }
-        recallWindowGeometry(options);
+        await recallWindowGeometry(options);
+        if (cancelled) {
+          return;
+        }
         Byond.winset(Byond.windowId, {
           'is-visible': true,
         });
@@ -102,9 +107,10 @@ export function Window(props: Props) {
       updateGeometry();
     }
     return () => {
+      cancelled = true;
       logger.log('unmounting');
     };
-  }, [isReadyToRender, width, height, scale]);
+  }, [isReadyToRender, suspended, width, height, scale]);
 
   // Determine when to show dimmer
   const showDimmer =
@@ -161,17 +167,20 @@ type ContentProps = Partial<{
 function WindowContent(props: ContentProps) {
   const { className, fitted, children, ...rest } = props;
   const [altDown, setAltDown] = useState(false);
+  const [ctrlDown, setCtrlDown] = useState(false);
 
   function dragStartIfAltHeld(event: React.MouseEvent<HTMLDivElement>): void {
-    if (altDown) {
+    if (ctrlDown && altDown) {
       dragStartHandler(event);
     }
   }
 
-  Byond.subscribeTo('resetposition', (payload) => {
-    setWindowPosition([0, 0]);
-    storeWindowGeometry();
-  });
+  useLayoutEffect(() => {
+    return Byond.subscribeTo('resetposition', () => {
+      setWindowPosition([0, 0]);
+      storeWindowGeometry();
+    });
+  }, []);
 
   return (
     <Layout.Content
@@ -184,10 +193,16 @@ function WindowContent(props: ContentProps) {
           if (KEY_ALT === evt.code) {
             setAltDown(true);
           }
+          if (KEY_CTRL === evt.code) {
+            setCtrlDown(true);
+          }
         }}
         onKeyUp={(evt) => {
           if (KEY_ALT === evt.code) {
             setAltDown(false);
+          }
+          if (KEY_CTRL === evt.code) {
+            setCtrlDown(false);
           }
         }}
       />

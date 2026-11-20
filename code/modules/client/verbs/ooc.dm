@@ -2,7 +2,7 @@ GLOBAL_VAR_INIT(OOC_COLOR, null)//If this is null, use the CSS for OOC. Otherwis
 GLOBAL_VAR_INIT(normal_ooc_colour, "#002eb8")
 
 ///talking in OOC uses this
-GAME_VERB(/client, ooc, VERB_OOC, null)
+GAME_VERB(/client, ooc, VERB_OOC, "OOC")
 	VERB_ARG(msg, VERB_ARG_TYPE_TEXT, VERB_ARG_SOURCE_INPUT)
 	if(GLOB.say_disabled) //This is here to try to identify lag problems
 		to_chat(usr, span_danger("Speech is currently admin-disabled."))
@@ -78,7 +78,7 @@ GAME_VERB(/client, ooc, VERB_OOC, null)
 	var/keyname = key
 	var/list/key_tags
 	var/key_prefix = ""
-	var/visible_unlock = prefs.unlock_content && (prefs.toggles & MEMBER_PUBLIC)
+	var/visible_unlock = TRUE // [HORIZON-EDIT] - Tag-Consistent-Ghost
 
 	// heart first lol
 	if(prefs.hearted)

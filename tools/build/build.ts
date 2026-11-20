@@ -123,6 +123,10 @@ export const IconCutterTarget = new Juke.Target({
     const standard_inputs = [
       `icons/**/*.png.toml`,
       `icons/**/*.dmi.toml`,
+      // [HORIZON-ADD] Modular iconcutter
+      `_horizon/icons/**/*.png.toml`,
+      `_horizon/icons/**/*.dmi.toml`,
+      // [/HORIZON-ADD]
       `cutter_templates/**/*.toml`,
       cutter_path,
     ];
@@ -131,6 +135,10 @@ export const IconCutterTarget = new Juke.Target({
     const existing_configs = [
       ...Juke.glob(`icons/**/*.png.toml`),
       ...Juke.glob(`icons/**/*.dmi.toml`),
+    // [HORIZON-ADD] Modular iconcutter
+      ...Juke.glob(`_horizon/icons/**/*.png.toml`),
+      ...Juke.glob(`_horizon/icons/**/*.dmi.toml`),
+    // [/HORIZON-ADD]
     ];
     return [
       ...standard_inputs,
@@ -142,6 +150,10 @@ export const IconCutterTarget = new Juke.Target({
     const folders = [
       ...Juke.glob(`icons/**/*.png.toml`),
       ...Juke.glob(`icons/**/*.dmi.toml`),
+      // [HORIZON-ADD] Modular iconcutter
+      ...Juke.glob(`_horizon/icons/**/*.png.toml`),
+      ...Juke.glob(`_horizon/icons/**/*.dmi.toml`),
+      // [/HORIZON-ADD]
     ];
     return folders
       .map((file) => file.replace(`.png.toml`, '.dmi'))
@@ -154,12 +166,21 @@ export const IconCutterTarget = new Juke.Target({
       'cutter_templates',
       'icons',
     ]);
+    // [HORIZON-ADD] Modular iconcutter
+    await Juke.exec(cutter_path, [
+      '--dont-wait',
+      '--templates',
+      'cutter_templates',
+      '_horizon/icons',
+    ]);
+    // [/HORIZON-ADD]
   },
 });
 
 export const DmMapsIncludeTarget = new Juke.Target({
   executes: async () => {
     const folders = [
+      ...Juke.glob('_maps/_horizon/**/*.dmm'), // [HORIZON-ADD]
       ...Juke.glob('_maps/map_files/**/modular_pieces/*.dmm'),
       ...Juke.glob('_maps/RandomRuins/**/*.dmm'),
       ...Juke.glob('_maps/RandomZLevels/**/*.dmm'),
@@ -206,7 +227,7 @@ export const DmTarget = new Juke.Target({
     BehaviorTreeCompilerTarget,
   ],
   inputs: [
-    '_horizon/**', //  [HORIZON-ADD]
+    '_horizon/**', // [HORIZON-ADD]
     '_maps/map_files/generic/**',
     'maps/**/*.dm',
     'code/**',

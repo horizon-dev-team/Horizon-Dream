@@ -8,8 +8,9 @@
 	ui = SStgui.try_update_ui(user, src, ui)
 	if (!ui)
 		ui = new(user, src, "Changelog")
+		ui.set_autoupdate(FALSE)
 		ui.open()
-
+/*
 /datum/changelog/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
 	. = ..()
 	if(.)
@@ -30,3 +31,4 @@
 		data["dates"] = list(archive_date) + data["dates"]
 
 	return data
+*/

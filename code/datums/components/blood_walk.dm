@@ -100,7 +100,7 @@
 	if(target_dir_change)
 		blood.setDir(source.dir)
 	if(!isnull(sound_played))
-		playsound(source, sound_played, sound_volume, TRUE, 2, TRUE)
+		playsound(source, sound_played, sound_volume, TRUE, 2, TRUE, mixer_channel = CHANNEL_MOB_SOUNDS) // [HORIZON-EDIT] Master_Sounds
 
 	blood_remaining = max(blood_remaining - 1, 0)
 	if(blood_remaining <= 0)

@@ -17,10 +17,19 @@ import {
 } from './types';
 import { RandomToggleState } from './useRandomToggleState';
 import { ServerPrefs } from './useServerPrefs';
+import { Button } from 'tgui-core/components';
 
 export function PreferencesMenu(props) {
+  const { act, data } = useBackend<PreferencesMenuData>();
+  const { window } = data;
+  const isCharacterWindow = window === PrefsWindow.Character;
   return (
-    <Window width={920} height={770}>
+    <Window width={920} height={770} buttons={
+        <Button
+          icon={isCharacterWindow ? 'cog' : 'user'}
+          onClick={() => act('change_preferences_window')}
+        />
+      }>
       <Window.Content>
         <Suspense fallback={<LoadingScreen />}>
           <PrefsWindowInner />

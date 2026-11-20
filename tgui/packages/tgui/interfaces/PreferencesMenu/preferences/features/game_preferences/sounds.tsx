@@ -7,27 +7,8 @@ import {
 } from '../base';
 import { FeatureDropdownInput } from '../dropdowns';
 
-export const sound_ambience_volume: Feature<number> = {
-  name: 'Ambience volume',
-  category: 'SOUND',
-  description: `Ambience refers to the more noticeable ambient sounds that play on occasion.`,
-  component: FeatureSliderInput,
-};
-
-export const sound_breathing: FeatureToggle = {
-  name: 'Enable breathing sounds',
-  category: 'SOUND',
-  description: 'When enabled, hear breathing sounds when using internals.',
-  component: CheckboxInput,
-};
-
-export const sound_announcements: FeatureToggle = {
-  name: 'Enable announcement sounds',
-  category: 'SOUND',
-  description: 'When enabled, hear sounds for command reports, notices, etc.',
-  component: CheckboxInput,
-};
-
+// [HORIZON-EDIT] Master_Sounds
+// Volumes are now configured per channel in the Volume Mixer tab.
 export const sound_ghost_poll_prompt: FeatureChoiced = {
   name: 'Ghost poll prompt',
   category: 'SOUND',
@@ -47,20 +28,6 @@ export const sound_combatmode: FeatureToggle = {
   category: 'SOUND',
   description: 'When enabled, hear sounds when toggling combat mode.',
   component: CheckboxInput,
-};
-
-export const sound_instruments: Feature<number> = {
-  name: 'Instruments volume',
-  category: 'SOUND',
-  description: 'Volume of instruments.',
-  component: FeatureSliderInput,
-};
-
-export const sound_jukebox: Feature<number> = {
-  name: 'Jukebox volume',
-  category: 'SOUND',
-  description: 'Volume of jukebox tracks.',
-  component: FeatureSliderInput,
 };
 
 export const sound_tts: FeatureChoiced = {
@@ -91,40 +58,6 @@ export const sound_tts_hear_self_radio: FeatureToggle = {
   component: CheckboxInput,
 };
 
-export const sound_tts_volume: Feature<number> = {
-  name: 'TTS Volume',
-  category: 'SOUND',
-  description: 'The volume that the text-to-speech sounds will play at.',
-  component: FeatureSliderInput,
-};
-
-export const sound_tts_radio_volume: Feature<number> = {
-  name: 'TTS Radio Volume',
-  category: 'SOUND',
-  description: 'The volume that radio text-to-speech sounds will play at. This is independent of regular TTS volume.',
-  component: FeatureSliderInput,
-};
-
-export const sound_lobby_volume: Feature<number> = {
-  name: 'Lobby music volume',
-  category: 'SOUND',
-  component: FeatureSliderInput,
-};
-
-export const sound_midi: Feature<number> = {
-  name: 'Admin music volume',
-  category: 'SOUND',
-  description: 'Volume of admin musics.',
-  component: FeatureSliderInput,
-};
-
-export const sound_ship_ambience_volume: Feature<number> = {
-  name: 'Ship ambience volume',
-  category: 'SOUND',
-  description: `Ship ambience refers to the low ambient buzz that plays on loop.`,
-  component: FeatureSliderInput,
-};
-
 export const sound_achievement: FeatureChoiced = {
   name: 'Achievement unlock sound',
   category: 'SOUND',
@@ -134,17 +67,4 @@ export const sound_achievement: FeatureChoiced = {
   `,
   component: FeatureDropdownInput,
 };
-
-export const sound_radio_noise: Feature<number> = {
-  name: 'Radio sound volume',
-  category: 'SOUND',
-  description: 'Volume of the bloops that play when a radio message is said or received.',
-  component: FeatureSliderInput,
-};
-
-export const sound_ai_vox: Feature<number> = {
-  name: 'AI VOX announcements volume',
-  category: 'SOUND',
-  description: 'Volume of vocal AI announcements (also known as "VOX").',
-  component: FeatureSliderInput,
-};
+// [/HORIZON-EDIT]

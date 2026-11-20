@@ -261,7 +261,7 @@ export function AdminVerbPanel() {
   const visibleVerbs = getVisibleVerbs();
 
   return (
-    <Window title="Admin Verb Panel" width={800} height={520} theme="admin">
+    <Window title="Admin Verb Panel" width={800} height={520} theme="horizon">
       <Window.Content>
         <Stack fill>
           <Stack.Item basis="140px">

@@ -10,6 +10,7 @@
 	if(!limb.can_bleed())
 		return ..()
 
+	// [HORIZON-EDIT] STATUS_TWEAKS
 	switch(severity)
 		if(WOUND_SEVERITY_TRIVIAL)
 			return "<i>SMALL [uppertext(undiagnosed_name)]</i>"
@@ -19,6 +20,7 @@
 			return "<b>OPEN [uppertext(undiagnosed_name)]</b>"
 		if(WOUND_SEVERITY_CRITICAL)
 			return "<span class='slightly_larger'><b>ARTERIAL [uppertext(undiagnosed_name)]</b></span>"
+	// [/HORIZON-EDIT]
 
 /datum/wound/pierce/wound_injury(datum/wound/old_wound, attack_direction)
 	var/obj/item/stack/medical/wrap/current_gauze = LAZYACCESS(limb.applied_items, LIMB_ITEM_GAUZE)

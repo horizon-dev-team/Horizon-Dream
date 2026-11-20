@@ -390,6 +390,7 @@
 		return
 	print_mood(user)
 
+// [HORIZON-EDIT] STATUS_TWEAKS
 /// Prints the users mood, sanity, and moodies to chat
 /datum/mood/proc/print_mood(mob/user)
 	var/msg = span_notice("<b>My current mental status:</b>")
@@ -475,6 +476,7 @@
 
 	table_html += "</table>"
 	msg += table_html
+// [/HORIZON-EDIT]
 
 	var/list/additional_lines = list()
 	SEND_SIGNAL(user, COMSIG_CARBON_MOOD_CHECK, additional_lines)

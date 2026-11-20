@@ -560,6 +560,8 @@
 
 	visible_message(span_notice("[src] examines [p_them()]self."))
 
+
+	// [HORIZON-EDIT] STATUS_TWEAKS
 	combined_msg += span_notice("<b>I'm roughly in this condition:</b>")
 	var/table_html = "<hr><table>"
 	for(var/part_zone, body_part_untyped in get_bodyparts_by_zones())
@@ -575,6 +577,7 @@
 			table_html += bodypart_report
 	table_html += "</table>"
 	combined_msg += table_html
+	// [/HORIZON-EDIT]
 
 	var/tox = get_tox_loss() + (disgust / 5) + (HAS_TRAIT(src, TRAIT_SELF_AWARE) ? 0 : (rand(-3, 0) * 5))
 	switch(tox)

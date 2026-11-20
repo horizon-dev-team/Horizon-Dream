@@ -124,6 +124,7 @@
 	/// If we're bleeding, which icon are we displaying on this part
 	var/bleed_overlay_icon
 
+	// [HORIZON-EDIT] STATUS_TWEAKS
 	//Damage messages used by help_shake_act()
 	var/light_brute_msg = "BRUISED"
 	var/medium_brute_msg = "BATTERED"
@@ -132,6 +133,7 @@
 	var/light_burn_msg = "BURNED"
 	var/medium_burn_msg = "BLISTERED"
 	var/heavy_burn_msg = "CHARRED"
+	// [/HORIZON-EDIT]
 
 	//Damage messages used by examine(). the desc that is most common accross all bodyparts gets shown
 	var/list/damage_examines = list(
@@ -391,6 +393,7 @@
 	var/status = ""
 	var/self_aware = HAS_TRAIT(examiner, TRAIT_SELF_AWARE)
 
+	// [HORIZON-EDIT] STATUS_TWEAKS
 	if(self_aware)
 		if(!shown_brute && !shown_burn)
 			status = "\[[span_nicegreen("NO DAMAGE")]\]"
@@ -483,6 +486,7 @@
 				or apply pressure to it by grabbing yourself (while targeting the limb) to stem the flow.", bleed_text)
 
 	return "<tr><td valign='top'><b>[uppertext(plaintext_zone)]:</b></td><td>[jointext(check_list, " ")]</td></tr>"
+	// [/HORIZON-EDIT]
 
 /// Returns all surgical states, filtering out stuff which should not be reported
 /obj/item/bodypart/proc/get_reported_surgery_state()

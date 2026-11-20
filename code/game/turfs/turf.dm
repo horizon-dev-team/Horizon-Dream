@@ -662,7 +662,7 @@ GLOBAL_LIST_EMPTY(station_turfs)
 	if(has_gravity(src))
 		playsound(src, /datum/sound_effect/bodyfall, 50, TRUE)
 	// [HORIZON-EDIT] WEIGHT_SYSTEM
-	// A carry-weight collapse (>=200% overload) only floors the carbon;
+	// A carry-weight collapse (>=120% overload) only floors the carbon, it must not make it drop what it holds.
 	if(HAS_TRAIT_FROM(faller, TRAIT_FLOORED, CARRY_WEIGHT_TRAIT))
 		return
 	// [/HORIZON-EDIT]

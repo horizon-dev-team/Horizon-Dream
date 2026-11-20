@@ -1216,9 +1216,12 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 	animate(circle_shown, alpha = 255, time = 0.5 SECONDS)
 	animate(circle_fading, alpha = 0, time = 0.5 SECONDS)
 
+/// Whether the indicator is hidden or on its way out. Ask this BEFORE calling fade_visibility():
+/// animate() sets the target alpha at once, so reading alpha afterwards cannot tell "was hidden" from "is fading in".
 /atom/movable/screen/need_status/proc/is_status_hidden()
 	return !visible_target
 
+/// Fades the whole indicator in or out. A hidden indicator also stops eating clicks meant for what sits under it.
 /atom/movable/screen/need_status/proc/fade_visibility(should_show, instant = FALSE)
 	if(should_show == visible_target)
 		return
@@ -1269,9 +1272,6 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 	var/mob/living/hungry = hud_owner?.mymob
 	if(!istype(hungry))
 		return
-
-	if(isnull(hungry.mob_mood))
-		screen_loc = ui_mood // Slot in where mood normally is if mood is not here (we arent a human)
 
 	update_status(instant = TRUE)
 
@@ -1587,7 +1587,7 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 /**
  * Encumbrance indicator: the kettlebell over a status circle, green on a light load,
  * orange in the middle and red from 80% of the maximum carry weight. From 100% the indicator
- * blinks red; at >=200% the circle goes grey while the load pins the carbon down.
+ * blinks red; at >=120% the circle goes grey while the load pins the carbon down.
  * Driven by the carry weight system (_horizon/code/modules/mob/living/carry_weight.dm).
  */
 /atom/movable/screen/encumbrance

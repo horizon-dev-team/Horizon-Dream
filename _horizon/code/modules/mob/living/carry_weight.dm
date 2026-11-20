@@ -105,10 +105,13 @@
 		var/mob/living/carbon/human/carrier = buckled
 		carrier.update_carry_weight()
 
+/// Sets the encumbrance level from the load's share of the basic lift (= maximum_carry_weight / 10):
+/// LIGHT >=20%, MEDIUM >=40%, STRENUOUS >=60%, HEAVY >=80%, EXTREME >=100%, IMPOSSIBLE >=120% of the maximum.
+/// At IMPOSSIBLE the carbon is floored until it sheds weight (see /turf/handle_fall for why it keeps its items).
 /mob/living/carbon/proc/update_encumbrance()
 	var/basic_lift = maximum_carry_weight / ENCUMBRANCE_MAXIMUM_PER_LIFT
 	var/old_level = encumbrance
-	if(carry_weight >= (basic_lift * 20))
+	if(carry_weight >= (basic_lift * ENCUMBRANCE_COLLAPSE_PER_LIFT))
 		encumbrance = ENCUMBRANCE_IMPOSSIBLE
 	else if(carry_weight >= (basic_lift * 10))
 		encumbrance = ENCUMBRANCE_EXTREME
@@ -128,7 +131,7 @@
 		// Above 100% the slowdown scales with the load itself, so recompute on drift
 		update_encumbrance_movespeed_modifier()
 		return
-	// At >=200% the load pins the carbon to the ground until it is shed
+	// At >=120% the load pins the carbon to the ground until it is shed
 	if(encumbrance >= ENCUMBRANCE_IMPOSSIBLE)
 		ADD_TRAIT(src, TRAIT_FLOORED, CARRY_WEIGHT_TRAIT)
 	else
@@ -137,7 +140,7 @@
 	notify_encumbrance_change()
 
 /// Slowdown curve: get_basic_slowdown() * 0.2/0.4/0.5/0.6 below 100%, then from 100%
-/// to 200% the factor grows linearly from 0.8 to 1.6 with the load itself.
+/// to the collapse point (120%) the factor grows linearly from 0.8 to 1.6 with the load itself.
 /// The modifier is dropped entirely at NONE.
 /mob/living/carbon/proc/update_encumbrance_movespeed_modifier()
 	var/factor = 0
@@ -145,8 +148,9 @@
 		if(ENCUMBRANCE_IMPOSSIBLE)
 			factor = 1.6 // crawl pace; the load also pins the carbon down (update_encumbrance)
 		if(ENCUMBRANCE_EXTREME)
-			var/overload = maximum_carry_weight ? clamp(carry_weight / maximum_carry_weight, 1, 2) : 2
-			factor = 0.8 + (overload - 1) * 0.8
+			var/collapse_ratio = ENCUMBRANCE_COLLAPSE_PER_LIFT / ENCUMBRANCE_MAXIMUM_PER_LIFT
+			var/overload = maximum_carry_weight ? clamp(carry_weight / maximum_carry_weight, 1, collapse_ratio) : collapse_ratio
+			factor = 0.8 + (overload - 1) / (collapse_ratio - 1) * 0.8
 		if(ENCUMBRANCE_STRENUOUS)
 			factor = 0.5
 		if(ENCUMBRANCE_HEAVY)

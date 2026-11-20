@@ -40,8 +40,10 @@
 	if(!isnull(medipen_type))
 		new medipen_type(src)
 
+	// [HORIZON-ADD] NEED_WATER
 	new /obj/item/food/nutrient_bar(src)
 	new /obj/item/reagent_containers/cup/glass/waterbottle(src)
+	// [/HORIZON-ADD]
 
 	if(give_premium_goods && HAS_TRAIT(SSstation, STATION_TRAIT_PREMIUM_INTERNALS))
 		new /obj/item/flashlight/flare(src)

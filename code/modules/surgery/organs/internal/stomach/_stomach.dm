@@ -387,7 +387,7 @@
 
 /obj/item/organ/stomach/on_mob_insert(mob/living/carbon/receiver, special, movement_flags)
 	. = ..()
-// [HORIZON-ADD] NEED_WATER
+	// [HORIZON-ADD] NEED_WATER
 	var/atom/movable/screen/hunger/hunger_status = receiver.hud_used?.screen_objects[HUD_MOB_HUNGER]
 	if(hunger_status)
 		hunger_status.update_status()
@@ -395,7 +395,7 @@
 	if(hydration_status)
 		hydration_status.update_status()
 	receiver.living_flags |= QUEUE_HYDRATION_UPDATE // refresh the thirst moodlet, a stomach changes whether we get thirsty
-// [/HORIZON-ADD]
+	// [/HORIZON-ADD]
 	RegisterSignal(receiver, COMSIG_CARBON_VOMITED, PROC_REF(on_vomit))
 	RegisterSignal(receiver, COMSIG_HUMAN_GOT_PUNCHED, PROC_REF(on_punched))
 
@@ -404,7 +404,7 @@
 		var/mob/living/carbon/human/human_owner = stomach_owner
 		human_owner.clear_alert(ALERT_DISGUST)
 		human_owner.clear_mood_event("disgust")
-// [HORIZON-ADD] NEED_WATER
+	// [HORIZON-ADD] NEED_WATER
 	var/atom/movable/screen/hunger/hunger_status = stomach_owner.hud_used?.screen_objects[HUD_MOB_HUNGER]
 	if(hunger_status)
 		hunger_status.update_status()
@@ -412,7 +412,7 @@
 	if(hydration_status)
 		hydration_status.update_status()
 	stomach_owner.living_flags |= QUEUE_HYDRATION_UPDATE // the organ is gone by the next life tick, so the moodlet gets cleared then
-// [/HORIZON-ADD]
+	// [/HORIZON-ADD]
 	UnregisterSignal(stomach_owner, list(COMSIG_CARBON_VOMITED, COMSIG_HUMAN_GOT_PUNCHED))
 	return ..()
 
@@ -437,7 +437,7 @@
 	SIGNAL_HANDLER
 	// If we're forced to vomit, try to spew out at least one item
 	empty_contents(chance = 60, damaging = TRUE, min_amount = (force ? 1 : 0))
-	vomiter.adjust_hydration(-15) // [HORIZON-ADD] NEED_WATERS
+	vomiter.adjust_hydration(-15) // [HORIZON-ADD] NEED_WATER
 
 /obj/item/organ/stomach/tool_act(mob/living/user, obj/item/tool, list/modifiers)
 	if (tool.tool_behaviour == TOOL_SCALPEL)

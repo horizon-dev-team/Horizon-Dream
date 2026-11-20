@@ -5,7 +5,7 @@
 #define ENCUMBRANCE_HEAVY 4
 #define ENCUMBRANCE_EXTREME 5
 #define ENCUMBRANCE_IMPOSSIBLE 6
-/// Trait source for the >=200% pinned-to-the-ground state
+/// Trait source for the >=120% pinned-to-the-ground state
 #define CARRY_WEIGHT_TRAIT "carry-weight"
 
 #define GRAMS * 0.001
@@ -26,6 +26,9 @@
 #define ENCUMBRANCE_DEFAULT_BASIC_LIFT 10
 /// maximum_carry_weight is this many times the basic lift.
 #define ENCUMBRANCE_MAXIMUM_PER_LIFT 10
+/// Load, in basic lifts, at which the carbon collapses (ENCUMBRANCE_IMPOSSIBLE). 12 = 120 kg at the default lift,
+/// about twice the body weight of an average human, the realistic ceiling for a short carry.
+#define ENCUMBRANCE_COLLAPSE_PER_LIFT 12
 /// Base move-delay used to scale encumbrance slowdown. Tunable.
 #define ENCUMBRANCE_BASIC_SLOWDOWN 1.5
 /// Refresh cadence for content changes that emit no mob signal (ammo, storage, reagents).

@@ -1510,7 +1510,7 @@ GAME_VERB_NATIVE(/mob, DisDblClick, ".dblclick", null, argu = null as anything, 
 	else
 		living_flags |= QUEUE_NUTRITION_UPDATE
 
-// [HORIZON-EDIT] NEED_WATERS
+// [HORIZON-EDIT] NEED_WATER
 /// Updates nutrition related effects
 /mob/living/proc/update_nutrition()
 	mob_mood?.update_nutrition_moodlets()
@@ -1520,7 +1520,7 @@ GAME_VERB_NATIVE(/mob, DisDblClick, ".dblclick", null, argu = null as anything, 
 	SEND_SIGNAL(src, COMSIG_LIVING_UPDATE_NUTRITION)
 // [/HORIZON-EDIT]
 
-// [HORIZON-ADD] NEED_WATERS
+// [HORIZON-ADD] NEED_WATER
 /// Whether this mob is subject to thirst at all. Single source of truth for the HUD, moodlets, speech, examine and drain.
 /mob/proc/can_get_thirsty()
 	return !HAS_TRAIT(src, TRAIT_NOHYDRATION)

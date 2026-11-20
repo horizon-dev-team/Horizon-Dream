@@ -393,32 +393,35 @@
 
 	if(self_aware)
 		if(!shown_brute && !shown_burn)
-			status = "\[NO DAMAGE\]"
+			status = "\[[span_nicegreen("NO DAMAGE")]\]"
 		else
-			status = "\[<span class='brute'>BRUTE: [shown_brute]</span>\]\[<span class='burn'>BURN: [shown_burn]</span>\]"
+			if(shown_brute > DAMAGE_PRECISION)
+				status += "\[<font color='[SELF_CHECK_BRUTE_COLOR]'>BRUTE: [shown_brute]</font>\]"
+			if(shown_burn > DAMAGE_PRECISION)
+				status += "\[<font color='[SELF_CHECK_BURN_COLOR]'>BURN: [shown_burn]</font>\]"
 	else
 		if(shown_brute > DAMAGE_PRECISION)
-			status += "\[<span class='brute'>"
+			status += "\[<font color='[SELF_CHECK_BRUTE_COLOR]'>"
 			if(shown_brute > (max_damage * 0.8))
 				status += "<b>[heavy_brute_msg]</b>"
 			else if(shown_brute > (max_damage * 0.4))
 				status += medium_brute_msg
 			else
 				status += "<i>[light_brute_msg]</i>"
-			status += "</span>\]"
+			status += "</font>\]"
 
 		if(shown_burn > DAMAGE_PRECISION)
-			status += "\[<span class='burn'>"
+			status += "\[<font color='[SELF_CHECK_BURN_COLOR]'>"
 			if(shown_burn > (max_damage * 0.8))
 				status += "<b>[heavy_burn_msg]</b>"
 			else if(shown_burn > (max_damage * 0.2))
 				status += medium_burn_msg
 			else
 				status += "<i>[light_burn_msg]</i>"
-			status += "</span>\]"
+			status += "</font>\]"
 
 		if(status == "")
-			status = "\[OK\]"
+			status = "\[[span_nicegreen("OK")]\]"
 
 	var/is_disabled = bodypart_disabled ? "\[<span class='danger'>PARALYZED</span>\]" : ""
 	check_list += "[is_disabled][status]"
@@ -467,13 +470,13 @@
 		var/bleed_text = ""
 		switch(cached_bleed_rate)
 			if(0.2 to 1)
-				bleed_text = "\[<span class='bloodloss'><i>BLEEDING</i></span>\]"
+				bleed_text = "\[<font color='[SELF_CHECK_BLEED_COLOR]'><i>BLEEDING</i></font>\]"
 			if(1 to 2)
-				bleed_text = "\[<span class='bloodloss'>BLEEDING</span>\]"
+				bleed_text = "\[<font color='[SELF_CHECK_BLEED_COLOR]'>BLEEDING</font>\]"
 			if(3 to 4)
-				bleed_text = "\[<span class='bloodloss'><b>BLEEDING!</b></span>\]"
+				bleed_text = "\[<font color='[SELF_CHECK_BLEED_COLOR]'><b>BLEEDING!</b></font>\]"
 			if(4 to INFINITY)
-				bleed_text = "\[<span class='bloodloss slightly_larger'><b>BLEEDING!!!</b></span>\]"
+				bleed_text = "\[<span class='slightly_larger'><font color='[SELF_CHECK_BLEED_COLOR]'><b>BLEEDING!!!</b></font></span>\]"
 
 		if(bleed_text)
 			check_list += span_tooltip("You are loosing blood. You should wrap your limb in gauze \

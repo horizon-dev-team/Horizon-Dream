@@ -392,82 +392,89 @@
 
 /// Prints the users mood, sanity, and moodies to chat
 /datum/mood/proc/print_mood(mob/user)
-	var/msg = "[span_info("<EM>My current mental status:</EM>")]<br>"
-
+	var/msg = span_notice("<b>My current mental status:</b>")
+	var/table_html = "<hr><table>"
 	if(!HAS_TRAIT(src, TRAIT_NOHUNGER))
-		msg += span_notice("My hunger: ")
+		var/hunger_status
 		var/nutrition = mob_parent.nutrition
 		switch(nutrition)
 			if(NUTRITION_LEVEL_FULL to INFINITY)
-				msg += "[span_info("I'm completely stuffed!")]<br>"
+				hunger_status = span_info("I'm completely stuffed!")
 			if(NUTRITION_LEVEL_WELL_FED to NUTRITION_LEVEL_FULL)
-				msg += "[span_info("I'm well fed!")]<br>"
+				hunger_status = span_info("I'm well fed!")
 			if(NUTRITION_LEVEL_FED to NUTRITION_LEVEL_WELL_FED)
-				msg += "[span_info("I'm not hungry.")]<br>"
+				hunger_status = span_info("I'm not hungry.")
 			if(NUTRITION_LEVEL_HUNGRY to NUTRITION_LEVEL_FED)
-				msg += "[span_info("I could use a bite to eat.")]<br>"
+				hunger_status = span_info("I could use a bite to eat.")
 			if(NUTRITION_LEVEL_VERY_HUNGRY to NUTRITION_LEVEL_HUNGRY)
-				msg += "[span_warning("I'm feeling hungry.")]<br>"
+				hunger_status = span_warning("I'm feeling hungry.")
 			if(NUTRITION_LEVEL_STARVING to NUTRITION_LEVEL_VERY_HUNGRY)
-				msg += "[span_warning("I feel quite hungry.")]<br>"
+				hunger_status = span_warning("I feel quite hungry.")
 			if(0 to NUTRITION_LEVEL_STARVING)
-				msg += "[span_boldwarning("I'm starving!")]<br>"
+				hunger_status = span_boldwarning("I'm starving!")
+		table_html += "<tr><td><b>Hunger:</b></td><td>[hunger_status]</td></tr>"
 
 	var/drunkness = mob_parent.get_drunk_amount()
 	if(drunkness >= 1)
-		msg += span_notice("My current drunkenness: ")
+		var/drunkenness_status
 		switch(drunkness)
 			if(1 to 10)
-				msg += "[span_info("I'm feeling a little tipsy.")]<br>"
+				drunkenness_status = span_info("I'm feeling a little tipsy.")
 			if(11 to 21)
-				msg += "[span_info("I'm feeling a bit drunk.")]<br>"
+				drunkenness_status = span_info("I'm feeling a bit drunk.")
 			if(21 to 41)
-				msg += "[span_info("I'm feeling quite drunk.")]<br>"
+				drunkenness_status = span_info("I'm feeling quite drunk.")
 			if(41 to 61)
-				msg += "[span_info("I'm feeling very drunk.")]<br>"
+				drunkenness_status = span_info("I'm feeling very drunk.")
 			if(61 to 81)
-				msg += "[span_warning("I'm feeling like a mess.")]<br>"
+				drunkenness_status = span_warning("I'm feeling like a mess.")
 			if(81 to INFINITY)
-				msg += "[span_boldwarning("I'm completely wasted.")]<br>"
+				drunkenness_status = span_boldwarning("I'm completely wasted.")
+		table_html += "<tr><td><b>Drunkenness:</b></td><td>[drunkenness_status]</td></tr>"
 
 	if (HAS_TRAIT(mob_parent, TRAIT_APATHETIC))
-		msg += span_notice("My mood: [span_grey("I don't feel anything.")]<br>")
+		table_html += "<tr><td><b>Mood:</b></td><td>[span_grey("I don't feel anything.")]</td></tr>"
 	else
-		msg += span_notice("My current sanity: ") //Long term
+		var/sanity_status //Long term
 		switch(sanity)
 			if(SANITY_GREAT to INFINITY)
-				msg += "[span_boldnicegreen("My mind feels like a temple!")]<br>"
+				sanity_status = span_boldnicegreen("My mind feels like a temple!")
 			if(SANITY_NEUTRAL to SANITY_GREAT)
-				msg += "[span_nicegreen("I have been feeling great lately!")]<br>"
+				sanity_status = span_nicegreen("I have been feeling great lately!")
 			if(SANITY_DISTURBED to SANITY_NEUTRAL)
-				msg += "[span_nicegreen("I have felt quite decent lately.")]<br>"
+				sanity_status = span_nicegreen("I have felt quite decent lately.")
 			if(SANITY_UNSTABLE to SANITY_DISTURBED)
-				msg += "[span_warning("I'm feeling a little bit unhinged...")]<br>"
+				sanity_status = span_warning("I'm feeling a little bit unhinged...")
 			if(SANITY_CRAZY to SANITY_UNSTABLE)
-				msg += "[span_warning("I'm freaking out!!")]<br>"
+				sanity_status = span_warning("I'm freaking out!!")
 			if(SANITY_INSANE to SANITY_CRAZY)
-				msg += "[span_boldwarning("AHAHAHAHAHAHAHAHAHAH!!")]<br>"
+				sanity_status = span_boldwarning("AHAHAHAHAHAHAHAHAHAH!!")
+		table_html += "<tr><td><b>Sanity:</b></td><td>[sanity_status]</td></tr>"
 
-		msg += span_notice("My current mood: ") //Short term
+		var/mood_status //Short term
 		switch(mood_level)
 			if(MOOD_LEVEL_SAD4)
-				msg += "[span_boldwarning("I wish I was dead!")]<br>"
+				mood_status = span_boldwarning("I wish I was dead!")
 			if(MOOD_LEVEL_SAD3)
-				msg += "[span_boldwarning("I feel terrible...")]<br>"
+				mood_status = span_boldwarning("I feel terrible...")
 			if(MOOD_LEVEL_SAD2)
-				msg += "[span_boldwarning("I feel very upset.")]<br>"
+				mood_status = span_boldwarning("I feel very upset.")
 			if(MOOD_LEVEL_SAD1)
-				msg += "[span_warning("I'm a bit sad.")]<br>"
+				mood_status = span_warning("I'm a bit sad.")
 			if(MOOD_LEVEL_NEUTRAL)
-				msg += "[span_grey("I'm alright.")]<br>"
+				mood_status = span_grey("I'm alright.")
 			if(MOOD_LEVEL_HAPPY1)
-				msg += "[span_nicegreen("I feel pretty okay.")]<br>"
+				mood_status = span_nicegreen("I feel pretty okay.")
 			if(MOOD_LEVEL_HAPPY2)
-				msg += "[span_boldnicegreen("I feel pretty good.")]<br>"
+				mood_status = span_boldnicegreen("I feel pretty good.")
 			if(MOOD_LEVEL_HAPPY3)
-				msg += "[span_boldnicegreen("I feel amazing!")]<br>"
+				mood_status = span_boldnicegreen("I feel amazing!")
 			if(MOOD_LEVEL_HAPPY4)
-				msg += "[span_boldnicegreen("I love life!")]<br>"
+				mood_status = span_boldnicegreen("I love life!")
+		table_html += "<tr><td><b>Mood:</b></td><td>[mood_status]</td></tr>"
+
+	table_html += "</table>"
+	msg += table_html
 
 	var/list/additional_lines = list()
 	SEND_SIGNAL(user, COMSIG_CARBON_MOOD_CHECK, additional_lines)

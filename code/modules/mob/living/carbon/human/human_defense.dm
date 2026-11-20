@@ -560,14 +560,12 @@
 
 	visible_message(span_notice("[src] examines [p_them()]self."))
 
-	combined_msg += span_notice("<b>I'm roughly in this condition:</b><hr>")
-
-
-	var/table_html = "<table>"
+	combined_msg += span_notice("<b>I'm roughly in this condition:</b>")
+	var/table_html = "<hr><table>"
 	for(var/part_zone, body_part_untyped in get_bodyparts_by_zones())
 		var/obj/item/bodypart/body_part = body_part_untyped
 		if(isnull(body_part) || IS_STUMP(body_part))
-			table_html += "<tr><td><b>[uppertext(parse_zone(body_part?.body_zone || part_zone))]:</b></td><td>\[<span class='missing_bodypart'>MISSING</span>\]</td></tr>"
+			table_html += "<tr><td><b>[uppertext(parse_zone(body_part?.body_zone || part_zone))]:</b></td><td>\[<font color='[SELF_CHECK_MISSING_COLOR]'>MISSING</font>\]</td></tr>"
 			continue
 		if(body_part.bodypart_flags & BODYPART_PSEUDOPART) //don't show injury text for fake bodyparts; ie chainsaw arms or synthetic armblades
 			continue

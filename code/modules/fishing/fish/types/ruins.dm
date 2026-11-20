@@ -177,7 +177,7 @@
 		skin_haver.cause_wound_of_type_and_severity(WOUND_PIERCE, to_wound, WOUND_SEVERITY_CRITICAL, WOUND_SEVERITY_CRITICAL)
 		skin_haver.cause_wound_of_type_and_severity(WOUND_BLUNT, to_wound, WOUND_SEVERITY_CRITICAL, WOUND_SEVERITY_CRITICAL)
 		user.become_husk(REF(src))
-		to_wound.skin_tone = COLOR_RED // skin is gone. (if they somehow get revived, don't worry - death from loss of skin takes longer than dethirst, so it's still realistic)
+		to_wound.skin_tone = COLOR_RED // skin is gone. (if they somehow get revived, don't worry - death from loss of skin takes longer than dehydration, so it's still realistic)
 
 	// skin crab grows powerful
 	color = skin_tone //skintone2hex(skin_tone) //wait til smartkar's recolorwork

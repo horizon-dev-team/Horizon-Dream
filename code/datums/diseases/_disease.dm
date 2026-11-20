@@ -17,7 +17,7 @@
 	/// A string describing how the disease spreads, for example "Airborne", "Blood", "Skin contact", "Magic"
 	/// (Keep this strictly for how it spreads BETWEEN hosts, NOT how it affected the initial host. Use agent var for that)
 	var/spread_text = ""
-	/// A string describing how the disease can be cured, for example "Toxin remover", "Antibiotics", "Rest and thirst", "Prayers to the gods"
+	/// A string describing how the disease can be cured, for example "Toxin remover", "Antibiotics", "Rest and hydration", "Prayers to the gods"
 	var/cure_text = ""
 
 	//Stages

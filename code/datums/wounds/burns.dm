@@ -342,7 +342,7 @@
 
 	simple_desc = "Patient's skin is badly burned, significantly weakening the limb and compounding further damage!!"
 	simple_treat_text = "<b>Bandages will speed up recovery</b>, as will <b>ointment or regenerative mesh</b>. <b>Spaceacilin, sterilizine, and 'Miner's Salve'</b> will help with infection."
-	homemade_treat_text = "<b>Healthy tea</b> will speed up recovery. <b>Salt</b>, or preferably a <b>salt-water</b> mixture, will sanitize the wound, but the former especially will cause skin irritation and dethirst, speeding up infection. <b>Space Cleaner</b> can be used as disinfectant in a pinch."
+	homemade_treat_text = "<b>Healthy tea</b> will speed up recovery. <b>Salt</b>, or preferably a <b>salt-water</b> mixture, will sanitize the wound, but the former especially will cause skin irritation and dehydration, speeding up infection. <b>Space Cleaner</b> can be used as disinfectant in a pinch."
 
 /datum/wound_pregen_data/flesh_burn/third_degree
 	abstract = FALSE

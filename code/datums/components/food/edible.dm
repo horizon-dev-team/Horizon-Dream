@@ -503,9 +503,14 @@ Behavior that's still missing from this component that original food items had t
 	var/fraction = 0.3
 	fraction = min(bite_consumption / owner.reagents.total_volume, 1)
 	owner.reagents.trans_to(eater, bite_consumption, transferred_by = feeder, methods = INGEST)
-	var/atom/movable/screen/hunger/hunger_bar = eater.hud_used?.screen_objects[HUD_MOB_HUNGER]
-	if (istype(hunger_bar))
-		hunger_bar.update_hunger_bar()
+	// [HORIZON-ADD] NEED_WATER
+	var/atom/movable/screen/hunger/hunger_status = eater.hud_used?.screen_objects[HUD_MOB_HUNGER]
+	if (istype(hunger_status))
+		hunger_status.update_status()
+	var/atom/movable/screen/thirst/thirst_status = eater.hud_used?.screen_objects[HUD_MOB_THIRST]
+	if (istype(thirst_status))
+		thirst_status.update_status()
+	// [/HORIZON-ADD]
 	bitecount++
 
 	checkLiked(fraction, eater)

@@ -388,6 +388,9 @@
 /// From /mob/living/proc/update_nutrition()
 #define COMSIG_LIVING_UPDATE_NUTRITION "living_update_nutrition"
 
+/// From /mob/living/proc/update_thirst()
+#define COMSIG_LIVING_UPDATE_THIRST "living_update_thirst" // [HORIZON-ADD] NEED_WATER
+
 /// Sent to a mob when one of their bodypart's surgery state changes, OR sent from the basic_surgery_state holder when its surgery state changes (old_state, new_state, changed_states)
 #define COMSIG_LIVING_UPDATING_SURGERY_STATE "carbon_updating_surgery_state"
 

@@ -1,6 +1,7 @@
 #define MINOR_INSANITY_PEN 5
 #define MAJOR_INSANITY_PEN 10
 #define MOOD_CATEGORY_NUTRITION "nutrition"
+#define MOOD_CATEGORY_THIRST "thirst" // [HORIZON-ADD] NEED_WATER
 #define MOOD_CATEGORY_AREA_BEAUTY "area_beauty"
 
 /**
@@ -144,6 +145,28 @@
 			add_mood_event(MOOD_CATEGORY_NUTRITION, /datum/mood_event/starving)
 
 	return TRUE
+
+// [HORIZON-ADD] NEED_WATER
+/// Handles mood given by thirst
+/datum/mood/proc/update_thirst_moodlets()
+	if(!mob_parent.can_get_thirsty())
+		clear_mood_event(MOOD_CATEGORY_THIRST)
+		return FALSE
+
+	switch(mob_parent.thirst)
+		if(THIRST_LEVEL_OVERHYDRATED to INFINITY)
+			add_mood_event(MOOD_CATEGORY_THIRST, /datum/mood_event/overhydrated)
+		if(THIRST_LEVEL_NORMAL to THIRST_LEVEL_OVERHYDRATED)
+			add_mood_event(MOOD_CATEGORY_THIRST, /datum/mood_event/hydrated)
+		if(THIRST_LEVEL_THIRSTY to THIRST_LEVEL_NORMAL)
+			clear_mood_event(MOOD_CATEGORY_THIRST)
+		if(THIRST_LEVEL_DEHYDRATED to THIRST_LEVEL_THIRSTY)
+			add_mood_event(MOOD_CATEGORY_THIRST, /datum/mood_event/thirsty)
+		if(-INFINITY to THIRST_LEVEL_DEHYDRATED)
+			add_mood_event(MOOD_CATEGORY_THIRST, /datum/mood_event/dehydrated)
+
+	return TRUE
+// [/HORIZON-ADD]
 
 /**
  * Adds a mood event to the mob
@@ -390,19 +413,20 @@
 		return
 	print_mood(user)
 
-// [HORIZON-EDIT] STATUS_TWEAKS
+// [HORIZON-EDIT] STATUS_TWEAKS + NEED_WATER
 /// Prints the users mood, sanity, and moodies to chat
 /datum/mood/proc/print_mood(mob/user)
 	var/msg = span_notice("<b>My current mental status:</b>")
 	var/table_html = "<hr><table>"
-	if(!HAS_TRAIT(src, TRAIT_NOHUNGER))
+
+	if(!HAS_TRAIT(mob_parent, TRAIT_NOHUNGER))
 		var/hunger_status
 		var/nutrition = mob_parent.nutrition
 		switch(nutrition)
 			if(NUTRITION_LEVEL_FULL to INFINITY)
-				hunger_status = span_info("I'm completely stuffed!")
+				hunger_status = span_grey("I'm completely stuffed!")
 			if(NUTRITION_LEVEL_WELL_FED to NUTRITION_LEVEL_FULL)
-				hunger_status = span_info("I'm well fed!")
+				hunger_status = span_nicegreen("I'm well fed!")
 			if(NUTRITION_LEVEL_FED to NUTRITION_LEVEL_WELL_FED)
 				hunger_status = span_info("I'm not hungry.")
 			if(NUTRITION_LEVEL_HUNGRY to NUTRITION_LEVEL_FED)
@@ -410,10 +434,26 @@
 			if(NUTRITION_LEVEL_VERY_HUNGRY to NUTRITION_LEVEL_HUNGRY)
 				hunger_status = span_warning("I'm feeling hungry.")
 			if(NUTRITION_LEVEL_STARVING to NUTRITION_LEVEL_VERY_HUNGRY)
-				hunger_status = span_warning("I feel quite hungry.")
+				hunger_status = span_warning("I feel quite hungry!")
 			if(0 to NUTRITION_LEVEL_STARVING)
 				hunger_status = span_boldwarning("I'm starving!")
 		table_html += "<tr><td><b>Hunger:</b></td><td>[hunger_status]</td></tr>"
+
+	if(mob_parent.can_get_thirsty())
+		var/thirst_status
+		var/thirst = mob_parent.thirst
+		switch(thirst)
+			if(THIRST_LEVEL_OVERHYDRATED to INFINITY)
+				thirst_status = span_grey("I've had too much water...")
+			if(THIRST_LEVEL_NORMAL to THIRST_LEVEL_OVERHYDRATED)
+				thirst_status = span_nicegreen("I'm not thirsty anymore.")
+			if(THIRST_LEVEL_THIRSTY to THIRST_LEVEL_NORMAL)
+				thirst_status = span_info("I could use a drink.")
+			if(THIRST_LEVEL_DEHYDRATED to THIRST_LEVEL_THIRSTY)
+				thirst_status = span_warning("I feel quite thirsty.")
+			if(-INFINITY to THIRST_LEVEL_DEHYDRATED)
+				thirst_status = span_boldwarning("I need water!")
+		table_html += "<tr><td><b>Thirst:</b></td><td>[thirst_status]</td></tr>"
 
 	var/drunkness = mob_parent.get_drunk_amount()
 	if(drunkness >= 1)
@@ -707,4 +747,5 @@
 #undef MINOR_INSANITY_PEN
 #undef MAJOR_INSANITY_PEN
 #undef MOOD_CATEGORY_NUTRITION
+#undef MOOD_CATEGORY_THIRST
 #undef MOOD_CATEGORY_AREA_BEAUTY

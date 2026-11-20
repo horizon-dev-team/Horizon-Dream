@@ -661,6 +661,11 @@ GLOBAL_LIST_EMPTY(station_turfs)
 /turf/handle_fall(mob/faller)
 	if(has_gravity(src))
 		playsound(src, /datum/sound_effect/bodyfall, 50, TRUE)
+	// [HORIZON-EDIT] WEIGHT_SYSTEM
+	// A carry-weight collapse (>=120% overload) only floors the carbon, it must not make it drop what it holds.
+	if(HAS_TRAIT_FROM(faller, TRAIT_FLOORED, CARRY_WEIGHT_TRAIT))
+		return
+	// [/HORIZON-EDIT]
 	faller.drop_all_held_items()
 
 /turf/proc/photograph(limit=20)

@@ -1186,7 +1186,13 @@ GAME_VERB_SRC(/obj/item, verb_pickup, oview(1), "Pick up", null)
 		if(rfm.len)
 			content_str += "<tr><td><b>Durability:</b></td><td>[rfm.Join(" ")]</td></tr>"
 
-	content_str += "<tr><td><b>Size:</b></td><td>[weight_class_to_icon(w_class, user, TRUE)]</td></tr></table>"
+	content_str += "<tr><td><b>Size:</b></td><td>[weight_class_to_icon(w_class, user, TRUE)]</td></tr>"
+
+	var/item_weight = get_carry_weight()
+	var/weight_text =  icon2html(DAMAGE_ICON_SET, user, "Weight") + (item_weight < 1 ? "[round(item_weight * 1000)] g" : "[round(item_weight, 0.01)] kg")
+	if(atom_storage && storage_weight_multiplier < 1)
+		weight_text += " (contents -[round((1 - storage_weight_multiplier) * 100)]%)"
+	content_str += "<tr><td><b>Weight:</b></td><td>[weight_text]</td></tr></table>"
 
 	openToolTip(user, src, params, title = name, content = content_str, theme = "")
 // [/HORIZON-EDIT]

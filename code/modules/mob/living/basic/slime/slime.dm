@@ -184,9 +184,9 @@
 	nutrition = min(nutrition, SLIME_MAX_NUTRITION)
 
 // [HORIZON-EDIT] NEED_WATER
-/mob/living/basic/slime/get_fullness(only_consumable, hydration_flag = FALSE)
-	if(hydration_flag)
-		return ..() // slimes have no stomach to fill with water, fall back to the plain hydration value
+/mob/living/basic/slime/get_fullness(only_consumable, thirst_flag = FALSE)
+	if(thirst_flag)
+		return ..() // slimes have no stomach to fill with water, fall back to the plain thirst value
 	return round((nutrition / SLIME_MAX_NUTRITION) * NUTRITION_LEVEL_FAT)
 // [/HORIZON-EDIT]
 

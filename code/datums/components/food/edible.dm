@@ -507,9 +507,9 @@ Behavior that's still missing from this component that original food items had t
 	var/atom/movable/screen/hunger/hunger_status = eater.hud_used?.screen_objects[HUD_MOB_HUNGER]
 	if (istype(hunger_status))
 		hunger_status.update_status()
-	var/atom/movable/screen/hydration/hydration_status = eater.hud_used?.screen_objects[HUD_MOB_HYDRATION]
-	if (istype(hydration_status))
-		hydration_status.update_status()
+	var/atom/movable/screen/thirst/thirst_status = eater.hud_used?.screen_objects[HUD_MOB_THIRST]
+	if (istype(thirst_status))
+		thirst_status.update_status()
 	// [/HORIZON-ADD]
 	bitecount++
 

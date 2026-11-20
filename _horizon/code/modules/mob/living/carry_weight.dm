@@ -27,10 +27,10 @@
 /mob/living/carbon/proc/get_needs_lift_multiplier()
 	. = 1
 	if(can_get_thirsty())
-		switch(hydration)
-			if(-INFINITY to HYDRATION_LEVEL_DEHYDRATED)
+		switch(thirst)
+			if(-INFINITY to THIRST_LEVEL_DEHYDRATED)
 				. = min(., LIFT_MULT_DEHYDRATED)
-			if(HYDRATION_LEVEL_DEHYDRATED to HYDRATION_LEVEL_THIRSTY)
+			if(THIRST_LEVEL_DEHYDRATED to THIRST_LEVEL_THIRSTY)
 				. = min(., LIFT_MULT_THIRSTY)
 	if(!HAS_TRAIT(src, TRAIT_NOHUNGER))
 		switch(nutrition)
@@ -203,7 +203,7 @@
 	RegisterSignal(parent, COMSIG_MOB_EQUIPPED_ITEM, PROC_REF(on_gear_change))
 	RegisterSignal(parent, COMSIG_MOB_UNEQUIPPED_ITEM, PROC_REF(on_gear_change))
 	// Hunger and thirst change how much we can lift.
-	RegisterSignals(parent, list(COMSIG_LIVING_UPDATE_NUTRITION, COMSIG_LIVING_UPDATE_HYDRATION), PROC_REF(on_needs_change))
+	RegisterSignals(parent, list(COMSIG_LIVING_UPDATE_NUTRITION, COMSIG_LIVING_UPDATE_THIRST), PROC_REF(on_needs_change))
 	var/mob/living/carbon/owner = parent
 	owner.update_maximum_carry_weight()
 	refresh_timer = addtimer(CALLBACK(src, PROC_REF(on_timer)), ENCUMBRANCE_REFRESH_INTERVAL, TIMER_LOOP | TIMER_STOPPABLE)

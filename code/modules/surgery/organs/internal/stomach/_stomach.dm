@@ -66,7 +66,7 @@
 		var/mob/living/carbon/human/humi = owner
 		if(!(organ_flags & ORGAN_FAILING))
 			handle_hunger(humi, seconds_per_tick)
-			handle_hydration(humi, seconds_per_tick) // [HORIZON-ADD] NEED_WATER
+			handle_thirst(humi, seconds_per_tick) // [HORIZON-ADD] NEED_WATER
 
 	var/mob/living/carbon/body = owner
 
@@ -136,12 +136,12 @@
 		to_chat(body, span_warning("Your stomach reels in pain as you're incapable of holding down all that food!"))
 
 // [HORIZON-ADD] NEED_WATER
-/obj/item/organ/stomach/proc/handle_hydration(mob/living/carbon/human/human, seconds_per_tick)
-	if(HAS_TRAIT(human, TRAIT_NOHYDRATION))
+/obj/item/organ/stomach/proc/handle_thirst(mob/living/carbon/human/human, seconds_per_tick)
+	if(HAS_TRAIT(human, TRAIT_NOTHIRST))
 		return
 
-	if(human.hydration > 0 && human.stat != DEAD)
-		human.adjust_hydration(-HYDRATION_LOSS_PER_LIFE * seconds_per_tick)
+	if(human.thirst > 0 && human.stat != DEAD)
+		human.adjust_thirst(-THIRST_LOSS_PER_LIFE * seconds_per_tick)
 // [/HORIZON-ADD]
 
 /obj/item/organ/stomach/proc/handle_hunger(mob/living/carbon/human/human, seconds_per_tick)
@@ -391,10 +391,10 @@
 	var/atom/movable/screen/hunger/hunger_status = receiver.hud_used?.screen_objects[HUD_MOB_HUNGER]
 	if(hunger_status)
 		hunger_status.update_status()
-	var/atom/movable/screen/hydration/hydration_status = receiver.hud_used?.screen_objects[HUD_MOB_HYDRATION]
-	if(hydration_status)
-		hydration_status.update_status()
-	receiver.living_flags |= QUEUE_HYDRATION_UPDATE // refresh the thirst moodlet, a stomach changes whether we get thirsty
+	var/atom/movable/screen/thirst/thirst_status = receiver.hud_used?.screen_objects[HUD_MOB_THIRST]
+	if(thirst_status)
+		thirst_status.update_status()
+	receiver.living_flags |= QUEUE_THIRST_UPDATE // refresh the thirst moodlet, a stomach changes whether we get thirsty
 	// [/HORIZON-ADD]
 	RegisterSignal(receiver, COMSIG_CARBON_VOMITED, PROC_REF(on_vomit))
 	RegisterSignal(receiver, COMSIG_HUMAN_GOT_PUNCHED, PROC_REF(on_punched))
@@ -408,10 +408,10 @@
 	var/atom/movable/screen/hunger/hunger_status = stomach_owner.hud_used?.screen_objects[HUD_MOB_HUNGER]
 	if(hunger_status)
 		hunger_status.update_status()
-	var/atom/movable/screen/hydration/hydration_status = stomach_owner.hud_used?.screen_objects[HUD_MOB_HYDRATION]
-	if(hydration_status)
-		hydration_status.update_status()
-	stomach_owner.living_flags |= QUEUE_HYDRATION_UPDATE // the organ is gone by the next life tick, so the moodlet gets cleared then
+	var/atom/movable/screen/thirst/thirst_status = stomach_owner.hud_used?.screen_objects[HUD_MOB_THIRST]
+	if(thirst_status)
+		thirst_status.update_status()
+	stomach_owner.living_flags |= QUEUE_THIRST_UPDATE // the organ is gone by the next life tick, so the moodlet gets cleared then
 	// [/HORIZON-ADD]
 	UnregisterSignal(stomach_owner, list(COMSIG_CARBON_VOMITED, COMSIG_HUMAN_GOT_PUNCHED))
 	return ..()
@@ -437,7 +437,7 @@
 	SIGNAL_HANDLER
 	// If we're forced to vomit, try to spew out at least one item
 	empty_contents(chance = 60, damaging = TRUE, min_amount = (force ? 1 : 0))
-	vomiter.adjust_hydration(-15) // [HORIZON-ADD] NEED_WATER
+	vomiter.adjust_thirst(-15) // [HORIZON-ADD] NEED_WATER
 
 /obj/item/organ/stomach/tool_act(mob/living/user, obj/item/tool, list/modifiers)
 	if (tool.tool_behaviour == TOOL_SCALPEL)
@@ -496,7 +496,7 @@
 	desc = "You have no idea what this strange ball of bones does."
 	icon_state = "stomach-bone"
 	metabolism_efficiency = 0.025 //very bad
-	organ_traits = list(TRAIT_NOHUNGER, TRAIT_NOHYDRATION) // [HORIZON-EDIT] NEED_WATER
+	organ_traits = list(TRAIT_NOHUNGER, TRAIT_NOTHIRST) // [HORIZON-EDIT] NEED_WATER
 	organ_flags = ORGAN_MINERAL
 
 /obj/item/organ/stomach/bone/plasmaman

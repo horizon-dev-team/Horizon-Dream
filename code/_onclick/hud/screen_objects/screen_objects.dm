@@ -1176,7 +1176,7 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 	screen_loc = movable_loc?.screen_loc
 
 /**
- * Shared plumbing for the round status indicators (hunger, hydration, encumbrance).
+ * Shared plumbing for the round status indicators (hunger, thirst, encumbrance).
  */
 /atom/movable/screen/need_status
 	icon = '_horizon/icons/ui/icons_status.dmi'
@@ -1215,11 +1215,6 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 	circle_shown.alpha = 0
 	animate(circle_shown, alpha = 255, time = 0.5 SECONDS)
 	animate(circle_fading, alpha = 0, time = 0.5 SECONDS)
-
-/// Whether the indicator is hidden or on its way out. Ask this BEFORE calling fade_visibility():
-/// animate() sets the target alpha at once, so reading alpha afterwards cannot tell "was hidden" from "is fading in".
-/atom/movable/screen/need_status/proc/is_status_hidden()
-	return !visible_target
 
 /// Fades the whole indicator in or out. A hidden indicator also stops eating clicks meant for what sits under it.
 /atom/movable/screen/need_status/proc/fade_visibility(should_show, instant = FALSE)
@@ -1324,10 +1319,8 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 		circle_level = HUNGER_CIRCLE_VERY_HUNGRY // Can't get enough
 		return
 
-	fullness = round(hungry.get_fullness(only_consumable = TRUE, hydration_flag = FALSE), 0.05)
+	fullness = round(hungry.get_fullness(only_consumable = TRUE, thirst_flag = FALSE), 0.05)
 	digesting = abs(fullness - hungry.nutrition) >= 1
-	// The "1 + X to Y" ranges only cover whole numbers: 100.5 would match none of them and leave a stale level.
-	// "value > X" is exactly "ceil(value) >= X + 1" for whole thresholds, so switch on the ceiling.
 	switch(ceil(fullness))
 		if(1 + NUTRITION_LEVEL_FULL to INFINITY)
 			circle_level = HUNGER_CIRCLE_OVERATE
@@ -1349,20 +1342,13 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 	return ..()
 
 /// Updates the hunger indicator (burger over the status circle).
-/// If `instant` is TRUE, changes apply immediately rather than animating.
 /atom/movable/screen/hunger/proc/update_status(instant = FALSE)
 	update_hunger_state()
 
 	// Visible while food is digesting, or on the extreme bands
 	var/should_show = digesting || circle_level <= HUNGER_CIRCLE_VERY_HUNGRY || circle_level >= HUNGER_CIRCLE_OVERATE
-	// The indicator itself always fades in/out; the circle snaps only while it was fully hidden
-	var/was_hidden = is_status_hidden()
 	fade_visibility(should_show, instant)
-
-	// No "level changed" guard: it compared against null on the first update, and in DM null == 0,
-	// so a mob starting at STARVING (0) never got its circle or warning pulse. Both calls below are
-	// idempotent (set_circle_state remembers its last state, set_warning_pulse checks the filter).
-	set_circle_state("[circle_level]", instant || was_hidden)
+	set_circle_state("[circle_level]", instant || !visible_target)
 	set_warning_pulse(circle_level == HUNGER_CIRCLE_STARVING)
 
 #undef HUNGER_CIRCLE_STARVING
@@ -1516,39 +1502,39 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 #undef POTION_DROP_SPEED
 
 // [HORIZON-ADD] NEED_WATER + CARRY_WEIGHT
-// Hydration is drawn as a water glass over a crossfading status circle instead of a bar.
-#define HYDRATION_CIRCLE_DEHYDRATED 0
-#define HYDRATION_CIRCLE_THIRSTY 1
-#define HYDRATION_CIRCLE_DRY 2
-#define HYDRATION_CIRCLE_FINE 3
-#define HYDRATION_CIRCLE_HYDRATED 4
-#define HYDRATION_CIRCLE_QUENCHED 5
-#define HYDRATION_CIRCLE_OVERHYDRATED 6
+// Thirst is drawn as a water glass over a crossfading status circle instead of a bar.
+#define THIRST_CIRCLE_DEHYDRATED 0
+#define THIRST_CIRCLE_THIRSTY 1
+#define THIRST_CIRCLE_DRY 2
+#define THIRST_CIRCLE_FINE 3
+#define THIRST_CIRCLE_HYDRATED 4
+#define THIRST_CIRCLE_QUENCHED 5
+#define THIRST_CIRCLE_OVERHYDRATED 6
 
-/// Even 50u steps between HYDRATION_LEVEL_NORMAL and HYDRATION_LEVEL_OVERHYDRATED for extra circle resolution
-#define HYDRATION_LEVEL_MILD (HYDRATION_LEVEL_NORMAL + 50)
-#define HYDRATION_LEVEL_HIGH (HYDRATION_LEVEL_NORMAL + 100)
-/// How long the hydration indicator stays up after a drink stops landing, so the player notices it
-#define HYDRATION_LINGER_TIME (5 SECONDS)
+/// Even 50u steps between THIRST_LEVEL_NORMAL and THIRST_LEVEL_OVERHYDRATED for extra circle resolution
+#define THIRST_LEVEL_MILD (THIRST_LEVEL_NORMAL + 50)
+#define THIRST_LEVEL_HIGH (THIRST_LEVEL_NORMAL + 100)
+/// How long the thirst indicator stays up after a drink stops landing, so the player notices it
+#define THIRST_LINGER_TIME (5 SECONDS)
 
-/atom/movable/screen/hydration
+/atom/movable/screen/thirst
 	parent_type = /atom/movable/screen/need_status
 	name = "thirst"
-	icon_state = "hhydration"
-	screen_loc = ui_hydration
+	icon_state = "hthirst"
+	screen_loc = ui_thirst
 	mouse_over_pointer = MOUSE_HAND_POINTER
-	/// Which circle of the status atlas we are on (HYDRATION_CIRCLE_*)
+	/// Which circle of the status atlas we are on (THIRST_CIRCLE_*)
 	VAR_PRIVATE/circle_level
 	/// The last fullness_water we recorded
 	VAR_PRIVATE/fullness_water
-	/// Is a drink currently being absorbed (hydration still rising)?
+	/// Is a drink currently being absorbed (thirst still rising)?
 	VAR_PRIVATE/absorbing
-	/// Fullness recorded on the previous update, used to spot rising hydration
+	/// Fullness recorded on the previous update, used to spot rising thirst
 	VAR_PRIVATE/last_fullness_water
-	/// When hydration was last seen rising (a drink landing), for lingering visibility
+	/// When thirst was last seen rising (a drink landing), for lingering visibility
 	VAR_PRIVATE/last_absorb_time
 
-/atom/movable/screen/hydration/Initialize(mapload, datum/hud/hud_owner)
+/atom/movable/screen/thirst/Initialize(mapload, datum/hud/hud_owner)
 	. = ..()
 	var/mob/living/need_water = hud_owner?.mymob
 	if(!istype(need_water))
@@ -1556,42 +1542,42 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 
 	update_status(instant = TRUE)
 
-/atom/movable/screen/hydration/MouseEntered(location, control, params)
+/atom/movable/screen/thirst/MouseEntered(location, control, params)
 	. = ..()
-	openToolTip(usr, src, params, title = "Thirst", content = hydration_text())
+	openToolTip(usr, src, params, title = "Thirst", content = thirst_text())
 
 /// Band phrases mirroring the thirst moodlets, shown on hover.
-/atom/movable/screen/hydration/proc/hydration_text()
+/atom/movable/screen/thirst/proc/thirst_text()
 	switch(circle_level)
-		if(HYDRATION_CIRCLE_DEHYDRATED)
+		if(THIRST_CIRCLE_DEHYDRATED)
 			return "I need water!"
-		if(HYDRATION_CIRCLE_THIRSTY)
+		if(THIRST_CIRCLE_THIRSTY)
 			return "I could use a drink."
-		if(HYDRATION_CIRCLE_DRY)
+		if(THIRST_CIRCLE_DRY)
 			return "My throat is a bit dry."
-		if(HYDRATION_CIRCLE_FINE)
+		if(THIRST_CIRCLE_FINE)
 			return "I'm not thirsty."
-		if(HYDRATION_CIRCLE_HYDRATED)
+		if(THIRST_CIRCLE_HYDRATED)
 			return "I'm not thirsty anymore."
-		if(HYDRATION_CIRCLE_QUENCHED)
+		if(THIRST_CIRCLE_QUENCHED)
 			return "I'm not thirsty anymore."
-		if(HYDRATION_CIRCLE_OVERHYDRATED)
+		if(THIRST_CIRCLE_OVERHYDRATED)
 			return "I've had too much water..."
 
-/atom/movable/screen/hydration/proc/update_hydration_state()
+/atom/movable/screen/thirst/proc/update_thirst_state()
 	var/mob/living/need_water = hud?.mymob
 	if(!istype(need_water))
 		return
 
 	absorbing = FALSE
 	if(!need_water.can_get_thirsty())
-		fullness_water = need_water.hydration
+		fullness_water = need_water.thirst
 		last_fullness_water = fullness_water
-		circle_level = HYDRATION_CIRCLE_FINE
+		circle_level = THIRST_CIRCLE_FINE
 		return
 
-	fullness_water = round(need_water.get_fullness(only_consumable = TRUE, hydration_flag = TRUE), 0.05)
-	// Water does not pool up in the stomach like food does, so a rising hydration
+	fullness_water = round(need_water.get_fullness(only_consumable = TRUE, thirst_flag = TRUE), 0.05)
+	// Water does not pool up in the stomach like food does, so a rising thirst
 	// (a drink being absorbed) stands in for the hunger indicator's "digesting" check
 	absorbing = !isnull(last_fullness_water) && fullness_water > last_fullness_water
 	if(absorbing)
@@ -1600,40 +1586,35 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 
 	// Same whole-number range gap as the hunger indicator, see there
 	switch(ceil(fullness_water))
-		if(1 + HYDRATION_LEVEL_OVERHYDRATED to INFINITY)
-			circle_level = HYDRATION_CIRCLE_OVERHYDRATED
-		if(1 + HYDRATION_LEVEL_HIGH to HYDRATION_LEVEL_OVERHYDRATED)
-			circle_level = HYDRATION_CIRCLE_QUENCHED
-		if(1 + HYDRATION_LEVEL_MILD to HYDRATION_LEVEL_HIGH)
-			circle_level = HYDRATION_CIRCLE_HYDRATED
-		if(1 + HYDRATION_LEVEL_NORMAL to HYDRATION_LEVEL_MILD)
-			circle_level = HYDRATION_CIRCLE_FINE
-		if(1 + HYDRATION_LEVEL_THIRSTY to HYDRATION_LEVEL_NORMAL)
-			circle_level = HYDRATION_CIRCLE_DRY
-		if(1 + HYDRATION_LEVEL_DEHYDRATED to HYDRATION_LEVEL_THIRSTY)
-			circle_level = HYDRATION_CIRCLE_THIRSTY
-		if(0 to HYDRATION_LEVEL_DEHYDRATED)
-			circle_level = HYDRATION_CIRCLE_DEHYDRATED
+		if(1 + THIRST_LEVEL_OVERHYDRATED to INFINITY)
+			circle_level = THIRST_CIRCLE_OVERHYDRATED
+		if(1 + THIRST_LEVEL_HIGH to THIRST_LEVEL_OVERHYDRATED)
+			circle_level = THIRST_CIRCLE_QUENCHED
+		if(1 + THIRST_LEVEL_MILD to THIRST_LEVEL_HIGH)
+			circle_level = THIRST_CIRCLE_HYDRATED
+		if(1 + THIRST_LEVEL_NORMAL to THIRST_LEVEL_MILD)
+			circle_level = THIRST_CIRCLE_FINE
+		if(1 + THIRST_LEVEL_THIRSTY to THIRST_LEVEL_NORMAL)
+			circle_level = THIRST_CIRCLE_DRY
+		if(1 + THIRST_LEVEL_DEHYDRATED to THIRST_LEVEL_THIRSTY)
+			circle_level = THIRST_CIRCLE_THIRSTY
+		if(0 to THIRST_LEVEL_DEHYDRATED)
+			circle_level = THIRST_CIRCLE_DEHYDRATED
 
-/atom/movable/screen/hydration/update_appearance(updates)
+/atom/movable/screen/thirst/update_appearance(updates)
 	update_status()
 	return ..()
 
-/// Updates the hydration indicator (water glass over the status circle).
-/// If `instant` is TRUE, changes apply immediately rather than animating.
-/atom/movable/screen/hydration/proc/update_status(instant = FALSE)
-	update_hydration_state()
+/// Updates the thirst indicator (water glass over the status circle).
+/atom/movable/screen/thirst/proc/update_status(instant = FALSE)
+	update_thirst_state()
 
 	// Stays up for a few seconds after a drink so the player notices they drank, or on the extreme bands
-	var/lingering = !isnull(last_absorb_time) && (world.time - last_absorb_time) < HYDRATION_LINGER_TIME
-	var/should_show = lingering || circle_level <= HYDRATION_CIRCLE_THIRSTY || circle_level >= HYDRATION_CIRCLE_OVERHYDRATED
-	// The indicator itself always fades in/out; the circle snaps only while it was fully hidden
-	var/was_hidden = is_status_hidden()
+	var/lingering = !isnull(last_absorb_time) && (world.time - last_absorb_time) < THIRST_LINGER_TIME
+	var/should_show = lingering || circle_level <= THIRST_CIRCLE_THIRSTY || circle_level >= THIRST_CIRCLE_OVERHYDRATED
 	fade_visibility(should_show, instant)
-
-	// See the hunger indicator: no null-vs-0 "level changed" guard, both calls are idempotent
-	set_circle_state("[circle_level]", instant || was_hidden)
-	set_warning_pulse(circle_level == HYDRATION_CIRCLE_DEHYDRATED)
+	set_circle_state("[circle_level]", instant || !visible_target)
+	set_warning_pulse(circle_level == THIRST_CIRCLE_DEHYDRATED)
 
 /**
  * Encumbrance indicator: the kettlebell over a status circle, green on a light load,
@@ -1681,20 +1662,19 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 			circle_state = "3" // Green
 
 	var/should_show = encumbered.encumbrance != ENCUMBRANCE_NONE
-	var/was_hidden = is_status_hidden() // before fade_visibility(): animate() sets alpha at once
 	fade_visibility(should_show, instant)
 	if(should_show)
-		set_circle_state(circle_state, instant || was_hidden)
+		set_circle_state(circle_state, instant || !visible_target)
 	set_warning_pulse(encumbered.encumbrance >= ENCUMBRANCE_EXTREME)
 
-#undef HYDRATION_CIRCLE_DEHYDRATED
-#undef HYDRATION_CIRCLE_THIRSTY
-#undef HYDRATION_CIRCLE_DRY
-#undef HYDRATION_CIRCLE_FINE
-#undef HYDRATION_CIRCLE_HYDRATED
-#undef HYDRATION_CIRCLE_QUENCHED
-#undef HYDRATION_CIRCLE_OVERHYDRATED
-#undef HYDRATION_LEVEL_MILD
-#undef HYDRATION_LEVEL_HIGH
-#undef HYDRATION_LINGER_TIME
+#undef THIRST_CIRCLE_DEHYDRATED
+#undef THIRST_CIRCLE_THIRSTY
+#undef THIRST_CIRCLE_DRY
+#undef THIRST_CIRCLE_FINE
+#undef THIRST_CIRCLE_HYDRATED
+#undef THIRST_CIRCLE_QUENCHED
+#undef THIRST_CIRCLE_OVERHYDRATED
+#undef THIRST_LEVEL_MILD
+#undef THIRST_LEVEL_HIGH
+#undef THIRST_LINGER_TIME
 // [/HORIZON-ADD]

@@ -161,9 +161,9 @@
 	var/atom/movable/screen/hunger/hunger_status = user.hud_used?.screen_objects[HUD_MOB_HUNGER]
 	if (istype(hunger_status))
 		hunger_status.update_status()
-	var/atom/movable/screen/hydration/hydration_status = user.hud_used?.screen_objects[HUD_MOB_HYDRATION]
-	if (istype(hydration_status))
-		hydration_status.update_status()
+	var/atom/movable/screen/thirst/thirst_status = user.hud_used?.screen_objects[HUD_MOB_THIRST]
+	if (istype(thirst_status))
+		thirst_status.update_status()
 	// [/HORIZON-ADD]
 	checkLiked(fraction, target_mob)
 	playsound(target_mob, consumption_sound, rand(10, 50), TRUE)

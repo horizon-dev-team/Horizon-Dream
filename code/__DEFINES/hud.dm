@@ -56,7 +56,7 @@
 #define HUD_MOB_DROP "mob_drop"
 #define HUD_MOB_THROW "mob_throw"
 #define HUD_MOB_HUNGER "mob_hunger"
-#define HUD_MOB_HYDRATION "mob_hydration" // [HORIZON-ADD] NEED_WATER
+#define HUD_MOB_THIRST "mob_thirst" // [HORIZON-ADD] NEED_WATER
 #define HUD_MOB_ENCUMBRANCE "mob_encumbrance" // [HORIZON-ADD] CARRY_WEIGHT
 #define HUD_MOB_STAMINA "mob_stamina"
 #define HUD_MOB_SPACESUIT "mob_spacesuit"
@@ -268,7 +268,7 @@
 #define ui_internal "EAST-1:28,CENTER+1:21"
 #define ui_mood "EAST-1:28,CENTER:21"
 #define ui_hunger "EAST-1:10,CENTER-1:6"
-#define ui_hydration "EAST-1:10,CENTER-2:21"
+#define ui_thirst "EAST-1:10,CENTER-2:21"
 #define ui_weight "EAST-1:10,CENTER-2:4"
 #define ui_spacesuit "EAST-1:28,CENTER-3"
 #define ui_stamina "EAST-1:28,CENTER-2:2"

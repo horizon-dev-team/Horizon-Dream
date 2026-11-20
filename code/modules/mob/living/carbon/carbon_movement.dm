@@ -20,12 +20,12 @@
 		hunger_loss *= get_encumbrance_drain_multiplier()
 		adjust_nutrition(-1 * hunger_loss)
 
-	if(hydration > 0 && can_get_thirsty())
-		var/hydration_loss = HYDRATION_LOSS_PER_MOVE
+	if(thirst > 0 && can_get_thirsty())
+		var/thirst_loss = THIRST_LOSS_PER_MOVE
 		if(move_intent == MOVE_INTENT_RUN)
-			hydration_loss *= 2
-		hydration_loss *= get_encumbrance_drain_multiplier() // carrying a load burns water faster
-		adjust_hydration(-hydration_loss)
+			thirst_loss *= 2
+		thirst_loss *= get_encumbrance_drain_multiplier() // carrying a load burns water faster
+		adjust_thirst(-thirst_loss)
 	// [/HORIZON-EDIT]
 
 /mob/living/carbon/set_usable_legs(new_value)

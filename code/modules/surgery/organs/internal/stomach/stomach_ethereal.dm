@@ -2,7 +2,7 @@
 	name = "biological battery"
 	icon_state = "stomach-p" //Welp. At least it's more unique in functionaliy.
 	desc = "A crystal-like organ that stores the electric charge of ethereals."
-	organ_traits = list(TRAIT_NOHUNGER, TRAIT_NOHYDRATION, TRAIT_ETHEREAL_METABOLISM) // We have our own hunger mechanic. // [HORIZON-EDIT] NEED_WATER
+	organ_traits = list(TRAIT_NOHUNGER, TRAIT_NOTHIRST, TRAIT_ETHEREAL_METABOLISM) // We have our own hunger mechanic. // [HORIZON-EDIT] NEED_WATER
 	/// Where the energy of the stomach is stored.
 	var/obj/item/stock_parts/power_store/cell
 	///used to keep ethereals from spam draining power sources

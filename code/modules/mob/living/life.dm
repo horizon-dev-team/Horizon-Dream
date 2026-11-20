@@ -64,9 +64,9 @@
 		living_flags &= ~QUEUE_NUTRITION_UPDATE
 
 	// [HORIZON-ADD] NEED_WATER
-	if(living_flags & QUEUE_HYDRATION_UPDATE)
-		update_hydration()
-		living_flags &= ~QUEUE_HYDRATION_UPDATE
+	if(living_flags & QUEUE_THIRST_UPDATE)
+		update_thirst()
+		living_flags &= ~QUEUE_THIRST_UPDATE
 	// [/HORIZON-ADD]
 
 	if(living_flags & BLOOD_UPDATE_QUEUED)
@@ -106,9 +106,9 @@
  * Returns a number representing fullness, scaled similarly to nutrition.
  */
 // [HORIZON-EDIT] NEED_WATER
-/mob/living/proc/get_fullness(only_consumable, hydration_flag = FALSE)
-	if(hydration_flag)
-		return hydration
+/mob/living/proc/get_fullness(only_consumable, thirst_flag = FALSE)
+	if(thirst_flag)
+		return thirst
 	var/fullness = nutrition
 	// we add the nutrition value of what we're currently digesting
 	for(var/datum/reagent/consumable/bits in reagents.reagent_list)

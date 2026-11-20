@@ -233,7 +233,7 @@ Remember to update _globalvars/traits.dm if you're adding/removing/renaming trai
 /// This carbon doesn't get hungry
 #define TRAIT_NOHUNGER "no_hunger"
 /// This carbon doesn't get thirst
-#define TRAIT_NOHYDRATION "no_hydration" // [HORIZON-ADD] NEED_WATER
+#define TRAIT_NOTHIRST "no_thirst" // [HORIZON-ADD] NEED_WATER
 /// This carbon doesn't have blood
 #define TRAIT_NOBLOOD "noblood"
 /// This just means that the carbon will always have functional liverless metabolism

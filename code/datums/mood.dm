@@ -147,22 +147,22 @@
 	return TRUE
 
 // [HORIZON-ADD] NEED_WATER
-/// Handles mood given by hydration
-/datum/mood/proc/update_hydration_moodlets()
+/// Handles mood given by thirst
+/datum/mood/proc/update_thirst_moodlets()
 	if(!mob_parent.can_get_thirsty())
 		clear_mood_event(MOOD_CATEGORY_THIRST)
 		return FALSE
 
-	switch(mob_parent.hydration)
-		if(HYDRATION_LEVEL_OVERHYDRATED to INFINITY)
+	switch(mob_parent.thirst)
+		if(THIRST_LEVEL_OVERHYDRATED to INFINITY)
 			add_mood_event(MOOD_CATEGORY_THIRST, /datum/mood_event/overhydrated)
-		if(HYDRATION_LEVEL_NORMAL to HYDRATION_LEVEL_OVERHYDRATED)
+		if(THIRST_LEVEL_NORMAL to THIRST_LEVEL_OVERHYDRATED)
 			add_mood_event(MOOD_CATEGORY_THIRST, /datum/mood_event/hydrated)
-		if(HYDRATION_LEVEL_THIRSTY to HYDRATION_LEVEL_NORMAL)
+		if(THIRST_LEVEL_THIRSTY to THIRST_LEVEL_NORMAL)
 			clear_mood_event(MOOD_CATEGORY_THIRST)
-		if(HYDRATION_LEVEL_DEHYDRATED to HYDRATION_LEVEL_THIRSTY)
+		if(THIRST_LEVEL_DEHYDRATED to THIRST_LEVEL_THIRSTY)
 			add_mood_event(MOOD_CATEGORY_THIRST, /datum/mood_event/thirsty)
-		if(-INFINITY to HYDRATION_LEVEL_DEHYDRATED)
+		if(-INFINITY to THIRST_LEVEL_DEHYDRATED)
 			add_mood_event(MOOD_CATEGORY_THIRST, /datum/mood_event/dehydrated)
 
 	return TRUE
@@ -441,17 +441,17 @@
 
 	if(mob_parent.can_get_thirsty())
 		var/thirst_status
-		var/hydration = mob_parent.hydration
-		switch(hydration)
-			if(HYDRATION_LEVEL_OVERHYDRATED to INFINITY)
+		var/thirst = mob_parent.thirst
+		switch(thirst)
+			if(THIRST_LEVEL_OVERHYDRATED to INFINITY)
 				thirst_status = span_grey("I've had too much water...")
-			if(HYDRATION_LEVEL_NORMAL to HYDRATION_LEVEL_OVERHYDRATED)
+			if(THIRST_LEVEL_NORMAL to THIRST_LEVEL_OVERHYDRATED)
 				thirst_status = span_nicegreen("I'm not thirsty anymore.")
-			if(HYDRATION_LEVEL_THIRSTY to HYDRATION_LEVEL_NORMAL)
+			if(THIRST_LEVEL_THIRSTY to THIRST_LEVEL_NORMAL)
 				thirst_status = span_info("I could use a drink.")
-			if(HYDRATION_LEVEL_DEHYDRATED to HYDRATION_LEVEL_THIRSTY)
+			if(THIRST_LEVEL_DEHYDRATED to THIRST_LEVEL_THIRSTY)
 				thirst_status = span_warning("I feel quite thirsty.")
-			if(-INFINITY to HYDRATION_LEVEL_DEHYDRATED)
+			if(-INFINITY to THIRST_LEVEL_DEHYDRATED)
 				thirst_status = span_boldwarning("I need water!")
 		table_html += "<tr><td><b>Thirst:</b></td><td>[thirst_status]</td></tr>"
 

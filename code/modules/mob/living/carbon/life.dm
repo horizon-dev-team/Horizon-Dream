@@ -691,9 +691,9 @@
 ///////////
 
 // [HORIZON-EDIT] NEED_WATER
-/mob/living/carbon/get_fullness(only_consumable, hydration_flag = FALSE)
-	if(hydration_flag)
-		return hydration
+/mob/living/carbon/get_fullness(only_consumable, thirst_flag = FALSE)
+	if(thirst_flag)
+		return thirst
 	. = ..()
 // [/HORIZON-EDIT]
 

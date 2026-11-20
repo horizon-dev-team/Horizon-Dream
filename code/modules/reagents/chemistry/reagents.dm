@@ -97,8 +97,8 @@
 	/// How we interact with random generators
 	var/randomized_spawns = REAGENT_SPAWN_NO_RANDOM
 // [HORIZON-ADD] NEED_WATER
-	///hydration factor to restore thirst
-	var/hydration_factor = 0
+	///thirst factor to restore thirst
+	var/thirst_factor = 0
 // [/HORIZON-ADD]
 
 /datum/reagent/New()
@@ -144,8 +144,8 @@
 			exposed_mob.reagents.add_reagent(type, amount, data, holder.chem_temp, purity)
 
 // [HORIZON-ADD] NEED_WATER
-	if((methods & INGEST) && hydration_factor)
-		exposed_mob.adjust_hydration(reac_volume * hydration_factor)
+	if((methods & INGEST) && thirst_factor)
+		exposed_mob.adjust_thirst(reac_volume * thirst_factor)
 // [/HORIZON-ADD]
 
 /// Applies this reagent to an [/obj]

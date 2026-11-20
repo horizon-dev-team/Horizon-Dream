@@ -324,7 +324,7 @@
 /datum/reagent/medicine/salglu_solution/expose_mob(mob/living/exposed_mob, methods = TOUCH, reac_volume)
 	. = ..()
 	if(methods & INJECT)
-		exposed_mob.adjust_hydration(reac_volume * DRINK_HYDRATION_FACTOR_LOW)
+		exposed_mob.adjust_thirst(reac_volume * DRINK_THIRST_FACTOR_LOW)
 // [/HORIZON-ADD]
 
 /datum/reagent/medicine/salglu_solution/on_mob_add(mob/living/affected_mob, amount)

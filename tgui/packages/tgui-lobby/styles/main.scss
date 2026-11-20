@@ -135,6 +135,32 @@ img {
   --lobby-tint-wash: rgba(255, 174, 58, 0.09);
 }
 
+// Red palette
+.LobbyScreen--red {
+  --lobby-accent: #ce2d2d;
+  --lobby-accent-bright: #fd4040;
+  --lobby-fg: #b63030;
+  --lobby-accent-dim: rgba(255, 86, 86, 0.301);
+  --lobby-accent-faint: rgba(255, 31, 31, 0.493);
+  --lobby-panel-bg: hsla(0, 68%, 6%, 0.623);
+  --lobby-panel-border: rgba(218, 32, 32, 0.9);
+  --lobby-panel-glow: rgba(255, 8, 8, 0.356);
+  --lobby-scanline-tint: hsla(0, 9%, 11%, 0.05);
+  --lobby-vignette: hsla(0, 53%, 6%, 0.9);
+  --color-base: #2e1717;
+  --color-primary: #ab3333;
+  --button-color-transparent: rgba(141, 47, 47, 0.75);
+  --button-background-disabled: transparent;
+  --progress-bar-background: hsla(0, 0%, 0%, 0.5);
+  --secondary-lightness-adjustment: 6.33;
+  --tooltip-background-lightness: 25;
+  --lobby-glow: rgba(255, 79, 79, 0.12);
+  --lobby-line: #571313;
+  --lobby-dim: #ab3333;
+  --lobby-sub: #cb3d3d;
+  --lobby-tint-wash: rgba(255, 38, 38, 0.09);
+}
+
 .LobbyScreen--themeSwap {
   filter: brightness(0.2);
 }

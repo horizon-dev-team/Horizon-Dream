@@ -124,10 +124,6 @@
 /obj/item/gun/add_weapon_description()
 	AddElement(/datum/element/weapon_description, PROC_REF(add_notes_gun))
 
-/obj/item/gun/get_carry_weight()
-	. = ..()
-	if(istype(pin))
-		. += pin.get_carry_weight()
 
 /obj/item/gun/equipped(mob/living/user, slot)
 	. = ..()

@@ -98,10 +98,6 @@
 /obj/item/gun/ballistic/add_weapon_description()
 	AddElement(/datum/element/weapon_description, PROC_REF(add_notes_gun))
 
-/obj/item/gun/ballistic/get_carry_weight()
-	. = ..()
-	if(istype(magazine))
-		. += magazine.get_carry_weight()
 
 /obj/item/gun/ballistic/screwdriver_act(mob/living/user, obj/item/tool)
 	if(!can_modify_ammo)

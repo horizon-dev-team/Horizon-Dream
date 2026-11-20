@@ -17,10 +17,17 @@
 	casing.update_appearance()
 	update_appearance()
 
-/obj/item/ammo_box/get_carry_weight()
-	. = ..()
+/// stored_ammo can hold type paths (top_off starting) or live casings (in contents).
+/// Parent get_carry_weight already walks contents; only path entries need an explicit mass.
+/obj/item/ammo_box/get_carry_weight(list/seen)
+	. = ..(seen)
 	for(var/obj/item/ammo_casing/casing as anything in stored_ammo)
-		. += casing?.get_carry_weight()
+		if(!ispath(casing))
+			continue
+		var/w = initial(casing.carry_weight)
+		if(isnull(w))
+			w = weight_class_to_kg(initial(casing.w_class))
+		. += w
 
 /obj/item/ammo_box/add_notes_box()
 	var/list/readout = list()

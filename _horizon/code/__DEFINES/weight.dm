@@ -23,7 +23,7 @@
 #define REAGENT_WEIGHT_DOSE 0.02
 
 /// Basic lift (kg) of a carbon in perfect shape. Original: STR^2/10 via attributes, STR 10 -> 10.
-#define ENCUMBRANCE_DEFAULT_BASIC_LIFT 10
+#define ENCUMBRANCE_DEFAULT_BASIC_LIFT 5
 /// maximum_carry_weight is this many times the basic lift.
 #define ENCUMBRANCE_MAXIMUM_PER_LIFT 10
 /// Load, in basic lifts, at which the carbon collapses (ENCUMBRANCE_IMPOSSIBLE). 12 = 120 kg at the default lift,

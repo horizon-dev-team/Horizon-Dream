@@ -161,13 +161,6 @@
 /// Collects the casing and its like on its tile into the passed box, TRUE if anything collected.
 /obj/item/ammo_casing/proc/collect_into_box(mob/living/user, obj/item/ammo_box/box)
 	var/boolets = 0
-	// [HORIZON-EDIT] Two passes: live rounds first, then spent casings (if
-	// there is still room). Empties used to be skipped entirely - now
-	// shot-up brass can be gathered back into the box/stack. Live rounds
-	// keep priority so they always fit before empties.
-	// snapshot: give_round() forceMoves casings off the tile, which
-	// mutates turf contents mid-iteration and makes the for-in iterator
-	// skip every other casing.
 	var/list/obj/item/ammo_casing/on_tile = list()
 	for(var/obj/item/ammo_casing/bullet in loc)
 		on_tile += bullet
@@ -180,8 +173,6 @@
 			boolets++
 
 	var/spent = 0
-	// Spent brass only goes into loose boxes and ammo stacks - NOT into
-	// gun magazines, where empties would silently clog the feed.
 	var/can_take_spent = istype(box, /obj/item/ammo_box/magazine/ammo_stack) || !istype(box, /obj/item/ammo_box/magazine)
 	if(can_take_spent)
 		for(var/obj/item/ammo_casing/bullet as anything in on_tile)

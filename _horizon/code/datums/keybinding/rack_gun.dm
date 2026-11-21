@@ -1,13 +1,3 @@
-// horizon-dev-sync[bot] port
-// Custom keybinding for racking the bolt on ballistic guns.
-//
-// Upstream /tg/station uses Z (attack_self) for racking, but horizon
-// overrides Z to toggle two-handed wield on heavy guns. This leaves no
-// convenient way to rack the bolt.
-//
-// This keybinding (default: V) calls the gun's rack logic directly.
-// Players can rebind it in Game Preferences -> Keybindings.
-
 /datum/keybinding/living/rack_gun
 	hotkey_keys = list("Space")
 	name = "rack_gun"

@@ -83,19 +83,31 @@
 /obj/item/ammo_box/add_weapon_description()
 	AddElement(/datum/element/weapon_description, attached_proc = PROC_REF(add_notes_box))
 
+// [HORIZON-EDIT] Horizon readout (Capacity/Caliber) replaces the original below; keep whichever you prefer.
 /obj/item/ammo_box/proc/add_notes_box()
 	var/list/readout = list()
-
-	if(caliber && max_ammo) // Text references a 'magazine' as only magazines generally have the caliber variable initialized
-		readout += "Up to [span_warning("[max_ammo] [caliber] [casing_phrasing]s")] can be found within this magazine. \
-		\nAccidentally discharging any of these projectiles may void your insurance contract."
-
+	readout += span_notice("<b>Capacity:</b> [max_ammo]")
 	var/obj/item/ammo_casing/mag_ammo = get_and_shuffle_round()
-
 	if(istype(mag_ammo))
-		readout += "\n[mag_ammo.add_notes_ammo()]"
-
+		readout += "[mag_ammo.add_notes_ammo()]"
+	else
+		readout += span_notice("<b>Caliber:</b> [caliber]")
 	return readout.Join("\n")
+
+// [HORIZON-EDIT] Original add_notes_box, disabled:
+///obj/item/ammo_box/proc/add_notes_box()
+//	var/list/readout = list()
+//
+//	if(caliber && max_ammo) // Text references a 'magazine' as only magazines generally have the caliber variable initialized
+//		readout += "Up to [span_warning("[max_ammo] [caliber] [casing_phrasing]s")] can be found within this magazine. \
+//		\nAccidentally discharging any of these projectiles may void your insurance contract."
+//
+//	var/obj/item/ammo_casing/mag_ammo = get_and_shuffle_round()
+//
+//	if(istype(mag_ammo))
+//		readout += "\n[mag_ammo.add_notes_ammo()]"
+//
+//	return readout.Join("\n")
 
 ///list of every bullet in the box
 ///forces all bullets to lazyload

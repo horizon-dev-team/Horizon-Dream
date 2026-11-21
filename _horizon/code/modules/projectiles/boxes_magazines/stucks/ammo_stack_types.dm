@@ -169,6 +169,7 @@
 /obj/item/ammo_box/magazine/ammo_stack/a762svd/loaded
 	start_empty = FALSE
 
+/* [DISABLED] no gun uses the 7.62x51 / Arma marksman rifle set yet; re-enable together with the gun.
 /obj/item/ammo_box/magazine/ammo_stack/a762x51
 	name = "7.62x51 rounds"
 	icon_state = "c762-1"
@@ -180,6 +181,7 @@
 
 /obj/item/ammo_box/magazine/ammo_stack/a762x51/loaded
 	start_empty = FALSE
+*/
 
 /obj/item/ammo_box/magazine/ammo_stack/a276
 	name = "276 Federson rounds"

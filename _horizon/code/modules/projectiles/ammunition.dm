@@ -177,6 +177,7 @@
 	caliber = CALIBER_54R
 	projectile_type = /obj/projectile/bullet/a762svd/ap
 
+/* [DISABLED] no gun uses the 7.62x51 / Arma marksman rifle set yet; re-enable together with the gun.
 /obj/item/ammo_casing/a762x51
 	icon = '_horizon/icons/obj/items/ammo/casings.dmi'
 	name = "7.62x51 bullet casing"
@@ -187,6 +188,7 @@
 	caliber = CALIBER_51
 	projectile_type = /obj/projectile/bullet/a762x51
 	stack_type = /obj/item/ammo_box/magazine/ammo_stack/a762x51
+*/
 
 /obj/item/ammo_casing/a276
 	icon = '_horizon/icons/obj/items/ammo/casings.dmi'

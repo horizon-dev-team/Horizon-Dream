@@ -233,6 +233,7 @@
 	. = ..()
 	icon_state = "[base_icon_state]-[ammo_count() ? max_ammo : 0]"
 
+/* [DISABLED] no gun uses the 7.62x51 / Arma marksman rifle set yet; re-enable together with the gun.
 /obj/item/ammo_box/magazine/a762g3
 	name = "Arma marksman rifle magazine (7.62x51)"
 	icon = '_horizon/icons/obj/items/ammo/rifle.dmi'
@@ -246,6 +247,7 @@
 /obj/item/ammo_box/magazine/a762g3/update_icon_state()
 	. = ..()
 	icon_state = "[base_icon_state]-[ammo_count() ? max_ammo : 0]"
+*/
 
 // MARK: Shotgun
 /obj/item/ammo_box/magazine/abyss_shotgun_drum

@@ -91,10 +91,12 @@
 	damage = 68
 	armour_penetration = 30
 
+/* [DISABLED] no gun uses the 7.62x51 / Arma marksman rifle set yet; re-enable together with the gun.
 /obj/projectile/bullet/a762x51
 	damage = 65
 	wound_bonus = 2
 	wound_falloff_tile = 0
+*/
 
 /obj/projectile/bullet/a276
 	damage = 80

@@ -13,16 +13,6 @@
 			w = weight_class_to_kg(initial(casing.w_class))
 		. += w
 
-/obj/item/ammo_box/add_notes_box()
-	var/list/readout = list()
-	readout += span_notice("<b>Capacity:</b> [max_ammo]")
-	var/obj/item/ammo_casing/mag_ammo = get_and_shuffle_round()
-	if(istype(mag_ammo))
-		readout += "[mag_ammo.add_notes_ammo()]"
-	else
-		readout += span_notice("<b>Caliber:</b> [caliber]")
-	return readout.Join("\n")
-
 /obj/item/ammo_box/a762svd
 	name = "ammo box (7.62x54R)"
 	icon = '_horizon/icons/obj/items/ammo/boxes.dmi'

@@ -345,3 +345,98 @@
 	carry_weight_per_unit = 100 GRAMS
 /obj/item/stack/cable_coil
 	carry_weight_per_unit = 20 GRAMS
+// MARK: Medical
+// Consumables are grams per piece; the w_class fallback gave a 15-piece mesh
+// pack and a single bandage the same 0.04 kg. A full consumables loadout is
+// grams - the defib and the medkit case are where a paramedic's kilos live.
+/obj/item/stack/medical
+	carry_weight_per_unit = 10 GRAMS
+
+/obj/item/stack/medical/bruise_pack
+	carry_weight_per_unit = 20 GRAMS
+
+/obj/item/stack/medical/suture
+	carry_weight_per_unit = 5 GRAMS
+
+/obj/item/stack/medical/ointment
+	carry_weight_per_unit = 15 GRAMS
+
+/obj/item/stack/medical/mesh
+	carry_weight_per_unit = 8 GRAMS
+
+/obj/item/stack/medical/mesh/advanced
+	carry_weight_per_unit = 12 GRAMS
+
+/obj/item/stack/medical/aloe
+	carry_weight_per_unit = 5 GRAMS
+
+/obj/item/stack/medical/aloe/fresh
+	carry_weight_per_unit = 20 GRAMS
+
+/obj/item/stack/medical/bone_gel
+	carry_weight_per_unit = 20 GRAMS
+
+/obj/item/stack/medical/poultice
+	carry_weight_per_unit = 8 GRAMS
+
+/obj/item/stack/medical/bandage
+	carry_weight_per_unit = 15 GRAMS
+
+// Devices and containers. A medkit is a shell; its contents count in full.
+/obj/item/storage/medkit
+	carry_weight = 350 GRAMS
+
+/obj/item/defibrillator
+	carry_weight = 5.5 KILOGRAMS
+
+/obj/item/defibrillator/compact
+	carry_weight = 1.8 KILOGRAMS
+
+/obj/item/healthanalyzer
+	carry_weight = 250 GRAMS
+
+/obj/item/reagent_containers/syringe
+	carry_weight = 10 GRAMS
+
+/obj/item/reagent_containers/hypospray/medipen
+	carry_weight = 30 GRAMS
+
+/obj/item/reagent_containers/blood
+	carry_weight = 50 GRAMS
+
+/obj/item/bodybag
+	carry_weight = 150 GRAMS
+
+/obj/item/storage/belt/medipenal
+	carry_weight = 150 GRAMS
+
+// Surgical tools: steel instruments, not the 0.04 kg of a paperclip.
+/obj/item/scalpel
+	carry_weight = 100 GRAMS
+
+/obj/item/scalpel/advanced
+	carry_weight = 200 GRAMS
+
+/obj/item/hemostat
+	carry_weight = 120 GRAMS
+
+/obj/item/retractor
+	carry_weight = 150 GRAMS
+
+/obj/item/cautery
+	carry_weight = 250 GRAMS
+
+/obj/item/cautery/advanced
+	carry_weight = 300 GRAMS
+
+/obj/item/surgicaldrill
+	carry_weight = 900 GRAMS
+
+/obj/item/circular_saw
+	carry_weight = 1.2 KILOGRAMS
+
+/obj/item/bonesetter
+	carry_weight = 350 GRAMS
+
+/obj/item/surgical_drapes
+	carry_weight = 100 GRAMS

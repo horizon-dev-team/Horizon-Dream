@@ -2,18 +2,6 @@
 	carry_weight = 2.5 KILOGRAMS
 	pickup_sound = '_horizon/sound/weapons/guns/generic_draw.wav'
 	dry_fire_sound = '_horizon/sound/weapons/guns/empty.wav'
-	/// Sound for aiming at someone
-	var/aim_stress_sound = '_horizon/sound/weapons/guns/aim_stress.wav'
-	/// Volume for aiming sound
-	var/aim_stress_sound_volume = 50
-	/// Whether the aiming sound should vary on not
-	var/aim_stress_sound_vary = FALSE
-	/// Sound for stopping aiming at someone
-	var/aim_spare_sound = '_horizon/sound/weapons/guns/aim_spare.wav'
-	/// Volume for stopping aiming sound
-	var/aim_spare_sound_volume = 50
-	/// Whether the stopping aiming sound should vary on not
-	var/aim_spare_sound_vary = FALSE
 	/// Flags related to gun safety
 	var/safety_flags = GUN_SAFETY_FLAGS_DEFAULT
 	/// Sound when safety is toggled on

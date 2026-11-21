@@ -260,11 +260,6 @@
 	safety_off_sound = '_horizon/sound/weapons/guns/rifle/msafety.wav'
 	safety_on_sound = '_horizon/sound/weapons/guns/rifle/msafety.wav'
 	rack_sound = '_horizon/sound/weapons/guns/rifle/mrack.wav'
-	aim_stress_sound = list('_horizon/sound/weapons/guns/rifle/voice_steyr/canthide.wav',
-						'_horizon/sound/weapons/guns/rifle/voice_steyr/seeyou.wav',
-						'_horizon/sound/weapons/guns/rifle/voice_steyr/targetacquired.wav',
-						'_horizon/sound/weapons/guns/rifle/voice_steyr/runpig.wav')
-	aim_spare_sound = '_horizon/sound/weapons/guns/rifle/voice_steyr/spare.wav'
 	actions_types = null
 	force = 12
 	suppressor_x_offset = 8
@@ -287,14 +282,6 @@
 	)
 	custom_price = 80000
 
-/obj/item/gun/ballistic/automatic/hd_gun/remis/steyr/Initialize(mapload)
-	. = ..()
-	RegisterSignal(src, COMSIG_GUNPOINT_GUN_AIM_STRESS_SOUNDED, PROC_REF(aimed_sounding))
-
-/obj/item/gun/ballistic/automatic/hd_gun/remis/steyr/Destroy()
-	UnregisterSignal(src, COMSIG_GUNPOINT_GUN_AIM_STRESS_SOUNDED)
-	return ..()
-
 /obj/item/gun/ballistic/automatic/hd_gun/remis/steyr/click_alt(mob/user)
 	if(suppressed)
 		return ..()
@@ -316,21 +303,6 @@
 		say(monologue)
 	INVOKE_ASYNC(src, PROC_REF(we_do_a_little_shaking))
 	return CLICK_ACTION_SUCCESS
-
-/obj/item/gun/ballistic/automatic/hd_gun/remis/steyr/proc/aimed_sounding(datum/component/gunpoint/gunpoint, sounding)
-	var/voice_line = "FUCK!"
-	switch(sounding)
-		if('_horizon/sound/weapons/guns/rifle/voice_steyr/canthide.wav')
-			voice_line = "You can't hide."
-		if('_horizon/sound/weapons/guns/rifle/voice_steyr/seeyou.wav')
-			voice_line = "I can see you."
-		if('_horizon/sound/weapons/guns/rifle/voice_steyr/targetacquired.wav')
-			voice_line = "Target acquired."
-		if('_horizon/sound/weapons/guns/rifle/voice_steyr/runpig.wav')
-			voice_line = "Run, pig."
-	if(voice_line)
-		say(voice_line)
-	INVOKE_ASYNC(src, PROC_REF(we_do_a_little_shaking))
 
 /obj/item/gun/ballistic/automatic/hd_gun/remis/steyr/proc/we_do_a_little_shaking(intensity = 4, time_in = 2, time_out = 2, loops = 3)
 	for(var/i in 1 to loops)

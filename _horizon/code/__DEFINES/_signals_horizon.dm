@@ -33,10 +33,6 @@
 /// Sent to carbon mob to clear all pending wound messages.
 #define COMSIG_CARBON_CLEAR_WOUND_MESSAGE "carbon_clear_wound_message"
 
-// ~ Gunpoint component
-/// Sent to the gun when the gunpoint aim stress sound has been played.
-#define COMSIG_GUNPOINT_GUN_AIM_STRESS_SOUNDED "gunpoint_gun_aim_stress_sounded"
-
 // ~ Storage (legacy /datum/component/storage signals)
 /// Sent when an item enters a storage datum. (item)
 #define COMSIG_STORAGE_ENTERED "storage_entered"

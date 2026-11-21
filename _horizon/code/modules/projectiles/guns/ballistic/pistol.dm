@@ -227,9 +227,6 @@
 	rack_sound = '_horizon/sound/weapons/guns/pistol/one_rack.ogg'
 	lock_back_sound = '_horizon/sound/weapons/guns/pistol/one_lockback.ogg'
 	bolt_drop_sound = '_horizon/sound/weapons/guns/pistol/one_lockin.ogg'
-	aim_stress_sound = list('_horizon/sound/weapons/guns/pistol/voice_anaquilador/anaquilador_getout.wav',
-						'_horizon/sound/weapons/guns/pistol/voice_anaquilador/anaquilador_noescape.wav')
-	aim_spare_sound = '_horizon/sound/weapons/guns/rifle/voice_steyr/spare.wav'
 	force = 10
 	fire_delay = 8
 	spawn_magazine_type = /obj/item/ammo_box/magazine/aniquilador
@@ -238,32 +235,6 @@
 	verb_say = "ravishes"
 	carry_weight = 2 KILOGRAMS
 	custom_price = 5500
-
-/obj/item/gun/ballistic/automatic/pistol/hd_gun/aniquilador/Initialize(mapload)
-	. = ..()
-	RegisterSignal(src, COMSIG_GUNPOINT_GUN_AIM_STRESS_SOUNDED, PROC_REF(aimed_sounding))
-
-/obj/item/gun/ballistic/automatic/pistol/hd_gun/aniquilador/Destroy()
-	UnregisterSignal(src, COMSIG_GUNPOINT_GUN_AIM_STRESS_SOUNDED)
-	return ..()
-
-/obj/item/gun/ballistic/automatic/pistol/hd_gun/aniquilador/proc/aimed_sounding(datum/component/gunpoint/gunpoint, sounding)
-	var/voice_line = "FUCK!"
-	switch(sounding)
-		if('_horizon/sound/weapons/guns/pistol/voice_anaquilador/anaquilador_getout.wav')
-			voice_line = "GET OUT FREAK."
-		if('_horizon/sound/weapons/guns/pistol/voice_anaquilador/anaquilador_noescape.wav')
-			voice_line = "THERE IS NO ESCAPE."
-	if(voice_line)
-		say(voice_line)
-	INVOKE_ASYNC(src, PROC_REF(we_do_a_little_shaking))
-
-/obj/item/gun/ballistic/automatic/pistol/hd_gun/aniquilador/proc/we_do_a_little_shaking(intensity = 4, time_in = 2, time_out = 2, loops = 3)
-	for(var/i in 1 to loops)
-		animate(src, pixel_x = pixel_x + intensity, time = time_in)
-		sleep(time_in)
-		animate(src, pixel_x = pixel_x - intensity, time = time_out)
-		sleep(time_out)
 
 /obj/item/gun/ballistic/automatic/pistol/hd_gun/john
 	name = "\improper John .50 AE Pistol"

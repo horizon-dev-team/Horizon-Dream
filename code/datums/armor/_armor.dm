@@ -28,12 +28,15 @@ GLOBAL_LIST_INIT(armor_by_type, generate_armor_type_cache())
 	VAR_PROTECTED/acid = 0
 	VAR_PROTECTED/bio = 0
 	VAR_PROTECTED/bomb = 0
-	VAR_PROTECTED/bullet = 0
+	VAR_PROTECTED/blunt = 0
+	VAR_PROTECTED/bullet = 0  // TEMP: legacy, maps to pierce. Remove after migration
 	VAR_PROTECTED/consume = 0
 	VAR_PROTECTED/energy = 0
 	VAR_PROTECTED/laser = 0
 	VAR_PROTECTED/fire = 0
-	VAR_PROTECTED/melee = 0
+	VAR_PROTECTED/melee = 0   // TEMP: legacy, maps to blunt/slash. Remove after migration
+	VAR_PROTECTED/pierce = 0
+	VAR_PROTECTED/slash = 0
 	VAR_PROTECTED/wound = 0
 
 /// A version of armor with no protections
@@ -142,7 +145,20 @@ GLOBAL_LIST_INIT(armor_by_type, generate_armor_type_cache())
 	// its not that I don't trust coders, it's just that I don't trust coders
 	if(!(rating in ARMOR_LIST_ALL))
 		CRASH("Attempted to get a rating '[rating]' that doesn't exist")
-	return vars[rating]
+
+	// Prefer new physical types. Fall back to legacy melee/bullet while migration is in progress.
+	var/value = vars[rating]
+	if(value)
+		return value
+	switch(rating)
+		if(BLUNT)
+			return vars["melee"] || 0
+		if(SLASH)
+			// Slightly lower than full melee so pure-slash weapons (knives) aren't over-armored against by "melee" values
+			return round((vars["melee"] || 0) * 0.85)
+		if(PIERCE)
+			return vars["bullet"] || 0
+	return 0
 
 /datum/armor/immune/get_rating(rating)
 	return 100
@@ -217,8 +233,8 @@ GLOBAL_LIST_INIT(armor_by_type, generate_armor_type_cache())
 			return "BIOHAZARD"
 		if(BOMB)
 			return "EXPLOSIVE"
-		if(BULLET)
-			return "BULLET"
+		if(BLUNT)
+			return "BLUNT"
 		if(CONSUME)
 			return "CONSUMING"
 		if(ENERGY)
@@ -227,8 +243,15 @@ GLOBAL_LIST_INIT(armor_by_type, generate_armor_type_cache())
 			return "FIRE"
 		if(LASER)
 			return "LASER"
+		if(PIERCE)
+			return "PIERCE"
+		if(SLASH)
+			return "SLASH"
+		// legacy
+		if(BULLET)
+			return "PIERCE"
 		if(MELEE)
-			return "MELEE"
+			return "BLUNT"
 		if(WOUND)
 			return "WOUNDING"
 	CRASH("Unknown armor type '[armor_type]'")

@@ -1166,10 +1166,19 @@ GAME_VERB_SRC(/obj/item, verb_pickup, oview(1), "Pick up", null)
 	var/content_str = "<table>[desc]"
 	content_str += get_extra_tooltip(user)
 
+	var/dmg_flag = get_armor_flag_from_sharpness(sharpness)
+	var/dmg_icon_state
+	switch(dmg_flag)
+		if(SLASH)
+			dmg_icon_state = "Slash"
+		if(PIERCE)
+			dmg_icon_state = "Pierce"
+		else
+			dmg_icon_state = "Blunt"
 	if(!(item_flags & FORCE_STRING_OVERRIDE))
-		if(force) content_str += "<tr><td><b>Force:</b></td><td>[force_string]</td></tr>"
+		if(force) content_str += "<tr><td><b>Force:</b></td><td>"+ icon2html(DAMAGE_ICON_SET, user, dmg_icon_state) +"[force_string]</td></tr>"
 	else
-		content_str += "<tr><td><b>Force:</b></td><td>[force_string]</td></tr>"
+		content_str += "<tr><td><b>Force:</b></td><td>"+ icon2html(DAMAGE_ICON_SET, user, dmg_icon_state) + "[force_string]</td></tr>"
 
 	if(resistance_flags & INDESTRUCTIBLE)
 		content_str += "<tr><td><b>Armor:</b></td><td>" + icon2html(DAMAGE_ICON_SET, user, "Indestructible") + " Invulnerable.</td></tr>"

@@ -40,19 +40,12 @@
 // Backpack 30% off, satchel 25% off, duffel 15% off (worse harness), utility bags 35% off.
 #define STORAGE_WEIGHT_MULT_BACKPACK 0.70
 #define STORAGE_WEIGHT_MULT_SATCHEL 0.75
-#define STORAGE_WEIGHT_MULT_DUFFEL 0.85
+#define STORAGE_WEIGHT_MULT_DUFFEL 0.70
 #define STORAGE_WEIGHT_MULT_BAG 0.65
-/// Bluespace pockets. Not weightless, so a bag of holding is still a choice.
-#define STORAGE_WEIGHT_MULT_HOLDING 0.15
-/// Belts spread load over the hips. 50% off.
-#define STORAGE_WEIGHT_MULT_BELT 0.50
-/// MODsuit servos carry half of what the suit itself holds: parts (stowed or deployed), core and modules. 50% off.
-#define STORAGE_WEIGHT_MULT_MODSUIT 0.50
+#define STORAGE_WEIGHT_MULT_BLUESPACE 0.10
 
-/// RPED and sheet snatcher: machine parts and sheets are bulky, not heavy.
-#define STORAGE_WEIGHT_MULT_PART_REPLACER 0.20
-/// Bluespace RPED: the pocket dimension does most of the lifting.
-#define STORAGE_WEIGHT_MULT_BLUESPACE 0.05
+/// Belts spread load over the hips. 50% off.
+#define STORAGE_WEIGHT_MULT_50 0.50
 
 // Needs <-> weight.
 // Share of the basic lift a carbon keeps while thirsty or hungry. The worse of the two applies.

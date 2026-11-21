@@ -17,7 +17,7 @@
 
 /obj/item/storage/backpack/holding
 	carry_weight = 1.5
-	storage_weight_multiplier = STORAGE_WEIGHT_MULT_HOLDING
+	storage_weight_multiplier = STORAGE_WEIGHT_MULT_BLUESPACE
 
 /obj/item/storage/backpack/santabag
 	storage_weight_multiplier = 0.4
@@ -27,7 +27,7 @@
 	storage_weight_multiplier = STORAGE_WEIGHT_MULT_BAG
 
 /obj/item/storage/belt
-	storage_weight_multiplier = STORAGE_WEIGHT_MULT_BELT
+	storage_weight_multiplier = STORAGE_WEIGHT_MULT_50
 
 /obj/item/storage/belt/utility/full/powertools/holding
 	storage_weight_multiplier = STORAGE_WEIGHT_MULT_BLUESPACE
@@ -201,7 +201,7 @@
 // Parts and modules live inside the control unit.
 /obj/item/mod/control
 	carry_weight = 2.2
-	storage_weight_multiplier = STORAGE_WEIGHT_MULT_MODSUIT
+	storage_weight_multiplier = STORAGE_WEIGHT_MULT_BACKPACK
 
 /// Weight (kg) the servos take off the deployed parts. Stowed parts sit in contents and get the
 /// same relief through storage_weight_multiplier, so deploying or retracting never changes your load.
@@ -237,23 +237,35 @@
 /obj/item/reagent_containers/cup/bottle
 	carry_weight = 0.08
 
+// MARK: Tools
+
+
 // MARK: Tool containers
 /obj/item/storage/part_replacer
 	carry_weight = 2.5
-	storage_weight_multiplier = STORAGE_WEIGHT_MULT_PART_REPLACER
+	storage_weight_multiplier = STORAGE_WEIGHT_MULT_50
 
 /obj/item/storage/part_replacer/bluespace
 	carry_weight = 2
 	storage_weight_multiplier = STORAGE_WEIGHT_MULT_BLUESPACE
 
 /obj/item/storage/bag/ore
-	storage_weight_multiplier = STORAGE_WEIGHT_MULT_PART_REPLACER
+	storage_weight_multiplier = STORAGE_WEIGHT_MULT_50
 
 /obj/item/storage/bag/ore/holding
 	storage_weight_multiplier = STORAGE_WEIGHT_MULT_BLUESPACE
 
 /obj/item/storage/bag/sheetsnatcher
-	storage_weight_multiplier = STORAGE_WEIGHT_MULT_PART_REPLACER
+	storage_weight_multiplier = STORAGE_WEIGHT_MULT_50
+
+/obj/item/surgery_tray/full
+	storage_weight_multiplier = STORAGE_WEIGHT_MULT_50
+
+/obj/item/storage/briefcase
+	storage_weight_multiplier = STORAGE_WEIGHT_MULT_50
+
+/obj/item/storage/toolbox
+	storage_weight_multiplier = STORAGE_WEIGHT_MULT_50
 
 // MARK: Sheets
 /obj/item/stack/sheet/iron

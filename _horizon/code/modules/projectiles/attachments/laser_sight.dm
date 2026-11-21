@@ -1,10 +1,3 @@
-// horizon-dev-sync[bot] port from Shiptest
-// code/game/objects/items/attachments/laser_sight.dm
-//
-// Rail-mounted laser sight. Toggling it on reduces both the gun's regular
-// spread and its unwielded spread (spread_unwielded, see _gun.dm), so a
-// one-handed heavy gun with a laser sight becomes reasonably accurate.
-
 /obj/item/attachment/laser_sight
 	name = "laser sight"
 	desc = "Designed to be rail-mounted on a compatible firearm to provide increased accuracy and decreased spread."

@@ -1,5 +1,3 @@
-// This file is included after code/modules/projectiles/guns/ballistic.dm, so it
-// replaces that Initialize. The spawn/chamber body below is the upstream one.
 /obj/item/gun/ballistic/Initialize(mapload)
 	if(spawn_magazine_type && accepted_magazine_type == initial(accepted_magazine_type))
 		accepted_magazine_type = spawn_magazine_type
@@ -24,7 +22,6 @@
 	update_appearance()
 	RegisterSignal(src, COMSIG_ITEM_RECHARGED, PROC_REF(instant_reload))
 
-/// Runs before upstream item_interaction. Same-type ..() cannot reach it.
 /obj/item/gun/ballistic/proc/pre_item_interaction(datum/source, mob/living/user, obj/item/tool, list/modifiers)
 	SIGNAL_HANDLER
 	if((bolt_type == BOLT_TYPE_BREAK_ACTION) && !cylinder_open && (isammocasing(tool) || istype(tool, /obj/item/ammo_box)))

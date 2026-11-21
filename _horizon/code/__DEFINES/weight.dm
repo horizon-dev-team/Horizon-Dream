@@ -20,8 +20,8 @@
 
 /// Mass of one reagent unit when the container actually holds liquid.
 /// 100u = 1 L = 1 kg of water. Doses (pills, patches, cigarettes) use REAGENT_WEIGHT_DOSE instead.
-#define REAGENT_UNIT_KG 0.01
 /// Share of liquid density a solid dose contributes. 50u pill ≈ 10 g of compound, not half a litre.
+#define REAGENT_UNIT_KG 0.01
 #define REAGENT_WEIGHT_DOSE 0.02
 
 /// Basic lift (kg) of a carbon in perfect shape. Original: STR^2/10 via attributes, STR 10 -> 10.
@@ -36,18 +36,10 @@
 /// Refresh cadence for content changes that emit no mob signal (ammo, storage, reagents).
 #define ENCUMBRANCE_REFRESH_INTERVAL (2 SECONDS)
 
-// Worn containers. Fraction of CONTENT mass that still counts. The bag itself is always full weight.
-// Backpack 30% off, satchel 25% off, duffel 15% off (worse harness), utility bags 35% off.
-#define STORAGE_WEIGHT_MULT_BACKPACK 0.70
-#define STORAGE_WEIGHT_MULT_SATCHEL 0.75
-#define STORAGE_WEIGHT_MULT_DUFFEL 0.70
-#define STORAGE_WEIGHT_MULT_BAG 0.65
-#define STORAGE_WEIGHT_MULT_BLUESPACE 0.10
+/// Converts a percentage reduction into a storage multiplier: 30 -> 0.70, 90 -> 0.10.
+#define STORAGE_WEIGHT_MULT(percent) (1 - ((percent) * 0.01))
 
-/// Belts spread load over the hips. 50% off.
-#define STORAGE_WEIGHT_MULT_50 0.50
-
-// Needs <-> weight.
+/// Needs <-> weight.
 // Share of the basic lift a carbon keeps while thirsty or hungry. The worse of the two applies.
 #define LIFT_MULT_THIRSTY 0.8
 #define LIFT_MULT_DEHYDRATED 0.6

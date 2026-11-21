@@ -5,27 +5,27 @@
 // MARK: Containers
 /obj/item/storage/backpack
 	carry_weight = 1 KILOGRAMS
-	storage_weight_multiplier = STORAGE_WEIGHT_MULT_BACKPACK
+	storage_weight_multiplier = STORAGE_WEIGHT_MULT(30)
 /obj/item/storage/backpack/satchel
 	carry_weight = 700 GRAMS
-	storage_weight_multiplier = STORAGE_WEIGHT_MULT_SATCHEL
+	storage_weight_multiplier = STORAGE_WEIGHT_MULT(25)
 /obj/item/storage/backpack/duffelbag
 	carry_weight = 1.3 KILOGRAMS
-	storage_weight_multiplier = STORAGE_WEIGHT_MULT_DUFFEL
-/obj/item/storage/backpack/holding
-	carry_weight = 1.5 KILOGRAMS
-	storage_weight_multiplier = STORAGE_WEIGHT_MULT_BLUESPACE
+	storage_weight_multiplier = STORAGE_WEIGHT_MULT(30)
 /obj/item/storage/backpack/santabag
-	storage_weight_multiplier = 0.4
+	storage_weight_multiplier = 400 GRAMS
 /obj/item/storage/bag
 	carry_weight = 450 GRAMS
-	storage_weight_multiplier = STORAGE_WEIGHT_MULT_BAG
+	storage_weight_multiplier = STORAGE_WEIGHT_MULT(35)
 /obj/item/storage/belt
-	storage_weight_multiplier = STORAGE_WEIGHT_MULT_50
+	storage_weight_multiplier = STORAGE_WEIGHT_MULT(50)
+/obj/item/storage/backpack/holding
+	carry_weight = 1.5 KILOGRAMS
+	storage_weight_multiplier = STORAGE_WEIGHT_MULT(90)
 /obj/item/storage/belt/utility/full/powertools/holding
-	storage_weight_multiplier = STORAGE_WEIGHT_MULT_BLUESPACE
+	storage_weight_multiplier = STORAGE_WEIGHT_MULT(90)
 /obj/item/storage/bag/trash/bluespace
-	storage_weight_multiplier = STORAGE_WEIGHT_MULT_BLUESPACE
+	storage_weight_multiplier = STORAGE_WEIGHT_MULT(90)
 
 // MARK: Reagent containers
 /obj/item/reagent_containers/applicator
@@ -148,7 +148,7 @@
 // Parts and modules live inside the control unit.
 /obj/item/mod/control
 	carry_weight = 2.2
-	storage_weight_multiplier = STORAGE_WEIGHT_MULT_BACKPACK
+	storage_weight_multiplier = STORAGE_WEIGHT_MULT(30)
 
 /// Weight (kg) the servos take off the deployed parts. Stowed parts sit in contents and get the
 /// same relief through storage_weight_multiplier, so deploying or retracting never changes your load.
@@ -188,22 +188,22 @@
 // MARK: Tool containers
 /obj/item/storage/part_replacer
 	carry_weight = 2.5 KILOGRAMS
-	storage_weight_multiplier = STORAGE_WEIGHT_MULT_50
+	storage_weight_multiplier = STORAGE_WEIGHT_MULT(50)
 /obj/item/storage/part_replacer/bluespace
 	carry_weight = 2 KILOGRAMS
-	storage_weight_multiplier = STORAGE_WEIGHT_MULT_BLUESPACE
+	storage_weight_multiplier = STORAGE_WEIGHT_MULT(90)
 /obj/item/storage/bag/ore
-	storage_weight_multiplier = STORAGE_WEIGHT_MULT_50
+	storage_weight_multiplier = STORAGE_WEIGHT_MULT(50)
 /obj/item/storage/bag/ore/holding
-	storage_weight_multiplier = STORAGE_WEIGHT_MULT_BLUESPACE
+	storage_weight_multiplier = STORAGE_WEIGHT_MULT(90)
 /obj/item/storage/bag/sheetsnatcher
-	storage_weight_multiplier = STORAGE_WEIGHT_MULT_50
+	storage_weight_multiplier = STORAGE_WEIGHT_MULT(50)
 /obj/item/surgery_tray/full
-	storage_weight_multiplier = STORAGE_WEIGHT_MULT_50
+	storage_weight_multiplier = STORAGE_WEIGHT_MULT(50)
 /obj/item/storage/briefcase
-	storage_weight_multiplier = STORAGE_WEIGHT_MULT_50
+	storage_weight_multiplier = STORAGE_WEIGHT_MULT(50)
 /obj/item/storage/toolbox
-	storage_weight_multiplier = STORAGE_WEIGHT_MULT_50
+	storage_weight_multiplier = STORAGE_WEIGHT_MULT(50)
 
 // MARK: Sheets
 /obj/item/stack/sheet/iron

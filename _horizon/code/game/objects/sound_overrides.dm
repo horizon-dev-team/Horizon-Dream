@@ -1,10 +1,3 @@
-// horizon-dev-sync[bot] port
-// Overrides for sound procs to support list-type sound vars.
-// Upstream's playsound() CRASHes if passed a list. Horizon gun subtypes
-// use 'fire_sound = list(...)' etc. for random sound selection.
-// These overrides call pick() on the sound var if it's a list before
-// passing it to playsound().
-
 /// Override: if fire_sound / suppressed_sound is a list, pick() one.
 /obj/item/gun/fire_sounds()
 	if(suppressed)

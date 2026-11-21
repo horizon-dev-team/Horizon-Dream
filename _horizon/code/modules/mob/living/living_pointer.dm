@@ -1,9 +1,3 @@
-// horizon-dev-sync[bot] port from Escape-Nevado
-// Override /mob/living/update_mouse_pointer() to show weapon pointer
-// when holding a gun with safety OFF.
-// When safety is ON, the normal cursor is shown instead.
-// Ported verbatim from modular_septic/code/modules/mob/living/living_pointer.dm.
-
 /mob/living/update_mouse_pointer()
 	if(!client)
 		return

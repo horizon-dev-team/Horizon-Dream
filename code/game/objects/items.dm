@@ -324,11 +324,7 @@
 		CRASH("item add_item_action got a type or instance of something that wasn't an action.")
 
 	LAZYADD(actions, action)
-	// [HORIZON-EDIT] override = TRUE: re-adding the same action instance is
-	// a legitimate pattern here (e.g. re-attaching an attachment
-	// re-registers its toggle action on the gun) and spammed
-	// "parent_qdeleting overridden" runtime warnings without it.
-	RegisterSignal(action, COMSIG_QDELETING, PROC_REF(on_action_deleted), TRUE)
+	RegisterSignal(action, COMSIG_QDELETING, PROC_REF(on_action_deleted), TRUE) // [HORIZON-EDIT]
 	grant_action_to_bearer(action)
 	return action
 

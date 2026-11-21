@@ -20,17 +20,14 @@
 	if(isarea(source))
 		CRASH("playsound(): source is an area")
 
-	var/turf/turf_source = get_turf(source)
-
-	// [HORIZON-EDIT] Support list-type sound vars (random pick), like
-	// Escape-Nevado's get_sfx(). Horizon gun subtypes use
-	// 'fire_sound = list(...)' / 'rack_sound = list(...)' etc. for random
-	// sound selection; upstream CRASHed on those.
 	if(islist(soundin))
-		if(!length(soundin)) // nothing to play
-			return
-		soundin = pick(soundin)
+		CRASH("playsound(): soundin attempted to pass a list! Consider using pick()")
 
+	if(!soundin)
+		CRASH("playsound(): no soundin passed")
+
+
+	var/turf/turf_source = get_turf(source)
 	if (!turf_source || !soundin || !vol)
 		return
 
@@ -225,9 +222,6 @@
 
 ///Used to convert a SFX define into a .ogg so we can add some variance to sounds. If soundin is already a .ogg, we simply return it
 /proc/get_sfx(soundin)
-	// [HORIZON-EDIT] Sound lists pick a random entry (Escape-Nevado parity).
-	if(islist(soundin) && LAZYLEN(soundin))
-		soundin = pick(soundin)
 	if(!ispath(soundin, /datum/sound_effect))
 		return soundin
 	var/datum/sound_effect/sfx = GLOB.sfx_datums_by_paths[soundin]

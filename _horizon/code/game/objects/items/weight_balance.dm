@@ -17,6 +17,8 @@
 /obj/item/storage/bag
 	carry_weight = 450 GRAMS
 	storage_weight_multiplier = STORAGE_WEIGHT_MULT(35)
+/obj/item/storage/bag/construction
+	storage_weight_multiplier = STORAGE_WEIGHT_MULT(80)
 /obj/item/storage/belt
 	storage_weight_multiplier = STORAGE_WEIGHT_MULT(50)
 /obj/item/storage/backpack/holding
@@ -69,6 +71,11 @@
 	carry_weight = 6 KILOGRAMS
 /obj/item/clothing/glasses
 	carry_weight = 250 GRAMS
+/obj/item/clothing/head/utility/radiation
+	carry_weight = 4 KILOGRAMS
+/obj/item/clothing/suit/utility/radiation
+	carry_weight = 8.5 KILOGRAMS
+	slowdown = 0
 
 // Type I vest was the same couple of kilos as a sidearm. Soft armor is ~3 kg;
 // plates, riot gear and heavy suits step up from there.
@@ -167,6 +174,8 @@
 /obj/item/mod/control
 	carry_weight = 2.2
 	storage_weight_multiplier = STORAGE_WEIGHT_MULT(30)
+/obj/item/mod/control/pre_equipped/debug
+	storage_weight_multiplier = STORAGE_WEIGHT_MULT(100)
 
 /// Weight (kg) the servos take off the deployed parts. Stowed parts sit in contents and get the
 /// same relief through storage_weight_multiplier, so deploying or retracting never changes your load.
@@ -427,10 +436,18 @@
 /obj/item/blood_filter
 	carry_weight = 400 GRAMS
 
+// MARK: Tools
+/obj/item/crowbar
+	carry_weight = 1.2 KILOGRAMS
+/obj/item/crowbar/power
+	carry_weight = 1.5 KILOGRAMS
+/obj/item/analyzer
+	carry_weight = 200 GRAMS
+
 // MARK: Misc
 /obj/item/card
 	carry_weight = 50 GRAMS
 /obj/item/seeds
 	carry_weight = 10 GRAMS
-/obj/item/crowbar
-	carry_weight = 1.2 KILOGRAMS
+/obj/item/match
+	carry_weight = 5 GRAMS

@@ -138,7 +138,7 @@
 	if(istype(user) && (safety_flags & GUN_SAFETY_ENABLED))
 		shoot_with_empty_chamber(user)
 		return NONE
-	before_can_shoot_checks(user, FALSE)
+	before_can_shoot_checks(user)
 	return ..()
 
 /obj/item/gun/can_trigger_gun(mob/living/user, akimbo_usage)
@@ -149,55 +149,6 @@
 	if(safety_flags & GUN_SAFETY_ENABLED)
 		return FALSE
 	return TRUE
-
-/obj/item/gun/on_autofire_start(mob/living/shooter)
-	if(fire_cd || shooter.incapacitated || shooter.stat)
-		return NONE
-	if(istype(src, /obj/item/gun/ballistic/automatic))
-		var/obj/item/gun/ballistic/automatic/automatic_source = src
-		//Not on full auto select
-		if(automatic_source.select != 3)
-			return NONE
-	//Check if the user can use the gun, if the user isn't alive (turrets) assume it can
-	if(istype(shooter))
-		if(!can_trigger_gun(shooter))
-			shoot_with_empty_chamber(shooter)
-			return NONE
-	//Just because you can pull the trigger doesn't mean it can shoot
-	before_can_shoot_checks(shooter, TRUE)
-	if(!can_shoot())
-		shoot_with_empty_chamber(shooter)
-		return NONE
-	// [HORIZON-EDIT] Heavy guns can be fired one-handed now. The old hard
-	// block backfired while wielding: the two-handed component parks an
-	// /obj/item/offhand dummy in the inactive hand, so "use both hands!"
-	// triggered exactly when the gun WAS held with both hands. Unwielded
-	// firing is penalized through spread_unwielded in process_fire instead.
-	return TRUE
-
-/// Signal handler for COMSIG_AUTOFIRE_SHOT. The signature must match upstream's
-/// (datum/source, atom/target, mob/living/shooter, allow_akimbo, params) or the
-/// last two arguments shift and the mouse params are silently lost.
-/obj/item/gun/do_autofire(datum/source, atom/target, mob/living/shooter, allow_akimbo, params)
-	if(fire_cd || shooter.incapacitated || shooter.stat)
-		return NONE
-	if(istype(src, /obj/item/gun/ballistic/automatic))
-		var/obj/item/gun/ballistic/automatic/automatic_source = src
-		//Not on full auto select
-		if(automatic_source.select != 3)
-			return NONE
-	//Check if the user can use the gun, if the user isn't alive (turrets) assume it can
-	if(istype(shooter))
-		if(!can_trigger_gun(shooter))
-			shoot_with_empty_chamber(shooter)
-			return NONE
-	//Just because you can pull the trigger doesn't mean it can shoot
-	before_can_shoot_checks(shooter, FALSE)
-	if(!can_shoot())
-		shoot_with_empty_chamber(shooter)
-		return NONE
-	INVOKE_ASYNC(src, PROC_REF(do_autofire_shot), source, target, shooter, allow_akimbo, params)
-	return COMPONENT_AUTOFIRE_SHOT_SUCCESS //All is well, we can continue shooting
 
 /obj/item/gun/proc/initialize_full_auto()
 	if(!full_auto)
@@ -216,7 +167,7 @@
 		else
 			. += span_notice("<b>Weapon Weight:</b> Invalid")
 
-/obj/item/gun/proc/before_can_shoot_checks(mob/living/user, autofire_start = FALSE)
+/obj/item/gun/proc/before_can_shoot_checks(mob/living/user)
 	return TRUE
 
 /obj/item/gun/proc/safety_examine(mob/user)

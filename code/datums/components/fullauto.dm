@@ -292,10 +292,14 @@
 	if(!can_shoot())
 		shoot_with_empty_chamber(shooter)
 		return FALSE
-	var/obj/item/bodypart/other_hand = shooter.has_hand_for_held_index(shooter.get_inactive_hand_index())
-	if(weapon_weight == WEAPON_HEAVY && (shooter.get_inactive_held_item() || !other_hand))
-		balloon_alert(shooter, "use both hands!")
-		return FALSE
+	// [HORIZON-EDIT] Heavy guns can be fired one-handed (same as fire_gun). The two-handed
+	// component parks an /obj/item/offhand in the inactive hand while wielding, so this check
+	// used to fail exactly when the gun WAS held with both hands. Unwielded firing is penalised
+	// through spread_unwielded in process_fire instead.
+	//var/obj/item/bodypart/other_hand = shooter.has_hand_for_held_index(shooter.get_inactive_hand_index())
+	//if(weapon_weight == WEAPON_HEAVY && (shooter.get_inactive_held_item() || !other_hand))
+	//	balloon_alert(shooter, "use both hands!")
+	//	return FALSE
 	return TRUE
 
 

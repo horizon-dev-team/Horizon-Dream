@@ -214,12 +214,11 @@
 		balloon_alert(user, "[cylinder_wording] [cylinder_open ? "open" : "closed"]")
 	update_appearance()
 
-/obj/item/gun/ballistic/before_can_shoot_checks(mob/living/user, autofire_start = FALSE)
+/obj/item/gun/ballistic/before_can_shoot_checks(mob/living/user)
 	. = ..()
 	if((bolt_type == BOLT_TYPE_BREAK_ACTION) && !cylinder_open && semi_auto && bolt_locked)
 		bolt_locked = FALSE
-		if(!autofire_start)
-			chamber_round(TRUE)
+		chamber_round(TRUE)
 		update_appearance()
 
 /obj/item/gun/ballistic/can_shoot()
@@ -289,44 +288,6 @@
 		balloon_alert(user, "[cylinder_wording] is closed!")
 		return FALSE
 	return ..()
-
-/obj/item/gun/ballistic/eject_magazine(mob/user, \
-	display_message = TRUE, \
-	obj/item/ammo_box/magazine/tac_load = null, \
-	hand_index = null)
-	if(!magazine)
-		return
-	if(bolt_type == BOLT_TYPE_OPEN)
-		chambered = null
-	if(magazine.ammo_count())
-		playsound(src, eject_sound, eject_sound_volume, eject_sound_vary)
-	else
-		playsound(src, eject_empty_sound, eject_sound_volume, eject_sound_vary)
-	var/obj/item/ammo_box/magazine/old_mag = magazine
-	magazine.forceMove(drop_location())
-	if(tac_load)
-		if(insert_magazine(user, tac_load, FALSE))
-			to_chat(user, span_notice("I perform a tactical reload on [src]."))
-		else
-			to_chat(user, span_warning("I drop the old [magazine_wording], but the new one doesn't fit."))
-			magazine = null
-	else
-		magazine = null
-	if(old_mag)
-		if(user && iscarbon(user))
-			var/mob/living/carbon/old_mag_receiver = user
-			var/datum/component/two_handed/two_handed_component = GetComponent(/datum/component/two_handed)
-			if(two_handed_component?.wielded)
-				two_handed_component.unwield(old_mag_receiver)
-			if(!hand_index)
-				old_mag_receiver.put_in_hands(old_mag)
-			else
-				old_mag_receiver.put_in_hand(old_mag, hand_index)
-		old_mag.update_appearance()
-	if(display_message && !tac_load)
-		to_chat(user, span_notice("I pull the [magazine_wording] out of [src]."))
-	update_appearance()
-	SEND_SIGNAL(src, COMSIG_UPDATE_AMMO_HUD)
 
 /obj/item/gun/ballistic/postfire_empty_checks(last_shot_succeeded)
 	. = ..()

@@ -34,6 +34,18 @@
 	if(isnull(fire_delay_auto))
 		fire_delay_auto = initial(fire_delay)
 
+/// The autofire component only fires while the selector is on full auto.
+/obj/item/gun/ballistic/automatic/on_autofire_start(mob/living/shooter)
+	if(select != 3)
+		return NONE
+	return ..()
+
+/obj/item/gun/ballistic/automatic/do_autofire(datum/source, atom/target, mob/living/shooter, allow_akimbo, params)
+	SIGNAL_HANDLER
+	if(select != 3)
+		return NONE
+	return ..()
+
 /// Full-auto automatics pass their full-auto fire delay to the component.
 /obj/item/gun/ballistic/automatic/initialize_full_auto()
 	if(!full_auto)

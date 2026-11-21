@@ -450,7 +450,7 @@
 		return FALSE
 
 ///Handles all the logic of magazine ejection, if tac_load is set that magazine will be tacloaded in the place of the old eject
-/obj/item/gun/ballistic/proc/eject_magazine(mob/user, display_message = TRUE, obj/item/ammo_box/magazine/tac_load = null)
+/obj/item/gun/ballistic/proc/eject_magazine(mob/user, display_message = TRUE, obj/item/ammo_box/magazine/tac_load = null, hand_index = null) // [HORIZON-EDIT] hand_index
 	if(bolt_type == BOLT_TYPE_OPEN)
 		chambered = null
 	if (magazine.ammo_count())
@@ -464,9 +464,17 @@
 			balloon_alert(user, "[magazine_wording] swapped")
 		else
 			to_chat(user, span_warning("You dropped the old [magazine_wording], but the new one doesn't fit. How embarassing."))
-	user.put_in_hands(old_mag)
+	// [HORIZON-EDIT] A wielded two-handed gun parks an offhand dummy in the other hand, so unwield first or the magazine hits the floor.
+	var/datum/component/two_handed/two_handed_component = GetComponent(/datum/component/two_handed)
+	if(two_handed_component?.wielded)
+		two_handed_component.unwield(user)
+	if(hand_index) // [HORIZON-EDIT] drag-eject into a specific hand
+		user.put_in_hand(old_mag, hand_index)
+	else
+		user.put_in_hands(old_mag)
 	if (display_message)
 		balloon_alert(user, "[magazine_wording] unloaded")
+	SEND_SIGNAL(src, COMSIG_UPDATE_AMMO_HUD) // [HORIZON-ADD] ammo counter refresh
 
 /obj/item/gun/ballistic/can_shoot()
 	return ..() && chambered?.loaded_projectile

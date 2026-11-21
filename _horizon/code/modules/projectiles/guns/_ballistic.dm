@@ -95,10 +95,6 @@
 	if(capacity_number)
 		. += "[base_icon_state]_mag_[capacity_number]"
 
-/obj/item/gun/ballistic/add_weapon_description()
-	AddElement(/datum/element/weapon_description, PROC_REF(add_notes_gun))
-
-
 /obj/item/gun/ballistic/screwdriver_act(mob/living/user, obj/item/tool)
 	if(!can_modify_ammo)
 		return ..()

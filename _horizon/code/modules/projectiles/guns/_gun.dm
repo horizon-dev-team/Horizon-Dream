@@ -2,10 +2,6 @@
 	carry_weight = 2.5 KILOGRAMS
 	pickup_sound = '_horizon/sound/weapons/guns/generic_draw.wav'
 	dry_fire_sound = '_horizon/sound/weapons/guns/empty.wav'
-	/// Message when we dry fire (applies both to dry firing and failing to fire for other reasons)
-	var/dry_fire_message = span_danger("*click*")
-	/// Whether to vary dry_fire_sound or not
-	var/dry_fire_sound_vary = FALSE
 	/// Sound for aiming at someone
 	var/aim_stress_sound = '_horizon/sound/weapons/guns/aim_stress.wav'
 	/// Volume for aiming sound
@@ -60,12 +56,9 @@
 	/// Every time you fiddle with the stock
 	var/fiddle = '_horizon/sound/effects/fiddle.wav'
 
-/obj/item/gun/New()
-	. = ..()
-	appearance_flags |= KEEP_TOGETHER
-
 /obj/item/gun/Initialize(mapload)
 	. = ..()
+	appearance_flags |= KEEP_TOGETHER
 	if(foldable)
 		add_item_action(/datum/action/item_action/toggle_stock)
 	if(full_auto)
@@ -91,11 +84,6 @@
 	else if(sawn_inhand_state)
 		inhand_icon_state = "[initial(inhand_icon_state)][sawn_off ? "_sawn" : ""]"
 
-// NOTE: the gun-level "_empty" icon_state suffix lives in the ballistic
-// override (see _ballistic.dm). It can't live here: this gun-level version
-// runs BEFORE core ballistic's icon_state reset (via the ..() chain), so any
-// suffix it appends gets wiped for every ballistic gun.
-
 /obj/item/gun/update_overlays()
 	. = ..()
 	if(foldable)
@@ -103,9 +91,6 @@
 		var/image/folding_image = image(icon, src, "[base_icon_state]_[folded ? "folded" : "unfolded"]")
 		folding_image.layer = layer - 1
 		. += folding_image
-	// Flashlight and bayonet overlays are now handled by upstream's
-	// /datum/component/seclite_attachable and /datum/component/bayonet_attachable
-	// respectively. We don't render them manually here.
 	if(safety_flags & GUN_SAFETY_HAS_SAFETY)
 		var/image/safety_overlay
 		if((safety_flags & GUN_SAFETY_ENABLED) && (safety_flags & GUN_SAFETY_OVERLAY_ENABLED))
@@ -148,10 +133,6 @@
 	if(safety_flags & GUN_SAFETY_HAS_SAFETY)
 		toggle_safety(user)
 
-// Gunpoint (holding someone up at gunpoint) is now handled by upstream's
-// /obj/item/gun/interact_with_atom_secondary() which checks can_hold_up
-// and adds /datum/component/gunpoint. No need for a horizon override.
-
 // Upstream fire_gun already does signals, pins, suicide, botch and akimbo.
 // Horizon only gates flogging, field-dressing and the pre-fire hook.
 /obj/item/gun/fire_gun(atom/target, mob/living/user, flag, params)
@@ -180,9 +161,6 @@
 	if(safety_flags & GUN_SAFETY_ENABLED)
 		return FALSE
 	return TRUE
-
-// check_botched() intentionally has no horizon override: upstream's version is
-// newer (tk_firing / NODROP / random valid zone handling) and is used directly.
 
 /obj/item/gun/on_autofire_start(mob/living/shooter)
 	if(fire_cd || shooter.incapacitated || shooter.stat)

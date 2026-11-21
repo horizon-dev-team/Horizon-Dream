@@ -53,14 +53,10 @@
 	ammo_type = /obj/item/ammo_casing/shotgun/bolas
 
 /obj/item/ammo_box/magazine/internal/shot/riot
-	name = "riot shotgun internal magazine"
 	ammo_type = /obj/item/ammo_casing/shotgun/buckshot
-	max_ammo = 6
 
 /obj/item/ammo_box/magazine/internal/shot/com
-	name = "combat shotgun internal magazine"
 	ammo_type = /obj/item/ammo_casing/shotgun/buckshot
-	max_ammo = 6
 
 /obj/item/ammo_box/magazine/internal/cylinder/bobox
 	name = "bobox double-barrel shotgun internal magazine"

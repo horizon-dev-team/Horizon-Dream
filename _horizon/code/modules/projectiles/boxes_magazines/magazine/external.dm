@@ -1,6 +1,5 @@
 // MARK: Pistol
 /obj/item/ammo_box/magazine/m9mm
-	name = "pistol magazine (9mm)"
 	icon = '_horizon/icons/obj/items/ammo/pistol.dmi'
 	icon_state = "ruger9mm"
 	base_icon_state = "ruger9mm"

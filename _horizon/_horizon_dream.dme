@@ -65,6 +65,7 @@
 #include "code\modules\buildmode\buildmode_assets.dm"
 #include "code\modules\buildmode\tgui_browser.dm"
 #include "code\modules\buildmode\submodes\builder.dm"
+#include "code\modules\cargo\horizon_armory.dm"
 #include "code\modules\client\preferences\directional_attack.dm"
 #include "code\modules\hud\ammo_counter_hud.dm"
 #include "code\modules\hud\screen_objects.dm"

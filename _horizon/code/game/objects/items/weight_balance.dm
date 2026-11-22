@@ -17,6 +17,8 @@
 /obj/item/storage/bag
 	carry_weight = 450 GRAMS
 	storage_weight_multiplier = STORAGE_WEIGHT_MULT(35)
+/obj/item/storage/bag/construction
+	storage_weight_multiplier = STORAGE_WEIGHT_MULT(80)
 /obj/item/storage/belt
 	storage_weight_multiplier = STORAGE_WEIGHT_MULT(50)
 /obj/item/storage/backpack/holding
@@ -26,6 +28,8 @@
 	storage_weight_multiplier = STORAGE_WEIGHT_MULT(90)
 /obj/item/storage/bag/trash/bluespace
 	storage_weight_multiplier = STORAGE_WEIGHT_MULT(90)
+/obj/item/storage/box
+	carry_weight = 50 GRAMS
 
 // MARK: Reagent containers
 /obj/item/reagent_containers/applicator
@@ -49,10 +53,14 @@
 	carry_weight = 450 GRAMS
 /obj/item/clothing/shoes
 	carry_weight = 550 GRAMS
+/obj/item/clothing/shoes/laceup
+	carry_weight = 200 GRAMS
 /obj/item/clothing/shoes/magboots
 	carry_weight = 2.4 KILOGRAMS
 /obj/item/clothing/gloves
 	carry_weight = 120 GRAMS
+/obj/item/clothing/gloves/captain
+	carry_weight = 150 GRAMS
 /obj/item/clothing/head/helmet
 	carry_weight = 1.4 KILOGRAMS
 /obj/item/clothing/head/helmet/toggleable/riot
@@ -61,6 +69,13 @@
 	carry_weight = 2.4 KILOGRAMS
 /obj/item/clothing/suit/space
 	carry_weight = 6 KILOGRAMS
+/obj/item/clothing/glasses
+	carry_weight = 250 GRAMS
+/obj/item/clothing/head/utility/radiation
+	carry_weight = 4 KILOGRAMS
+/obj/item/clothing/suit/utility/radiation
+	carry_weight = 8.5 KILOGRAMS
+	slowdown = 0
 
 // Type I vest was the same couple of kilos as a sidearm. Soft armor is ~3 kg;
 // plates, riot gear and heavy suits step up from there.
@@ -80,6 +95,16 @@
 /obj/item/clothing/suit/armor/balloon_vest
 	carry_weight = 200 GRAMS
 
+
+/*
+ - Скорость снарядов у дробовиков TG
+ - Какой то плохо работает
+ - Бинбег снаряды у дробовиков (найти)
+ - ПП путь стреляет автоматом-по 2 пули
+ - Сделать предметы в руках весят в 2 раза меньше
+ - /obj/item/stack/medical/wrap/sticky_tape
+ - /obj/item/stack/medical
+*/
 // MARK: Guns
 // Empty body; magazine, cell and chambered rounds add themselves.
 /obj/item/gun/ballistic/automatic
@@ -149,6 +174,8 @@
 /obj/item/mod/control
 	carry_weight = 2.2
 	storage_weight_multiplier = STORAGE_WEIGHT_MULT(30)
+/obj/item/mod/control/pre_equipped/debug
+	storage_weight_multiplier = STORAGE_WEIGHT_MULT(100)
 
 /// Weight (kg) the servos take off the deployed parts. Stowed parts sit in contents and get the
 /// same relief through storage_weight_multiplier, so deploying or retracting never changes your load.
@@ -177,13 +204,6 @@
 	carry_weight = 120 GRAMS
 /obj/item/reagent_containers/cup/bottle
 	carry_weight = 80 GRAMS
-// MARK: Tools
-/obj/item/scalpel
-	carry_weight = 200 GRAMS
-/obj/item/retractor/advanced
-	carry_weight = 250 GRAMS
-/obj/item/cautery/advanced
-	carry_weight = 250 GRAMS
 
 // MARK: Tool containers
 /obj/item/storage/part_replacer
@@ -345,98 +365,89 @@
 	carry_weight_per_unit = 100 GRAMS
 /obj/item/stack/cable_coil
 	carry_weight_per_unit = 20 GRAMS
+
 // MARK: Medical
-// Consumables are grams per piece; the w_class fallback gave a 15-piece mesh
-// pack and a single bandage the same 0.04 kg. A full consumables loadout is
-// grams - the defib and the medkit case are where a paramedic's kilos live.
 /obj/item/stack/medical
 	carry_weight_per_unit = 10 GRAMS
-
 /obj/item/stack/medical/bruise_pack
 	carry_weight_per_unit = 20 GRAMS
-
 /obj/item/stack/medical/suture
 	carry_weight_per_unit = 5 GRAMS
-
 /obj/item/stack/medical/ointment
 	carry_weight_per_unit = 15 GRAMS
-
 /obj/item/stack/medical/mesh
 	carry_weight_per_unit = 8 GRAMS
-
 /obj/item/stack/medical/mesh/advanced
 	carry_weight_per_unit = 12 GRAMS
-
 /obj/item/stack/medical/aloe
 	carry_weight_per_unit = 5 GRAMS
-
 /obj/item/stack/medical/aloe/fresh
 	carry_weight_per_unit = 20 GRAMS
-
 /obj/item/stack/medical/bone_gel
 	carry_weight_per_unit = 20 GRAMS
-
 /obj/item/stack/medical/poultice
 	carry_weight_per_unit = 8 GRAMS
-
 /obj/item/stack/medical/bandage
 	carry_weight_per_unit = 15 GRAMS
 
-// Devices and containers. A medkit is a shell; its contents count in full.
+// Devices and containers
 /obj/item/storage/medkit
 	carry_weight = 350 GRAMS
-
 /obj/item/defibrillator
 	carry_weight = 5.5 KILOGRAMS
-
 /obj/item/defibrillator/compact
 	carry_weight = 1.8 KILOGRAMS
-
 /obj/item/healthanalyzer
 	carry_weight = 250 GRAMS
-
 /obj/item/reagent_containers/syringe
 	carry_weight = 10 GRAMS
-
 /obj/item/reagent_containers/hypospray/medipen
 	carry_weight = 30 GRAMS
-
 /obj/item/reagent_containers/blood
 	carry_weight = 50 GRAMS
-
 /obj/item/bodybag
 	carry_weight = 150 GRAMS
-
 /obj/item/storage/belt/medipenal
 	carry_weight = 150 GRAMS
 
 // Surgical tools: steel instruments, not the 0.04 kg of a paperclip.
 /obj/item/scalpel
 	carry_weight = 100 GRAMS
-
 /obj/item/scalpel/advanced
 	carry_weight = 200 GRAMS
-
 /obj/item/hemostat
 	carry_weight = 120 GRAMS
-
 /obj/item/retractor
 	carry_weight = 150 GRAMS
-
+/obj/item/retractor/advanced
+	carry_weight = 200 GRAMS
 /obj/item/cautery
-	carry_weight = 250 GRAMS
-
+	carry_weight = 200 GRAMS
 /obj/item/cautery/advanced
-	carry_weight = 300 GRAMS
-
+	carry_weight = 250 GRAMS
 /obj/item/surgicaldrill
 	carry_weight = 900 GRAMS
-
 /obj/item/circular_saw
 	carry_weight = 1.2 KILOGRAMS
-
 /obj/item/bonesetter
-	carry_weight = 350 GRAMS
-
+	carry_weight = 500 GRAMS
 /obj/item/surgical_drapes
 	carry_weight = 100 GRAMS
+/obj/item/blood_filter
+	carry_weight = 400 GRAMS
+
+// MARK: Tools
+/obj/item/crowbar
+	carry_weight = 1.2 KILOGRAMS
+/obj/item/crowbar/power
+	carry_weight = 1.5 KILOGRAMS
+/obj/item/analyzer
+	carry_weight = 200 GRAMS
+
+// MARK: Misc
+/obj/item/card
+	carry_weight = 50 GRAMS
+/obj/item/seeds
+	carry_weight = 10 GRAMS
+/obj/item/match
+	carry_weight = 5 GRAMS

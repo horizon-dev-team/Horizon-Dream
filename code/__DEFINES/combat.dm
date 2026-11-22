@@ -24,8 +24,12 @@
 #define BIO "bio"
 /// Involves a shockwave, usually from an explosion.
 #define BOMB "bomb"
-/// Involves a solid projectile.
-#define BULLET "bullet"
+/// Involves blunt/crushing force (fists, bats, most blunt tools, some shot).
+#define BLUNT "blunt"
+/// Involves a solid projectile or thrusting/pointy attack (bullets, spears, needles).
+#define PIERCE "pierce"
+/// Involves cutting/slashing (knives, swords, claws, axes).
+#define SLASH "slash"
 /// Involves being eaten
 #define CONSUME "consume"
 /// Involves an EMP or energy-based projectile.
@@ -34,21 +38,23 @@
 #define FIRE "fire"
 /// Involves a laser.
 #define LASER "laser"
-/// Involves a melee attack or a thrown object.
-#define MELEE "melee"
 /// Involved in checking the likelihood of applying a wound to a mob.
 #define WOUND "wound"
+
+// Legacy aliases — remove after full migration
+#define MELEE BLUNT
+#define BULLET PIERCE
 
 #define ARMOR_ALL "all_damage_types"
 
 /// Armor values that are used for damage
-#define ARMOR_LIST_DAMAGE list(MELEE, BULLET, ENERGY, LASER, BOMB, BIO, WOUND) // [HORIZON-EDIT] Sort in order
+#define ARMOR_LIST_DAMAGE list(BLUNT, SLASH, PIERCE, ENERGY, LASER, BOMB, BIO, WOUND)
 
 /// Armor values that are used for durability
 #define ARMOR_LIST_DURABILITY list(ACID, FIRE)
 
 /// All armors, preferable in the order as seen above
-#define ARMOR_LIST_ALL list(MELEE, BULLET, ENERGY, LASER, BOMB, BIO, ACID, FIRE, CONSUME, WOUND) // [HORIZON-EDIT] Sort in order
+#define ARMOR_LIST_ALL list(BLUNT, SLASH, PIERCE, ENERGY, LASER, BOMB, BIO, ACID, FIRE, CONSUME, WOUND)
 
 //bitflag damage defines used for suicide_act
 #define BRUTELOSS (1<<0)
@@ -450,3 +456,31 @@ GLOBAL_LIST_INIT(all_precise_body_zones, list(BODY_ZONE_PRECISE_EYES, BODY_ZONE_
 
 ///Do we block carbon-level flash_act() from performing its default stamina damage/knockdown/confusion?
 #define FLASH_COMPLETED "flash_completed"
+
+/**
+ * Maps an armor/damage type string to an icon state in DAMAGE_ICON_SET.
+ * Returns null if no dedicated icon exists yet.
+ */
+/proc/armor_type_to_icon_state(armor_type)
+	switch(armor_type)
+		if(BLUNT)
+			return "Blunt"
+		if(SLASH)
+			return "Slash"
+		if(PIERCE)
+			return "Pierce"
+		if(FIRE)
+			return "Fire"
+		if(ACID)
+			return "Acid"
+		if(LASER)
+			return "Laser"
+		if(ENERGY)
+			return "Energy"
+		if(BOMB)
+			return "Bomb"
+		if(BIO)
+			return "Bio"
+		if(WOUND)
+			return "Wound"
+	return null

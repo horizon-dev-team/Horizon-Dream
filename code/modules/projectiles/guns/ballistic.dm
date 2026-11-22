@@ -153,6 +153,11 @@
 
 /obj/item/gun/ballistic/Initialize(mapload)
 	. = ..()
+	// [HORIZON-ADD] Guns that only define spawn_magazine_type accept that magazine
+	if(spawn_magazine_type && accepted_magazine_type == initial(accepted_magazine_type))
+		accepted_magazine_type = spawn_magazine_type
+	// [HORIZON-ADD] Block loading while the cylinder is closed / start gun cleaning
+	RegisterSignal(src, COMSIG_ATOM_ITEM_INTERACTION, PROC_REF(pre_item_interaction))
 	if(!spawn_magazine_type)
 		spawn_magazine_type = accepted_magazine_type
 	if (!spawnwithmagazine)

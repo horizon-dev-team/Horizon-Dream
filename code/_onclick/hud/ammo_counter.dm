@@ -1,3 +1,7 @@
+// [HORIZON-ADD] GunRework
+// Ammo counter HUD: screen object shown while holding a ballistic gun with
+// an ammo counter attachment (/datum/component/ammo_hud).
+
 #define ui_ammocounter "EAST-1:28,CENTER+1:25"
 
 /atom/movable/screen/ammo_counter
@@ -130,66 +134,5 @@
 			oth_t = "t9"
 			oth_h = "h9"
 	hud.set_hud(backing_color, oth_o, oth_t, oth_h, indicator)
-
-// MARK: Attachment item
-/obj/item/attachment/ammo_counter
-	name = "ammunition counter"
-	desc = "A computerized ammunition tracker for use on conventional firearms. Includes a small toggle for telling the user when ammo is depleted. Capable of mounting on both a railing or a scope, depending on the user's preference."
-	icon = '_horizon/icons/obj/items/guns/attachments.dmi'
-	icon_state = "ammo_counter"
-	w_class = WEIGHT_CLASS_TINY
-
-	attach_features_flags = ATTACH_REMOVABLE_HAND|ATTACH_TOGGLE|ATTACH_NO_SPRITE
-	slot = ATTACHMENT_SLOT_SCOPE
-	pixel_shift_x = 0
-	pixel_shift_y = 0
-
-	/// Whether the empty-magazine alarm beep is enabled (uses the gun's empty_alarm).
-	var/alarm_enabled = TRUE
-
-/// Attaching to a ballistic gun adds the ammo HUD component to it.
-/obj/item/attachment/ammo_counter/apply_attachment(obj/item/gun/gun, mob/user)
-	. = ..()
-	if(!istype(gun, /obj/item/gun/ballistic))
-		to_chat(user, span_notice("[gun] has no magazine for [src] to track!"))
-		return FALSE
-	if(gun.GetComponent(/datum/component/ammo_hud))
-		to_chat(user, span_notice("[gun] already has an ammo counter installed!"))
-		return FALSE
-	gun.AddComponent(/datum/component/ammo_hud)
-	gun.GetComponent(/datum/component/ammo_hud).wake_up(source = gun, user = user, slot = ITEM_SLOT_HANDS)
-	return TRUE
-
-/// Detaching removes the ammo HUD component again.
-/obj/item/attachment/ammo_counter/remove_attachment(obj/item/gun/gun, mob/user)
-	. = ..()
-	var/datum/component/ammo_hud/old_counter = gun.GetComponent(/datum/component/ammo_hud)
-	if(old_counter)
-		old_counter.turn_off()
-		qdel(old_counter)
-		return TRUE
-
-/// In-hand use: switch between the scope and rail mounting slots.
-/obj/item/attachment/ammo_counter/attack_self(mob/user)
-	. = ..()
-	playsound(src, 'sound/items/click.ogg', 25)
-	if(slot == initial(slot))
-		slot = ATTACHMENT_SLOT_RAIL
-	else
-		slot = initial(slot)
-	SEND_SIGNAL(src, COMSIG_ATTACHMENT_CHANGE_SLOT, slot)
-	to_chat(user, span_notice("You adjust [src] to fit on a gun's [slot]."))
-
-/// Toggle action button: turn the gun's empty-magazine alarm on/off.
-/obj/item/attachment/ammo_counter/toggle_attachment(obj/item/gun/gun, mob/user)
-	. = ..()
-	var/obj/item/gun/ballistic/ballistic_gun = gun
-	if(!istype(ballistic_gun))
-		return
-	if(initial(ballistic_gun.empty_alarm))
-		return
-	alarm_enabled = !alarm_enabled
-	ballistic_gun.empty_alarm = alarm_enabled
-	to_chat(user, span_notice("You turn [src]'s alarm [alarm_enabled ? "on" : "off"]."))
 
 #undef ui_ammocounter

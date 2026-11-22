@@ -127,6 +127,27 @@
 	///Even if the above variables would indicate this gun should misfire, never misfire this gun
 	var/never_misfire = FALSE
 
+	// [HORIZON-ADD] GunRework: break action / cylinder support
+	/// Whether the bolt drop sound should vary in pitch (upstream has
+	/// bolt_drop_sound/volume but no vary toggle).
+	var/bolt_drop_sound_vary = FALSE
+	/// Wording for the cylinder, for break action guns
+	var/cylinder_wording = "cylinder"
+	/// If this is a break action bolt gun, is the cylinder open?
+	var/cylinder_open = FALSE
+	/// Do we have a unique open cylinder icon_state?
+	var/cylinder_shows_open = FALSE
+	/// Does the cylinder open sprite get updated depending on ammo count?
+	var/cylinder_shows_ammo_count = FALSE
+	/// Gives us an unique icon_state with an uncocked hammer, if we are a break action or revolver
+	var/uncocked_icon_state = FALSE
+	/// Unracking sound
+	var/unrack_sound = '_horizon/sound/weapons/guns/decock_generic.wav'
+	/// Volume of unracking sound
+	var/unrack_sound_volume = 40
+	/// Whether unracking sound should vary
+	var/unrack_sound_vary = TRUE
+
 	// Gun internal magazine modification (caliber modding, EFN parity) //
 	///Can we modify our ammo type in this gun's internal magazine? (screwdriver tinkering, see _horizon guns/_ballistic.dm)
 	var/can_modify_ammo = FALSE
@@ -277,13 +298,72 @@
 /obj/item/gun/ballistic/update_icon_state()
 	. = ..()
 	icon_state = "[base_icon_state || initial(icon_state)][sawn_off ? "_sawn" : ""]"
+	// [HORIZON-ADD] GunRework: empty / uncocked-hammer / open-cylinder states
+	if(empty_icon_state && !chambered)
+		icon_state = "[icon_state]_empty"
+	if((bolt_type == BOLT_TYPE_BREAK_ACTION) && uncocked_icon_state && bolt_locked)
+		icon_state = "[icon_state]_uncocked"
+	if(cylinder_open && cylinder_shows_open)
+		icon_state = "[icon_state]_open"
 
-/* [HORIZON-EDIT] update_overlays REMOVED - the horizon version in
- * _horizon/code/modules/projectiles/guns/_ballistic.dm fully replaces this
- * (base_icon_state-based overlay names, break action cylinder overlays, fire
- * selector icon). Keeping this body as well made every overlay render twice
- * through the ..() chain. See Nevado's "SEPTIC EDIT REMOVAL" for the same
- * pattern in the source repository. */
+/obj/item/gun/ballistic/update_overlays()
+	. = ..()
+	// Fire selector icon (upstream automatics like the C-20r use this).
+	if(selector_switch_icon)
+		if(burst_fire_selection)
+			. += "[base_icon_state]_burst"
+		else
+			. += "[base_icon_state]_semi"
+	if(suppressed && can_unsuppress) // integrated suppressors don't get an overlay
+		var/image/suppressor_overlay = image(icon, "[base_icon_state]_suppressor")
+		if(suppressor_x_offset)
+			suppressor_overlay.pixel_x = suppressor_x_offset
+		if(suppressor_y_offset)
+			suppressor_overlay.pixel_y = suppressor_y_offset
+		. += suppressor_overlay
+
+	if(show_bolt_icon)
+		if(bolt_type == BOLT_TYPE_LOCKING || bolt_type == BOLT_TYPE_OPEN || bolt_type == BOLT_TYPE_STANDARD)
+			. += "[base_icon_state]_bolt[bolt_locked ? "_locked" : ""]"
+
+	//this is duplicated in c20's update_overlays due to a layering issue with the select fire icon
+	if(!chambered && empty_indicator)
+		. += "[base_icon_state]_empty"
+
+	if(gun_flags & TOY_FIREARM_OVERLAY)
+		. += "[base_icon_state]_toy"
+
+	// [HORIZON-ADD] GunRework: break action cylinder overlay
+	if(cylinder_open && cylinder_shows_open)
+		. += "[base_icon_state]_cylinder[cylinder_shows_ammo_count ? "-[magazine ? magazine.ammo_count() : 0]" : ""]"
+
+	if(!magazine || internal_magazine || !mag_display)
+		return
+
+	if(special_mags)
+		. += "[base_icon_state]_mag_[initial(magazine.icon_state)]"
+		if(mag_display_ammo && !magazine.ammo_count())
+			. += "[base_icon_state]_mag_empty"
+		return
+
+	. += "[base_icon_state]_mag"
+	if(!mag_display_ammo)
+		return
+
+	var/capacity_number
+	switch(get_ammo() / magazine.max_ammo)
+		if(1 to INFINITY) //cause we can have one in the chamber.
+				capacity_number = 100
+			if(0.8 to 1)
+				capacity_number = 80
+			if(0.6 to 0.8)
+				capacity_number = 60
+			if(0.4 to 0.6)
+				capacity_number = 40
+			if(0.2 to 0.4)
+				capacity_number = 20
+	if(capacity_number)
+		. += "[base_icon_state]_mag_[capacity_number]"
 
 /obj/item/gun/ballistic/ui_action_click(mob/user, actiontype)
 	if(istype(actiontype, /datum/action/item_action/toggle_firemode))
@@ -327,6 +407,8 @@
 #define CASING_HOT_DELAY (5 SECONDS)
 
 /obj/item/gun/ballistic/handle_chamber(mob/living/user, empty_chamber = TRUE, from_firing = TRUE, chamber_next_round = TRUE) // [HORIZON-EDIT] PHYSICS
+	if(bolt_type == BOLT_TYPE_BREAK_ACTION) // [HORIZON-ADD] GunRework: the round stays in the cylinder
+		return
 	if(!semi_auto && from_firing)
 		return
 	var/obj/item/ammo_casing/casing = chambered //Find chambered round
@@ -383,7 +465,33 @@
 #undef CASING_HOT_DELAY
 
 ///Used to chamber a new round and eject the old one
-/obj/item/gun/ballistic/proc/chamber_round(spin_cylinder, replace_new_round)
+/obj/item/gun/ballistic/proc/chamber_round(spin_cylinder = TRUE, replace_new_round)
+	// [HORIZON-ADD] GunRework: break action guns rotate their cylinder
+	// instead of running the magazine chambering.
+	if(bolt_type == BOLT_TYPE_BREAK_ACTION)
+		if(!magazine)
+			return
+		var/list/ammo = magazine.stored_ammo
+		if(istype(magazine, /obj/item/ammo_box/magazine/internal/cylinder))
+			if(isnull(spin_cylinder) || spin_cylinder)
+				chambered = magazine.get_round()
+			else if(length(ammo))
+				chambered = ammo[1]
+			else
+				chambered = null
+		else if(length(ammo))
+			var/obj/item/ammo_casing/rotated = ammo[length(ammo)]
+			if(ispath(rotated))
+				rotated = new rotated(magazine)
+				ammo[length(ammo)] = rotated
+			ammo -= rotated
+			ammo.Insert(1, rotated)
+			chambered = rotated
+		else
+			chambered = null
+		if(replace_new_round && chambered)
+			magazine.give_round(new chambered.type)
+		return
 	if (chambered || !magazine)
 		return
 	if (magazine.ammo_count())
@@ -415,6 +523,21 @@
 
 ///updates a bunch of racking related stuff and also handles the sound effects and the like
 /obj/item/gun/ballistic/proc/rack(mob/user = null)
+	// [HORIZON-ADD] GunRework: cock / decock the hammer on break action guns
+	if(bolt_type == BOLT_TYPE_BREAK_ACTION)
+		if(cylinder_open)
+			if(user)
+				balloon_alert(user, "[cylinder_wording] is open!")
+			return
+		if(bolt_locked)
+			bolt_locked = FALSE
+			chamber_round(TRUE)
+			playsound(src, rack_sound, rack_sound_volume, rack_sound_vary)
+		else
+			bolt_locked = TRUE
+			playsound(src, unrack_sound, unrack_sound_volume, unrack_sound_vary)
+		update_appearance()
+		return
 	if (bolt_type == BOLT_TYPE_NO_BOLT) //If there's no bolt, nothing to rack
 		return
 	if (bolt_type == BOLT_TYPE_OPEN)
@@ -492,7 +615,14 @@
 	SEND_SIGNAL(src, COMSIG_UPDATE_AMMO_HUD) // [HORIZON-ADD] ammo counter refresh
 
 /obj/item/gun/ballistic/can_shoot()
-	return ..() && chambered?.loaded_projectile
+	. = ..() && chambered?.loaded_projectile
+	if(!.)
+		return .
+	if(cylinder_open) // [HORIZON-ADD] GunRework: can't fire with the cylinder open
+		return FALSE
+	if(bolt_type == BOLT_TYPE_BREAK_ACTION && bolt_locked) // [HORIZON-ADD] GunRework: hammer is down
+		return FALSE
+	return TRUE
 
 /obj/item/gun/ballistic/item_interaction(mob/living/user, obj/item/tool, list/modifiers)
 	. = ..()
@@ -545,6 +675,9 @@
 		return ITEM_INTERACT_SUCCESS
 
 /obj/item/gun/ballistic/proc/load_gun(obj/item/ammo, mob/living/user)
+	if(bolt_type == BOLT_TYPE_BREAK_ACTION && !cylinder_open) // [HORIZON-ADD] GunRework
+		balloon_alert(user, "[cylinder_wording] is closed!")
+		return FALSE
 	if (chambered && !chambered.loaded_projectile)
 		chambered.forceMove(drop_location())
 		if(length(magazine?.stored_ammo) && chambered != magazine.stored_ammo[1])
@@ -650,6 +783,9 @@
 		if (last_shot_succeeded && bolt_type == BOLT_TYPE_LOCKING && semi_auto)
 			bolt_locked = TRUE
 			update_appearance()
+	if (bolt_type == BOLT_TYPE_BREAK_ACTION && !cylinder_open) // [HORIZON-ADD] GunRework: break actions lock open after firing
+		bolt_locked = TRUE
+		update_appearance()
 
 /obj/item/gun/ballistic/fire_gun(atom/target, mob/living/user, flag, params)
 	prefire_empty_checks()
@@ -658,12 +794,49 @@
 
 //ATTACK HAND IGNORING PARENT RETURN VALUE
 /obj/item/gun/ballistic/attack_hand(mob/user, list/modifiers)
+	// [HORIZON-ADD] GunRework: pull rounds out of an open break-action cylinder
+	if(cylinder_open && user.is_holding(src))
+		add_fingerprint(user)
+		var/obj/item/ammo_casing/casing = pull_cylinder_round()
+		if(casing)
+			casing.forceMove(drop_location())
+			user.put_in_hands(casing)
+			update_appearance()
+			return
 	if(!internal_magazine && loc == user && user.is_holding(src) && magazine)
 		eject_magazine(user)
 		return
 	return ..()
 
 /obj/item/gun/ballistic/attack_self(mob/living/user)
+	// [HORIZON-ADD] GunRework: wield toggle for wielded_inhand_state guns.
+	// NOTE: must NOT fall through to parent - base /obj/item/attack_self
+	// sends COMSIG_ITEM_ATTACK_SELF, which the two_handed component also
+	// answers with a wield toggle, so chaining would toggle twice and
+	// cancel out.
+	if(wielded_inhand_state && user?.is_holding(src) && istype(user, /mob/living/carbon))
+		var/datum/component/two_handed/two_handed_component = GetComponent(/datum/component/two_handed)
+		if(two_handed_component)
+			if(two_handed_component.wielded)
+				two_handed_component.unwield(user)
+			else
+				two_handed_component.wield(user)
+			return
+	// [HORIZON-ADD] GunRework: break action cylinder handling (open: dump
+	// spent casings or close it, closed: break it open unless a
+	// non-semi-auto hammer is cocked).
+	if(bolt_type == BOLT_TYPE_BREAK_ACTION)
+		if(cylinder_open)
+			var/live_rounds = get_ammo(FALSE, FALSE)
+			var/all_rounds = get_ammo(FALSE, TRUE)
+			if(all_rounds > live_rounds)
+				eject_spent_casings(user)
+				return
+			toggle_cylinder_open(user)
+			return
+		if(semi_auto || !bolt_locked)
+			toggle_cylinder_open(user)
+			return
 	if(!internal_magazine && magazine)
 		if(!magazine.ammo_count())
 			eject_magazine(user)
@@ -731,6 +904,8 @@
 
 ///Gets the number of bullets in the gun
 /obj/item/gun/ballistic/proc/get_ammo(countchambered = TRUE, countempties = TRUE)
+	if(bolt_type == BOLT_TYPE_BREAK_ACTION) // [HORIZON-ADD] GunRework: the "chamber" is the cylinder
+		countchambered = FALSE
 	var/bullets = 0 //No silly variable names on my watch.
 	if (chambered && countchambered)
 		bullets++
@@ -867,3 +1042,131 @@ GLOBAL_LIST_INIT(gun_saw_types, typecacheof(list(
 	custom_materials = list(/datum/material/iron = SHEET_MATERIAL_AMOUNT, /datum/material/silver = HALF_SHEET_MATERIAL_AMOUNT)
 	/// How quiet should the gun be when we're installed?
 	var/suppression = SUPPRESSED_QUIET
+
+// =============================================================================
+// [HORIZON-ADD] GunRework: break action cylinders, caliber modding, drag-eject
+// =============================================================================
+
+/// Screwdriver tinkering: swap the gun between its initial and alternative
+/// caliber (see the can_modify_ammo / initial_caliber vars above).
+/obj/item/gun/ballistic/screwdriver_act(mob/living/user, obj/item/tool)
+	if(!can_modify_ammo)
+		return ..()
+	if(!user.is_holding(src))
+		to_chat(user, span_warning("I need to hold [src] to modify it."))
+		return TRUE
+
+	if(bolt_type == BOLT_TYPE_STANDARD)
+		if(get_ammo())
+			to_chat(user, span_warning("I can't get at the internals while the gun has a bullet in it!"))
+			return
+
+		else if(!bolt_locked)
+			to_chat(user, span_warning("I can't get at the internals while the bolt is down!"))
+			return
+
+	to_chat(user, span_notice("I begin to tinker with [src]..."))
+	tool.play_tool_sound(src)
+	if(!tool.use_tool(src, user, 3 SECONDS))
+		return TRUE
+
+	if(blow_up(user))
+		user.visible_message(span_danger("[src] goes off!"), \
+					span_userdanger("[src] goes off in my face!"))
+		return
+
+	if(magazine.caliber == initial_caliber)
+		magazine.caliber = alternative_caliber
+		if(alternative_ammo_misfires)
+			never_misfire = FALSE
+		fire_sound = alternative_fire_sound
+		to_chat(user, span_notice("I modify [src]. Now it will fire [alternative_caliber] rounds."))
+	else
+		magazine.caliber = initial_caliber
+		if(alternative_ammo_misfires)
+			never_misfire = TRUE
+		fire_sound = initial_fire_sound
+		to_chat(user, span_notice("I reset [src]. Now it will fire [initial_caliber] rounds."))
+
+/// Pulls the next round out of an open break action cylinder.
+/obj/item/gun/ballistic/proc/pull_cylinder_round()
+	if(!magazine)
+		return null
+	var/list/ammo = magazine.stored_ammo
+	for(var/i in 1 to length(ammo))
+		var/obj/item/ammo_casing/round = ammo[i]
+		if(ispath(round)) // lazy map-spawned casings
+			round = new round(magazine)
+			ammo[i] = round
+		if(QDELETED(round))
+			continue // empty cylinder chamber (null slot)
+		if(chambered == round)
+			UnregisterSignal(chambered, COMSIG_MOVABLE_MOVED)
+			chambered = null
+		return round
+	return null
+
+/// Dumps all spent casings from an open break action cylinder.
+/obj/item/gun/ballistic/proc/eject_spent_casings(mob/user)
+	if(!magazine)
+		return
+	var/num_ejected = 0
+	for(var/obj/item/ammo_casing/casing as anything in magazine.stored_ammo.Copy())
+		if(ispath(casing) || QDELETED(casing))
+			continue
+		if(casing.loaded_projectile)
+			continue
+		if(casing == chambered)
+			UnregisterSignal(chambered, COMSIG_MOVABLE_MOVED)
+			chambered = null
+		casing.forceMove(drop_location())
+		casing.bounce_away(bounce_angle = null, still_warm = FALSE, sound_delay = 0)
+		num_ejected++
+	if(num_ejected)
+		if(user)
+			balloon_alert(user, "[num_ejected] spent [cartridge_wording]\s ejected")
+		playsound(src, eject_sound, eject_sound_volume, eject_sound_vary)
+		update_appearance()
+		SEND_SIGNAL(src, COMSIG_UPDATE_AMMO_HUD) // [HORIZON-ADD] ammo counter refresh
+	else if(user)
+		balloon_alert(user, "no spent [cartridge_wording]s")
+
+/// Open / close the cylinder of a break action gun.
+/obj/item/gun/ballistic/proc/toggle_cylinder_open(mob/user)
+	cylinder_open = !cylinder_open
+	if(cylinder_open)
+		playsound(src, bolt_drop_sound, bolt_drop_sound_volume, bolt_drop_sound_vary)
+		if(chambered)
+			UnregisterSignal(chambered, COMSIG_MOVABLE_MOVED)
+			chambered = null
+	else
+		playsound(src, lock_back_sound, lock_back_sound_volume, lock_back_sound_vary)
+		chamber_round()
+	if(user)
+		balloon_alert(user, "[cylinder_wording] [cylinder_open ? "open" : "closed"]")
+	update_appearance()
+
+/// Break action guns cock themselves (via before_can_shoot_checks) before firing.
+/obj/item/gun/ballistic/before_can_shoot_checks(mob/living/user)
+	. = ..()
+	if((bolt_type == BOLT_TYPE_BREAK_ACTION) && !cylinder_open && semi_auto && bolt_locked)
+		bolt_locked = FALSE
+		chamber_round(TRUE)
+		update_appearance()
+
+/// Drag the gun onto a hand slot to eject the magazine into that hand, onto
+/// yourself to eject it normally, and break action guns drag onto a hand slot
+/// to open / close the cylinder.
+/obj/item/gun/ballistic/mouse_drop_dragged(atom/over, mob/user, src_location, over_location, params)
+	if(!isliving(user) || !user.Adjacent(src) || HAS_TRAIT(user, TRAIT_INCAPACITATED))
+		return
+	if(istype(over, /atom/movable/screen/inventory/hand))
+		if(bolt_type == BOLT_TYPE_BREAK_ACTION)
+			toggle_cylinder_open(user)
+		else if(!internal_magazine && magazine)
+			var/atom/movable/screen/inventory/hand/hand_slot = over
+			eject_magazine(user, hand_index = hand_slot.held_index)
+	else if(over == user && !user.is_holding(src) && isturf(loc))
+		if(!internal_magazine && magazine)
+			eject_magazine(user)
+// ======== [/HORIZON-ADD] ========

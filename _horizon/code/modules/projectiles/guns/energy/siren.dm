@@ -41,6 +41,8 @@
 						"pixel_y" = 13)
 	recoil_animation_information = list("recoil_angle_upper" = -15, \
 						"recoil_angle_lower" = -25)
+	pickup_sound = '_horizon/sound/weapons/guns/generic_draw.wav' // [HORIZON-ADD] GunRework family default
+	dry_fire_sound = '_horizon/sound/weapons/guns/empty.wav' // [HORIZON-ADD] GunRework family default
 
 /obj/item/gun/energy/hd_gun/heavy_plasma/siren/Initialize(mapload)
 	. = ..()

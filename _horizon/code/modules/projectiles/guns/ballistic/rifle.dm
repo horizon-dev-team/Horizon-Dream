@@ -17,6 +17,10 @@
 	inhand_x_dimension = 32
 	inhand_y_dimension = 32
 	w_class = WEIGHT_CLASS_BULKY
+	pickup_sound = '_horizon/sound/weapons/guns/generic_draw.wav' // [HORIZON-ADD] GunRework family default
+	dry_fire_sound = '_horizon/sound/weapons/guns/empty.wav' // [HORIZON-ADD] GunRework family default
+	carry_weight = 2.5 KILOGRAMS // [HORIZON-ADD] GunRework family default
+	client_recoil_animation_information = list("strength" = 0.35, "duration" = 2) // [HORIZON-ADD] GunRework family default
 
 /obj/item/gun/ballistic/automatic/hd_gun/remis/abyss/warfare
 	icon = '_horizon/icons/obj/items/guns/alter/48x32.dmi'
@@ -380,6 +384,10 @@
 	can_be_sawn_off = FALSE
 	can_jam = FALSE
 	safety_flags = NONE
+	pickup_sound = '_horizon/sound/weapons/guns/generic_draw.wav' // [HORIZON-ADD] GunRework family default
+	dry_fire_sound = '_horizon/sound/weapons/guns/empty.wav' // [HORIZON-ADD] GunRework family default
+	carry_weight = 2.5 KILOGRAMS // [HORIZON-ADD] GunRework family default
+	client_recoil_animation_information = list("strength" = 0.35, "duration" = 2) // [HORIZON-ADD] GunRework family default
 
 /obj/item/gun/ballistic/rifle/boltaction/hd_gun/remis/federson
 	name = "\improper Dreaderson \"Brass Rain\" bolt-action rifle"

@@ -432,3 +432,6 @@
 #define USER_HUD_STYLE_INHERIT 1
 /// Change the icon to user's chosen hud style from their prefs
 #define USER_HUD_STYLE_PREFS 2
+
+/// Ammo counter screen object. [HORIZON-ADD] GunRework
+#define HUD_MOB_AMMO_COUNTER "mob_ammo_counter"

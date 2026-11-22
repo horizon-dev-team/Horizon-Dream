@@ -126,6 +126,22 @@
 	add_bayonet_point()
 	add_deep_lore()
 	RegisterSignal(src, COMSIG_ITEM_IN_UNWRAPPED_TRAITOR_MAIL, PROC_REF(on_mail_unwrap))
+	// [HORIZON-ADD] GunRework: folding stock / full auto / two-handed wield
+	// component / safety action / attachment holder
+	if(foldable)
+		add_item_action(/datum/action/item_action/toggle_stock)
+	if(full_auto)
+		initialize_full_auto()
+	if(wielded_inhand_state)
+		AddComponent(/datum/component/two_handed, \
+			wieldsound = '_horizon/sound/weapons/guns/stock_open.wav', \
+			unwieldsound = '_horizon/sound/weapons/guns/stock_close.wav')
+	if(safety_flags & GUN_SAFETY_HAS_SAFETY)
+		add_item_action(/datum/action/item_action/toggle_safety)
+	// Shiptest attachment system: every gun gets a holder component.
+	// handle_attack() only reacts to TRAIT_ATTACHABLE items and crowbars,
+	// so normal interactions are untouched.
+	AddComponent(/datum/component/attachment_holder, slot_available, valid_attachments, slot_offsets, default_attachments)
 
 /obj/item/gun/Destroy()
 	if(isobj(pin)) //Can still be the initial path, then we skip
@@ -216,6 +232,10 @@
 			. += span_warning("It appears heavily damaged.")
 		if(0 to 25)
 			. += span_boldwarning("It's falling apart!")
+
+	var/safety_readout = safety_examine(user) // [HORIZON-ADD] GunRework
+	if(LAZYLEN(safety_readout))
+		. += safety_readout
 
 // [HORIZON-EDIT] PHYSICS
 //called after the gun has successfully fired its chambered ammo.
@@ -345,6 +365,11 @@
 	if(.)
 		return
 
+	// [HORIZON-ADD] GunRework: right-click toggles the safety
+	if(safety_flags & GUN_SAFETY_HAS_SAFETY)
+		toggle_safety(user)
+		return SECONDARY_ATTACK_CANCEL_ATTACK_CHAIN
+
 	if(pinless)
 		return
 
@@ -417,6 +442,22 @@
 		return NONE
 	if(firing_burst)
 		return NONE
+
+	// [HORIZON-ADD] GunRework: no gun-bashing with safe-only guns, treat
+	// wounds instead of shooting when not in combat mode
+	if(flag)
+		if((safety_flags & GUN_SAFETY_NO_FLOGGING) && user?.combat_mode)
+			return NONE
+		if(iscarbon(target) && user && !user.combat_mode)
+				var/mob/living/carbon/carbon_target = target
+				for(var/datum/wound/wound as anything in carbon_target.all_wounds)
+					if(wound.try_treating(src, user))
+						return NONE
+	// Safety-on is a dry click. Pin failures already message inside handle_pins.
+	if(istype(user) && (safety_flags & GUN_SAFETY_ENABLED))
+		shoot_with_empty_chamber(user)
+		return NONE
+	before_can_shoot_checks(user)
 
 	if(SEND_SIGNAL(user, COMSIG_MOB_TRYING_TO_FIRE_GUN, src, target, flag, params) & COMPONENT_CANCEL_GUN_FIRE)
 		return NONE
@@ -491,8 +532,13 @@
 
 /obj/item/gun/can_trigger_gun(mob/living/user, akimbo_usage)
 	. = ..()
+	if(!.)
+		return .
 	if(!handle_pins(user))
 		return FALSE
+	if(safety_flags & GUN_SAFETY_ENABLED) // [HORIZON-ADD] GunRework: safety blocks the trigger
+		return FALSE
+	return TRUE
 
 /obj/item/gun/proc/handle_pins(mob/living/user)
 	if(pinless)
@@ -529,6 +575,10 @@
 		to_chat(user, span_warning("[src] is lethally chambered! You don't want to risk harming anyone..."))
 		firing_burst = FALSE
 		return FALSE
+
+	// [HORIZON-ADD] GunRework: extra spread when firing two-handed guns one-handed
+	if(spread_unwielded && !HAS_TRAIT(src, TRAIT_WIELDED))
+		random_spread += rand(0, spread_unwielded)
 
 	var/sprd = 0
 	if(randomspread)
@@ -593,6 +643,10 @@
 
 	SEND_SIGNAL(src, COMSIG_GUN_FIRED, user, target, params, zone_override)
 	SEND_SIGNAL(src, COMSIG_UPDATE_AMMO_HUD) // [HORIZON-ADD] GunRework
+
+	// [HORIZON-ADD] GunRework: extra spread when firing two-handed guns one-handed
+	if(spread_unwielded && !HAS_TRAIT(src, TRAIT_WIELDED))
+		bonus_spread += rand(0, spread_unwielded)
 
 	add_fingerprint(user)
 
@@ -774,3 +828,297 @@
 
 #undef FIRING_PIN_REMOVAL_DELAY
 #undef DUALWIELD_PENALTY_EXTRA_MULTIPLIER
+
+// =============================================================================
+// [HORIZON-ADD] GunRework
+// Safety, folding stocks, full auto, wielded in-hand sprites, unwielded
+// spread, Shiptest-style attachment slots and firing animations.
+// NOTE: generic draw/dry-fire sounds and the 2.5 kg base carry weight are
+// deliberately NOT set here - only the hd_gun families in _horizon use them.
+// =============================================================================
+
+/obj/item/gun
+	/// Flags related to gun safety
+	var/safety_flags = GUN_SAFETY_FLAGS_DEFAULT
+	/// Sound when safety is toggled on
+	var/safety_on_sound = '_horizon/sound/weapons/guns/safety1.ogg'
+	/// Sound when safety is toggled off
+	var/safety_off_sound = '_horizon/sound/weapons/guns/safety1.ogg'
+	/// Volume of safety toggle sounds (both on and off)
+	var/safety_sound_volume = 50
+	/// Whether to vary safety toggle sounds or not
+	var/safety_sound_vary = FALSE
+
+	// ~ICON VARIABLES
+	/// Mouse pointer icon when holding this gun while the safety is disabled
+	var/mouse_pointer_icon = '_horizon/icons/effects/mouse_pointers/weapon_pointer.dmi'
+	/// Does the gun have a unique icon_state when nothing is chambered?
+	var/empty_icon_state = FALSE
+	/// Does the gun have unique inhands when wielded?
+	var/wielded_inhand_state = FALSE
+	/// Does the inhand state get modifier when sawn?
+	var/sawn_inhand_state = FALSE
+
+	/// NO FULL AUTO IN BUILDINGS!
+	var/full_auto = FALSE
+
+	// ~SHIPTEST-STYLE UNWIELDED SPREAD
+	/// Extra random spread when firing this gun without a two-handed grip
+	/// (wielded_inhand_state guns). 0 = no penalty. Used with the laser sight
+	/// attachment, which reduces both spread and spread_unwielded.
+	var/spread_unwielded = 0
+
+	// Folding stock variables
+	/// Allows the gun's stock to be folded and unfolded.
+	var/foldable = FALSE
+	/// Whether the stock is folded or not.
+	var/folded = TRUE
+	/// The sound it makes when you fold a stock
+	var/fold_open_sound = '_horizon/sound/weapons/guns/stock_open.wav'
+	/// The sound it makes when you unfold a stock.
+	var/fold_close_sound = '_horizon/sound/weapons/guns/stock_close.wav'
+	/// Every time you fiddle with the stock
+	var/fiddle = '_horizon/sound/effects/fiddle.wav'
+
+	// ~Attachment system (Shiptest port)
+	/// Assoc list of attachment slot -> how many attachments fit in that slot
+	var/list/slot_available = ATTACHMENT_DEFAULT_SLOT_AVAILABLE
+	/// Whitelist of attachment types this gun accepts. Defaults to all attachments.
+	var/list/valid_attachments = list(/obj/item/attachment)
+	/// Assoc list of attachment slot -> list("x" = n, "y" = n) pixel offsets for that slot's overlay.
+	var/list/slot_offsets = list(ATTACHMENT_SLOT_RAIL = list("x" = 17, "y" = 17),)
+	/// Attachment typepaths this gun spawns with already installed.
+	var/list/default_attachments = null
+
+	// ~Firing animations
+	/// If set, shows a gunshot overlay when firing. Format: list("icon" = ..., "icon_state" = ..., "pixel_x" = ..., "pixel_y" = ..., "duration" = ..., "inactive_when_suppressed" = TRUE/FALSE)
+	var/list/gunshot_animation_information = null
+	/// If set, plays a recoil animation when firing. Format: list("recoil_angle_upper" = ..., "recoil_angle_lower" = ..., "recoil_speed" = ..., "return_speed" = ...)
+	var/list/recoil_animation_information = null
+	/// If set, applies client-side camera recoil when firing. Format: list("strength" = ..., "duration" = ..., "easing" = ...)
+	var/list/client_recoil_animation_information = null
+	var/doing_recoil_burst_animation = FALSE
+
+/obj/item/gun/update_icon(updates)
+	. = ..()
+	if(wielded_inhand_state)
+		if(HAS_TRAIT(src, TRAIT_WIELDED))
+			inhand_icon_state = "[initial(inhand_icon_state)][(sawn_off && sawn_inhand_state) ? "_sawn" : ""]_wielded"
+		else
+			inhand_icon_state = "[initial(inhand_icon_state)][(sawn_off && sawn_inhand_state) ? "_sawn" : ""]"
+	else if(sawn_inhand_state)
+		inhand_icon_state = "[initial(inhand_icon_state)][sawn_off ? "_sawn" : ""]"
+
+/obj/item/gun/update_overlays()
+	. = ..()
+	if(foldable)
+		//generally, the stock should be below everything else, otherwise it will look very fucked
+		var/image/folding_image = image(icon, src, "[base_icon_state]_[folded ? "folded" : "unfolded"]")
+		folding_image.layer = layer - 1
+		. += folding_image
+	if(safety_flags & GUN_SAFETY_HAS_SAFETY)
+		var/image/safety_overlay
+		if((safety_flags & GUN_SAFETY_ENABLED) && (safety_flags & GUN_SAFETY_OVERLAY_ENABLED))
+			safety_overlay = image(icon, src, "[base_icon_state]_safe")
+		else if(!(safety_flags & GUN_SAFETY_ENABLED) && (safety_flags & GUN_SAFETY_OVERLAY_DISABLED))
+			safety_overlay = image(icon, src, "[base_icon_state]_unsafe")
+		if(safety_overlay)
+			. += safety_overlay
+
+/obj/item/gun/add_weapon_description()
+	AddElement(/datum/element/weapon_description, PROC_REF(add_notes_gun))
+
+/obj/item/gun/equipped(mob/living/user, slot)
+	. = ..()
+	if(slot == ITEM_SLOT_HANDS)
+		user.update_mouse_pointer()
+
+/obj/item/gun/dropped(mob/user)
+	. = ..()
+	user.update_mouse_pointer()
+
+/// Drag the gun onto an open turf to (un)fold its stock.
+/obj/item/gun/mouse_drop_dragged(atom/over, mob/user, src_location, over_location, params)
+	. = ..()
+	if(!foldable)
+		return
+	if(!isliving(user) || !user.Adjacent(src) || HAS_TRAIT(user, TRAIT_INCAPACITATED))
+		return
+	if(isopenturf(over))
+		toggle_stock(user)
+
+/obj/item/gun/ui_action_click(mob/user, actiontype)
+	if(istype(actiontype, /datum/action/item_action/toggle_stock))
+		toggle_stock(user)
+	else if(istype(actiontype, /datum/action/item_action/toggle_safety))
+		toggle_safety(user)
+	else
+		return ..()
+
+/obj/item/gun/proc/initialize_full_auto()
+	if(!full_auto)
+		return FALSE
+	AddComponent(/datum/component/automatic_fire)
+
+/obj/item/gun/proc/add_notes_gun(mob/user)
+	. = list()
+	switch(weapon_weight)
+		if(WEAPON_HEAVY)
+			. += span_notice("<b>Weapon Weight:</b> Heavy")
+		if(WEAPON_MEDIUM)
+			. += span_notice("<b>Weapon Weight:</b> Medium")
+		if(WEAPON_LIGHT)
+			. += span_notice("<b>Weapon Weight:</b> Light")
+		else
+			. += span_notice("<b>Weapon Weight:</b> Invalid")
+
+/obj/item/gun/proc/before_can_shoot_checks(mob/living/user)
+	return TRUE
+
+/obj/item/gun/proc/safety_examine(mob/user)
+	. = list()
+	if(safety_flags & GUN_SAFETY_HAS_SAFETY)
+		var/safety_text = span_red("OFF")
+		if(safety_flags & GUN_SAFETY_ENABLED)
+			safety_text = span_green("ON")
+		. += "<b>Safety:</b> [safety_text]"
+
+/obj/item/gun/proc/toggle_safety(mob/user)
+	if(!(safety_flags & GUN_SAFETY_HAS_SAFETY))
+		return
+	if(safety_flags & GUN_SAFETY_ENABLED)
+		safety_flags &= ~GUN_SAFETY_ENABLED
+		if(safety_off_sound)
+			playsound(src, safety_off_sound, safety_sound_volume, safety_sound_vary)
+	else
+		safety_flags |= GUN_SAFETY_ENABLED
+		if(safety_on_sound)
+			playsound(src, safety_on_sound, safety_sound_volume, safety_sound_vary)
+	if(user)
+		to_chat(user, span_notice("I [safety_flags & GUN_SAFETY_ENABLED ? "enable" : "disable"] [src]'s safety."))
+		user.update_mouse_pointer()
+	update_appearance()
+	// Update safety HUD button icon
+	for(var/datum/action/item_action/toggle_safety/safety_action in actions)
+		safety_action.update_icon()
+
+/obj/item/gun/proc/toggle_stock(mob/user)
+	if(!foldable)
+		return
+	playsound(src, fiddle, 68, FALSE)
+	if(!do_after(user, 0.5 SECONDS, src))
+		return
+	if(!folded)
+		w_class--
+		folded = TRUE
+		playsound(src, fold_close_sound, 80, FALSE)
+		to_chat(user, span_notice("I fold [src]'s stock."))
+	else
+		w_class++
+		folded = FALSE
+		playsound(src, fold_open_sound, 80, FALSE)
+		to_chat(user, span_notice("I unfold [src]'s stock."))
+	update_appearance()
+
+/datum/action/item_action/toggle_stock
+	name = "Toggle Stock"
+	button_icon = '_horizon/icons/hud/actions.dmi'
+	button_icon_state = "stock"
+
+// =============================================================================
+// [HORIZON-ADD] GunRework: firing animations (gunshot overlay + recoil)
+// =============================================================================
+
+/// Plays gunshot overlay + recoil animation.
+/obj/item/gun/proc/firing_animation(mob/user, burst_fire = FALSE)
+	if(gunshot_animation_information)
+		INVOKE_ASYNC(src, PROC_REF(gunshot_animation), user, burst_fire)
+	if(recoil_animation_information)
+		INVOKE_ASYNC(src, PROC_REF(recoil_animation), user, burst_fire)
+
+/// Shows a muzzle flash overlay on the gun for a few ticks. Suppressed guns
+/// skip it when "inactive_when_suppressed" is set in the animation info.
+/obj/item/gun/proc/gunshot_animation(mob/user, burst_fire = FALSE)
+	if(suppressed && LAZYACCESS(gunshot_animation_information, "inactive_when_suppressed"))
+		return
+	var/shot_icon = gunshot_animation_information["icon"] || '_horizon/icons/effects/gunshot.dmi'
+	var/shot_icon_state = gunshot_animation_information["icon_state"] || "gunshot"
+	var/shot_duration = gunshot_animation_information["duration"] || 2
+	var/shot_pixel_x = gunshot_animation_information["pixel_x"] || 0
+	var/shot_pixel_y = gunshot_animation_information["pixel_y"] || 0
+	var/image/shots_fired = image(shot_icon, shot_icon_state, src, src.layer - 0.01)
+	shots_fired.pixel_x = shot_pixel_x
+	shots_fired.pixel_y = shot_pixel_y
+	add_overlay(shots_fired)
+	sleep(shot_duration)
+	cut_overlay(shots_fired)
+
+/// Rotates the gun slightly on fire, then returns to original position.
+/obj/item/gun/proc/recoil_animation(mob/user, burst_fire = FALSE)
+	if(doing_recoil_burst_animation)
+		return
+	if(burst_fire)
+		return recoil_animation_burst(user)
+	var/recoil_angle_upper = recoil_animation_information["recoil_angle_upper"] || -20
+	var/recoil_angle_lower = recoil_animation_information["recoil_angle_lower"] || -40
+	var/recoil_speed = recoil_animation_information["recoil_speed"] || 2
+	var return_speed = recoil_animation_information["return_speed"] || 2
+	var/recoil_easing = recoil_animation_information["recoil_easing"] || ELASTIC_EASING
+	var/return_easing = recoil_animation_information["return_easing"] || ELASTIC_EASING
+	var/matrix/return_matrix = matrix(transform)
+	var/matrix/recoil_matrix = matrix(transform)
+	recoil_matrix = recoil_matrix.Turn(rand(recoil_angle_lower, recoil_angle_upper))
+
+	animate(src, transform = recoil_matrix, time = recoil_speed, easing = recoil_easing)
+	sleep(recoil_speed)
+	animate(src, transform = return_matrix, time = return_speed, easing = return_easing)
+
+/// Burst fire recoil: more violent, with pixel offset.
+/obj/item/gun/proc/recoil_animation_burst(mob/user)
+	var/recoil_burst_angle_upper = recoil_animation_information["recoil_burst_angle_upper"] || -5
+	var/recoil_burst_angle_lower = recoil_animation_information["recoil_burst_angle_lower"] || -10
+	var/recoil_burst_speed = recoil_animation_information["recoil_burst_speed"] || 0.5
+	var/return_burst_speed = recoil_animation_information["return_burst_speed"] || 0.5
+	var/recoil_burst_easing = recoil_animation_information["recoil_burst_easing"] || ELASTIC_EASING
+	var/return_burst_easing = recoil_animation_information["return_burst_easing"] || ELASTIC_EASING
+	var/recoil_burst_pixel_x = recoil_animation_information["recoil_burst_pixel_x"] || -5
+	var/recoil_burst_pixel_y = recoil_animation_information["recoil_burst_pixel_y"] || 0
+	var/old_pixel_x = pixel_x
+	var/new_pixel_x = pixel_x+recoil_burst_pixel_x
+	var/old_pixel_y = pixel_y
+	var/new_pixel_y = pixel_y+recoil_burst_pixel_y
+	var/matrix/return_matrix = matrix(transform)
+	var/matrix/recoil_matrix = matrix(transform)
+	recoil_matrix = recoil_matrix.Turn(rand(recoil_burst_angle_lower, recoil_burst_angle_upper))
+	doing_recoil_burst_animation = TRUE
+	for(var/i in 1 to burst_size)
+		animate(src, transform = recoil_matrix, time = recoil_burst_speed, easing = recoil_burst_easing, flags = ANIMATION_PARALLEL)
+		animate(src, pixel_x = new_pixel_x, time = recoil_burst_speed, easing = recoil_burst_easing, flags = ANIMATION_PARALLEL)
+		animate(src, pixel_y = new_pixel_y, time = recoil_burst_speed, easing = recoil_burst_easing, flags = ANIMATION_PARALLEL)
+		sleep(recoil_burst_speed)
+		animate(src, transform = return_matrix, pixel_x = old_pixel_x, pixel_y = old_pixel_y, time = return_burst_speed, easing = return_burst_easing, flags = ANIMATION_PARALLEL)
+		animate(src, pixel_x = old_pixel_x, time = return_burst_speed, easing = return_burst_easing, flags = ANIMATION_PARALLEL)
+		animate(src, pixel_y = old_pixel_y, time = return_burst_speed, easing = return_burst_easing, flags = ANIMATION_PARALLEL)
+		sleep(return_burst_speed)
+	doing_recoil_burst_animation = FALSE
+// ======== [/HORIZON-ADD] ========
+
+/datum/action/item_action/toggle_safety
+	name = "Toggle Safety"
+	button_icon = '_horizon/icons/ui/gun_actions.dmi'
+	button_icon_state = "safety1"
+	default_button_position = "EAST-1:28,SOUTH+1:27"
+
+/datum/action/item_action/toggle_safety/New(Target)
+	. = ..()
+	update_icon()
+
+/datum/action/item_action/toggle_safety/proc/update_icon()
+	if(!target || !istype(target, /obj/item/gun))
+		return
+	var/obj/item/gun/G = target
+	if(G.safety_flags & GUN_SAFETY_ENABLED)
+		button_icon_state = "safety1"
+	else
+		button_icon_state = "safety0"
+	build_all_button_icons()

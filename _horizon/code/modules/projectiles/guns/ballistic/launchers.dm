@@ -1,6 +1,9 @@
 // grenade launcher
 /obj/item/gun/ballistic/revolver/grenadelauncher/hd_gun
 	pin = /obj/item/firing_pin
+	pickup_sound = '_horizon/sound/weapons/guns/generic_draw.wav' // [HORIZON-ADD] GunRework family default
+	dry_fire_sound = '_horizon/sound/weapons/guns/empty.wav' // [HORIZON-ADD] GunRework family default
+	carry_weight = 2.5 KILOGRAMS // [HORIZON-ADD] GunRework family default
 
 /obj/item/gun/ballistic/shotgun/grenadelauncher/hd_gun/batata
 	name = "40mm Batata Frita explosive fragmentation launcher"

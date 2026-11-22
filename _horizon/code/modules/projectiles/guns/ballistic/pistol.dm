@@ -20,6 +20,8 @@
 	rack_sound = '_horizon/sound/weapons/guns/pistol/pistol_rack.wav'
 	w_class = WEIGHT_CLASS_NORMAL
 	suppressor_x_offset = 10
+	dry_fire_sound = '_horizon/sound/weapons/guns/empty.wav' // [HORIZON-ADD] GunRework family default
+	client_recoil_animation_information = list("strength" = 0.35, "duration" = 2) // [HORIZON-ADD] GunRework family default
 
 // RUGER MKIV
 /obj/item/gun/ballistic/automatic/pistol/hd_gun/ruger

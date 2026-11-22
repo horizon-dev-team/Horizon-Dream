@@ -5,6 +5,7 @@
 	. = ..()
 	// [HORIZON-ADD] WIDE_HUD
 	add_screen_object(/atom/movable/screen/background_hud/human, HUD_HUMAN_BACKGROUND, HUD_GROUP_SCREEN_OVERLAYS)
+	add_screen_object(/atom/movable/screen/ammo_counter, HUD_MOB_AMMO_COUNTER, HUD_GROUP_INFO) // [HORIZON-ADD] GunRework
 	add_screen_object(/atom/movable/screen/background_hud/battery, HUD_HUMAN_EDGE_BATTERY, HUD_GROUP_SCREEN_OVERLAYS, ui_style)
 	add_screen_object(/atom/movable/screen/background_hud/edge/top, HUD_HUMAN_EDGE_TOP, HUD_GROUP_SCREEN_OVERLAYS, ui_style)
 	add_screen_object(/atom/movable/screen/background_hud/edge/bottom, HUD_HUMAN_EDGE_BOTTOM, HUD_GROUP_SCREEN_OVERLAYS, ui_style)

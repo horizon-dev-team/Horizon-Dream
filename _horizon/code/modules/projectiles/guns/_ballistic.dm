@@ -297,38 +297,12 @@
 
 /obj/item/gun/ballistic/proc/chamber_examine(mob/user)
 	. = list()
-	var/p_They = p_they(TRUE)
 	var/p_Their = p_their(TRUE)
-	var/p_are = p_are()
 	var/p_have = p_have()
-	if(!chambered)
-		. += "[p_They] [span_green("[p_do()] not [p_have()]")] a round chambered."
-	else
-		. += "[p_They] [span_red("[p_have()]")] a round chambered."
 	if(bolt_type == BOLT_TYPE_BREAK_ACTION)
 		. += "[p_Their] [cylinder_wording] is [cylinder_open ? span_green("open") : span_red("closed")]."
 		if(cylinder_open)
 			. += span_notice("Z ejects spent [cartridge_wording]s or closes it; right-click dumps everything.")
-	if(bolt_locked)
-		switch(bolt_wording)
-			if("pump")
-				. += "[p_They] [p_are] [span_green("not pumped")]."
-			if("hammer")
-				. += "[p_Their] [bolt_wording] is [span_green("uncocked")]."
-			if("bolt")
-				. += "[p_Their] [bolt_wording] is [span_green("open.")]"
-			else
-				. += "[p_Their] [bolt_wording] is [span_green("locked")]."
-	else
-		switch(bolt_wording)
-			if("pump")
-				. += "[p_Their] [p_are] [span_red("pumped")]."
-			if("hammer")
-				. += "[p_Their] [bolt_wording] is [span_red("cocked")]."
-			if("bolt")
-				. += "[p_Their] [bolt_wording] is [span_red("closed")]."
-			else
-				. += "[p_Their] [bolt_wording] is [span_red("unlocked")]."
 	if(cylinder_open)
 		var/all_ammo = get_ammo(FALSE, FALSE)
 		. += "[p_they(TRUE)] [p_have] [all_ammo ? all_ammo : "no"] round\s remaining."

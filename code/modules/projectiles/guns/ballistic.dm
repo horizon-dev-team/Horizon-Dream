@@ -252,12 +252,22 @@
  *
  **/
 /obj/item/gun/ballistic/proc/add_notes_ballistic()
+	// [HORIZON-EDIT] Chamber pressure line (was in examine)
+	var/pressure_readout = "an indescribable"
+	switch(pressure_threshold)
+		if(-INFINITY to AMMO_CASING_PRESSURE_LOW)
+			pressure_readout = "a low"
+		if(AMMO_CASING_PRESSURE_MEDIUM)
+			pressure_readout = "a standard"
+		if(AMMO_CASING_PRESSURE_EXTREME to INFINITY)
+			pressure_readout = "an extreme"
+	var/pressure_line = "\nIt should be able to handle [pressure_readout] amount of chamber pressure."
 	if(magazine) // Make sure you have a magazine, to get the notes from
-		return "\n[magazine.add_notes_box()]"
+		return "[pressure_line]\n[magazine.add_notes_box()]"
 	else if(chambered) // if you don't have a magazine, is there something chambered?
-		return "\n[chambered.add_notes_ammo()]"
+		return "[pressure_line]\n[chambered.add_notes_ammo()]"
 	else // we have a very expensive mechanical paperweight.
-		return "\nThe lack of magazine and usable cartridge in chamber makes its usefulness questionable, at best."
+		return "[pressure_line]\nThe lack of magazine and usable cartridge in chamber makes its usefulness questionable, at best."
 
 /obj/item/gun/ballistic/vv_edit_var(vname, vval)
 	. = ..()
@@ -700,25 +710,19 @@
 /obj/item/gun/ballistic/examine(mob/user)
 	. = ..()
 	var/count_chambered = !(bolt_type == BOLT_TYPE_NO_BOLT || bolt_type == BOLT_TYPE_OPEN)
-	. += "<b>Capacity:</b> [icon2html(GUN_INFO_ICON_SET, user, "magazine")] [get_ammo(count_chambered)]/[magazine ? magazine.max_ammo : initial(accepted_magazine_type.max_ammo)] round\s remaining."
+	. += "<b>Capacity:</b> [icon2html(GUN_INFO_ICON_SET, user, "magazine")] [get_ammo(count_chambered)]/[magazine ? magazine.max_ammo : initial(accepted_magazine_type.max_ammo)]"
 
-	if (!chambered && !hidden_chambered)
-		. += "It does not seem to have a round chambered."
+	// [HORIZON-EDIT] Shown only when it matters (rounds in the magazine but nothing chambered). Original, disabled:
+	// if (!chambered && !hidden_chambered)
+	// 	. += "It does not seem to have a round chambered."
+	if (!chambered && !hidden_chambered && get_ammo(FALSE, FALSE))
+		. += span_warning("Chamber empty.")
 	if (bolt_locked)
-		. += "The [bolt_wording] is locked back and needs to be released before firing or de-fouling."
+		. += "The [bolt_wording] is locked back." // [HORIZON-EDIT] shortened
 	if (suppressor)
 		. += "It has a suppressor [can_unsuppress ? "attached that can be removed with <b>alt+click</b>." : "that is integral or can't otherwise be removed."]"
 
-	var/pressure_readout = "an indescribable"
-	switch(pressure_threshold)
-		if(-INFINITY to AMMO_CASING_PRESSURE_LOW)
-			pressure_readout = "a low"
-		if(AMMO_CASING_PRESSURE_MEDIUM)
-			pressure_readout = "a standard"
-		if(AMMO_CASING_PRESSURE_EXTREME to INFINITY)
-			pressure_readout = "an extreme"
-
-	. += "It should be able to handle [pressure_readout] amount of chamber pressure."
+	// [HORIZON-EDIT] Chamber pressure moved to add_notes_ballistic (the "look closer" weapon description)
 
 	if(chambered && !hidden_chambered && chambered.casing_pressure > pressure_threshold && !never_misfire)
 		. += span_danger("You get the feeling this might explode if you fire it with the currently loaded round...")

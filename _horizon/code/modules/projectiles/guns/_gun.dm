@@ -176,7 +176,7 @@
 		var/safety_text = span_red("OFF")
 		if(safety_flags & GUN_SAFETY_ENABLED)
 			safety_text = span_green("ON")
-		. += "[p_their(TRUE)] safety is [safety_text]."
+		. += "<b>Safety:</b> [safety_text]"
 
 /obj/item/gun/proc/toggle_safety(mob/user)
 	if(!(safety_flags & GUN_SAFETY_HAS_SAFETY))

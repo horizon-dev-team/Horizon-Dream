@@ -194,14 +194,19 @@
 /obj/item/gun/examine(mob/user)
 	. = ..()
 	if(!pinless)
+		// [HORIZON-EDIT] One line for the pin instead of "It has a pin installed" + removal hint. Original, disabled:
+		// if(pin)
+		// 	. += "It has \a [pin] installed."
+		// 	if(pin.pin_removable)
+		// 		. += span_info("[pin] looks like [pin.p_they()] could be removed with some <b>tools</b>.")
+		// 	else
+		// 		. += span_info("[pin] looks like [pin.p_theyre()] firmly locked in, [pin.p_they()] look[pin.p_s()] impossible to remove.")
+		// else
+		// 	. += "It doesn't have a <b>firing pin</b> installed, and won't fire."
 		if(pin)
-			. += "It has \a [pin] installed."
-			if(pin.pin_removable)
-				. += span_info("[pin] looks like [pin.p_they()] could be removed with some <b>tools</b>.")
-			else
-				. += span_info("[pin] looks like [pin.p_theyre()] firmly locked in, [pin.p_they()] look[pin.p_s()] impossible to remove.")
+			. += "<b>Firing pin:</b> [replacetext(pin.name, " firing pin", "")]."
 		else
-			. += "It doesn't have a <b>firing pin</b> installed, and won't fire."
+			. += span_warning("<b>No firing pin</b> installed, it won't fire.")
 
 	var/healthpercent = (atom_integrity/max_integrity) * 100
 	switch(healthpercent)

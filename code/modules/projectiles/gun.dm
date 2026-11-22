@@ -247,10 +247,13 @@
 	playsound(src, dry_fire_sound, dry_fire_sound_volume, TRUE)
 
 /obj/item/gun/proc/fire_sounds()
+	var/sound_to_play // [HORIZON-EDIT] GunRework: fire/suppressed sounds may be lists, pick() one each shot
 	if(suppressed)
-		playsound(src, suppressed_sound, suppressed_volume, vary_fire_sound, ignore_walls = FALSE, extrarange = SILENCED_SOUND_EXTRARANGE, falloff_distance = 0)
+		sound_to_play = islist(suppressed_sound) ? pick(suppressed_sound) : suppressed_sound
+		playsound(src, sound_to_play, suppressed_volume, vary_fire_sound, ignore_walls = FALSE, extrarange = SILENCED_SOUND_EXTRARANGE, falloff_distance = 0)
 	else
-		playsound(src, fire_sound, fire_sound_volume, vary_fire_sound)
+		sound_to_play = islist(fire_sound) ? pick(fire_sound) : fire_sound
+		playsound(src, sound_to_play, fire_sound_volume, vary_fire_sound)
 
 /obj/item/gun/proc/muzzle_flash_on()
 	if (can_muzzle_flash)

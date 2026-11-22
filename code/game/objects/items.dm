@@ -668,7 +668,9 @@ GAME_VERB_SRC(/obj/item, move_to_top, oview(1), "Move To Top", null)
 	return FALSE
 
 /obj/item/proc/sound_chain(sound_to_play, volume = HALFWAY_SOUND_VOLUME, target = src)
-	if(sound_to_play)
+	if(sound_to_play) // [HORIZON-EDIT] GunRework: sound_to_play may be a list, pick() one
+		if(islist(sound_to_play))
+			sound_to_play = pick(sound_to_play)
 		playsound(target, sound_to_play, volume, sound_vary, ignore_walls = FALSE)
 		return TRUE
 	return FALSE

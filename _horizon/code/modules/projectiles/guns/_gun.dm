@@ -65,7 +65,7 @@
 /obj/item/gun/update_icon(updates)
 	. = ..()
 	if(wielded_inhand_state)
-		if(SEND_SIGNAL(src, COMSIG_TWOHANDED_WIELD_CHECK))
+		if(HAS_TRAIT(src, TRAIT_WIELDED)) // [HORIZON-EDIT] core /datum/component/two_handed grants this trait while wielded
 			inhand_icon_state = "[initial(inhand_icon_state)][(sawn_off && sawn_inhand_state) ? "_sawn" : ""]_wielded"
 		else
 			inhand_icon_state = "[initial(inhand_icon_state)][(sawn_off && sawn_inhand_state) ? "_sawn" : ""]"

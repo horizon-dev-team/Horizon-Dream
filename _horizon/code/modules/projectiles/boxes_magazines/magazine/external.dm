@@ -270,10 +270,8 @@
 	icon = '_horizon/icons/obj/items/ammo/shotgun.dmi'
 	icon_state = "m12"
 	base_icon_state = "m12"
-
-/obj/item/ammo_box/magazine/m12g/update_icon_state()
-	. = ..()
-	icon_state = "[base_icon_state]-[ammo_count() ? 8 : 0]"
+// (no update_icon_state override: core's "[base_icon_state]-[ceil(ammo_count(FALSE)/8)*8]"
+// already yields m12-8/m12-0 for the 8-round drum)
 
 /obj/item/ammo_box/magazine/m12g/stun
 	icon_state = "m12"

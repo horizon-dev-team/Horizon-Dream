@@ -1,5 +1,5 @@
 /obj/item/ammo_casing
-	carry_weight = 20 GRAMS
+	// (carry_weight is owned by weight_balance.dm: 12 GRAMS base + per-casing overrides)
 	var/world_icon = '_horizon/icons/obj/items/ammo/casings_world.dmi'
 	var/world_icon_state = "s-casing"
 

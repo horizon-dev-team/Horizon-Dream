@@ -1035,8 +1035,8 @@ GLOBAL_LIST_INIT(gun_saw_types, typecacheof(list(
 
 /obj/item/suppressor
 	name = "suppressor"
-	desc = "A syndicate small-arms suppressor for maximum espionage."
-	icon = 'icons/obj/weapons/guns/ballistic.dmi'
+	desc = "A multi-caliber suppressor for the discreet massacre of homeless, children, and homeless children." // [HORIZON-EDIT] GunRework
+	icon = '_horizon/icons/obj/items/gun_mods/mods.dmi' // [HORIZON-EDIT] GunRework
 	icon_state = "suppressor"
 	w_class = WEIGHT_CLASS_TINY
 	custom_materials = list(/datum/material/iron = SHEET_MATERIAL_AMOUNT, /datum/material/silver = HALF_SHEET_MATERIAL_AMOUNT)

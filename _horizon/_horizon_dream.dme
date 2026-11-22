@@ -86,6 +86,7 @@
 #include "code\modules\projectiles\boxes_magazines\stucks\ammo_stack_types.dm"
 #include "code\modules\projectiles\guns\_automatic.dm"
 #include "code\modules\projectiles\guns\_ballistic.dm"
+#include "code\modules\projectiles\guns\_energy.dm"
 #include "code\modules\projectiles\guns\_gun.dm"
 #include "code\modules\projectiles\guns\_gun_defines.dm"
 #include "code\modules\projectiles\guns\_pin.dm"

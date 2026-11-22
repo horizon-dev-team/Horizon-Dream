@@ -287,7 +287,7 @@
 	var/obj/item/ammo_casing/top_round = get_round()
 	if(!top_round)
 		return
-	. += "It has <b>[shells_left]</b> [casing_phrasing]\s remaining."
+	. += "<b>Capacity:</b> [icon2html(GUN_INFO_ICON_SET, user, "magazine")] [shells_left]/[max_ammo] - [casing_phrasing]\s."
 	// this is kind of awkward phrasing, but it's the top/ready ammo in the box
 	// intended for people who have like three mislabeled magazines
 	. += span_notice("\A <b>[top_round]</b> is ready.")

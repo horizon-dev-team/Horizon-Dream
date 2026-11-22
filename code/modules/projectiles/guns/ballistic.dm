@@ -730,12 +730,12 @@
 		. += span_warning("Given the state of the gun, there is a [EXAMINE_HINT("[misfire_probability]%")] chance it'll misfire.")
 
 ///Gets the number of bullets in the gun
-/obj/item/gun/ballistic/proc/get_ammo(countchambered = TRUE)
+/obj/item/gun/ballistic/proc/get_ammo(countchambered = TRUE, countempties = TRUE)
 	var/bullets = 0 //No silly variable names on my watch.
 	if (chambered && countchambered)
 		bullets++
 	if (magazine)
-		bullets += magazine.ammo_count()
+		bullets += magazine.ammo_count(countempties)
 	return bullets
 
 ///gets a list of every bullet in the gun

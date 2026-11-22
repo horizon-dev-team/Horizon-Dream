@@ -292,9 +292,4 @@
 /obj/item/gun/ballistic/get_ammo(countchambered = TRUE, countempties = TRUE)
 	if(bolt_type == BOLT_TYPE_BREAK_ACTION)
 		countchambered = FALSE
-	var/bullets = 0
-	if(chambered && countchambered)
-		bullets++
-	if(magazine)
-		bullets += magazine.ammo_count(countempties)
-	return bullets
+	return ..(countchambered, countempties)

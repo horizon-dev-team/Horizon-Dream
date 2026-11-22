@@ -2,10 +2,6 @@
 // Signals missing from upstream /tg/station codebase but referenced by
 // horizon mechanics (projectile embedding, gunpoint, storage, wound messages).
 
-// ~ Gun ammo HUD
-/// Sent to gun to update the ammo HUD overlay. (gun)
-#define COMSIG_UPDATE_AMMO_HUD "update_ammo_hud"
-
 // ~ Projectile embedding
 /// From base of /obj/projectile/proc/process_hit(): sent to projectile when it tries to embed in a target.
 /// (firer, target, result, mode)

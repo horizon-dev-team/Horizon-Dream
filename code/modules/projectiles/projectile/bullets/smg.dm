@@ -2,8 +2,8 @@
 
 /obj/projectile/bullet/c45
 	name = ".45 bullet"
-	damage = 30
-	wound_bonus = -10
+	damage = 35 // [HORIZON-EDIT] GunRework (was 30)
+	wound_bonus = 0 // [HORIZON-EDIT] GunRework (was -10)
 	wound_falloff_tile = -10
 
 /obj/projectile/bullet/c45/ap

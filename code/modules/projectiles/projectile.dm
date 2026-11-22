@@ -5,7 +5,7 @@
 
 /obj/projectile
 	name = "projectile"
-	icon = 'icons/obj/weapons/guns/projectiles.dmi'
+	icon = '_horizon/icons/obj/items/guns/projectiles/projectiles.dmi' // [HORIZON-EDIT] GunRework
 	icon_state = "bullet"
 	abstract_type = /obj/projectile
 	density = FALSE
@@ -102,7 +102,7 @@
 	var/hit_threshhold = PROJECTILE_HIT_THRESHHOLD_LAYER
 
 	/// How many tiles we pass in a single SSprojectiles tick
-	var/speed = 1.25
+	var/speed = 2 // [HORIZON-EDIT] GunRework (was 1.25)
 
 	/// The current angle of the projectile. Initially null, so if the arg is missing from [/fire()], we can calculate it from firer and target as fallback.
 	var/angle

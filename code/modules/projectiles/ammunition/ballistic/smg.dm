@@ -21,6 +21,10 @@
 /obj/item/ammo_casing/c45
 	name = ".45 bullet casing"
 	desc = "A .45 bullet casing."
+	icon = '_horizon/icons/obj/items/ammo/casings.dmi' // [HORIZON-ADD] GunRework
+	icon_state = "c45" // [HORIZON-ADD] GunRework
+	base_icon_state = "c45" // [HORIZON-ADD] GunRework
+	stack_type = /obj/item/ammo_box/magazine/ammo_stack/c45 // [HORIZON-ADD] GunRework
 	caliber = CALIBER_45
 	projectile_type = /obj/projectile/bullet/c45
 

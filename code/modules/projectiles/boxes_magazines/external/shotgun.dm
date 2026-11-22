@@ -1,8 +1,9 @@
 /obj/item/ammo_box/magazine/m12g
 	name = "shotgun magazine (12g buckshot shells)"
 	desc = "A drum magazine of shotgun shells, suitable for the Bulldog combat shotgun."
-	icon_state = "m12gb"
-	base_icon_state = "m12gb"
+	icon = '_horizon/icons/obj/items/ammo/shotgun.dmi' // [HORIZON-EDIT] GunRework
+	icon_state = "m12" // [HORIZON-EDIT] GunRework
+	base_icon_state = "m12" // [HORIZON-EDIT] GunRework
 	ammo_type = /obj/item/ammo_casing/shotgun/buckshot/milspec
 	caliber = CALIBER_SHOTGUN
 	max_ammo = 8
@@ -14,32 +15,32 @@
 
 /obj/item/ammo_box/magazine/m12g/stun
 	name = "shotgun magazine (12g taser slugs)"
-	icon_state = "m12gs"
-	base_icon_state = "m12gs"
+	icon_state = "m12" // [HORIZON-EDIT] GunRework
+	base_icon_state = "m12" // [HORIZON-EDIT] GunRework
 	ammo_type = /obj/item/ammo_casing/shotgun/stunslug
 
 /obj/item/ammo_box/magazine/m12g/slug
 	name = "shotgun magazine (12g slugs)"
-	icon_state = "m12gsl"
-	base_icon_state = "m12gsl"
+	icon_state = "m12" // [HORIZON-EDIT] GunRework
+	base_icon_state = "m12" // [HORIZON-EDIT] GunRework
 	ammo_type = /obj/item/ammo_casing/shotgun/milspec
 
 /obj/item/ammo_box/magazine/m12g/dragon
 	name = "shotgun magazine (12g dragon's breath)"
-	icon_state = "m12gf"
-	base_icon_state = "m12gf"
+	icon_state = "m12" // [HORIZON-EDIT] GunRework
+	base_icon_state = "m12" // [HORIZON-EDIT] GunRework
 	ammo_type = /obj/item/ammo_casing/shotgun/dragonsbreath
 
 /obj/item/ammo_box/magazine/m12g/bioterror
 	name = "shotgun magazine (12g bioterror)"
-	icon_state = "m12gt"
-	base_icon_state = "m12gt"
+	icon_state = "m12" // [HORIZON-EDIT] GunRework
+	base_icon_state = "m12" // [HORIZON-EDIT] GunRework
 	ammo_type = /obj/item/ammo_casing/shotgun/dart/bioterror
 
 /obj/item/ammo_box/magazine/m12g/meteor
 	name = "shotgun magazine (12g meteor slugs)"
-	icon_state = "m12gbc"
-	base_icon_state = "m12gbc"
+	icon_state = "m12" // [HORIZON-EDIT] GunRework
+	base_icon_state = "m12" // [HORIZON-EDIT] GunRework
 	ammo_type = /obj/item/ammo_casing/shotgun/meteorslug
 
 /obj/item/ammo_box/magazine/m12g/flechette
@@ -67,3 +68,20 @@
 		. += span_warning("<i>Oh god, where did they pull this from, a landfill?</i>")
 		human_sniffer.add_mood_event("stink-pocket", /datum/mood_event/disgusted)
 
+
+// ======== [HORIZON-ADD] GunRework: hd_gun shotgun magazines ========
+/obj/item/ammo_box/magazine/abyss_shotgun_drum
+	name = "\improper Abyss Shotgun magazine"
+	desc = "A 20-shell capacity magazine for the AN-12 shotgun."
+	icon = '_horizon/icons/obj/items/ammo/shotgun.dmi'
+	icon_state = "saiga_drum"
+	base_icon_state = "saiga_drum"
+	ammo_type = /obj/item/ammo_casing/shotgun/buckshot
+	caliber = CALIBER_SHOTGUN
+	max_ammo = 20
+	multiple_sprites = AMMO_BOX_ONE_SPRITE
+
+/obj/item/ammo_box/magazine/abyss_shotgun_drum/update_icon_state()
+	. = ..()
+	icon_state = "[base_icon_state]-[ammo_count() ? max_ammo : 0]"
+// ======== [/HORIZON-ADD] ========

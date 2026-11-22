@@ -13,16 +13,16 @@
 // .38 (Detective's Gun)
 
 /obj/projectile/bullet/c38
-	name = ".38 bullet"
-	damage = 25
+	name = ".38 suspicious bullet" // [HORIZON-EDIT] GunRework
+	damage = 28 // [HORIZON-EDIT] GunRework (was 25)
 	ricochets_max = 2
-	ricochet_chance = 50
+	ricochet_chance = 20 // [HORIZON-EDIT] GunRework (was 50)
 	ricochet_auto_aim_angle = 10
 	ricochet_auto_aim_range = 3
-	wound_bonus = -20
+	wound_bonus = 0 // [HORIZON-EDIT] GunRework (was -20)
 	exposed_wound_bonus = 10
 	embed_type = /datum/embedding/bullet/c38
-	embed_falloff_tile = -4
+	embed_falloff_tile = 0 // [HORIZON-EDIT] GunRework (was -4)
 
 /datum/embedding/bullet/c38
 	embed_chance = 25
@@ -188,3 +188,24 @@
 	if(reagents.flags & NO_REACT) //first impact on a noncarbon
 		reagents.flags &= ~(NO_REACT)
 		reagents.handle_reactions()
+
+// ======== [HORIZON-ADD] GunRework: hd_gun revolver bullets ========
+/obj/projectile/bullet/a357
+	name = ".357 magnum bullet"
+	damage = 48
+	wound_bonus = 0
+	wound_falloff_tile = -2
+
+/obj/projectile/bullet/c38/pluspee
+	name = ".38 suspicious bullet"
+	damage = 34
+	wound_bonus = 2
+	embed_falloff_tile = 0
+	ricochet_chance = 20
+
+/obj/projectile/bullet/a500
+	name = ".500 magnum bullet"
+	damage = 60
+	wound_bonus = 0
+	wound_falloff_tile = -2
+// ======== [/HORIZON-ADD] ========

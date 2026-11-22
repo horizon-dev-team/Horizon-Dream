@@ -3,7 +3,11 @@
 /obj/item/ammo_casing/shotgun
 	name = "shotgun slug"
 	desc = "A 12 gauge lead slug."
-	icon_state = "blshell"
+	icon = '_horizon/icons/obj/items/ammo/casings.dmi' // [HORIZON-ADD] GunRework
+	icon_state = "12gauge_slug" // [HORIZON-EDIT] GunRework
+	base_icon_state = "12gauge_slug" // [HORIZON-ADD] GunRework
+	world_icon_state = "gshells" // [HORIZON-ADD] GunRework
+	stack_type = /obj/item/ammo_box/magazine/ammo_stack/shotgun // [HORIZON-ADD] GunRework
 	worn_icon_state = "shell"
 	caliber = CALIBER_SHOTGUN
 	custom_materials = list(/datum/material/iron=SHEET_MATERIAL_AMOUNT*2)
@@ -30,7 +34,9 @@
 /obj/item/ammo_casing/shotgun/beanbag
 	name = "beanbag slug"
 	desc = "A weak beanbag slug for riot control."
-	icon_state = "bshell"
+	icon_state = "12gauge" // [HORIZON-EDIT] GunRework
+	base_icon_state = "12gauge" // [HORIZON-ADD] GunRework
+	world_icon_state = "gshell" // [HORIZON-ADD] GunRework
 	custom_materials = list(/datum/material/iron = SMALL_MATERIAL_AMOUNT * 3)
 	projectile_type = /obj/projectile/bullet/shotgun_beanbag
 
@@ -89,10 +95,12 @@
 /obj/item/ammo_casing/shotgun/buckshot
 	name = "buckshot shell"
 	desc = "A 12 gauge buckshot shell."
-	icon_state = "gshell"
+	icon_state = "12gauge" // [HORIZON-EDIT] GunRework
+	base_icon_state = "12gauge" // [HORIZON-ADD] GunRework
+	world_icon_state = "gshell" // [HORIZON-ADD] GunRework
 	projectile_type = /obj/projectile/bullet/pellet/shotgun_buckshot
-	pellets = 6
-	variance = 15
+	pellets = 8 // [HORIZON-EDIT] GunRework (was 6)
+	variance = 4.5 // [HORIZON-EDIT] GunRework (was 15)
 	randomspread = TRUE
 
 /obj/item/ammo_casing/shotgun/buckshot/old
@@ -116,10 +124,12 @@
 /obj/item/ammo_casing/shotgun/rubbershot
 	name = "rubber shot"
 	desc = "A shotgun casing filled with densely-packed rubber balls, used to incapacitate crowds from a distance."
-	icon_state = "rshell"
+	icon_state = "12gauge" // [HORIZON-EDIT] GunRework
+	base_icon_state = "12gauge" // [HORIZON-ADD] GunRework
+	world_icon_state = "gshell" // [HORIZON-ADD] GunRework
 	projectile_type = /obj/projectile/bullet/pellet/shotgun_rubbershot
-	pellets = 6
-	variance = 15
+	pellets = 12 // [HORIZON-EDIT] GunRework (was 6)
+	variance = 4 // [HORIZON-EDIT] GunRework (was 15)
 	randomspread = TRUE
 	custom_materials = list(/datum/material/iron = SMALL_MATERIAL_AMOUNT * 3)
 
@@ -133,14 +143,13 @@
 	custom_materials = list(/datum/material/iron=SHEET_MATERIAL_AMOUNT*2)
 
 /obj/item/ammo_casing/shotgun/flechette
-	name = "flechette shell"
-	desc = "A shotgun casing filled with small metal darts. Pokes many tiny holes into meat and kevlar alike. Useful for turning someones insides \
-		into outsides."
+	name = "shotgun flechette" // [HORIZON-EDIT] GunRework
+	desc = "A 12 gauge steel flechette. Contains 20 individual projectiles" // [HORIZON-EDIT] GunRework
 	icon_state = "flechette"
-	projectile_type = /obj/projectile/bullet/pellet/flechette
+	projectile_type = /obj/projectile/bullet/pellet/shotgun_flechette // [HORIZON-EDIT] GunRework
 	custom_materials = list(/datum/material/iron = SMALL_MATERIAL_AMOUNT * 3, /datum/material/glass = SMALL_MATERIAL_AMOUNT * 2)
-	pellets = 8
-	variance = 10
+	pellets = 20 // [HORIZON-EDIT] GunRework (was 8)
+	variance = 18.5 // [HORIZON-EDIT] GunRework (was 10)
 
 /obj/item/ammo_casing/shotgun/flechette/donk
 	name = "\improper Donk Co. 'Donk Spike' Shell"
@@ -242,3 +251,35 @@
 	icon_state = "breacher"
 	projectile_type = /obj/projectile/bullet/shotgun_breaching
 	custom_materials = list(/datum/material/iron=SHEET_MATERIAL_AMOUNT*2)
+
+// ======== [HORIZON-ADD] GunRework ========
+/// 0.1% of all spawned slugs are Reggie. He likes penetrating IIIA body armor.
+/obj/item/ammo_casing/shotgun/Initialize(mapload)
+	if((type == /obj/item/ammo_casing/shotgun) && prob(0.1))
+		name = "reggie slug"
+		desc = "Hi, my name is Reggie, I like penetrating IIIA body armor."
+	return ..()
+
+// 4 gauge KS-23 shells (Destruidor de Bolas)
+/obj/item/ammo_casing/shotgun/bolas
+	name =  "Consumidor de Buceta 4 guage slug"
+	desc = "A 4 gauge destructive slug designed with the purpose of destroying armored structures at a range. \
+		But It can destroy flesh, too."
+	icon_state = "8gauge"
+	base_icon_state = "8gauge"
+	world_icon_state = "8gshell"
+	caliber = CALIBER_KS23
+	projectile_type = /obj/projectile/bullet/shotgun_bolas
+	stack_type = /obj/item/ammo_box/magazine/ammo_stack/shotgun/bolas
+
+/obj/item/ammo_casing/shotgun/bolas/buckshot
+	name = "Estuprador-3 4 gauge buckshot"
+	desc = "A 4 gauge anti-personnel buckshot shell for the sole purpose of completely fucking obliterating soft tissue from close range."
+	icon_state = "8gauge"
+	base_icon_state = "8gauge"
+	world_icon_state = "8gshell"
+	caliber = CALIBER_KS23
+	pellets = 10
+	variance = 10
+	projectile_type = /obj/projectile/bullet/pellet/shotgun_bolas/buckshot
+// ======== [/HORIZON-ADD] ========

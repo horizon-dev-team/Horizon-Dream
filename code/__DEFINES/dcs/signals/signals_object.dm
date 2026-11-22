@@ -725,3 +725,42 @@
 #define COMSIG_MOVABLE_BLOCKING_AIRLOCK "movable_blocking_airlock"
 	/// Forces the airlock to crush whatever's blocking it even if it normally wouldn't
 	#define AIRLOCK_BLOCK_FORCE_CRUSH (1<<0)
+
+// ======== [HORIZON-ADD] GunRework ========
+/// Sent to a gun when its ammo count changes and the ammo HUD needs a refresh. (gun)
+#define COMSIG_UPDATE_AMMO_HUD "update_ammo_hud"
+
+// ~Gun attachment system signals
+/// From /datum/component/attachment/handle_attach(): sent to the attachment when it was attached to a gun. (gun, user)
+#define COMSIG_ATTACHMENT_ATTACH "attach-attach"
+/// From /datum/component/attachment/handle_detach(): sent to the attachment when it was detached from a gun. (gun, user)
+#define COMSIG_ATTACHMENT_DETACH "attach-detach"
+/// From /datum/component/attachment/on_examine(): sent to the attachment so it can add examine text. (attachment, user, examine list)
+#define COMSIG_ATTACHMENT_EXAMINE "attach-examine"
+/// From /obj/item/gun/fire_gun(): sent to a gun's attachments before firing, allows blocking the shot. (gun, user, target, flag, params)
+#define COMSIG_ATTACHMENT_TRY_FIRE_GUN "attach-try-fire-gun"
+/// From /datum/component/attachment_holder/handle_attack(): sent to the attachment before the gun's pre_attack. (gun, target, user, params)
+#define COMSIG_ATTACHMENT_PRE_ATTACK "attach-pre-attack"
+/// From /datum/component/attachment_holder/handle_attacked(): sent to the attachment when the gun is attacked by an item. (gun, user, item)
+#define COMSIG_ATTACHMENT_ATTACK "attach-attacked"
+/// From /datum/component/attachment_holder/handle_wield(): sent to the attachment when the gun is wielded. (gun, user, params)
+#define COMSIG_ATTACHMENT_WIELD "attach-wield"
+/// From /datum/component/attachment_holder/handle_unwield(): sent to the attachment when the gun is unwielded. (gun, user, params)
+#define COMSIG_ATTACHMENT_UNWIELD "attach-unwield"
+/// From /datum/component/attachment_holder/update_overlays(): sent to the attachment to update its overlay. (gun)
+#define COMSIG_ATTACHMENT_UPDATE_OVERLAY "attach-overlay"
+/// From /datum/component/attachment_holder/handle_ctrl_click(): sent to the attachment on ctrl+click of the gun. (gun, user, params)
+#define COMSIG_ATTACHMENT_CTRL_CLICK "attach-ctrl-click"
+/// From /datum/component/attachment_holder/handle_alt_click(): sent to the attachment on alt+click of the gun. (gun, user, params)
+#define COMSIG_ATTACHMENT_ALT_CLICK "attach-alt-click"
+/// From /datum/component/attachment_holder/handle_attack_hand(): sent to the attachment on attack_hand of the gun. (gun, user, params)
+#define COMSIG_ATTACHMENT_ATTACK_HAND "attach-attack-hand"
+/// From /datum/component/attachment/toggle_attachment(): sent to the attachment when toggled. (gun, user)
+#define COMSIG_ATTACHMENT_TOGGLE "attach-toggle"
+/// From /obj/item/attachment/toggle_ammo(): sent to the attachment when its ammo mode is toggled. (gun, user)
+#define COMSIG_ATTACHMENT_TOGGLE_AMMO "attach-ammo"
+/// From /obj/item/attachment/attack_self(): asks which slot the attachment currently occupies. (slot)
+#define COMSIG_ATTACHMENT_GET_SLOT "attach-slot-who"
+/// From /obj/item/attachment/attack_self(): sent when the attachment switched its slot. (slot)
+#define COMSIG_ATTACHMENT_CHANGE_SLOT "change_attach_slot"
+// ======== [/HORIZON-ADD] ========

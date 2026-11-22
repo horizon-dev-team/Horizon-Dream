@@ -1,7 +1,7 @@
 /obj/projectile/bullet/shotgun_slug
-	name = "12g shotgun slug"
+	name = "12g slug" // [HORIZON-EDIT] GunRework
 	icon_state = "bullet_tracer"
-	damage = 25
+	damage = 60 // [HORIZON-EDIT] GunRework (was 25)
 	armour_penetration = 30
 	sharpness = SHARP_POINTY
 	wound_bonus = 0
@@ -24,9 +24,9 @@
 /obj/projectile/bullet/shotgun_beanbag
 	name = "beanbag slug"
 	icon_state = "pellet"
-	damage = 10
-	stamina = 55
-	wound_bonus = 20
+	damage = 15 // [HORIZON-EDIT] GunRework (was 10)
+	stamina = 20 // [HORIZON-EDIT] GunRework (was 55)
+	wound_bonus = 15 // [HORIZON-EDIT] GunRework (was 20)
 	sharpness = NONE
 	embed_type = null
 
@@ -96,13 +96,13 @@
 	damage_falloff_tile = -0.25
 
 /obj/projectile/bullet/pellet/shotgun_buckshot
-	name = "buckshot pellet"
-	damage = 5
+	name = "12g pellet" // [HORIZON-EDIT] GunRework
+	damage = 10 // [HORIZON-EDIT] GunRework (was 5)
 	wound_bonus = 5
 	exposed_wound_bonus = 5
 	speed = 1.1
-	wound_falloff_tile = -0.5 //We would very much like this to cause wounds despite the low damage, so the drop off is relatively slow
-	sharpness = SHARP_EDGED
+	wound_falloff_tile = 0 // [HORIZON-EDIT] GunRework (was -0.5)
+	sharpness = SHARP_POINTY // [HORIZON-EDIT] GunRework (was SHARP_EDGED)
 
 /**
  * A slightly weaker version of the buckshot, available from the blackmarket.
@@ -215,3 +215,25 @@
 	hitsound = 'sound/items/weapons/sonic_jackhammer.ogg'
 	damage = 5 //does shit damage to everything except doors and windows
 	demolition_mod = 200 //one shot to break a window or grille, or two shots to breach an airlock door
+
+// ======== [HORIZON-ADD] GunRework: hd_gun shotgun bullets ========
+/obj/projectile/bullet/pellet/shotgun_flechette
+	name = "12g flechette"
+	damage = 6
+	wound_bonus = -3
+	wound_falloff_tile = -1
+	sharpness = SHARP_POINTY
+
+/obj/projectile/bullet/shotgun_bolas
+	name = "4g slug"
+	damage = 80
+	wound_bonus = 10
+	sharpness = SHARP_POINTY
+
+/obj/projectile/bullet/pellet/shotgun_bolas/buckshot
+	name = "4g pellet"
+	damage = 20
+	wound_bonus = 10
+	wound_falloff_tile = 0
+	sharpness = SHARP_POINTY
+// ======== [/HORIZON-ADD] ========

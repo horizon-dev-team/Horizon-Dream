@@ -106,3 +106,38 @@
 #define AMMO_CASING_PRESSURE_LOW 1
 #define AMMO_CASING_PRESSURE_MEDIUM 2
 #define AMMO_CASING_PRESSURE_EXTREME 3
+
+// ======== [HORIZON-ADD] GunRework calibers ========
+/// Caliber of the hd_gun revolvers chambered in .357 magnum.
+#define CALIBER_357 ".357"
+/// Caliber of the hd_gun revolvers chambered in .38 special.
+#define CALIBER_38 ".38"
+/// Caliber of the hd_gun pistols chambered in .50 AE.
+#define CALIBER_50 ".50"
+/// Caliber of the hd_gun rifles chambered in 5.56x45mm.
+#define CALIBER_A556 "a556"
+/// Caliber of the hd_gun rifles chambered in 7.62mm.
+#define CALIBER_A762 "a762"
+/// Caliber of the hd_gun pistols/SMGs chambered in .22 long rifle.
+#define CALIBER_22LR ".22lr"
+/// Caliber of the Abyss platform rifles chambered in 5.45x39mm.
+#define CALIBER_545 "5.45x39"
+/// Caliber of the G11 caseless rifles (4.92x34mm).
+#define CALIBER_UNCONVENTIONAL "4.92x34"
+/// Caliber of the Steyr ACR flechette rifles.
+#define CALIBER_FLECHETTE "5.56x45 SCF"
+/// Caliber of the SVD marksman rifles (7.62x54R).
+#define CALIBER_54R "762.54R"
+/// Caliber of the (currently disabled) Arma marksman rifle set (7.62x51).
+#define CALIBER_51 "7.62x51"
+/// Caliber of the KS-23 style 4 gauge shotguns.
+#define CALIBER_KS23 "4-guage"
+/// Caliber of the Aniquilador pistol (.50 LE).
+#define CALIBER_ANIQUILADOR ".50 LE"
+/// Caliber of the hd_gun pistols/SMGs chambered in .380 ACP.
+#define CALIBER_380 ".380 ACP"
+/// Caliber of the hd_gun revolvers chambered in .500 magnum.
+#define CALIBER_500 ".500 magnum"
+/// Caliber of the Federson bolt-action rifles (.276 Federson).
+#define CALIBER_276 ".276 Federson"
+// ======== [/HORIZON-ADD] ========

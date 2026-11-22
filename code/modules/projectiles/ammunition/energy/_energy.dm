@@ -11,3 +11,17 @@
 	firing_effect_type = /obj/effect/temp_visual/dir_setting/firing_effect/red
 	newtonian_force = 0.5
 	muzzle_flash_color = LIGHT_COLOR_CYAN
+
+// ======== [HORIZON-ADD] GunRework: hd_gun energy casings ========
+/obj/item/ammo_casing/energy/siren
+	fire_sound = '_horizon/sound/weapons/guns/energy/siren.wav'
+	select_name = "well done steak"
+	e_cost = 85
+	projectile_type = /obj/projectile/beam/laser/siren
+
+/obj/item/ammo_casing/energy/nasr
+	fire_sound = '_horizon/sound/weapons/guns/energy/nasr.wav'
+	select_name = "glue melter"
+	e_cost = 100
+	projectile_type = /obj/projectile/beam/laser/nasr
+// ======== [/HORIZON-ADD] ========

@@ -1,8 +1,3 @@
-// Horizon overrides for /obj/item/gun/ballistic: icons/overlays,
-// suppressors, break-action gunplay, caliber modding, magazines and
-// the canonical (un)loading interactions live here or in
-// ballistic/stuff/wield_attack_self.dm.
-
 /obj/item/gun/ballistic
 	client_recoil_animation_information = list(
 		"strength" = 0.35,
@@ -210,7 +205,6 @@
 		playsound(src, lock_back_sound, lock_back_sound_volume, lock_back_sound_vary)
 		chamber_round()
 	if(user)
-		// [HORIZON-ADD] players need feedback for the break-open state
 		balloon_alert(user, "[cylinder_wording] [cylinder_open ? "open" : "closed"]")
 	update_appearance()
 

@@ -283,7 +283,7 @@
 	projectile_type = /obj/projectile/beam/laser/siren
 
 /obj/item/ammo_casing/energy/nasr
-	fire_sound = list('_horizon/sound/weapons/guns/energy/nasr1.wav', '_horizon/sound/weapons/guns/energy/nasr2.wav', '_horizon/sound/weapons/guns/energy/nasr3.wav')
+	fire_sound = '_horizon/sound/weapons/guns/energy/nasr.wav'
 	select_name = "glue melter"
 	e_cost = 100
 	projectile_type = /obj/projectile/beam/laser/nasr

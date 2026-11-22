@@ -6,7 +6,7 @@
 	righthand_file = '_horizon/icons/obj/items/guns/inhands/pistol_righthand.dmi'
 	equip_sound = '_horizon/sound/weapons/guns/pistol/pistol_holster.wav'
 	pickup_sound = '_horizon/sound/weapons/guns/pistol/pistol_draw.wav'
-	fire_sound = list('_horizon/sound/weapons/guns/energy/nasr1.wav', '_horizon/sound/weapons/guns/energy/nasr2.wav', '_horizon/sound/weapons/guns/energy/nasr3.wav')
+	fire_sound = '_horizon/sound/weapons/guns/energy/nasr.wav'
 	safety_off_sound = '_horizon/sound/weapons/guns/energy/siren_safetyoff.wav'
 	safety_on_sound = '_horizon/sound/weapons/guns/energy/siren_safetyon.wav'
 	drop_sound = '_horizon/sound/weapons/guns/drop_lightgun.wav'

@@ -23,7 +23,7 @@
 	worn_icon = '_horizon/icons/obj/items/guns/alter/worn/back.dmi'
 	lefthand_file = '_horizon/icons/obj/items/guns/alter/inhands/rifle_lefthand.dmi'
 	righthand_file = '_horizon/icons/obj/items/guns/alter/inhands/rifle_righthand.dmi'
-	equip_sound = list('_horizon/sound/weapons/guns/rifle_holster1.ogg', '_horizon/sound/weapons/guns/rifle_holster2.ogg')
+	equip_sound = '_horizon/sound/weapons/guns/rifle_holster.ogg'
 
 /obj/item/gun/ballistic/automatic/hd_gun/remis/abyss/warfare/m545
 	name = "\improper Peacekeeper 545"
@@ -413,8 +413,8 @@
 	spawn_magazine_type = /obj/item/ammo_box/magazine/a556g36
 	fire_sound = '_horizon/sound/weapons/guns/rifle/g36.ogg'
 	suppressed_sound = '_horizon/sound/weapons/guns/rifle/g36_suppressed.ogg'
-	load_sound = list('_horizon/sound/weapons/guns/rifle/g36_magin1.ogg', '_horizon/sound/weapons/guns/rifle/g36_magin2.ogg')
-	load_empty_sound = list('_horizon/sound/weapons/guns/rifle/g36_magin1.ogg', '_horizon/sound/weapons/guns/rifle/g36_magin2.ogg')
+	load_sound = '_horizon/sound/weapons/guns/rifle/g36_magin.ogg'
+	load_empty_sound = '_horizon/sound/weapons/guns/rifle/g36_magin.ogg'
 	eject_sound = '_horizon/sound/weapons/guns/rifle/g36_magout.ogg'
 	eject_empty_sound = '_horizon/sound/weapons/guns/rifle/g36_magout.ogg'
 	safety_off_sound = '_horizon/sound/weapons/guns/rifle/msafety.wav'

@@ -18,7 +18,7 @@
 	equip_sound = '_horizon/sound/weapons/guns/weap_away.ogg'
 	worn_icon_state = "shotgun"
 	fire_sound = '_horizon/sound/weapons/guns/shotgun/shotgun.wav'
-	suppressed_sound = list('_horizon/sound/weapons/guns/shotgun/countryforold1.wav', '_horizon/sound/weapons/guns/shotgun/countryforold2.wav')
+	suppressed_sound = '_horizon/sound/weapons/guns/shotgun/countryforold.wav'
 	pickup_sound = '_horizon/sound/weapons/guns/shotgun/shotgun_draw.wav'
 	lock_back_sound = '_horizon/sound/weapons/guns/shotgun/shotgun_lock_back.wav'
 	bolt_drop_sound = '_horizon/sound/weapons/guns/shotgun/shotgun_lockin.wav'
@@ -70,7 +70,7 @@
 	drop_sound = '_horizon/sound/weapons/guns/drop_heavygun.wav'
 	pickup_sound = '_horizon/sound/weapons/guns/shotgun/shotgun_draw.wav'
 	fire_sound = '_horizon/sound/weapons/guns/shotgun/shotgun.wav'
-	suppressed_sound = list('_horizon/sound/weapons/guns/shotgun/countryforold1.wav', '_horizon/sound/weapons/guns/shotgun/countryforold2.wav')
+	suppressed_sound = '_horizon/sound/weapons/guns/shotgun/countryforold.wav'
 	lock_back_sound = '_horizon/sound/weapons/guns/shotgun/db_in.wav'
 	bolt_drop_sound = '_horizon/sound/weapons/guns/shotgun/db_out.wav'
 	load_sound = '_horizon/sound/weapons/guns/shotgun/db_load.wav'
@@ -102,14 +102,11 @@
 	w_class = WEIGHT_CLASS_NORMAL
 	weapon_weight = WEAPON_LIGHT
 	cylinder_wording = "barrel"
-	rack_sound = list(
-		'_horizon/sound/weapons/guns/revolver/hammer1.ogg', \
-		'_horizon/sound/weapons/guns/revolver/hammer2.ogg', \
-	)
+	rack_sound = '_horizon/sound/weapons/guns/revolver/hammer.ogg'
 	drop_sound = '_horizon/sound/weapons/guns/drop_lightgun.wav'
 	lock_back_sound = '_horizon/sound/weapons/guns/shotgun/db_in.wav'
 	bolt_drop_sound = '_horizon/sound/weapons/guns/shotgun/db_out.wav'
-	fire_sound = list('_horizon/sound/weapons/guns/shotgun/comgun1.wav', '_horizon/sound/weapons/guns/shotgun/comgun2.wav')
+	fire_sound = '_horizon/sound/weapons/guns/shotgun/comgun.wav'
 	load_sound = '_horizon/sound/weapons/guns/shotgun/db_load.wav'
 	accepted_magazine_type = /obj/item/ammo_box/magazine/internal/cylinder/bobox
 	spawn_magazine_type = /obj/item/ammo_box/magazine/internal/cylinder/bobox
@@ -350,8 +347,8 @@
 	base_icon_state = "bolas"
 	inhand_icon_state = "bolas"
 	spawn_magazine_type = /obj/item/ammo_box/magazine/internal/shot/bolas
-	fire_sound = list('_horizon/sound/weapons/guns/shotgun/bolas1.wav', '_horizon/sound/weapons/guns/shotgun/bolas2.wav')
-	suppressed_sound = list('_horizon/sound/weapons/guns/shotgun/bolas_silenced1.wav', '_horizon/sound/weapons/guns/shotgun/bolas_silenced2.wav')
+	fire_sound = '_horizon/sound/weapons/guns/shotgun/bolas.wav'
+	suppressed_sound = '_horizon/sound/weapons/guns/shotgun/bolas_silenced.wav'
 	load_sound = list(
 		'_horizon/sound/weapons/guns/shotgun/bolas_load1.wav', \
 		'_horizon/sound/weapons/guns/shotgun/bolas_load2.wav', \
@@ -381,7 +378,7 @@
 	lock_back_sound = '_horizon/sound/weapons/guns/shotgun/spas_lock_back.ogg'
 	bolt_drop_sound = '_horizon/sound/weapons/guns/shotgun/spas_lockin.ogg'
 	rack_sound = '_horizon/sound/weapons/guns/shotgun/spas_cycle.ogg'
-	fire_sound = list('_horizon/sound/weapons/guns/shotgun/spas1.ogg', '_horizon/sound/weapons/guns/shotgun/spas2.ogg')
+	fire_sound = '_horizon/sound/weapons/guns/shotgun/spas.ogg'
 	var/semi = FALSE
 	var/spas_semi_click = '_horizon/sound/weapons/guns/shotgun/spas_click.ogg'
 	foldable = TRUE

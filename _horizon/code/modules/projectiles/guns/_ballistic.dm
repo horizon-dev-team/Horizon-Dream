@@ -295,21 +295,6 @@
 		bolt_locked = TRUE
 		update_appearance()
 
-/obj/item/gun/ballistic/proc/chamber_examine(mob/user)
-	. = list()
-	var/p_Their = p_their(TRUE)
-	var/p_have = p_have()
-	if(bolt_type == BOLT_TYPE_BREAK_ACTION)
-		. += "[p_Their] [cylinder_wording] is [cylinder_open ? span_green("open") : span_red("closed")]."
-		if(cylinder_open)
-			. += span_notice("Z ejects spent [cartridge_wording]s or closes it; right-click dumps everything.")
-	if(cylinder_open)
-		var/all_ammo = get_ammo(FALSE, FALSE)
-		. += "[p_they(TRUE)] [p_have] [all_ammo ? all_ammo : "no"] round\s remaining."
-		if(all_ammo)
-			var/live_ammo = get_ammo(TRUE, FALSE)
-			. += "[live_ammo ? live_ammo : "None"] of those are live rounds."
-
 /obj/item/gun/ballistic/get_ammo(countchambered = TRUE, countempties = TRUE)
 	if(bolt_type == BOLT_TYPE_BREAK_ACTION)
 		countchambered = FALSE
@@ -319,8 +304,3 @@
 	if(magazine)
 		bullets += magazine.ammo_count(countempties)
 	return bullets
-
-/obj/item/gun/ballistic/examine(mob/user)
-	. = ..()
-	if(bolt_type == BOLT_TYPE_BREAK_ACTION)
-		. += chamber_examine(user)

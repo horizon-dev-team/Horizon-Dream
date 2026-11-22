@@ -1,6 +1,3 @@
-// Shared base of the two heavy plasma rifles. They differ only in
-// sprite, fire sounds and fire delay - and only the Siren is integrally
-// full-auto (see its Initialize).
 /obj/item/gun/energy/hd_gun/heavy_plasma
 	abstract_type = /obj/item/gun/energy/hd_gun/heavy_plasma
 	name = "\improper \"Siren\" Heavy Plasma Rifle"

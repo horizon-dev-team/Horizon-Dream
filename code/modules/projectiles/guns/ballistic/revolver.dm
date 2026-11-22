@@ -95,7 +95,7 @@ GAME_VERB(/obj/item/gun/ballistic/revolver, spin, "Spin Chamber", null)
 /obj/item/gun/ballistic/revolver/examine(mob/user)
 	. = ..()
 	var/live_ammo = get_ammo(FALSE, FALSE)
-	if(cylinder_open)
+	if(cylinder_open) // [HORIZON-EDIT] GunRework
 		. += "[live_ammo ? live_ammo : "None"] of those are live rounds."
 	. += span_notice("It can be spun with [EXAMINE_HINT("alt-click")].")
 

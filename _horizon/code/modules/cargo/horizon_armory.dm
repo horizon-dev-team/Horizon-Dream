@@ -1,12 +1,3 @@
-// Debug armory: a free supply console that drops horizon guns (inside gun cases), magazines
-// and ammo in a supply pod next to itself. Meant for debugging / testing, so nothing costs money.
-//
-// It reuses the stock "Cargo" tgui interface (catalogue + cart), so no new frontend is needed.
-// The catalogue is generated from the type tree: every gun with `/hd_gun` in its path gets a case
-// pack, every magazine those guns spawn with gets a pack, plus the loaded ammo stacks and ammo boxes.
-// New horizon guns show up on their own.
-
-/// How many items fit in the cart of the debug armory console, in total.
 #define HORIZON_ARMORY_MAX_CART 10
 
 // MARK: Gun case
@@ -15,7 +6,6 @@
 	max_specific_storage = WEIGHT_CLASS_GIGANTIC
 	max_total_storage = WEIGHT_CLASS_GIGANTIC + 2
 
-/// A gun case that holds exactly the gun it was told to load, without the stock magazines.
 /obj/item/storage/toolbox/guncase/horizon_debug
 	name = "debug gun case"
 	desc = "A weapon's case from the debug armory."
@@ -23,24 +13,18 @@
 	weapon_to_spawn = null
 	extra_to_spawn = null
 
-/// Puts a new gun of the given type into the case and names the case after it.
 /obj/item/storage/toolbox/guncase/horizon_debug/proc/load_gun(gun_type)
 	var/obj/item/gun/new_gun = new gun_type(src)
 	name = "[new_gun.name] case"
 
-// MARK: Supply packs
-/// Base for the debug armory packs. ORDER_SPECIAL keeps them out of every regular cargo console,
-/// the debug armory console picks them out by type.
 /datum/supply_pack/horizon_debug
 	name = "Debug Armory Pack"
 	cost = 0
 	order_flags = ORDER_SPECIAL
 	test_ignored = TRUE
 	crate_name = "debug armory crate"
-	/// Names already given to generated packs. The cart is keyed by pack name, so they have to be unique.
 	var/static/list/used_names = list()
 
-/// Returns the name unchanged, or with a number added if another debug pack already took it.
 /datum/supply_pack/horizon_debug/proc/unique_name(base_name)
 	var/new_name = base_name
 	var/suffix = 2
@@ -49,23 +33,16 @@
 	used_names += new_name
 	return new_name
 
-/// A gun delivered inside a gun case.
 /datum/supply_pack/horizon_debug/gun_case
 	group = "Debug: Weapons"
-	/// The gun this pack delivers.
 	var/gun_type
 
 /datum/supply_pack/horizon_debug/gun_case/fill(obj/container)
 	var/obj/item/storage/toolbox/guncase/horizon_debug/gun_case = new(container)
 	gun_case.load_gun(gun_type)
 
-/// Magazines, loaded ammo stacks and ammo boxes. Spawned loose in the crate.
 /datum/supply_pack/horizon_debug/ammo
 	group = "Debug: Ammo"
-
-// MARK: Generators
-// SSshuttle calls generate_supply_packs() on every pack type and registers what it returns
-// instead of the generator itself (generators have no `contains`).
 
 /datum/supply_pack/horizon_debug/gun_generator/generate_supply_packs()
 	var/list/packs = list()
@@ -77,7 +54,6 @@
 		pack.name = unique_name("[initial(gun_type.name)] case")
 		pack.desc = "A case with the [initial(gun_type.name)]. Magazines are ordered separately."
 		pack.gun_type = gun_type
-		// only for the catalogue preview, fill() builds the case itself
 		pack.contains = list()
 		pack.contains[gun_type] = 1
 		packs += pack
@@ -104,7 +80,6 @@
 
 /datum/supply_pack/horizon_debug/ammo_generator/generate_supply_packs()
 	var/list/packs = list()
-	// Full ammo stacks (the ones that aren't `start_empty`), used by guns with internal magazines.
 	for(var/obj/item/ammo_box/magazine/ammo_stack/stack_type as anything in subtypesof(/obj/item/ammo_box/magazine/ammo_stack))
 		if(initial(stack_type.start_empty))
 			continue
@@ -115,7 +90,6 @@
 		pack.contains = list()
 		pack.contains[stack_type] = 2
 		packs += pack
-	// Horizon ammo boxes.
 	for(var/obj/item/ammo_box/box_type as anything in list(
 		/obj/item/ammo_box/a762svd,
 		/obj/item/ammo_box/a762svd/ap,
@@ -132,7 +106,6 @@
 		packs += pack
 	return packs
 
-// MARK: Console
 /obj/machinery/computer/horizon_armory
 	name = "debug armory console"
 	desc = "A debug supply console. Everything is free: pick up to ten items and a supply pod drops them next to the console."
@@ -140,11 +113,8 @@
 	icon_screen = "supply_express"
 	circuit = null
 	light_color = COLOR_BRIGHT_ORANGE
-	/// The pod the orders arrive in.
 	var/pod_type = /obj/structure/closet/supplypod
-	/// Pack -> amount of it in the cart.
 	var/list/cart = list()
-	/// Short cooldown so the console can't be spammed with pods.
 	COOLDOWN_DECLARE(order_cooldown)
 
 /obj/machinery/computer/horizon_armory/ui_interact(mob/user, datum/tgui/ui)
@@ -175,7 +145,6 @@
 	data["displayed_currency_name"] = " [MONEY_SYMBOL]"
 	return data
 
-/// Returns the debug packs by group, as index/price pairs into the catalogue (same format as the cargo console).
 /obj/machinery/computer/horizon_armory/proc/get_packs_data_by_group(datum/asset/json/cargo_catalogue/catalogue)
 	var/list/packs_by_group = list()
 	for(var/pack_id, pack_data in SSshuttle.supply_packs)
@@ -195,7 +164,6 @@
 
 /obj/machinery/computer/horizon_armory/ui_data(mob/user)
 	var/list/data = list()
-	// The stock Cargo interface expects all of these; most are fixed because there is no shuttle or budget here.
 	data["department"] = "Debug Armory"
 	data["location"] = "Local railgun"
 	data["points"] = 0
@@ -275,13 +243,11 @@
 			launch_order(ui.user)
 			return TRUE
 
-/// How many items are in the cart in total.
 /obj/machinery/computer/horizon_armory/proc/get_cart_total()
 	. = 0
 	for(var/datum/supply_pack/pack as anything in cart)
 		. += cart[pack]
 
-/// Finds a debug pack by the name shown in the UI.
 /obj/machinery/computer/horizon_armory/proc/pack_by_name(order_name)
 	for(var/pack_id, pack_data in SSshuttle.supply_packs)
 		if(!istype(pack_data, /datum/supply_pack/horizon_debug))
@@ -291,7 +257,6 @@
 			return pack
 	return null
 
-/// Adds up to `amount` of the pack to the cart, limited by the cart size. Returns whether anything was added.
 /obj/machinery/computer/horizon_armory/proc/add_to_cart(datum/supply_pack/pack, amount = 1)
 	amount = min(amount, HORIZON_ARMORY_MAX_CART - get_cart_total())
 	if(amount <= 0)
@@ -300,7 +265,6 @@
 	cart[pack] += amount
 	return TRUE
 
-/// A clear floor tile as close to the console as possible (within three tiles), or null.
 /obj/machinery/computer/horizon_armory/proc/find_landing_turf()
 	for(var/radius in 1 to 3)
 		var/list/candidates = list()
@@ -312,7 +276,6 @@
 			return pick(candidates)
 	return null
 
-/// Packs everything in the cart into one supply pod and drops it next to the console.
 /obj/machinery/computer/horizon_armory/proc/launch_order(mob/user)
 	if(!length(cart))
 		say("The cart is empty.")

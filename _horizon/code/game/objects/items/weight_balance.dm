@@ -451,3 +451,7 @@
 	carry_weight = 10 GRAMS
 /obj/item/match
 	carry_weight = 5 GRAMS
+/obj/item/firing_pin
+	carry_weight = 100 GRAMS
+/obj/item/ammo_box
+	carry_weight = 2 KILOGRAMS

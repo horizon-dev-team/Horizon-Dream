@@ -82,7 +82,7 @@
 
 /obj/item/gun/ballistic/shotgun/automatic/shoot_live_shot(mob/living/user)
 	..()
-	rack(user) // [HORIZON-EDIT]
+	rack(user) // [HORIZON-EDIT] GunRework
 
 /obj/item/gun/ballistic/shotgun/automatic/combat
 	name = "combat shotgun"

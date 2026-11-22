@@ -4,7 +4,6 @@
 	icon = '_horizon/icons/obj/items/guns/attachments.dmi'
 	icon_state = "laserpointer"
 	w_class = WEIGHT_CLASS_TINY
-
 	attach_features_flags = ATTACH_REMOVABLE_HAND|ATTACH_TOGGLE
 	slot = ATTACHMENT_SLOT_RAIL
 	pixel_shift_x = 1

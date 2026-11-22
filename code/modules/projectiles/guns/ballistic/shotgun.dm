@@ -82,7 +82,7 @@
 
 /obj/item/gun/ballistic/shotgun/automatic/shoot_live_shot(mob/living/user)
 	..()
-	rack(user) // [HORIZON-EDIT] pass the user so the auto-ejected casing gets a sideways bounce angle (handle_chamber PHYSICS)
+	rack(user) // [HORIZON-EDIT]
 
 /obj/item/gun/ballistic/shotgun/automatic/combat
 	name = "combat shotgun"

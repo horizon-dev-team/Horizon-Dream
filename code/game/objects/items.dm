@@ -324,7 +324,7 @@
 		CRASH("item add_item_action got a type or instance of something that wasn't an action.")
 
 	LAZYADD(actions, action)
-	RegisterSignal(action, COMSIG_QDELETING, PROC_REF(on_action_deleted), TRUE) // [HORIZON-EDIT]
+	RegisterSignal(action, COMSIG_QDELETING, PROC_REF(on_action_deleted), TRUE) // [HORIZON-EDIT] GunRework
 	grant_action_to_bearer(action)
 	return action
 

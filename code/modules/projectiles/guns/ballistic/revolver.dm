@@ -85,7 +85,12 @@ GAME_VERB(/obj/item/gun/ballistic/revolver, spin, "Spin Chamber", null)
 		chamber_round(spin_cylinder = FALSE)
 
 /obj/item/gun/ballistic/revolver/get_ammo(countchambered = FALSE, countempties = TRUE)
-	return ..()
+	var/boolets = 0 //mature var names for mature people
+	if (chambered && countchambered)
+		boolets++
+	if (magazine)
+		boolets += magazine.ammo_count(countempties)
+	return boolets
 
 /obj/item/gun/ballistic/revolver/examine(mob/user)
 	. = ..()

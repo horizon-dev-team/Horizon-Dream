@@ -190,7 +190,7 @@
 	var/damage_type = BRUTE //BRUTE, BURN, TOX, OXY are the only things that should be in here
 
 	/// Defines what armor to use when it hits things.  Must be set to bullet, laser, energy, or bomb
-	var/armor_flag = PIERCE
+	var/armor_flag = BULLET
 	/// How much armor this projectile pierces.
 	var/armour_penetration = 0
 	/// Whether or not our projectile doubles the value of affecting armour
@@ -773,7 +773,7 @@
 /obj/projectile/proc/check_ricochet_flag(atom/target)
 	if((armor_flag in list(ENERGY, LASER)) && (target.flags_ricochet & RICOCHET_SHINY))
 		return TRUE
-	if((armor_flag in list(BOMB, PIERCE, BLUNT)) && (target.flags_ricochet & RICOCHET_HARD))
+	if((armor_flag in list(BOMB, BULLET)) && (target.flags_ricochet & RICOCHET_HARD))
 		return TRUE
 	return FALSE
 

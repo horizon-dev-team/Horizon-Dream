@@ -3,7 +3,7 @@
 	icon_state = "bullet_tracer"
 	damage = 60
 	damage_type = BRUTE
-	armor_flag = PIERCE
+	armor_flag = BULLET
 	hitsound_wall = /datum/sound_effect/ricochet
 	sharpness = SHARP_POINTY
 	impact_effect_type = /obj/effect/temp_visual/impact_effect

@@ -148,17 +148,3 @@
 #define INCLUDE_PROSTHETICS (1<<3)
 /// Include items that are not "real" items, such as hand items
 #define INCLUDE_ABSTRACT (1<<4)
-
-
-/**
- * Returns the appropriate armor_flag for a physical attack based on the item's sharpness.
- * - SHARP_EDGED → SLASH (knives, swords, axes)
- * - SHARP_POINTY / SHARP_IMPALING → PIERCE (spears, needles, most bullets)
- * - otherwise → BLUNT
- */
-/proc/get_armor_flag_from_sharpness(sharpness)
-	if(sharpness & SHARP_EDGED)
-		return SLASH
-	if(sharpness & (SHARP_POINTY | SHARP_IMPALING))
-		return PIERCE
-	return BLUNT

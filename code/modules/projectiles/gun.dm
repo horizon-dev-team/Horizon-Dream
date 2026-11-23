@@ -127,7 +127,7 @@
 	add_deep_lore()
 	RegisterSignal(src, COMSIG_ITEM_IN_UNWRAPPED_TRAITOR_MAIL, PROC_REF(on_mail_unwrap))
 	// [HORIZON-ADD] GunRework: folding stock / full auto / two-handed wield
-	// component / safety action / attachment holder
+	// component / safety action / attachment mount
 	if(foldable)
 		add_item_action(/datum/action/item_action/toggle_stock)
 	if(full_auto)
@@ -138,7 +138,7 @@
 			unwieldsound = '_horizon/sound/weapons/guns/stock_close.wav')
 	if(safety_flags & GUN_SAFETY_HAS_SAFETY)
 		add_item_action(/datum/action/item_action/toggle_safety)
-	AddComponent(/datum/component/attachment_holder, slot_available, valid_attachments, slot_offsets, default_attachments)
+	AddComponent(/datum/component/attachment_mount, slot_available, valid_attachments, slot_offsets, default_attachments)
 
 /obj/item/gun/Destroy()
 	if(isobj(pin)) //Can still be the initial path, then we skip

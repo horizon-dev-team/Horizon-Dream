@@ -929,8 +929,6 @@ Remember to update _globalvars/traits.dm if you're adding/removing/renaming trai
 #define TRAIT_FOOD_DONT_INHERIT_NAME_FROM_PROCESSED "food_dont_inherit_name_from_processed"
 /// The items needs two hands to be carried
 #define TRAIT_NEEDS_TWO_HANDS "needstwohands"
-/// Item can be clicked onto a gun's attachment slot (gun attachment system)
-#define TRAIT_ATTACHABLE "attachable" // [HORIZON-ADD] GunRework
 /// Can't be catched when thrown
 #define TRAIT_UNCATCHABLE "uncatchable"
 ///Items with this trait will be ignored when redeeming materials from inserting it in a material container

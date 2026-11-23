@@ -271,7 +271,7 @@
 		return
 	balloon_alert(user, "bowstring loosened")
 	playsound(src, rack_sound, rack_sound_volume, rack_sound_vary)
-	handle_chamber(empty_chamber =  FALSE, from_firing = FALSE, chamber_next_round = FALSE)
+	handle_chamber(user, empty_chamber =  FALSE, from_firing = FALSE, chamber_next_round = FALSE)
 	bolt_locked = TRUE
 	update_appearance()
 

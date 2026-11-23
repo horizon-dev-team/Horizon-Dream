@@ -15,7 +15,8 @@
 	desc = "A threaded silencer, designed to be fitted to the muzzle of a compatible firearm to muffle its report."
 	icon = '_horizon/icons/obj/items/guns/attachments.dmi'
 	icon_state = "silencer"
-	w_class = WEIGHT_CLASS_SMALL
+	w_class = WEIGHT_CLASS_TINY
+	custom_materials = list(/datum/material/iron = SHEET_MATERIAL_AMOUNT, /datum/material/silver = HALF_SHEET_MATERIAL_AMOUNT)
 	attachment_component_type = /datum/component/gun_attachment/silencer
 
 /datum/component/gun_attachment/silencer
@@ -28,6 +29,8 @@
 	var/added_weight = 0
 	/// can_unsuppress of the gun before the silencer took it over.
 	var/previous_can_unsuppress = FALSE
+	/// Restore the actual pre-install flash setting, not the type's initial value.
+	var/previous_can_muzzle_flash = TRUE
 
 /// Only guns that take suppressors, and only if they are not suppressed already.
 /datum/component/gun_attachment/silencer/get_attach_error(obj/item/gun/gun, mob/user)
@@ -38,6 +41,8 @@
 		return "[parent] can't be fitted to the muzzle of [gun]!"
 	if(gun.suppressed)
 		return "[gun] is already suppressed!"
+	if(gun.sawn_off)
+		return "[gun] no longer has a threaded muzzle!"
 
 /datum/component/gun_attachment/silencer/on_attached(obj/item/gun/gun, mob/user)
 	. = ..()
@@ -45,6 +50,9 @@
 	gun.suppressed = SUPPRESSED_QUIET
 	previous_can_unsuppress = gun.can_unsuppress
 	gun.can_unsuppress = FALSE
+	previous_can_muzzle_flash = gun.can_muzzle_flash
+	gun.can_muzzle_flash = FALSE
+	gun.muzzle_flash_off()
 	added_weight = silencer_item.w_class
 	gun.update_weight_class(gun.w_class + added_weight)
 	if(user)
@@ -54,6 +62,7 @@
 	. = ..()
 	gun.suppressed = SUPPRESSED_NONE
 	gun.can_unsuppress = previous_can_unsuppress
+	gun.can_muzzle_flash = previous_can_muzzle_flash
 	gun.update_weight_class(gun.w_class - added_weight)
 	added_weight = 0
 	if(user)

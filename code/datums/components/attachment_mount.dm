@@ -50,11 +50,9 @@
 	src.valid_types = typecacheof(valid_types)
 	src.slot_offsets = slot_offsets
 
-	RegisterSignal(parent, COMSIG_ATOM_ATTACKBY, PROC_REF(handle_attackby))
 	RegisterSignal(parent, COMSIG_ATOM_EXAMINE, PROC_REF(handle_examine))
 	RegisterSignal(parent, COMSIG_ATOM_EXAMINE_MORE, PROC_REF(handle_examine_more))
 	RegisterSignal(parent, COMSIG_ATOM_UPDATE_OVERLAYS, PROC_REF(handle_overlays))
-	RegisterSignal(parent, COMSIG_CLICK_ALT, PROC_REF(handle_alt_click))
 	RegisterSignal(parent, COMSIG_CLICK_CTRL_SHIFT, PROC_REF(handle_ctrl_shift_click))
 
 	for(var/attachment_type in default_attachments)
@@ -137,13 +135,12 @@
 	if(conflict)
 		return "[attachment_item] can't be fitted to [gun] while [conflict.parent] is installed!"
 	return attachment.get_attach_error(gun, user)
-
-// =============================================================================
 // INSTALLING AND REMOVING
-// =============================================================================
 
 /// Installs an attachment item into the gun. Returns TRUE on success, and tells the user why on failure.
 /datum/component/attachment_mount/proc/try_attach(obj/item/attachment_item, mob/user)
+	if(user && (!can_interact(user) || !user.is_holding(attachment_item)))
+		return FALSE
 	var/datum/component/gun_attachment/attachment = get_attachment_component(attachment_item)
 	if(!attachment || attachment.mount || QDELETED(attachment_item))
 		return FALSE
@@ -173,6 +170,8 @@
 /datum/component/attachment_mount/proc/try_detach(datum/component/gun_attachment/attachment, mob/user)
 	if(!(attachment in installed))
 		return FALSE
+	if(user && !can_interact(user))
+		return FALSE
 	var/obj/item/gun/gun = parent
 	var/obj/item/attachment_item = attachment.parent
 	release(attachment, user)
@@ -193,7 +192,7 @@
 	sync_hooks()
 	gun.update_appearance()
 
-/// Called by an installed attachment's component while it is being deleted.
+/// Called when an installed attachment is deleted or moved outside the gun.
 /datum/component/attachment_mount/proc/attachment_deleted(datum/component/gun_attachment/attachment)
 	if(tearing_down || !(attachment in installed))
 		attachment.mount = null
@@ -300,47 +299,47 @@
 
 /datum/component/attachment_mount/proc/handle_ctrl_click(atom/source, mob/user)
 	SIGNAL_HANDLER
+	if(!can_interact(user))
+		return NONE
 
 	for(var/datum/component/gun_attachment/attachment as anything in installed)
 		if((attachment.hook_flags & ATTACH_HOOK_CTRL_CLICK) && attachment.on_ctrl_click(source, user))
 			return CLICK_ACTION_SUCCESS
-
-// =============================================================================
 // PLAYER INTERACTIONS
-// =============================================================================
 
-/datum/component/attachment_mount/proc/handle_attackby(obj/item/source, obj/item/attacking_item, mob/user, list/modifiers, list/attack_modifiers)
-	SIGNAL_HANDLER
+/// Shared checks for menus, delayed actions and direct attachment use.
+/datum/component/attachment_mount/proc/can_interact(mob/user)
+	return !QDELETED(parent) && isliving(user) && user.can_perform_action(parent, NEED_HANDS|NEED_DEXTERITY|FORBID_TELEKINESIS_REACH)
 
-	if(!user.Adjacent(source))
+/datum/component/attachment_mount/proc/has_removable_attachment(required_flag)
+	for(var/datum/component/gun_attachment/attachment as anything in installed)
+		if(attachment.feature_flags & required_flag)
+			return TRUE
+	return FALSE
+
+/datum/component/attachment_mount/proc/item_interaction(mob/living/user, obj/item/tool, list/modifiers)
+	if(tool.tool_behaviour == TOOL_CROWBAR && has_removable_attachment(ATTACH_REMOVABLE_TOOL))
+		start_detach(user, tool)
+		return ITEM_INTERACT_SUCCESS
+	if(!get_attachment_component(tool))
 		return NONE
-
-	if(attacking_item.tool_behaviour == TOOL_CROWBAR && length(installed))
-		INVOKE_ASYNC(src, PROC_REF(start_detach), user, attacking_item)
-		return COMPONENT_NO_AFTERATTACK
-
-	if(attacking_item.GetComponent(/datum/component/gun_attachment))
-		INVOKE_ASYNC(src, PROC_REF(try_attach), attacking_item, user)
-		return COMPONENT_NO_AFTERATTACK
-
-	return NONE
-
-/datum/component/attachment_mount/proc/handle_alt_click(atom/source, mob/user)
-	SIGNAL_HANDLER
-
-	if(!length(installed))
-		return NONE
-	INVOKE_ASYNC(src, PROC_REF(start_detach), user, null)
-	return CLICK_ACTION_SUCCESS
+	if(!can_interact(user) || !user.is_holding(tool))
+		return ITEM_INTERACT_FAILURE
+	return try_attach(tool, user) ? ITEM_INTERACT_SUCCESS : ITEM_INTERACT_FAILURE
 
 /datum/component/attachment_mount/proc/handle_ctrl_shift_click(atom/source, mob/user)
 	SIGNAL_HANDLER
 
+	if(!can_interact(user))
+		return CLICK_ACTION_BLOCKING
 	INVOKE_ASYNC(src, PROC_REF(start_toggle_radial), user)
+	return CLICK_ACTION_SUCCESS
 
 /// Asks the user which attachment to remove, then removes it after a delay.
 /// With a tool only tool-removable attachments are offered, without one only hand-removable ones.
 /datum/component/attachment_mount/proc/start_detach(mob/user, obj/item/tool)
+	if(!can_interact(user) || (tool && !user.is_holding(tool)))
+		return
 	var/obj/item/gun/gun = parent
 	var/required_flag = tool ? ATTACH_REMOVABLE_TOOL : ATTACH_REMOVABLE_HAND
 	var/list/choices = list()
@@ -360,7 +359,7 @@
 	if(!selected)
 		return
 	var/datum/component/gun_attachment/attachment = lookup[selected]
-	if(!attachment || attachment.mount != src || !user.Adjacent(gun))
+	if(!attachment || attachment.mount != src || !can_interact(user) || (tool && !user.is_holding(tool)))
 		return
 	if(tool)
 		if(!tool.use_tool(gun, user, ATTACHMENT_DETACH_TIME * tool.toolspeed))
@@ -368,12 +367,14 @@
 	else if(!do_after(user, ATTACHMENT_DETACH_TIME, gun))
 		return
 	// The attachment may have been removed or deleted while we waited.
-	if(attachment.mount != src)
+	if(!attachment || attachment.mount != src || !can_interact(user) || (tool && !user.is_holding(tool)))
 		return
 	try_detach(attachment, user)
 
 /// Radial menu of the toggleable attachments.
 /datum/component/attachment_mount/proc/start_toggle_radial(mob/user)
+	if(!can_interact(user))
+		return
 	var/obj/item/gun/gun = parent
 	var/list/choices = list()
 	var/list/lookup = list()
@@ -387,17 +388,14 @@
 	if(!length(choices))
 		return
 
-	var/selection = show_radial_menu(user, gun, choices)
+	var/selection = show_radial_menu(user, gun, choices, require_near = TRUE)
 	if(!selection)
 		return
 	var/datum/component/gun_attachment/selected = lookup[selection]
-	if(!selected || selected.mount != src)
+	if(!selected || selected.mount != src || !can_interact(user))
 		return
 	selected.toggle(user)
-
-// =============================================================================
 // EXAMINE AND APPEARANCE
-// =============================================================================
 
 /datum/component/attachment_mount/proc/handle_examine(atom/source, mob/user, list/examine_list)
 	SIGNAL_HANDLER
@@ -410,7 +408,7 @@
 			if(attachment.feature_flags & ATTACH_TOGGLE)
 				has_toggle = TRUE
 		examine_list += span_notice("It has [english_list(names)] attached.")
-		examine_list += span_notice("You can remove attachments by <b>alt-clicking</b> [source], or by prying them off with a crowbar.")
+		examine_list += span_notice("You can remove attachments by <b>alt-clicking</b> [source] (<b>alt-right-click</b> if alt-click has another function), or by using a crowbar on tool-removable attachments.")
 		if(has_toggle)
 			examine_list += span_notice("You can toggle attachments by <b>ctrl-shift-clicking</b> [source].")
 	else

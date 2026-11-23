@@ -224,7 +224,7 @@
 	)
 
 //copypasted just to ensure that we can nuke the casing
-/obj/item/gun/ballistic/automatic/hd_gun/remis/g11/handle_chamber(empty_chamber, from_firing, chamber_next_round, user)
+/obj/item/gun/ballistic/automatic/hd_gun/remis/g11/handle_chamber(user, empty_chamber, from_firing, chamber_next_round)
 	if((!semi_auto && from_firing) || (bolt_type == BOLT_TYPE_BREAK_ACTION))
 		return
 	var/obj/item/ammo_casing/casing = chambered //Find chambered round

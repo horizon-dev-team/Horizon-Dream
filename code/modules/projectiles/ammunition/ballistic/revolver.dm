@@ -40,12 +40,14 @@
 // .38 (Detective's Gun)
 
 /obj/item/ammo_casing/c38
-	name = ".38 suspicious bullet casing" // [HORIZON-EDIT] GunRework
-	desc = "A .38 suspicious bullet casing." // [HORIZON-EDIT] GunRework
-	icon = '_horizon/icons/obj/items/ammo/casings.dmi' // [HORIZON-ADD] GunRework
-	icon_state = "c38" // [HORIZON-ADD] GunRework
-	base_icon_state = "c38" // [HORIZON-ADD] GunRework
-	stack_type = /obj/item/ammo_box/magazine/ammo_stack/c38 // [HORIZON-ADD] GunRework
+	name = ".38 bullet casing"
+	desc = "A .38 bullet casing."
+	// [HORIZON-ADD] GunRework
+	icon = '_horizon/icons/obj/items/ammo/casings.dmi'
+	icon_state = "c38"
+	base_icon_state = "c38"
+	stack_type = /obj/item/ammo_box/magazine/ammo_stack/c38
+	// [/HORIZON-ADD]
 	caliber = CALIBER_357_38
 	projectile_type = /obj/projectile/bullet/c38
 	casing_pressure = AMMO_CASING_PRESSURE_LOW // .38 rounds can be fired from .357 chambered guns, and technically vice versa, but watch out!
@@ -126,7 +128,7 @@
 	loaded_projectile = null
 	update_appearance()
 
-// ======== [HORIZON-ADD] GunRework: hd_gun revolver casings ========
+// [HORIZON-ADD] GunRework
 /obj/item/ammo_casing/c38/pluspee
 	name = ".38 suspicious +P bullet casing"
 	desc = "A .38 suspicious bullet casing."
@@ -154,4 +156,4 @@
 	caliber = CALIBER_500
 	projectile_type = /obj/projectile/bullet/a500
 	stack_type = /obj/item/ammo_box/magazine/ammo_stack/a500
-// ======== [/HORIZON-ADD] ========
+// [/HORIZON-ADD]

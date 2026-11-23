@@ -247,7 +247,8 @@
 		Note that some interactions cannot be interrupted, and you can't cancel other player's interaction with this hotkey."
 	keybind_signal = COMSIG_KB_LIVING_STOP_INTERACTIONS_DOWN
 
-/datum/keybinding/living/rack_gun // [HORIZON-ADD] GunRework
+// [HORIZON-ADD] GunRework
+/datum/keybinding/living/rack_gun
 	hotkey_keys = list("Space")
 	name = "rack_gun"
 	full_name = "Rack Gun Bolt"
@@ -281,3 +282,4 @@
 	gun.recent_rack = world.time + gun.rack_delay
 	gun.rack(owner)
 	return TRUE
+// [/HORIZON-ADD]

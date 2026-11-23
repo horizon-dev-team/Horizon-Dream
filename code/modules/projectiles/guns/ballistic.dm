@@ -127,7 +127,8 @@
 	///Even if the above variables would indicate this gun should misfire, never misfire this gun
 	var/never_misfire = FALSE
 
-	// [HORIZON-ADD] GunRework: break action / cylinder support
+	// [HORIZON-ADD] GunRework
+	// break action / cylinder support
 	/// Whether the bolt drop sound should vary in pitch (upstream has
 	/// bolt_drop_sound/volume but no vary toggle).
 	var/bolt_drop_sound_vary = FALSE
@@ -161,6 +162,7 @@
 	var/alternative_fire_sound
 	///If only our alternative ammuntion misfires and not our main ammunition, we set this to TRUE
 	var/alternative_ammo_misfires = FALSE
+	// [/HORIZON-ADD]
 
 	/// Fire Selector Variables ///
 	/// Tracks the firemode of burst weapons. TRUE means it is in burst mode.
@@ -174,10 +176,6 @@
 
 /obj/item/gun/ballistic/Initialize(mapload)
 	. = ..()
-	// [HORIZON-ADD] Guns that only define spawn_magazine_type accept that magazine
-	if(spawn_magazine_type && accepted_magazine_type == initial(accepted_magazine_type))
-		accepted_magazine_type = spawn_magazine_type
-	// [HORIZON-ADD] Block loading while the cylinder is closed / start gun cleaning
 	RegisterSignal(src, COMSIG_ATOM_ITEM_INTERACTION, PROC_REF(pre_item_interaction))
 	if(!spawn_magazine_type)
 		spawn_magazine_type = accepted_magazine_type
@@ -353,15 +351,15 @@
 	var/capacity_number
 	switch(get_ammo() / magazine.max_ammo)
 		if(1 to INFINITY) //cause we can have one in the chamber.
-				capacity_number = 100
-			if(0.8 to 1)
-				capacity_number = 80
-			if(0.6 to 0.8)
-				capacity_number = 60
-			if(0.4 to 0.6)
-				capacity_number = 40
-			if(0.2 to 0.4)
-				capacity_number = 20
+			capacity_number = 100
+		if(0.8 to 1)
+			capacity_number = 80
+		if(0.6 to 0.8)
+			capacity_number = 60
+		if(0.4 to 0.6)
+			capacity_number = 40
+		if(0.2 to 0.4)
+			capacity_number = 20
 	if(capacity_number)
 		. += "[base_icon_state]_mag_[capacity_number]"
 
@@ -1043,10 +1041,7 @@ GLOBAL_LIST_INIT(gun_saw_types, typecacheof(list(
 	/// How quiet should the gun be when we're installed?
 	var/suppression = SUPPRESSED_QUIET
 
-// =============================================================================
 // [HORIZON-ADD] GunRework: break action cylinders, caliber modding, drag-eject
-// =============================================================================
-
 /// Screwdriver tinkering: swap the gun between its initial and alternative
 /// caliber (see the can_modify_ammo / initial_caliber vars above).
 /obj/item/gun/ballistic/screwdriver_act(mob/living/user, obj/item/tool)
@@ -1169,4 +1164,4 @@ GLOBAL_LIST_INIT(gun_saw_types, typecacheof(list(
 	else if(over == user && !user.is_holding(src) && isturf(loc))
 		if(!internal_magazine && magazine)
 			eject_magazine(user)
-// ======== [/HORIZON-ADD] ========
+// [/HORIZON-ADD]

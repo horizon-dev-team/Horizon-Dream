@@ -3,11 +3,13 @@
 /obj/item/ammo_casing/shotgun
 	name = "shotgun slug"
 	desc = "A 12 gauge lead slug."
-	icon = '_horizon/icons/obj/items/ammo/casings.dmi' // [HORIZON-ADD] GunRework
-	icon_state = "12gauge_slug" // [HORIZON-EDIT] GunRework
-	base_icon_state = "12gauge_slug" // [HORIZON-ADD] GunRework
-	world_icon_state = "gshells" // [HORIZON-ADD] GunRework
-	stack_type = /obj/item/ammo_box/magazine/ammo_stack/shotgun // [HORIZON-ADD] GunRework
+	// [HORIZON-ADD] GunRework
+	icon = '_horizon/icons/obj/items/ammo/casings.dmi'
+	icon_state = "12gauge_slug"
+	base_icon_state = "12gauge_slug"
+	world_icon_state = "gshells"
+	stack_type = /obj/item/ammo_box/magazine/ammo_stack/shotgun
+	// [/HORIZON-ADD]
 	worn_icon_state = "shell"
 	caliber = CALIBER_SHOTGUN
 	custom_materials = list(/datum/material/iron=SHEET_MATERIAL_AMOUNT*2)
@@ -34,9 +36,11 @@
 /obj/item/ammo_casing/shotgun/beanbag
 	name = "beanbag slug"
 	desc = "A weak beanbag slug for riot control."
-	icon_state = "12gauge" // [HORIZON-EDIT] GunRework
-	base_icon_state = "12gauge" // [HORIZON-ADD] GunRework
-	world_icon_state = "gshell" // [HORIZON-ADD] GunRework
+	// [HORIZON-EDIT] GunRework
+	icon_state = "12gauge"
+	base_icon_state = "12gauge"
+	world_icon_state = "gshell"
+	// [/HORIZON-ADD]
 	custom_materials = list(/datum/material/iron = SMALL_MATERIAL_AMOUNT * 3)
 	projectile_type = /obj/projectile/bullet/shotgun_beanbag
 
@@ -95,12 +99,14 @@
 /obj/item/ammo_casing/shotgun/buckshot
 	name = "buckshot shell"
 	desc = "A 12 gauge buckshot shell."
-	icon_state = "12gauge" // [HORIZON-EDIT] GunRework
-	base_icon_state = "12gauge" // [HORIZON-ADD] GunRework
-	world_icon_state = "gshell" // [HORIZON-ADD] GunRework
+	// [HORIZON-EDIT] GunRework
+	icon_state = "12gauge"
+	base_icon_state = "12gauge"
+	world_icon_state = "gshell"
 	projectile_type = /obj/projectile/bullet/pellet/shotgun_buckshot
-	pellets = 8 // [HORIZON-EDIT] GunRework (was 6)
-	variance = 4.5 // [HORIZON-EDIT] GunRework (was 15)
+	pellets = 8
+	variance = 4.5
+	// [/HORIZON-EDIT]
 	randomspread = TRUE
 
 /obj/item/ammo_casing/shotgun/buckshot/old
@@ -124,12 +130,14 @@
 /obj/item/ammo_casing/shotgun/rubbershot
 	name = "rubber shot"
 	desc = "A shotgun casing filled with densely-packed rubber balls, used to incapacitate crowds from a distance."
-	icon_state = "12gauge" // [HORIZON-EDIT] GunRework
-	base_icon_state = "12gauge" // [HORIZON-ADD] GunRework
-	world_icon_state = "gshell" // [HORIZON-ADD] GunRework
+	// [HORIZON-EDIT] GunRework
+	icon_state = "12gauge"
+	base_icon_state = "12gauge"
+	world_icon_state = "gshell"
 	projectile_type = /obj/projectile/bullet/pellet/shotgun_rubbershot
-	pellets = 12 // [HORIZON-EDIT] GunRework (was 6)
-	variance = 4 // [HORIZON-EDIT] GunRework (was 15)
+	pellets = 12
+	variance = 4
+	// [/HORIZON-EDIT]
 	randomspread = TRUE
 	custom_materials = list(/datum/material/iron = SMALL_MATERIAL_AMOUNT * 3)
 
@@ -143,13 +151,15 @@
 	custom_materials = list(/datum/material/iron=SHEET_MATERIAL_AMOUNT*2)
 
 /obj/item/ammo_casing/shotgun/flechette
-	name = "shotgun flechette" // [HORIZON-EDIT] GunRework
+	name = "flechette shell"
+	// [HORIZON-EDIT] GunRework
 	desc = "A 12 gauge steel flechette. Contains 20 individual projectiles" // [HORIZON-EDIT] GunRework
 	icon_state = "flechette"
 	projectile_type = /obj/projectile/bullet/pellet/shotgun_flechette // [HORIZON-EDIT] GunRework
 	custom_materials = list(/datum/material/iron = SMALL_MATERIAL_AMOUNT * 3, /datum/material/glass = SMALL_MATERIAL_AMOUNT * 2)
-	pellets = 20 // [HORIZON-EDIT] GunRework (was 8)
-	variance = 18.5 // [HORIZON-EDIT] GunRework (was 10)
+	pellets = 20
+	variance = 18.5
+	// [/HORIZON-EDIT]
 
 /obj/item/ammo_casing/shotgun/flechette/donk
 	name = "\improper Donk Co. 'Donk Spike' Shell"
@@ -252,7 +262,7 @@
 	projectile_type = /obj/projectile/bullet/shotgun_breaching
 	custom_materials = list(/datum/material/iron=SHEET_MATERIAL_AMOUNT*2)
 
-// ======== [HORIZON-ADD] GunRework ========
+// [HORIZON-EDIT] GunRework
 /// 0.1% of all spawned slugs are Reggie. He likes penetrating IIIA body armor.
 /obj/item/ammo_casing/shotgun/Initialize(mapload)
 	if((type == /obj/item/ammo_casing/shotgun) && prob(0.1))
@@ -282,4 +292,4 @@
 	pellets = 10
 	variance = 10
 	projectile_type = /obj/projectile/bullet/pellet/shotgun_bolas/buckshot
-// ======== [/HORIZON-ADD] ========
+// [/HORIZON-ADD]

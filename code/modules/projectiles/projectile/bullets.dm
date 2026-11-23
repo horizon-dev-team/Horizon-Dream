@@ -10,11 +10,13 @@
 	shrapnel_type = /obj/item/shrapnel/bullet
 	embed_type = /datum/embedding/bullet
 	wound_bonus = 0
-	wound_falloff_tile = -2 // [HORIZON-EDIT] GunRework (was -5)
-	embed_falloff_tile = 0 // [HORIZON-EDIT] GunRework (was -3)
-	ricochets_max = 2 // [HORIZON-ADD] GunRework
-	ricochet_chance = 20 // [HORIZON-ADD] GunRework
-	ricochet_incidence_leeway = 45 // [HORIZON-ADD] GunRework
+	// [HORIZON-EDIT] GunRework
+	wound_falloff_tile = -2 // (was -5)
+	embed_falloff_tile = 0 // (was -3)
+	ricochets_max = 2
+	ricochet_chance = 20
+	ricochet_incidence_leeway = 45
+	// [HORIZON-ADD] GunRework
 
 /obj/projectile/bullet/smite
 	name = "divine retribution"

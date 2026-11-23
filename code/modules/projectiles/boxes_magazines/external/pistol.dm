@@ -3,9 +3,11 @@
 
 /obj/item/ammo_box/magazine/m9mm
 	name = "pistol magazine (9mm)"
-	icon = '_horizon/icons/obj/items/ammo/pistol.dmi' // [HORIZON-EDIT] GunRework
-	icon_state = "ruger9mm" // [HORIZON-EDIT] GunRework
-	base_icon_state = "ruger9mm" // [HORIZON-EDIT] GunRework
+	// [HORIZON-EDIT] GunRework
+	icon = '_horizon/icons/obj/items/ammo/pistol.dmi'
+	icon_state = "ruger9mm"
+	base_icon_state = "ruger9mm"
+	// [/HORIZON-EDIT]
 	desc = "A 9mm handgun magazine, suitable for the Makarov pistol."
 	ammo_band_icon = "+9x19ab"
 	ammo_band_color = null
@@ -35,16 +37,18 @@
 /obj/item/ammo_box/magazine/m9mm_aps
 	name = "pernetta 69r magazine (9mm)" // [HORIZON-EDIT] GunRework
 	desc = "A 9mm handgun magazine, suitable for the Stechkin APS machine pistol."
-	icon = '_horizon/icons/obj/items/ammo/pistol.dmi' // [HORIZON-EDIT] GunRework
-	icon_state = "beretta9mm" // [HORIZON-EDIT] GunRework
-	base_icon_state = "beretta9mm" // [HORIZON-EDIT] GunRework
+	icon = '_horizon/icons/obj/items/ammo/pistol.dmi'
+	icon_state = "beretta9mm"
+	base_icon_state = "beretta9mm"
+	// [HORIZON-EDIT] GunRework
 	ammo_band_icon = "+9mmapsab"
 	ammo_band_color = null
 	ammo_type = /obj/item/ammo_casing/c9mm
 	caliber = CALIBER_9MM
 	max_ammo = 15
-	drop_sound = '_horizon/sound/weapons/plastic_drop.ogg' // [HORIZON-ADD] GunRework
-	multiple_sprites = AMMO_BOX_FULL_EMPTY // [HORIZON-ADD] GunRework
+	drop_sound = '_horizon/sound/weapons/plastic_drop.ogg'
+	multiple_sprites = AMMO_BOX_FULL_EMPTY
+	// [HORIZON-ADD] GunRework
 
 /obj/item/ammo_box/magazine/m9mm_aps/update_icon_state()
 	. = ..()
@@ -99,19 +103,21 @@
 // M1911 (.45) //
 
 /obj/item/ammo_box/magazine/m45
-	name = "pistol magazine (.45)" // [HORIZON-EDIT] GunRework
+	// [HORIZON-EDIT] GunRework
+	name = "pistol magazine (.45)"
 	desc = "A .45 handgun magazine, suitable for the M1911."
-	icon = '_horizon/icons/obj/items/ammo/pistol.dmi' // [HORIZON-EDIT] GunRework
-	icon_state = "pistol45" // [HORIZON-EDIT] GunRework
-	base_icon_state = "pistol45" // [HORIZON-EDIT] GunRework
+	icon = '_horizon/icons/obj/items/ammo/pistol.dmi'
+	icon_state = "pistol45"
+	base_icon_state = "pistol45"
 	ammo_type = /obj/item/ammo_casing/c45
 	caliber = CALIBER_45
 	max_ammo = 8
-	multiple_sprites = AMMO_BOX_FULL_EMPTY // [HORIZON-EDIT] GunRework (was AMMO_BOX_PER_BULLET)
+	multiple_sprites = AMMO_BOX_FULL_EMPTY
 	multiple_sprite_use_base = TRUE
-	drop_sound = '_horizon/sound/weapons/plastic_drop.ogg' // [HORIZON-ADD] GunRework
+	drop_sound = '_horizon/sound/weapons/plastic_drop.ogg'
+	// [HORIZON-ADD] GunRework
 
-/obj/item/ammo_box/magazine/m45/update_icon_state() // [HORIZON-ADD] GunRework
+/obj/item/ammo_box/magazine/m45/update_icon_state()
 	. = ..()
 	icon_state = "[base_icon_state]-[min(round(ammo_count(), 2), 8)]"
 
@@ -145,7 +151,7 @@
 		/datum/material/plasma = SHEET_MATERIAL_AMOUNT * 10,
 	)
 
-// ======== [HORIZON-ADD] GunRework: hd_gun pistol magazines ========
+// [HORIZON-ADD] GunRework
 /obj/item/ammo_box/magazine/u45
 	name = "pistol magazine (.45)"
 	icon = '_horizon/icons/obj/items/ammo/pistol.dmi'
@@ -250,4 +256,4 @@
 /obj/item/ammo_box/magazine/pm9/update_icon_state()
 	. = ..()
 	icon_state = "[base_icon_state]-[ammo_count() ? max_ammo : 0]"
-// ======== [/HORIZON-ADD] ========
+// [/HORIZON-ADD]

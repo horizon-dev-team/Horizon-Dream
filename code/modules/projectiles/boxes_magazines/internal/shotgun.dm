@@ -25,7 +25,7 @@
 
 /obj/item/ammo_box/magazine/internal/shot/com
 	name = "combat shotgun internal magazine"
-	ammo_type = /obj/item/ammo_casing/shotgun/buckshot // [HORIZON-EDIT] GunRework (was rubbershot)
+	ammo_type = /obj/item/ammo_casing/shotgun/rubbershot
 	max_ammo = 6
 
 /obj/item/ammo_box/magazine/internal/shot/com/compact
@@ -46,7 +46,7 @@
 
 /obj/item/ammo_box/magazine/internal/shot/riot
 	name = "riot shotgun internal magazine"
-	ammo_type = /obj/item/ammo_casing/shotgun/buckshot // [HORIZON-EDIT] GunRework (was rubbershot)
+	ammo_type = /obj/item/ammo_casing/shotgun/rubbershot
 	max_ammo = 6
 
 /obj/item/ammo_box/magazine/internal/shot/lake
@@ -68,7 +68,7 @@
 	name = "\improper Donk Co. musket internal magazine"
 	ammo_type = /obj/item/ammo_casing/shotgun/flechette/donk
 
-// ======== [HORIZON-ADD] GunRework: hd_gun shotgun internal magazines ========
+// [HORIZON-ADD] GunRework
 /obj/item/ammo_box/magazine/internal/shot/b2021
 	name = "b2021 internal magazine"
 	max_ammo = 9
@@ -90,4 +90,4 @@
 	ammo_type = /obj/item/ammo_casing/shotgun/flechette
 	max_ammo = 2
 	caliber = CALIBER_SHOTGUN
-// ======== [/HORIZON-ADD] ========
+// [/HORIZON-ADD]

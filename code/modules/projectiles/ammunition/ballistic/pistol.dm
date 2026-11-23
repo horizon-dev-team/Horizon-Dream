@@ -27,10 +27,12 @@
 /obj/item/ammo_casing/c9mm
 	name = "9mm bullet casing"
 	desc = "A 9mm bullet casing."
-	icon = '_horizon/icons/obj/items/ammo/casings.dmi' // [HORIZON-ADD] GunRework
-	icon_state = "c9mm" // [HORIZON-ADD] GunRework
-	base_icon_state = "c9mm" // [HORIZON-ADD] GunRework
-	stack_type = /obj/item/ammo_box/magazine/ammo_stack/c9mm // [HORIZON-ADD] GunRework
+	// [HORIZON-ADD] GunRework
+	icon = '_horizon/icons/obj/items/ammo/casings.dmi'
+	icon_state = "c9mm"
+	base_icon_state = "c9mm"
+	stack_type = /obj/item/ammo_box/magazine/ammo_stack/c9mm
+	// [/HORIZON-ADD]
 	caliber = CALIBER_9MM
 	projectile_type = /obj/projectile/bullet/c9mm
 	newtonian_force = 0.75
@@ -90,7 +92,7 @@
 	icon_state = "launchpad_pull"
 	duration = 0.25 SECONDS
 
-// ======== [HORIZON-ADD] GunRework: hd_gun pistol casings ========
+// [HORIZON-ADD] GunRework
 /obj/item/ammo_casing/c22lr
 	icon = '_horizon/icons/obj/items/ammo/casings.dmi'
 	name = ".22lr bullet casing"
@@ -120,4 +122,4 @@
 	caliber = CALIBER_380
 	projectile_type = /obj/projectile/bullet/c380
 	stack_type = /obj/item/ammo_box/magazine/ammo_stack/c380
-// ======== [/HORIZON-ADD] ========
+// [/HORIZON-ADD]

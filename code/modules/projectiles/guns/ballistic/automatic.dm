@@ -548,9 +548,8 @@
 		overlay_x = 28, \
 		overlay_y = 12)
 
-// =============================================================================
-// [HORIZON-ADD] GunRework: fire selector (semi / burst / full auto cycling)
-// =============================================================================
+// [HORIZON-ADD] GunRework
+// Fire selector (semi / burst / full auto cycling)
 /obj/item/gun/ballistic/automatic
 	/// Position of the fire selector: 1 = semi, 2 = burst, 3 = full auto.
 	var/select = 3
@@ -652,4 +651,4 @@
 
 	update_appearance()
 	update_item_action_buttons()
-// ======== [/HORIZON-ADD] ========
+// [/HORIZON-ADD]

@@ -12,7 +12,7 @@
 	newtonian_force = 0.5
 	muzzle_flash_color = LIGHT_COLOR_CYAN
 
-// ======== [HORIZON-ADD] GunRework: hd_gun energy casings ========
+// [HORIZON-ADD] GunRework
 /obj/item/ammo_casing/energy/siren
 	fire_sound = '_horizon/sound/weapons/guns/energy/siren.wav'
 	select_name = "well done steak"
@@ -24,4 +24,4 @@
 	select_name = "glue melter"
 	e_cost = 100
 	projectile_type = /obj/projectile/beam/laser/nasr
-// ======== [/HORIZON-ADD] ========
+// [/HORIZON-ADD]

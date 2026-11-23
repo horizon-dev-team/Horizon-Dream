@@ -1,8 +1,3 @@
-// [HORIZON-ADD] GunRework
-// Gun attachment system (ported from Shiptest): slot names, slot helpers and
-// attachment feature flags. Components live in code/datums/components/,
-// attachment items in code/modules/projectiles/attachments.dm.
-
 // ~Attachment slots
 #define ATTACHMENT_SLOT_MUZZLE "muzzle"
 #define ATTACHMENT_SLOT_SCOPE "scope"

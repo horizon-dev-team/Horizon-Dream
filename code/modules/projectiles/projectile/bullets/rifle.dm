@@ -229,7 +229,7 @@
 	damage_type = BRUTE
 	icon_state = "paperball"
 
-// ======== [HORIZON-ADD] GunRework: hd_gun rifle bullets ========
+// [HORIZON-ADD] GunRework
 /obj/projectile/bullet/a762
 	damage = 60
 	wound_falloff_tile = -2
@@ -273,4 +273,4 @@
 
 /obj/projectile/bullet/a276
 	damage = 80
-// ======== [/HORIZON-ADD] ========
+// [/HORIZON-ADD]

@@ -1,3 +1,9 @@
+/obj/item/gun/ballistic/automatic/hd_gun
+	pickup_sound = '_horizon/sound/weapons/guns/generic_draw.wav'
+	dry_fire_sound = '_horizon/sound/weapons/guns/empty.wav'
+	carry_weight = 2.5 KILOGRAMS
+	client_recoil_animation_information = list("strength" = 0.35, "duration" = 2)
+
 /obj/item/gun/ballistic/automatic/hd_gun/remis
 	worn_icon = '_horizon/icons/obj/items/guns/worn/back.dmi'
 	equip_sound = '_horizon/sound/weapons/guns/weap_away.ogg'
@@ -17,10 +23,6 @@
 	inhand_x_dimension = 32
 	inhand_y_dimension = 32
 	w_class = WEIGHT_CLASS_BULKY
-	pickup_sound = '_horizon/sound/weapons/guns/generic_draw.wav' // [HORIZON-ADD] GunRework family default
-	dry_fire_sound = '_horizon/sound/weapons/guns/empty.wav' // [HORIZON-ADD] GunRework family default
-	carry_weight = 2.5 KILOGRAMS // [HORIZON-ADD] GunRework family default
-	client_recoil_animation_information = list("strength" = 0.35, "duration" = 2) // [HORIZON-ADD] GunRework family default
 
 /obj/item/gun/ballistic/automatic/hd_gun/remis/abyss/warfare
 	icon = '_horizon/icons/obj/items/guns/alter/48x32.dmi'

@@ -219,7 +219,7 @@
 	newtonian_force = 0.5
 	custom_materials = list(/datum/material/paper = HALF_SHEET_MATERIAL_AMOUNT / 2)
 
-// ======== [HORIZON-ADD] GunRework: hd_gun rifle casings ========
+// [HORIZON-ADD] GunRework
 /obj/item/ammo_casing/a762
 	icon = '_horizon/icons/obj/items/ammo/casings.dmi'
 	name = "7.62 bullet casing"
@@ -334,4 +334,4 @@
 	icon_state = "40mmHE"
 	base_icon_state = "40mmHE"
 	projectile_type = /obj/projectile/bullet/l40mm
-// ======== [/HORIZON-ADD] ========
+// [/HORIZON-ADD]

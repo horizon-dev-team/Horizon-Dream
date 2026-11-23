@@ -30,7 +30,7 @@
 	caliber = CALIBER_PEA
 	max_ammo = 7
 
-// ======== [HORIZON-ADD] GunRework: hd_gun revolver cylinders ========
+// [HORIZON-ADD] GunRework
 /obj/item/ammo_box/magazine/internal/cylinder/nova
 	name = "nova cylinder"
 	ammo_type = /obj/item/ammo_casing/c38
@@ -57,4 +57,4 @@
 	ammo_type = /obj/item/ammo_casing/a357
 	caliber = CALIBER_357
 	max_ammo = 6
-// ======== [/HORIZON-ADD] ========
+// [/HORIZON-ADD]

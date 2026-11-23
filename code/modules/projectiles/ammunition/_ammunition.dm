@@ -61,11 +61,12 @@
 	pixel_x = base_pixel_x + rand(-10, 10)
 	pixel_y = base_pixel_y + rand(-10, 10)
 	setDir(pick(GLOB.alldirs))
+	 // [HORIZON-ADD] GunRework
 	if(auto_rotate)
-		transform = transform.Turn(round(45 * rand(0, 32) / 2)) // [HORIZON-ADD]
-	// [HORIZON-ADD] GunRework: casings use a separate world sprite when lying on the floor
+		transform = transform.Turn(round(45 * rand(0, 32) / 2))
 	if(world_icon)
 		AddElement(/datum/element/world_icon, PROC_REF(update_icon_world))
+	// [/HORIZON-ADD]
 	update_appearance()
 
 /obj/item/ammo_casing/Destroy()
@@ -225,7 +226,7 @@
 		addtimer(CALLBACK(GLOBAL_PROC, GLOBAL_PROC_REF(playsound), src, our_turf.bullet_bounce_sound, 20, 1), sound_delay) //Soft / non-solid turfs that shouldn't make a sound when a shell casing is ejected over them.
 // [/HORIZON-EDIT]
 
-// ======== [HORIZON-ADD] GunRework: world sprites & casing stacking ========
+// [HORIZON-ADD] GunRework
 /obj/item/ammo_casing
 	/// Icon used for the casing while it lies on the floor (world_icon element swaps to it outside inventories).
 	var/world_icon = '_horizon/icons/obj/items/ammo/casings_world.dmi'
@@ -234,14 +235,14 @@
 	/// Ammo stack type two of these casings merge into when clicked together.
 	var/obj/item/ammo_box/magazine/stack_type
 
-/// [HORIZON-ADD] GunRework: reset the icon the world_icon element swapped away from.
+/// reset the icon the world_icon element swapped away from.
 /obj/item/ammo_casing/update_icon(updates)
 	icon = initial(icon)
 	return ..()
 
-/// [HORIZON-ADD] GunRework: world sprite proc for the world_icon element.
+/// world sprite proc for the world_icon element.
 /obj/item/ammo_casing/proc/update_icon_world()
 	icon = world_icon
 	icon_state = "[world_icon_state][loaded_projectile ? "-live" : ""]"
 	return UPDATE_ICON_STATE | UPDATE_OVERLAYS
-// ======== [/HORIZON-ADD] ========
+// [/HORIZON-ADD]

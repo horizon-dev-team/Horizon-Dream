@@ -75,7 +75,7 @@
 	jostle_pain_mult = 6
 	rip_time = 0.5 SECONDS
 
-// ======== [HORIZON-ADD] GunRework: hd_gun pistol bullets ========
+// [HORIZON-ADD] GunRework
 /obj/projectile/bullet/c22lr
 	name = ".22lr bullet"
 	damage = 20
@@ -90,4 +90,4 @@
 	name = ".380 ACP bullet"
 	damage = 28
 	wound_bonus = 5
-// ======== [/HORIZON-ADD] ========
+// [/HORIZON-ADD]

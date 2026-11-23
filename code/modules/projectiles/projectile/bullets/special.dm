@@ -211,7 +211,7 @@
 		if(!HAS_TRAIT(last_ditch, TRAIT_RECENTLY_COINED))
 			return last_ditch
 
-// ======== [HORIZON-ADD] GunRework: 40mm HE shell for the chips launcher ========
+// [HORIZON-ADD] GunRework
 /obj/projectile/bullet/l40mm
 	name = "40mm fragmentation grenade"
 	desc = "MEU DEUS"
@@ -230,4 +230,4 @@
 	. = ..()
 	explosion(target, devastation_range = -1, heavy_impact_range = 2, light_impact_range = 4, flame_range = 2, flash_range = 3, adminlog = FALSE, explosion_cause = src)
 	return BULLET_ACT_HIT
-// ======== [/HORIZON-ADD] ========
+// [/HORIZON-ADD]

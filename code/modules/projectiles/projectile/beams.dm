@@ -434,7 +434,7 @@
 	antimagic_flags = NONE
 	shrink_time = 9 SECONDS
 
-// ======== [HORIZON-ADD] GunRework: hd_gun energy beams ========
+// [HORIZON-ADD] GunRework
 /obj/projectile/beam/laser/nasr
 	name = "laser"
 	icon = '_horizon/icons/obj/items/guns/projectiles/projectiles.dmi'
@@ -456,4 +456,4 @@
 	muzzle_type = /obj/effect/projectile/muzzle/disabler
 	tracer_type = null
 	impact_type = null
-// ======== [/HORIZON-ADD] ========
+// [/HORIZON-ADD]

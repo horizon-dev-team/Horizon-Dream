@@ -1,8 +1,4 @@
 // [HORIZON-ADD] GunRework
-// Ammo stacks: click two matching casings together to merge them into a stack.
-// Stacks qdel themselves when emptied and dump their contents when destroyed.
-// world_icon rendering shows every casing in the stack as a separate sprite.
-
 //The ammo stack object itself
 /obj/item/ammo_box/magazine/ammo_stack
 	name = "ammo stack"
@@ -16,9 +12,7 @@
 	start_empty = TRUE
 	max_ammo = 12
 	carry_weight = 0
-	/// World icon for this stack
 	var/world_icon = '_horizon/icons/obj/items/ammo/casings_world.dmi'
-	/// World icon state
 	var/world_icon_state = "s-casing"
 
 /obj/item/ammo_box/magazine/ammo_stack/Initialize(mapload)

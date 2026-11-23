@@ -51,9 +51,6 @@
 	bolt_type = BOLT_TYPE_LOCKING
 	slot_flags = ITEM_SLOT_BACK | ITEM_SLOT_SUITSTORE
 	spread_unwielded = 12
-	dry_fire_sound = '_horizon/sound/weapons/guns/empty.wav' // [HORIZON-ADD] GunRework family default
-	carry_weight = 2.5 KILOGRAMS // [HORIZON-ADD] GunRework family default
-	client_recoil_animation_information = list("strength" = 0.35, "duration" = 2) // [HORIZON-ADD] GunRework family default
 
 // DOUBLE BARRELED SHOTGUN
 /obj/item/gun/ballistic/shotgun/doublebarrel/hd_gun
@@ -87,9 +84,6 @@
 		"recoil_angle_upper" = -15, \
 		"recoil_angle_lower" = -30, \
 	)
-	dry_fire_sound = '_horizon/sound/weapons/guns/empty.wav' // [HORIZON-ADD] GunRework family default
-	carry_weight = 2.5 KILOGRAMS // [HORIZON-ADD] GunRework family default
-	client_recoil_animation_information = list("strength" = 0.35, "duration" = 2) // [HORIZON-ADD] GunRework family default
 
 // The legendary
 /obj/item/gun/ballistic/shotgun/doublebarrel/hd_gun/bobox
@@ -163,9 +157,6 @@
 	bolt_type = BOLT_TYPE_LOCKING
 	lock_back_sound = '_horizon/sound/weapons/guns/shotgun/semigun_lock_back.wav'
 	bolt_drop_sound = '_horizon/sound/weapons/guns/shotgun/semigun_lockin.wav'
-	dry_fire_sound = '_horizon/sound/weapons/guns/empty.wav' // [HORIZON-ADD] GunRework family default
-	carry_weight = 2.5 KILOGRAMS // [HORIZON-ADD] GunRework family default
-	client_recoil_animation_information = list("strength" = 0.35, "duration" = 2) // [HORIZON-ADD] GunRework family default
 
 // BENELLI M4 SHOTGUN
 /obj/item/gun/ballistic/shotgun/automatic/hd_gun/combat

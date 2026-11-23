@@ -24,9 +24,11 @@
 /obj/projectile/bullet/shotgun_beanbag
 	name = "beanbag slug"
 	icon_state = "pellet"
-	damage = 15 // [HORIZON-EDIT] GunRework (was 10)
-	stamina = 20 // [HORIZON-EDIT] GunRework (was 55)
-	wound_bonus = 15 // [HORIZON-EDIT] GunRework (was 20)
+	// [HORIZON-EDIT] GunRework
+	damage = 15 // (was 10)
+	stamina = 20 // (was 55)
+	wound_bonus = 15 // (was 20)
+	// [/HORIZON-EDIT]
 	sharpness = NONE
 	embed_type = null
 
@@ -95,14 +97,16 @@
 	icon_state = "pellet_tracer"
 	damage_falloff_tile = -0.25
 
+// [HORIZON-EDIT] GunRework
 /obj/projectile/bullet/pellet/shotgun_buckshot
-	name = "12g pellet" // [HORIZON-EDIT] GunRework
-	damage = 10 // [HORIZON-EDIT] GunRework (was 5)
+	name = "12g pellet" // ("buckshot pellet")
+	damage = 10 // (was 5)
 	wound_bonus = 5
 	exposed_wound_bonus = 5
 	speed = 1.1
-	wound_falloff_tile = 0 // [HORIZON-EDIT] GunRework (was -0.5)
-	sharpness = SHARP_POINTY // [HORIZON-EDIT] GunRework (was SHARP_EDGED)
+	wound_falloff_tile = 0 // (was -0.5)
+	sharpness = SHARP_POINTY // (was SHARP_EDGED)
+	// [/HORIZON-EDIT]
 
 /**
  * A slightly weaker version of the buckshot, available from the blackmarket.
@@ -216,7 +220,7 @@
 	damage = 5 //does shit damage to everything except doors and windows
 	demolition_mod = 200 //one shot to break a window or grille, or two shots to breach an airlock door
 
-// ======== [HORIZON-ADD] GunRework: hd_gun shotgun bullets ========
+// [HORIZON-ADD] GunRework
 /obj/projectile/bullet/pellet/shotgun_flechette
 	name = "12g flechette"
 	damage = 6
@@ -236,4 +240,4 @@
 	wound_bonus = 10
 	wound_falloff_tile = 0
 	sharpness = SHARP_POINTY
-// ======== [/HORIZON-ADD] ========
+// [/HORIZON-ADD]

@@ -373,11 +373,11 @@
 	recharge_newshot(no_cyborg_drain = TRUE)
 	update_appearance()
 
-// ======== [HORIZON-ADD] GunRework: charge readout on examine ========
+// [HORIZON-ADD] GunRework
 /obj/item/gun/energy/examine(mob/user)
 	. = ..()
 	if(cell)
 		. += "<b>Charge:</b> [icon2html(GUN_INFO_ICON_SET, user, "battery")] [CEILING(cell.percent(), 1)]%"
 	else
 		. += span_warning("It has no power cell installed.")
-// ======== [/HORIZON-ADD] ========
+// [/HORIZON-ADD]

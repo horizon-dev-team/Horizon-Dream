@@ -78,7 +78,7 @@
 	max_ammo = 20
 	custom_materials = list(/datum/material/iron = SHEET_MATERIAL_AMOUNT*12.5)
 
-// ======== [HORIZON-ADD] GunRework: hd_gun ammo boxes ========
+// [HORIZON-ADD] GunRework
 /obj/item/ammo_box/a762svd
 	name = "ammo box (7.62x54R)"
 	icon = '_horizon/icons/obj/items/ammo/boxes.dmi'
@@ -113,4 +113,4 @@
 	icon_state = "riflebox"
 	ammo_type = /obj/item/ammo_casing/a556
 	max_ammo = 120
-// ======== [/HORIZON-ADD] ========
+// [/HORIZON-ADD]

@@ -89,7 +89,7 @@
 	ammo_band_color = COLOR_AMMO_HELLFIRE
 	custom_materials = list(/datum/material/iron = SHEET_MATERIAL_AMOUNT * 5, /datum/material/plastic = SHEET_MATERIAL_AMOUNT * 2, /datum/material/uranium = SHEET_MATERIAL_AMOUNT * 0.75, /datum/material/gold = SHEET_MATERIAL_AMOUNT * 0.75)
 
-// ======== [HORIZON-ADD] GunRework: hd_gun rifle magazines ========
+// [HORIZON-ADD] GunRework
 /obj/item/ammo_box/magazine/a556winter
 	name = "Inverno Genocídio universal magazine (5.56)"
 	icon = '_horizon/icons/obj/items/ammo/rifle.dmi'
@@ -208,4 +208,4 @@
 	. = ..()
 	icon_state = "[base_icon_state]-[ammo_count() ? max_ammo : 0]"
 */
-// ======== [/HORIZON-ADD] ========
+// [/HORIZON-ADD]

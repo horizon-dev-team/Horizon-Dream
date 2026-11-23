@@ -138,9 +138,6 @@
 			unwieldsound = '_horizon/sound/weapons/guns/stock_close.wav')
 	if(safety_flags & GUN_SAFETY_HAS_SAFETY)
 		add_item_action(/datum/action/item_action/toggle_safety)
-	// Shiptest attachment system: every gun gets a holder component.
-	// handle_attack() only reacts to TRAIT_ATTACHABLE items and crowbars,
-	// so normal interactions are untouched.
 	AddComponent(/datum/component/attachment_holder, slot_available, valid_attachments, slot_offsets, default_attachments)
 
 /obj/item/gun/Destroy()
@@ -267,13 +264,10 @@
 	playsound(src, dry_fire_sound, dry_fire_sound_volume, TRUE)
 
 /obj/item/gun/proc/fire_sounds()
-	var/sound_to_play // [HORIZON-EDIT] GunRework: fire/suppressed sounds may be lists, pick() one each shot
 	if(suppressed)
-		sound_to_play = islist(suppressed_sound) ? pick(suppressed_sound) : suppressed_sound
-		playsound(src, sound_to_play, suppressed_volume, vary_fire_sound, ignore_walls = FALSE, extrarange = SILENCED_SOUND_EXTRARANGE, falloff_distance = 0)
+		playsound(src, suppressed_sound, suppressed_volume, vary_fire_sound, ignore_walls = FALSE, extrarange = SILENCED_SOUND_EXTRARANGE, falloff_distance = 0)
 	else
-		sound_to_play = islist(fire_sound) ? pick(fire_sound) : fire_sound
-		playsound(src, sound_to_play, fire_sound_volume, vary_fire_sound)
+		playsound(src, fire_sound, fire_sound_volume, vary_fire_sound)
 
 /obj/item/gun/proc/muzzle_flash_on()
 	if (can_muzzle_flash)
@@ -369,6 +363,7 @@
 	if(safety_flags & GUN_SAFETY_HAS_SAFETY)
 		toggle_safety(user)
 		return SECONDARY_ATTACK_CANCEL_ATTACK_CHAIN
+	// [/HORIZON-ADD]
 
 	if(pinless)
 		return
@@ -448,16 +443,12 @@
 	if(flag)
 		if((safety_flags & GUN_SAFETY_NO_FLOGGING) && user?.combat_mode)
 			return NONE
-		if(iscarbon(target) && user && !user.combat_mode)
-				var/mob/living/carbon/carbon_target = target
-				for(var/datum/wound/wound as anything in carbon_target.all_wounds)
-					if(wound.try_treating(src, user))
-						return NONE
 	// Safety-on is a dry click. Pin failures already message inside handle_pins.
 	if(istype(user) && (safety_flags & GUN_SAFETY_ENABLED))
 		shoot_with_empty_chamber(user)
 		return NONE
 	before_can_shoot_checks(user)
+	// [/HORIZON-ADD]
 
 	if(SEND_SIGNAL(user, COMSIG_MOB_TRYING_TO_FIRE_GUN, src, target, flag, params) & COMPONENT_CANCEL_GUN_FIRE)
 		return NONE
@@ -487,10 +478,12 @@
 	if(check_botched(user, target))
 		return NONE
 
+	// [HORIZON-REMOVE] GunRework
 	//var/obj/item/bodypart/other_hand = user.has_hand_for_held_index(user.get_inactive_hand_index()) //returns non-disabled inactive hands
 	//if(weapon_weight == WEAPON_HEAVY && (user.get_inactive_held_item() || !other_hand))
 	//	balloon_alert(user, "use both hands!")
 	//	return ITEM_INTERACT_BLOCKING
+	// [/HORIZON-REMOVE]
 
 	//DUAL (or more!) WIELDING
 	var/bonus_spread = 0
@@ -862,7 +855,6 @@
 	/// NO FULL AUTO IN BUILDINGS!
 	var/full_auto = FALSE
 
-	// ~SHIPTEST-STYLE UNWIELDED SPREAD
 	/// Extra random spread when firing this gun without a two-handed grip
 	/// (wielded_inhand_state guns). 0 = no penalty. Used with the laser sight
 	/// attachment, which reduces both spread and spread_unwielded.
@@ -1101,7 +1093,6 @@
 		animate(src, pixel_y = old_pixel_y, time = return_burst_speed, easing = return_burst_easing, flags = ANIMATION_PARALLEL)
 		sleep(return_burst_speed)
 	doing_recoil_burst_animation = FALSE
-// ======== [/HORIZON-ADD] ========
 
 /datum/action/item_action/toggle_safety
 	name = "Toggle Safety"
@@ -1122,3 +1113,4 @@
 	else
 		button_icon_state = "safety0"
 	build_all_button_icons()
+// [/HORIZON-ADD]

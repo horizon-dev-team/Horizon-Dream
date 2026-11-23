@@ -165,7 +165,7 @@
 /obj/item/ammo_casing/rocket
 	carry_weight = 1.6 KILOGRAMS
 /obj/item/ammo_box/magazine
-	carry_weight = 100 GRAMS
+	carry_weight = 500 GRAMS
 /obj/item/ammo_box/magazine/internal
 	carry_weight = 50 GRAMS
 

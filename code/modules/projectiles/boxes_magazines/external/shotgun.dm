@@ -83,5 +83,5 @@
 
 /obj/item/ammo_box/magazine/abyss_shotgun_drum/update_icon_state()
 	. = ..()
-	icon_state = "[base_icon_state]-[ammo_count() ? max_ammo : 0]"
+	icon_state = "[base_icon_state]-[ammo_count()]"
 // ======== [/HORIZON-ADD] ========

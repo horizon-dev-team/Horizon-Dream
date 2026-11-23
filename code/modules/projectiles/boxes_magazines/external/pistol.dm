@@ -5,8 +5,8 @@
 	name = "pistol magazine (9mm)"
 	// [HORIZON-EDIT] GunRework
 	icon = '_horizon/icons/obj/items/ammo/pistol.dmi'
-	icon_state = "ruger9mm"
-	base_icon_state = "ruger9mm"
+	icon_state = "ruger9mm" // ("9x19p")
+	base_icon_state = "ruger9mm" // ("9x19p")
 	// [/HORIZON-EDIT]
 	desc = "A 9mm handgun magazine, suitable for the Makarov pistol."
 	ammo_band_icon = "+9x19ab"
@@ -38,8 +38,8 @@
 	name = "pernetta 69r magazine (9mm)" // [HORIZON-EDIT] GunRework
 	desc = "A 9mm handgun magazine, suitable for the Stechkin APS machine pistol."
 	icon = '_horizon/icons/obj/items/ammo/pistol.dmi'
-	icon_state = "beretta9mm"
-	base_icon_state = "beretta9mm"
+	icon_state = "beretta9mm" // ("9mmaps-15")
+	base_icon_state = "beretta9mm" // ("9mmaps")
 	// [HORIZON-EDIT] GunRework
 	ammo_band_icon = "+9mmapsab"
 	ammo_band_color = null
@@ -180,7 +180,7 @@
 
 /obj/item/ammo_box/magazine/combatmaster9mm/update_icon_state()
 	. = ..()
-	icon_state = "[base_icon_state]-[ammo_count() ? max_ammo : 0]"
+	icon_state = "[base_icon_state]-[ammo_count()]"
 
 /obj/item/ammo_box/magazine/glock9mm
 	name = "Gosma-17 magazine (9mm)"
@@ -195,7 +195,7 @@
 
 /obj/item/ammo_box/magazine/glock9mm/update_icon_state()
 	. = ..()
-	icon_state = "[base_icon_state]-[ammo_count() ? max_ammo : 0]"
+	icon_state = "[base_icon_state]-[ammo_count()]"
 
 /obj/item/ammo_box/magazine/ppk22lr
 	name = "walter bombeiro magazine (.22lr)"
@@ -225,7 +225,7 @@
 
 /obj/item/ammo_box/magazine/aniquilador/update_icon_state()
 	. = ..()
-	icon_state = "[base_icon_state]-[ammo_count() ? max_ammo : 0]"
+	icon_state = "[base_icon_state]-[ammo_count()]"
 
 /obj/item/ammo_box/magazine/john
 	name = "John Magazine (.50 AE)"
@@ -240,7 +240,7 @@
 
 /obj/item/ammo_box/magazine/john/update_icon_state()
 	. = ..()
-	icon_state = "[base_icon_state]-[ammo_count() ? max_ammo : 0]"
+	icon_state = "[base_icon_state]-[ammo_count()]"
 
 /obj/item/ammo_box/magazine/pm9
 	name = "PM9 Evil Magazine (nine milie meter)"
@@ -255,5 +255,5 @@
 
 /obj/item/ammo_box/magazine/pm9/update_icon_state()
 	. = ..()
-	icon_state = "[base_icon_state]-[ammo_count() ? max_ammo : 0]"
+	icon_state = "[base_icon_state]-[ammo_count()]"
 // [/HORIZON-ADD]

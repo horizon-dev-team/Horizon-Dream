@@ -176,7 +176,6 @@
 
 /obj/item/gun/ballistic/Initialize(mapload)
 	. = ..()
-	RegisterSignal(src, COMSIG_ATOM_ITEM_INTERACTION, PROC_REF(pre_item_interaction))
 	if(!spawn_magazine_type)
 		spawn_magazine_type = accepted_magazine_type
 	if (!spawnwithmagazine)

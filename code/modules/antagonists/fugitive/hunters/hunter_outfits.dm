@@ -245,7 +245,7 @@
 	shoes = /obj/item/clothing/shoes/laceup
 	belt = /obj/item/restraints/handcuffs/cable/zipties
 	l_pocket = /obj/item/gun/ballistic/automatic/pistol
-	r_pocket = /obj/item/suppressor
+	r_pocket = /obj/item/attachment/silencer // [HORIZON-EDIT] GunRework
 	id = /obj/item/card/id/advanced/chameleon/black
 	box = /obj/item/storage/box/survival/syndie
 	implants = list(/obj/item/implant/explosive)

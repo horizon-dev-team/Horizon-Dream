@@ -125,7 +125,7 @@
 /obj/item/storage/briefcase/secure/riches/PopulateContents()
 	new /obj/item/clothing/suit/armor/vest(src)
 	new /obj/item/gun/ballistic/automatic/pistol(src)
-	new /obj/item/suppressor(src)
+	new /obj/item/attachment/silencer(src) // [HORIZON-EDIT] GunRework
 	new /obj/item/melee/baton/telescopic(src)
 	new /obj/item/clothing/mask/balaclava(src)
 	new /obj/item/bodybag(src)

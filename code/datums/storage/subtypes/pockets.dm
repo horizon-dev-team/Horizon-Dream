@@ -108,7 +108,7 @@
 			/obj/item/screwdriver,
 			/obj/item/weldingtool/mini,
 			/obj/item/firing_pin,
-			/obj/item/suppressor,
+			/obj/item/attachment/silencer, // [HORIZON-EDIT] GunRework
 			/obj/item/ammo_box/magazine/m9mm,
 			/obj/item/ammo_box/magazine/m10mm,
 			/obj/item/ammo_box/magazine/m45,
@@ -163,7 +163,7 @@
 			/obj/item/scalpel,
 			/obj/item/screwdriver,
 			/obj/item/spess_knife,
-			/obj/item/suppressor,
+			/obj/item/attachment/silencer, // [HORIZON-EDIT] GunRework
 			/obj/item/switchblade,
 			/obj/item/toy/crayon,
 			/obj/item/weldingtool/mini,

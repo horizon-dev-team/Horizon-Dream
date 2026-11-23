@@ -48,10 +48,10 @@
 	pin.pin_removable = FALSE
 
 
-/obj/item/gun/ballistic/automatic/pistol/suppressed/Initialize(mapload)
-	. = ..()
-	var/obj/item/suppressor/S = new(src)
-	install_suppressor(S)
+// [HORIZON-EDIT] GunRework
+/obj/item/gun/ballistic/automatic/pistol/suppressed
+	default_attachments = list(/obj/item/attachment/silencer)
+// [/HORIZON-EDIT]
 
 /obj/item/gun/ballistic/automatic/pistol/clandestine
 	name = "\improper Ansem pistol"

@@ -108,10 +108,9 @@
 		"duration" = 1,
 	)
 
-/obj/item/gun/ballistic/automatic/hd_gun/remis/winter/Initialize(mapload)
-	. = ..()
-	var/obj/item/suppressor/S = new(src)
-	install_suppressor(S)
+/obj/item/gun/ballistic/automatic/hd_gun/remis/winter
+	suppressed = SUPPRESSED_QUIET
+	can_muzzle_flash = FALSE
 
 //Darkworld Gun
 /obj/item/gun/ballistic/automatic/hd_gun/remis/abyss
@@ -177,10 +176,9 @@
 	can_unsuppress = FALSE
 	suppressor_x_offset = 2
 
-/obj/item/gun/ballistic/automatic/hd_gun/remis/abyss/donator/Initialize(mapload)
-	. = ..()
-	var/obj/item/suppressor/S = new(src)
-	install_suppressor(S)
+/obj/item/gun/ballistic/automatic/hd_gun/remis/abyss/donator
+	suppressed = SUPPRESSED_QUIET
+	can_muzzle_flash = FALSE
 
 /obj/item/gun/ballistic/automatic/hd_gun/remis/g11
 	name = "\improper Kh11 4.92x34mm Assault Rifle"
@@ -226,7 +224,7 @@
 	)
 
 //copypasted just to ensure that we can nuke the casing
-/obj/item/gun/ballistic/automatic/hd_gun/remis/g11/handle_chamber(empty_chamber, from_firing, chamber_next_round)
+/obj/item/gun/ballistic/automatic/hd_gun/remis/g11/handle_chamber(empty_chamber, from_firing, chamber_next_round, user)
 	if((!semi_auto && from_firing) || (bolt_type == BOLT_TYPE_BREAK_ACTION))
 		return
 	var/obj/item/ammo_casing/casing = chambered //Find chambered round

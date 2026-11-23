@@ -717,7 +717,7 @@
 	backpack_contents = list(
 		/obj/item/reagent_containers/cup/glass/bottle/bottleofnothing,
 		/obj/item/gun/ballistic/automatic/pistol,
-		/obj/item/suppressor,
+		/obj/item/attachment/silencer, // [HORIZON-EDIT] GunRework
 		/obj/item/ammo_box/c9mm,
 		/obj/item/food/croissant/throwing = 2,
 		)

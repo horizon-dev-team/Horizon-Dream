@@ -26,11 +26,7 @@
 	drop_sound = '_horizon/sound/weapons/guns/drop_heavygun.wav'
 	safety_on_sound = '_horizon/sound/weapons/guns/safety3.aac'
 	safety_off_sound = '_horizon/sound/weapons/guns/safety3.aac'
-	load_sound = list(
-		'_horizon/sound/weapons/guns/shotgun/shell1.wav', \
-		'_horizon/sound/weapons/guns/shotgun/shell2.wav', \
-		'_horizon/sound/weapons/guns/shotgun/shell3.wav', \
-	)
+	load_sound = '_horizon/sound/weapons/guns/shotgun/shell1.wav'
 	load_sound_volume = 80
 	safety_off_sound = '_horizon/sound/weapons/guns/shotgun/shotgun_safety2.wav'
 	safety_on_sound = '_horizon/sound/weapons/guns/shotgun/shotgun_safety1.wav'
@@ -349,11 +345,7 @@
 	spawn_magazine_type = /obj/item/ammo_box/magazine/internal/shot/bolas
 	fire_sound = '_horizon/sound/weapons/guns/shotgun/bolas.wav'
 	suppressed_sound = '_horizon/sound/weapons/guns/shotgun/bolas_silenced.wav'
-	load_sound = list(
-		'_horizon/sound/weapons/guns/shotgun/bolas_load1.wav', \
-		'_horizon/sound/weapons/guns/shotgun/bolas_load2.wav', \
-		'_horizon/sound/weapons/guns/shotgun/bolas_load3.wav', \
-	)
+	load_sound = '_horizon/sound/weapons/guns/shotgun/bolas_load1.wav'
 	client_recoil_animation_information = list(
 		"strength" = 1.5,
 		"duration" = 3.5,

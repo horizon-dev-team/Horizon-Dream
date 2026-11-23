@@ -18,11 +18,7 @@
 	lock_back_sound = '_horizon/sound/weapons/guns/launcher/batata_lock_back.ogg'
 	bolt_drop_sound = '_horizon/sound/weapons/guns/launcher/batata_lockin.wav'
 	rack_sound = '_horizon/sound/weapons/guns/launcher/batata_rack.ogg'
-	load_sound = list(
-		'_horizon/sound/weapons/guns/launcher/batata_load1.wav', \
-		'_horizon/sound/weapons/guns/launcher/batata_load2.wav', \
-		'_horizon/sound/weapons/guns/launcher/batata_load3.wav', \
-	)
+	load_sound = '_horizon/sound/weapons/guns/launcher/batata_load1.wav'
 	accepted_magazine_type = /obj/item/ammo_box/magazine/internal/grenadelauncher/batata
 	pin = /obj/item/firing_pin
 	slot_flags = null

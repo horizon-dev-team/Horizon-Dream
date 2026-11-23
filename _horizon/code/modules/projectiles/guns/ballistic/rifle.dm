@@ -404,7 +404,7 @@
 	rack_sound = '_horizon/sound/weapons/guns/rifle/bolties/federson_boltout.wav'
 	bolt_drop_sound = '_horizon/sound/weapons/guns/rifle/bolties/federson_boltin.wav'
 	drop_sound = '_horizon/sound/weapons/guns/drop_mediumgun.wav'
-	load_sound = list('_horizon/sound/weapons/guns/rifle/bolties/federson_load1.wav', '_horizon/sound/weapons/guns/rifle/bolties/federson_load2.wav', '_horizon/sound/weapons/guns/rifle/bolties/federson_load3.wav')
+	load_sound = '_horizon/sound/weapons/guns/rifle/bolties/federson_load1.wav'
 	can_suppress = FALSE
 	accepted_magazine_type = /obj/item/ammo_box/magazine/internal/federson
 	rack_delay = 1

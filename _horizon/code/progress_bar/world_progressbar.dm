@@ -88,11 +88,6 @@
 	mouse_opacity = MOUSE_OPACITY_TRANSPARENT
 	vis_flags = NONE //We don't want VIS_INHERIT_PLANE
 
-// NOTE: /mob/living/changeNext_move() in code/_onclick/click.dm already sends
-// COMSIG_LIVING_CHANGENEXT_MOVE (upstream sync 14.11.2026). This file compiles
-// after core, so re-defining the proc here would shadow click.dm's version and
-// fire the signal twice per click. The override was removed for that reason.
-
 /// Add an atom or list of atoms to our vis_contents
 /atom/proc/add_viscontents(atom/A)
 	src:vis_contents += A

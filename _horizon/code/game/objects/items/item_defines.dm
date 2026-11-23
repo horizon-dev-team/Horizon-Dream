@@ -1,22 +1,9 @@
-// horizon-dev-sync[bot] port
-// Variables required by horizon mechanics but not present in upstream.
-// Weight / encumbrance: get_carry_weight from master (Need Water). Messy drop from gunbuild.
-
 /obj/item
 	/// Organ storage component requires this
 	var/atom/stored_in
-
 	/// Used for unturning when picked up by a mob (do_messy/undo_messy)
 	var/our_angle = 0
 
-	/**
-	 * How much fatigue we (normally) take away from the user when attacking with this.
-	 *
-	 * LEAVING THIS AS NULL WILL CALCULATE A NEW attack_fatigue_cost BASED ON W_CLASS ON INITIALIZE()
-	 */
-	var/attack_fatigue_cost = null
-
-/// Returns the weight (in kilograms) this item contributes to a mob's encumbrance.
 /obj/item/proc/get_carry_weight(list/seen)
 	if(item_flags & ABSTRACT)
 		return 0

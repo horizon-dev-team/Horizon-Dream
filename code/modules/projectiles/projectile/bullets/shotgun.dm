@@ -24,11 +24,9 @@
 /obj/projectile/bullet/shotgun_beanbag
 	name = "beanbag slug"
 	icon_state = "pellet"
-	// [HORIZON-EDIT] GunRework
-	damage = 15 // (was 10)
-	stamina = 20 // (was 55)
-	wound_bonus = 15 // (was 20)
-	// [/HORIZON-EDIT]
+	damage = 10
+	stamina = 55
+	wound_bonus = 20
 	sharpness = NONE
 	embed_type = null
 
@@ -97,16 +95,14 @@
 	icon_state = "pellet_tracer"
 	damage_falloff_tile = -0.25
 
-// [HORIZON-EDIT] GunRework
 /obj/projectile/bullet/pellet/shotgun_buckshot
-	name = "12g pellet" // ("buckshot pellet")
-	damage = 10 // (was 5)
+	name = "buckshot pellet"
+	damage = 5
 	wound_bonus = 5
 	exposed_wound_bonus = 5
 	speed = 1.1
-	wound_falloff_tile = 0 // (was -0.5)
-	sharpness = SHARP_POINTY // (was SHARP_EDGED)
-	// [/HORIZON-EDIT]
+	wound_falloff_tile = -0.5 //We would very much like this to cause wounds despite the low damage, so the drop off is relatively slow
+	sharpness = SHARP_EDGED
 
 /**
  * A slightly weaker version of the buckshot, available from the blackmarket.

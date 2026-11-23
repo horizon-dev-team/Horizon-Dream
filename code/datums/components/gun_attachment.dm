@@ -117,7 +117,7 @@
 			toggle_action.Grant(user)
 	if(is_enabled())
 		apply_modifiers(gun)
-	parent.update_appearance()
+	refresh_item_appearance()
 
 /**
  * Called by the mount right before the attachment leaves the gun (or while it is
@@ -133,8 +133,13 @@
 		// Also unregisters the gun's listener and qdel()s the action, which removes it from its owner.
 		gun.remove_item_action(toggle_action)
 		toggle_action = null
-	if(!QDELETED(parent))
-		parent.update_appearance()
+	refresh_item_appearance()
+
+/// Redraws the attachment item itself, its icon state follows the active state. Safe while it is being deleted.
+/datum/component/gun_attachment/proc/refresh_item_appearance()
+	var/obj/item/attachment_item = parent
+	if(!QDELETED(attachment_item))
+		attachment_item.update_appearance()
 
 // =============================================================================
 // TOGGLING
@@ -173,8 +178,7 @@
 	else
 		revert_modifiers(gun)
 	on_toggled(gun, user, silent)
-	if(!QDELETED(parent))
-		parent.update_appearance()
+	refresh_item_appearance()
 	if(!QDELETED(gun))
 		gun.update_appearance()
 	toggle_action?.build_all_button_icons()

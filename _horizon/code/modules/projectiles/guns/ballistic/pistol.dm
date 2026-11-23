@@ -112,7 +112,7 @@
 	rack_sound = '_horizon/sound/weapons/guns/pistol/john_rack.wav'
 	lock_back_sound = '_horizon/sound/weapons/guns/pistol/john_lockback.wav'
 	bolt_drop_sound = '_horizon/sound/weapons/guns/pistol/john_lockin.wav'
-	spawn_magazine_type = /obj/item/ammo_box/magazine/u45
+	accepted_magazine_type = /obj/item/ammo_box/magazine/u45
 	can_suppress = FALSE
 	force = 15
 	w_class = WEIGHT_CLASS_NORMAL
@@ -140,7 +140,7 @@
 	)
 	force = 10
 	suppressor_x_offset = 12
-	spawn_magazine_type = /obj/item/ammo_box/magazine/combatmaster9mm
+	accepted_magazine_type = /obj/item/ammo_box/magazine/combatmaster9mm
 	w_class = WEIGHT_CLASS_NORMAL
 	carry_weight = 1 KILOGRAMS
 	custom_price = 4500
@@ -163,7 +163,7 @@
 		"recoil_angle_lower" = -35, \
 	)
 	force = 10
-	spawn_magazine_type = /obj/item/ammo_box/magazine/glock9mm
+	accepted_magazine_type = /obj/item/ammo_box/magazine/glock9mm
 	mag_display = TRUE
 	can_suppress = TRUE
 	w_class = WEIGHT_CLASS_NORMAL
@@ -195,7 +195,7 @@
 		"strength" = 0.35,
 		"duration" = 2,
 	)
-	spawn_magazine_type = /obj/item/ammo_box/magazine/ppk22lr
+	accepted_magazine_type = /obj/item/ammo_box/magazine/ppk22lr
 	mag_display = TRUE
 	can_suppress = TRUE
 	w_class = WEIGHT_CLASS_SMALL
@@ -225,7 +225,7 @@
 	bolt_drop_sound = '_horizon/sound/weapons/guns/pistol/one_lockin.ogg'
 	force = 10
 	fire_delay = 8
-	spawn_magazine_type = /obj/item/ammo_box/magazine/aniquilador
+	accepted_magazine_type = /obj/item/ammo_box/magazine/aniquilador
 	w_class = WEIGHT_CLASS_NORMAL
 	can_unsuppress = FALSE
 	verb_say = "ravishes"
@@ -252,7 +252,7 @@
 	bolt_drop_sound = '_horizon/sound/weapons/guns/pistol/john_lockin.wav'
 	force = 15
 	fire_delay = 2
-	spawn_magazine_type = /obj/item/ammo_box/magazine/john
+	accepted_magazine_type = /obj/item/ammo_box/magazine/john
 	w_class = WEIGHT_CLASS_NORMAL
 	can_unsuppress = FALSE
 	carry_weight = 2 KILOGRAMS
@@ -287,7 +287,7 @@
 	eject_empty_sound = '_horizon/sound/weapons/guns/pistol/pm9_magout.wav'
 	force = 15
 	fire_delay = 2
-	spawn_magazine_type = /obj/item/ammo_box/magazine/pm9
+	accepted_magazine_type = /obj/item/ammo_box/magazine/pm9
 	bolt_type = BOLT_TYPE_LOCKING
 	w_class = WEIGHT_CLASS_NORMAL
 	suppressor_x_offset = 9

@@ -79,7 +79,7 @@
 	inhand_icon_state = "inverno"
 	icon_state = "inverno"
 	base_icon_state = "inverno"
-	spawn_magazine_type = /obj/item/ammo_box/magazine/a556winter
+	accepted_magazine_type = /obj/item/ammo_box/magazine/a556winter
 	fire_delay = 1.85
 	burst_size = 3
 	empty_icon_state = FALSE
@@ -125,7 +125,7 @@
 	inhand_icon_state = "nikonov"
 	icon_state = "nikonov"
 	base_icon_state = "nikonov"
-	spawn_magazine_type = /obj/item/ammo_box/magazine/a545
+	accepted_magazine_type = /obj/item/ammo_box/magazine/a545
 	fire_sound = '_horizon/sound/weapons/guns/rifle/ak.wav'
 	suppressed_sound = '_horizon/sound/weapons/guns/rifle/ak_silenced.wav'
 	load_sound = '_horizon/sound/weapons/guns/rifle/akmagin.wav'
@@ -192,7 +192,7 @@
 	inhand_icon_state = "g11"
 	icon_state = "g11"
 	base_icon_state = "g11"
-	spawn_magazine_type = /obj/item/ammo_box/magazine/a49234g11
+	accepted_magazine_type = /obj/item/ammo_box/magazine/a49234g11
 	fire_sound = '_horizon/sound/weapons/guns/rifle/g11.ogg'
 	load_sound = '_horizon/sound/weapons/guns/rifle/g11magin.wav'
 	load_empty_sound = '_horizon/sound/weapons/guns/rifle/g11magin.wav'
@@ -256,7 +256,7 @@
 	inhand_icon_state = "steyr"
 	icon_state = "steyr"
 	base_icon_state = "steyr"
-	spawn_magazine_type = /obj/item/ammo_box/magazine/a556steyr
+	accepted_magazine_type = /obj/item/ammo_box/magazine/a556steyr
 	fire_sound = '_horizon/sound/weapons/guns/rifle/steyr.wav'
 	suppressed_sound = '_horizon/sound/weapons/guns/rifle/steyr_silenced.wav'
 	load_sound = '_horizon/sound/weapons/guns/rifle/mmagin.wav'
@@ -329,7 +329,7 @@
 	inhand_icon_state = "svd"
 	icon_state = "svd"
 	base_icon_state = "svd"
-	spawn_magazine_type = /obj/item/ammo_box/magazine/a762svd
+	accepted_magazine_type = /obj/item/ammo_box/magazine/a762svd
 	actions_types = null
 	burst_size = 1
 	fire_sound = '_horizon/sound/weapons/guns/rifle/svd.wav'
@@ -406,7 +406,7 @@
 	drop_sound = '_horizon/sound/weapons/guns/drop_mediumgun.wav'
 	load_sound = list('_horizon/sound/weapons/guns/rifle/bolties/federson_load1.wav', '_horizon/sound/weapons/guns/rifle/bolties/federson_load2.wav', '_horizon/sound/weapons/guns/rifle/bolties/federson_load3.wav')
 	can_suppress = FALSE
-	spawn_magazine_type = /obj/item/ammo_box/magazine/internal/federson
+	accepted_magazine_type = /obj/item/ammo_box/magazine/internal/federson
 	rack_delay = 1
 
 //G36
@@ -420,7 +420,7 @@
 	inhand_icon_state = "g36"
 	icon_state = "g36"
 	base_icon_state = "g36"
-	spawn_magazine_type = /obj/item/ammo_box/magazine/a556g36
+	accepted_magazine_type = /obj/item/ammo_box/magazine/a556g36
 	fire_sound = '_horizon/sound/weapons/guns/rifle/g36.ogg'
 	suppressed_sound = '_horizon/sound/weapons/guns/rifle/g36_suppressed.ogg'
 	load_sound = '_horizon/sound/weapons/guns/rifle/g36_magin.ogg'

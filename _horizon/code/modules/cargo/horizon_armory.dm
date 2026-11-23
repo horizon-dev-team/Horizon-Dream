@@ -65,7 +65,7 @@
 	for(var/obj/item/gun/ballistic/gun_type as anything in subtypesof(/obj/item/gun/ballistic))
 		if(!findtext("[gun_type]", "/hd_gun"))
 			continue
-		var/obj/item/ammo_box/magazine/mag_type = initial(gun_type.spawn_magazine_type)
+		var/obj/item/ammo_box/magazine/mag_type = initial(gun_type.spawn_magazine_type) || initial(gun_type.accepted_magazine_type)
 		if(!mag_type || ispath(mag_type, /obj/item/ammo_box/magazine/internal) || (mag_type in seen_types))
 			continue
 		seen_types += mag_type

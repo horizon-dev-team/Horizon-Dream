@@ -10,7 +10,7 @@
 	safety_off_sound = '_horizon/sound/weapons/guns/energy/siren_safetyoff.wav'
 	safety_on_sound = '_horizon/sound/weapons/guns/energy/siren_safetyon.wav'
 	drop_sound = '_horizon/sound/weapons/guns/drop_lightgun.wav'
-	dry_fire_sound = list('_horizon/sound/weapons/guns/energy/nasr_alarm1.wav', '_horizon/sound/weapons/guns/energy/nasr_alarm2.wav')
+	dry_fire_sound = '_horizon/sound/weapons/guns/energy/nasr_alarm1.wav'
 	vary_fire_sound = FALSE
 	slot_flags = ITEM_SLOT_BELT
 	weapon_weight = WEAPON_LIGHT

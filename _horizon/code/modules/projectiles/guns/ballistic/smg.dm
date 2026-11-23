@@ -27,7 +27,7 @@
 	icon = '_horizon/icons/obj/items/guns/smg.dmi'
 	base_icon_state = "ppsh"
 	icon_state = "ppsh"
-	spawn_magazine_type = /obj/item/ammo_box/magazine/ppsh9mm
+	accepted_magazine_type = /obj/item/ammo_box/magazine/ppsh9mm
 	weapon_weight = WEAPON_MEDIUM
 	force = 10
 	fire_delay = 2
@@ -55,7 +55,7 @@
 	safety_on_sound = '_horizon/sound/weapons/guns/rifle/msafety.wav'
 	fire_sound = '_horizon/sound/weapons/guns/smg/hksmg.wav'
 	suppressed_sound = '_horizon/sound/weapons/guns/smg/hksmg_silenced.ogg'
-	spawn_magazine_type = /obj/item/ammo_box/magazine/hksmg22lr
+	accepted_magazine_type = /obj/item/ammo_box/magazine/hksmg22lr
 	weapon_weight = WEAPON_LIGHT
 	bolt_type = BOLT_TYPE_LOCKING
 	slot_flags = ITEM_SLOT_BELT
@@ -104,7 +104,7 @@
 	fireselector_auto = '_horizon/sound/weapons/guns/rifle/aksafety2.wav'
 	fireselector_burst = '_horizon/sound/weapons/guns/rifle/aksafety2.wav'
 	fireselector_semi = '_horizon/sound/weapons/guns/rifle/aksafety1.wav'
-	spawn_magazine_type = /obj/item/ammo_box/magazine/bastardo9mm
+	accepted_magazine_type = /obj/item/ammo_box/magazine/bastardo9mm
 	weapon_weight = WEAPON_MEDIUM
 	force = 10
 	recoil = 0.2
@@ -150,7 +150,7 @@
 	safety_on_sound = '_horizon/sound/weapons/guns/rifle/msafety.wav'
 	fire_sound = '_horizon/sound/weapons/guns/smg/thump.wav'
 	suppressed_sound = '_horizon/sound/weapons/guns/smg/thump_silenced.wav'
-	spawn_magazine_type = /obj/item/ammo_box/magazine/thump45
+	accepted_magazine_type = /obj/item/ammo_box/magazine/thump45
 	weapon_weight = WEAPON_MEDIUM
 	bolt_type = BOLT_TYPE_LOCKING
 	force = 10
@@ -186,7 +186,7 @@
 	icon_state = "hksmgs"
 	fire_delay = 1.4
 	burst_size = 3
-	spawn_magazine_type = /obj/item/ammo_box/magazine/hksmg380
+	accepted_magazine_type = /obj/item/ammo_box/magazine/hksmg380
 	slot_flags = ITEM_SLOT_BACK | ITEM_SLOT_SUITSTORE
 	empty_icon_state = FALSE
 	can_suppress = TRUE
@@ -229,7 +229,7 @@
 	fireselector_semi = '_horizon/sound/weapons/guns/smg/bolsa_safety.wav'
 	safety_off_sound = '_horizon/sound/weapons/guns/smg/bolsa_safety.wav'
 	safety_on_sound = '_horizon/sound/weapons/guns/smg/bolsa_safety.wav'
-	spawn_magazine_type = /obj/item/ammo_box/magazine/uzi9mm
+	accepted_magazine_type = /obj/item/ammo_box/magazine/uzi9mm
 	foldable = TRUE
 	folded = TRUE
 	w_class = WEIGHT_CLASS_NORMAL

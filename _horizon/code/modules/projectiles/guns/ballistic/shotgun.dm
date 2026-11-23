@@ -334,7 +334,7 @@
 		"recoil_angle_lower" = -30, \
 	)
 	pin = /obj/item/firing_pin
-	spawn_magazine_type = /obj/item/ammo_box/magazine/abyss_shotgun_drum
+	accepted_magazine_type = /obj/item/ammo_box/magazine/abyss_shotgun_drum
 	suppressor_x_offset = 8
 
 // KS23 | TOZ-123 DESTROYER

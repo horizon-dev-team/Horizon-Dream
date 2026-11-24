@@ -108,6 +108,7 @@
  */
 /datum/component/gun_attachment/proc/on_attached(obj/item/gun/gun, mob/user)
 	SHOULD_CALL_PARENT(TRUE)
+	RegisterSignal(parent, COMSIG_MOVABLE_MOVED, PROC_REF(on_attachment_moved))
 	if(feature_flags & ATTACH_TOGGLE)
 		toggle_action = new /datum/action/item_action/attachment_toggle(parent)
 		toggle_action.attachment = src
@@ -126,6 +127,7 @@
  */
 /datum/component/gun_attachment/proc/on_detached(obj/item/gun/gun, mob/user)
 	SHOULD_CALL_PARENT(TRUE)
+	UnregisterSignal(parent, COMSIG_MOVABLE_MOVED)
 	if(active)
 		set_active(FALSE, user, TRUE)
 	revert_modifiers(gun)
@@ -134,6 +136,12 @@
 		gun.remove_item_action(toggle_action)
 		toggle_action = null
 	refresh_item_appearance()
+
+/// Moving an installed item out by another mechanism must also undo its effects.
+/datum/component/gun_attachment/proc/on_attachment_moved(obj/item/source)
+	SIGNAL_HANDLER
+	if(mount && source.loc != mount.parent)
+		mount.attachment_deleted(src)
 
 /// Redraws the attachment item itself, its icon state follows the active state. Safe while it is being deleted.
 /datum/component/gun_attachment/proc/refresh_item_appearance()
@@ -155,6 +163,8 @@
 /// Player facing toggle, used by the action button and the radial menu.
 /datum/component/gun_attachment/proc/toggle(mob/user)
 	if(!mount || !(feature_flags & ATTACH_TOGGLE))
+		return FALSE
+	if(!mount.can_interact(user))
 		return FALSE
 	var/obj/item/gun/gun = mount.parent
 	var/error = get_toggle_error(gun, user)

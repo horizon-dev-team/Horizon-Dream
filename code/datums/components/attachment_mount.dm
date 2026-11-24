@@ -45,8 +45,8 @@
 	if(!isgun(parent))
 		return COMPONENT_INCOMPATIBLE
 
-	src.slot_capacity = slot_capacity?.Copy()
-	src.valid_type_list = valid_types?.Copy()
+	src.slot_capacity = slot_capacity
+	src.valid_type_list = valid_types
 	src.valid_types = typecacheof(valid_types)
 	src.slot_offsets = slot_offsets
 
@@ -90,6 +90,13 @@
 	for(var/datum/component/gun_attachment/attachment as anything in installed)
 		if(attachment.slot == slot)
 			. += attachment
+
+/// Whether a slot is occupied, without allocating a temporary list.
+/datum/component/attachment_mount/proc/has_attachment_in_slot(slot)
+	for(var/datum/component/gun_attachment/attachment as anything in installed)
+		if(attachment.slot == slot)
+			return TRUE
+	return FALSE
 
 /// How many more attachments the given slot can take.
 /datum/component/attachment_mount/proc/get_slot_room(slot)
@@ -408,7 +415,8 @@
 			if(attachment.feature_flags & ATTACH_TOGGLE)
 				has_toggle = TRUE
 		examine_list += span_notice("It has [english_list(names)] attached.")
-		examine_list += span_notice("You can remove attachments by <b>alt-clicking</b> [source] (<b>alt-right-click</b> if alt-click has another function), or by using a crowbar on tool-removable attachments.")
+		if(has_removable_attachment(ATTACH_REMOVABLE_HAND) || has_removable_attachment(ATTACH_REMOVABLE_TOOL))
+			examine_list += span_notice("You can remove attachments by <b>alt-clicking</b> [source] (<b>alt-right-click</b> if alt-click has another function), or by using a crowbar on tool-removable attachments.")
 		if(has_toggle)
 			examine_list += span_notice("You can toggle attachments by <b>ctrl-shift-clicking</b> [source].")
 	else

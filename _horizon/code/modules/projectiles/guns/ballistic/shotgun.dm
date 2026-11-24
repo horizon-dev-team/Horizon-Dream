@@ -239,11 +239,8 @@
 		"recoil_angle_lower" = -30, \
 	)
 	spawn_magazine_type = /obj/item/ammo_box/magazine/internal/shot/b2021
-
-/obj/item/gun/ballistic/shotgun/automatic/hd_gun/b2021/Initialize(mapload)
-	. = ..()
-	var/obj/item/suppressor/suppressor = new(src)
-	install_suppressor(suppressor)
+	can_suppress = TRUE
+	default_attachments = list(/obj/item/attachment/silencer/integrated)
 
 // AA12 i guess AUTOMATIC SHOTGUN
 /obj/item/gun/ballistic/shotgun/hd_gun/bulldog

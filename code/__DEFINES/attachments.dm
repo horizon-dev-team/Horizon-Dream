@@ -15,6 +15,7 @@
 #define ATTACHMENT_SLOT_GRIP "grip"
 #define ATTACHMENT_SLOT_RAIL "rail"
 #define ATTACHMENT_SLOT_STOCK "stock"
+#define ATTACHMENT_SLOT_BAYONET "bayonet"
 
 /// Default slot capacity of a gun: one attachment per slot.
 #define ATTACHMENT_DEFAULT_SLOT_AVAILABLE list( \

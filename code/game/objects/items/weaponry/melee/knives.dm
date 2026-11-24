@@ -204,6 +204,7 @@
 /obj/item/knife/combat/Initialize(mapload)
 	. = ..()
 	AddComponent(/datum/component/knockoff, 90, list(BODY_ZONE_PRECISE_MOUTH), slot_flags) //90% to knock off when wearing a mask
+	AddComponent(/datum/component/gun_attachment/bayonet) // [HORIZON-ADD] GunRework
 
 /obj/item/knife/combat/make_stabby()
 	AddComponent(/datum/component/alternative_sharpness, SHARP_POINTY, alt_continuous, alt_simple, -5)

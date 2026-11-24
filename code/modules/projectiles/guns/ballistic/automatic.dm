@@ -50,7 +50,13 @@
 	empty_indicator = TRUE
 
 /obj/item/gun/ballistic/automatic/c20r/add_bayonet_point()
-	AddComponent(/datum/component/bayonet_attachable, offset_x = 26, offset_y = 12)
+	set_bayonet_slot(26, 12) // [HORIZON-EDIT] GunRework
+
+// [HORIZON-ADD] GunRework
+/obj/item/gun/ballistic/automatic/c20r/add_attachment_slots()
+	..()
+	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 25, 16)
+// [/HORIZON-ADD]
 
 /obj/item/gun/ballistic/automatic/c20r/update_overlays()
 	. = ..()
@@ -88,7 +94,7 @@
 	AddComponent(/datum/component/automatic_fire, 0.3 SECONDS)
 
 /obj/item/gun/ballistic/automatic/wt550/add_bayonet_point()
-	AddComponent(/datum/component/bayonet_attachable, offset_x = 25, offset_y = 12)
+	set_bayonet_slot(25, 12) // [HORIZON-EDIT] GunRework
 
 /obj/item/gun/ballistic/automatic/smartgun
 	name = "\improper Abielle Smart-SMG"

@@ -32,16 +32,10 @@
 
 // MARK: Seclite
 
-/// A security flashlight on a rail clamp. Same light as the standard seclite.
-/obj/item/attachment/gun_light/seclite
-	name = "gun seclite"
-	desc = "A seclite fitted with a rail clamp, designed to be mounted on a compatible firearm."
-	icon = 'icons/obj/lighting.dmi'
-	icon_state = "seclite"
-	attachment_component_type = /datum/component/gun_attachment/gun_light/seclite
-	light_range = 5
-	light_power = 0.8
-	light_color = "#99ccff"
+/// The ordinary seclite doubles as a rail attachment, just like a combat knife.
+/obj/item/flashlight/seclite/Initialize(mapload)
+	. = ..()
+	AddComponent(/datum/component/gun_attachment/gun_light/seclite)
 
 /datum/component/gun_attachment/gun_light/seclite
 	// Anchor of the "flight" overlay: x 1 and the sprite height, the same rule the laser sight uses.
@@ -51,6 +45,44 @@
 /// The seclite has no "-attached" sprite of its own, it uses the standard gun light overlay.
 /datum/component/gun_attachment/gun_light/seclite/get_overlay()
 	return mutable_appearance('_horizon/icons/obj/items/guns/attachments.dmi', active ? "flight_on" : "flight", overlay_layer)
+
+/datum/component/gun_attachment/gun_light/seclite/on_attached(obj/item/gun/gun, mob/user)
+	var/obj/item/flashlight/seclite/light = parent
+	active = light.light_on
+	light.set_light_flags(light.light_flags | LIGHT_ATTACHED)
+	RegisterSignal(light, COMSIG_ATOM_UPDATE_LIGHT_ON, PROC_REF(on_light_changed))
+	return ..()
+
+/datum/component/gun_attachment/gun_light/seclite/on_detached(obj/item/gun/gun, mob/user)
+	. = ..()
+	UnregisterSignal(parent, COMSIG_ATOM_UPDATE_LIGHT_ON)
+	var/obj/item/flashlight/seclite/light = parent
+	light.set_light_flags(light.light_flags & ~LIGHT_ATTACHED)
+	light.update_brightness()
+
+/// Use the flashlight's disruption checks rather than bypassing them with set_light_on().
+/datum/component/gun_attachment/gun_light/seclite/set_active(new_state, mob/user, silent = FALSE)
+	var/obj/item/flashlight/seclite/light = parent
+	if(new_state && !COOLDOWN_FINISHED(light, disabled_time))
+		return FALSE
+	return ..()
+
+/datum/component/gun_attachment/gun_light/seclite/on_toggled(obj/item/gun/gun, mob/user, silent)
+	. = ..()
+	var/obj/item/flashlight/seclite/light = parent
+	light.update_brightness()
+	light.update_item_action_buttons()
+
+/// EMPs, saboteurs and the flashlight's own toggle must update the gun's overlay too.
+/datum/component/gun_attachment/gun_light/seclite/proc/on_light_changed(obj/item/flashlight/seclite/source, old_value)
+	SIGNAL_HANDLER
+	if(!mount)
+		return
+	if(active != source.light_on)
+		set_active(source.light_on, silent = TRUE)
+	else
+		var/obj/item/gun/gun = mount.parent
+		gun.update_appearance()
 
 // MARK: Rail light
 

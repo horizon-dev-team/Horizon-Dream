@@ -12,7 +12,7 @@
 	light_color = COLOR_PURPLE
 
 /obj/item/gun/energy/laser/musket/add_bayonet_point()
-	AddComponent(/datum/component/bayonet_attachable, offset_x = 22, offset_y = 11)
+	set_bayonet_slot(22, 11) // [HORIZON-EDIT] GunRework
 
 /obj/item/gun/energy/laser/musket/Initialize(mapload)
 	. = ..()
@@ -116,7 +116,7 @@
 	dual_wield_spread = 5 //as intended by the coders
 
 /obj/item/gun/energy/laser/thermal/add_bayonet_point()
-	AddComponent(/datum/component/bayonet_attachable, offset_x = 19, offset_y = 13)
+	set_bayonet_slot(19, 13) // [HORIZON-EDIT] GunRework
 
 /obj/item/gun/energy/laser/thermal/Initialize(mapload)
 	. = ..()

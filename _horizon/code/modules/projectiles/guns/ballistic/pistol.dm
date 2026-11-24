@@ -293,8 +293,4 @@
 	suppressor_x_offset = 9
 	carry_weight = 2
 	custom_price = 5500
-
-/obj/item/gun/ballistic/automatic/pistol/hd_gun/pm9/attackby(obj/item/A, mob/user, params)
-	if(istype(A, /obj/item/suppressor))
-		return
-	. = ..()
+	can_suppress = FALSE

@@ -60,9 +60,6 @@
 		. += indicator_overlay
 
 // MARK: HUD component for ballistic guns
-/datum/hud
-	var/atom/movable/screen/ammo_counter
-
 /datum/component/ammo_hud
 	var/atom/movable/screen/ammo_counter/hud
 	var/indicator = "bullet"
@@ -81,15 +78,18 @@
 /datum/component/ammo_hud/proc/wake_up(datum/source, mob/user, slot)
 	SIGNAL_HANDLER
 	if(ishuman(user))
-		var/mob/living/carbon/human/H = user
-		if(H.is_holding(parent))
-			if(H.hud_used)
-				hud = H.hud_used.ammo_counter
-				turn_on()
+		var/mob/living/carbon/human/shoter = user
+		if(shoter.is_holding(parent))
+			var/datum/hud/holder_hud = shoter.hud_used
+			hud = holder_hud.screen_objects[HUD_MOB_AMMO_COUNTER]
+			turn_on()
 		else
 			turn_off()
 
 /datum/component/ammo_hud/proc/turn_on()
+	// Mobs whose hud has no ammo counter (monkeys, custom hud types) simply get none.
+	if(!hud)
+		return
 	RegisterSignal(parent, COMSIG_ITEM_DROPPED, PROC_REF(turn_off))
 	RegisterSignals(parent, list(COMSIG_UPDATE_AMMO_HUD, COMSIG_GUN_CHAMBER_PROCESSED), PROC_REF(update_hud))
 	hud.turn_on()
@@ -104,6 +104,8 @@
 
 /datum/component/ammo_hud/proc/update_hud()
 	SIGNAL_HANDLER
+	if(!hud)
+		return
 	var/obj/item/gun/ballistic/pew = parent
 	if(!istype(pew))
 		return

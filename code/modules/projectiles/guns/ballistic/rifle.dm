@@ -96,7 +96,7 @@
 		)
 
 /obj/item/gun/ballistic/rifle/boltaction/add_bayonet_point()
-	AddComponent(/datum/component/bayonet_attachable, offset_x = 41, offset_y = 14, bayonet_overlay = "bayonet_thin")
+	set_bayonet_slot(41, 14, "bayonet_thin") // [HORIZON-EDIT] GunRework
 
 /obj/item/gun/ballistic/rifle/boltaction/do_sawoff()
 	. = ..()
@@ -173,7 +173,7 @@
 	can_jam = TRUE
 
 /obj/item/gun/ballistic/rifle/boltaction/surplus/add_bayonet_point()
-	AddComponent(/datum/component/bayonet_attachable, offset_x = 41, offset_y = 14, bayonet_overlay = "bayonet_thin_surplus")
+	set_bayonet_slot(41, 14, "bayonet_thin_surplus") // [HORIZON-EDIT] GunRework
 
 /obj/item/gun/ballistic/rifle/boltaction/prime
 	name = "\improper Sakhno-Zhihao Sporting Rifle"
@@ -372,7 +372,7 @@
 	)
 
 /obj/item/gun/ballistic/rifle/boltaction/pipegun/add_bayonet_point()
-	AddComponent(/datum/component/bayonet_attachable, offset_x = 35, offset_y = 10)
+	set_bayonet_slot(35, 10) // [HORIZON-EDIT] GunRework
 
 /obj/item/gun/ballistic/rifle/boltaction/pipegun/handle_chamber(mob/living/user, empty_chamber = TRUE, from_firing = TRUE, chamber_next_round = TRUE) // [HORIZON-EDIT] PHYSICS
 	. = ..()
@@ -586,7 +586,7 @@
 	)
 
 /obj/item/gun/ballistic/rifle/sks/add_bayonet_point()
-	AddComponent(/datum/component/bayonet_attachable, offset_x = 38, offset_y = 12)
+	set_bayonet_slot(38, 12) // [HORIZON-EDIT] GunRework
 
 /obj/item/gun/ballistic/rifle/sks/chekhov
 	name = "\improper Chekhov's SKS semi-automatic rifle"

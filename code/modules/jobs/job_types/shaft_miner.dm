@@ -115,8 +115,10 @@
 			var/obj/item/stack/sheet/animalhide/goliath_hide/plating = new()
 			explorer_suit.hood.attackby(plating)
 	for(var/obj/item/gun/energy/recharge/kinetic_accelerator/accelerator in miner_contents)
-		var/datum/component/bayonet_attachable/bayonet = accelerator.GetComponent(/datum/component/bayonet_attachable)
-		bayonet.add_bayonet(new /obj/item/knife/combat/survival(accelerator))
+		// [HORIZON-EDIT] GunRework
+		var/datum/component/attachment_mount/mount = accelerator.GetComponent(/datum/component/attachment_mount)
+		mount.try_attach(new /obj/item/knife/combat/survival(accelerator))
+		// [/HORIZON-EDIT]
 		var/obj/item/flashlight/seclite/flashlight = new()
 		var/datum/component/seclite_attachable/light_component = accelerator.GetComponent(/datum/component/seclite_attachable)
 		light_component.add_light(flashlight)

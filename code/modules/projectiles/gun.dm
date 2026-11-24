@@ -122,6 +122,12 @@
 		pin = new pin
 		pin.gun_insert(new_gun = src, starting = TRUE)
 
+	// [HORIZON-ADD] GunRework
+	slot_offsets = slot_offsets
+	slot_available = slot_available
+	valid_attachments = valid_attachments
+	add_attachment_slots()
+	// [/HORIZON-ADD]
 	add_seclight_point()
 	add_bayonet_point()
 	add_deep_lore()
@@ -139,6 +145,7 @@
 	if(safety_flags & GUN_SAFETY_HAS_SAFETY)
 		add_item_action(/datum/action/item_action/toggle_safety)
 	AddComponent(/datum/component/attachment_mount, slot_available, valid_attachments, slot_offsets, default_attachments)
+	// [/HORIZON-ADD]
 
 /obj/item/gun/Destroy()
 	if(isobj(pin)) //Can still be the initial path, then we skip
@@ -164,9 +171,28 @@
 /obj/item/gun/proc/add_seclight_point()
 	return
 
-/// Similarly to add_seclight_point(), handles [the bayonet attachment component][/datum/component/bayonet_attachable]
+// [HORIZON-EDIT] GunRework
+/// Configures the bayonet slot before the shared attachment mount is initialized.
 /obj/item/gun/proc/add_bayonet_point()
 	return
+
+/// Override to configure anchors before the mount installs default attachments.
+/// Call the parent first to retain slots configured by ancestor gun types.
+/obj/item/gun/proc/add_attachment_slots()
+	return
+
+/// Changes only this slot. Omit capacity to preserve its existing availability.
+/// Configuration is startup-only: the mount takes its own snapshot afterwards.
+/obj/item/gun/proc/set_attachment_slot(slot, offset_x, offset_y, capacity = null)
+	slot_offsets[slot] = list("x" = offset_x, "y" = offset_y)
+	if(!isnull(capacity))
+		slot_available[slot] = capacity
+
+/obj/item/gun/proc/set_bayonet_slot(offset_x, offset_y, overlay_state = "bayonet")
+	set_attachment_slot(ATTACHMENT_SLOT_BAYONET, offset_x, offset_y, capacity = 1)
+	valid_attachments |= /obj/item/knife/combat
+	bayonet_overlay = overlay_state
+// [/HORIZON-EDIT]
 
 /// For when you want to add the lore element to a gun, this is the proc to use.
 /obj/item/gun/proc/add_deep_lore()
@@ -394,6 +420,37 @@
 
 	return SECONDARY_ATTACK_CANCEL_ATTACK_CHAIN
 
+// [HORIZON-ADD] GunRework
+/obj/item/gun/item_interaction(mob/living/user, obj/item/tool, list/modifiers)
+	. = ..()
+	if(.)
+		return .
+	var/datum/component/attachment_mount/mount = GetComponent(/datum/component/attachment_mount)
+	return mount?.item_interaction(user, tool, modifiers)
+
+/obj/item/gun/click_alt(mob/user)
+	. = remove_attachment(user)
+	if(.)
+		return .
+	return ..()
+
+/// Alternate gesture preserves cylinder spinning and other subtype alt-click actions.
+/obj/item/gun/click_alt_secondary(mob/user)
+	. = remove_attachment(user)
+	if(.)
+		return .
+	return ..()
+
+/// Click handlers must not sleep, and taking an attachment off asks the user and waits,
+/// so the actual removal runs asynchronously. Only claim the click when it can really start.
+/obj/item/gun/proc/remove_attachment(mob/user)
+	var/datum/component/attachment_mount/mount = GetComponent(/datum/component/attachment_mount)
+	if(!mount?.has_removable_attachment(ATTACH_REMOVABLE_HAND) || !mount.can_interact(user))
+		return NONE
+	INVOKE_ASYNC(mount, TYPE_PROC_REF(/datum/component/attachment_mount, start_detach), user, null)
+	return CLICK_ACTION_SUCCESS
+// [/HORIZON-ADD]
+
 /obj/item/gun/interact_with_atom(atom/interacting_with, mob/living/user, list/modifiers)
 	var/fired = try_fire_gun(interacting_with, user, list2params(modifiers))
 	if(!fired && chambered_attack_block == TRUE && can_shoot() && isliving(interacting_with))
@@ -569,9 +626,7 @@
 		firing_burst = FALSE
 		return FALSE
 
-	// [HORIZON-ADD] GunRework: extra spread when firing two-handed guns one-handed
-	if(spread_unwielded && !HAS_TRAIT(src, TRAIT_WIELDED))
-		random_spread += rand(0, spread_unwielded)
+	// [HORIZON-REMOVE] GunRework: unwielded spread is calculated once by process_fire().
 
 	var/sprd = 0
 	if(randomspread)
@@ -640,6 +695,7 @@
 	// [HORIZON-ADD] GunRework: extra spread when firing two-handed guns one-handed
 	if(spread_unwielded && !HAS_TRAIT(src, TRAIT_WIELDED))
 		bonus_spread += rand(0, spread_unwielded)
+	// [/HORIZON-ADD]
 
 	add_fingerprint(user)
 
@@ -876,9 +932,12 @@
 	/// Assoc list of attachment slot -> how many attachments fit in that slot
 	var/list/slot_available = ATTACHMENT_DEFAULT_SLOT_AVAILABLE
 	/// Whitelist of attachment types this gun accepts. Defaults to all attachments.
-	var/list/valid_attachments = list(/obj/item/attachment)
-	/// Assoc list of attachment slot -> list("x" = n, "y" = n) pixel offsets for that slot's overlay.
-	var/list/slot_offsets = list(ATTACHMENT_SLOT_RAIL = list("x" = 17, "y" = 17),)
+	var/list/valid_attachments = list(/obj/item/attachment, /obj/item/flashlight/seclite) // [HORIZON-EDIT] GunRework
+	/// The single source of attachment anchors: slot -> list("x" = n, "y" = n).
+	/// Subtypes update individual anchors in add_attachment_slots().
+	var/list/slot_offsets = list(ATTACHMENT_SLOT_RAIL = list("x" = 17, "y" = 17))
+	/// Sprite from bayonets.dmi used by knives installed in the bayonet slot.
+	var/bayonet_overlay = "bayonet"
 	/// Attachment typepaths this gun spawns with already installed.
 	var/list/default_attachments = null
 
@@ -938,6 +997,7 @@
 		return
 	if(isopenturf(over))
 		toggle_stock(user)
+		return TRUE
 
 /obj/item/gun/ui_action_click(mob/user, actiontype)
 	if(istype(actiontype, /datum/action/item_action/toggle_stock))
@@ -1031,7 +1091,7 @@
 /// Shows a muzzle flash overlay on the gun for a few ticks. Suppressed guns
 /// skip it when "inactive_when_suppressed" is set in the animation info.
 /obj/item/gun/proc/gunshot_animation(mob/user, burst_fire = FALSE)
-	if(suppressed && LAZYACCESS(gunshot_animation_information, "inactive_when_suppressed"))
+	if(!can_muzzle_flash || (suppressed && LAZYACCESS(gunshot_animation_information, "inactive_when_suppressed")))
 		return
 	var/shot_icon = gunshot_animation_information["icon"] || '_horizon/icons/effects/gunshot.dmi'
 	var/shot_icon_state = gunshot_animation_information["icon_state"] || "gunshot"

@@ -46,15 +46,12 @@
 
 /datum/component/gun_attachment/silencer/on_attached(obj/item/gun/gun, mob/user)
 	. = ..()
-	var/obj/item/silencer_item = parent
 	gun.suppressed = SUPPRESSED_QUIET
 	previous_can_unsuppress = gun.can_unsuppress
 	gun.can_unsuppress = FALSE
 	previous_can_muzzle_flash = gun.can_muzzle_flash
 	gun.can_muzzle_flash = FALSE
 	gun.muzzle_flash_off()
-	added_weight = silencer_item.w_class
-	gun.update_weight_class(gun.w_class + added_weight)
 	if(user)
 		playsound(user, 'sound/items/tools/screwdriver.ogg', 75, TRUE)
 
@@ -63,7 +60,13 @@
 	gun.suppressed = SUPPRESSED_NONE
 	gun.can_unsuppress = previous_can_unsuppress
 	gun.can_muzzle_flash = previous_can_muzzle_flash
-	gun.update_weight_class(gun.w_class - added_weight)
-	added_weight = 0
 	if(user)
 		playsound(user, 'sound/items/tools/screwdriver2.ogg', 75, TRUE)
+
+/obj/item/attachment/silencer/integrated
+	name = "integrated silencer"
+	desc = "A silencer machined into the barrel shroud of a firearm, fitted to that weapon alone."
+	attachment_component_type = /datum/component/gun_attachment/silencer/integrated
+
+/datum/component/gun_attachment/silencer/integrated
+	feature_flags = ATTACH_NO_SPRITE

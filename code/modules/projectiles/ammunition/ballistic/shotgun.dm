@@ -40,7 +40,7 @@
 	icon_state = "12gauge"
 	base_icon_state = "12gauge"
 	world_icon_state = "gshell"
-	// [/HORIZON-ADD]
+	// [/HORIZON-EDIT]
 	custom_materials = list(/datum/material/iron = SMALL_MATERIAL_AMOUNT * 3)
 	projectile_type = /obj/projectile/bullet/shotgun_beanbag
 
@@ -155,6 +155,7 @@
 	// [HORIZON-EDIT] GunRework
 	desc = "A 12 gauge steel flechette. Contains 20 individual projectiles" // [HORIZON-EDIT] GunRework
 	icon_state = "flechette"
+	stack_type = /obj/item/ammo_box/magazine/ammo_stack/shotgun/flechette
 	projectile_type = /obj/projectile/bullet/pellet/shotgun_flechette // [HORIZON-EDIT] GunRework
 	custom_materials = list(/datum/material/iron = SMALL_MATERIAL_AMOUNT * 3, /datum/material/glass = SMALL_MATERIAL_AMOUNT * 2)
 	pellets = 20
@@ -292,4 +293,4 @@
 	pellets = 10
 	variance = 10
 	projectile_type = /obj/projectile/bullet/pellet/shotgun_bolas/buckshot
-// [/HORIZON-ADD]
+// [/HORIZON-EDIT]

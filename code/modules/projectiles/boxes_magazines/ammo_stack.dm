@@ -10,6 +10,7 @@
 	multiple_sprites = AMMO_BOX_ONE_SPRITE
 	ammo_box_multiload = AMMO_BOX_MULTILOAD_NONE
 	start_empty = TRUE
+	custom_materials = null
 	max_ammo = 12
 	carry_weight = 0
 	var/world_icon = '_horizon/icons/obj/items/ammo/casings_world.dmi'
@@ -311,6 +312,18 @@
 	ammo_type = /obj/item/ammo_casing/shotgun/buckshot
 
 /obj/item/ammo_box/magazine/ammo_stack/shotgun/loaded
+	start_empty = FALSE
+
+/obj/item/ammo_box/magazine/ammo_stack/shotgun/flechette
+	name = "12 gauge flechette shells"
+	desc = "A stack of 12 gauge flechette shells."
+	icon_state = "flechette-1"
+	base_icon_state = "flechette"
+	world_icon = '_horizon/icons/obj/items/ammo/casings.dmi'
+	world_icon_state = "flechette"
+	ammo_type = /obj/item/ammo_casing/shotgun/flechette
+
+/obj/item/ammo_box/magazine/ammo_stack/shotgun/flechette/loaded
 	start_empty = FALSE
 
 /obj/item/ammo_box/magazine/ammo_stack/shotgun/bolas

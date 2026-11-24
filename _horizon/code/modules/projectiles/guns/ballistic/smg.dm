@@ -196,11 +196,8 @@
 		"strength" = 0.15, \
 		"duration" = 1, \
 	)
+	default_attachments = list(/obj/item/attachment/silencer/integrated)
 
-/obj/item/gun/ballistic/automatic/hd_gun/remis/smg/solitario/suppressed/Initialize(mapload)
-	. = ..()
-	var/obj/item/suppressor/S = new(src)
-	install_suppressor(S)
 
 /obj/item/gun/ballistic/automatic/hd_gun/remis/smg/solitario/suppressed/no_mag
 	spawnwithmagazine = FALSE

@@ -23,7 +23,7 @@
 	var/max_mod_capacity = 100
 
 /obj/item/gun/energy/recharge/kinetic_accelerator/add_bayonet_point()
-	AddComponent(/datum/component/bayonet_attachable, offset_x = 20, offset_y = 12)
+	set_bayonet_slot(20, 12) // [HORIZON-EDIT] GunRework
 
 /obj/item/gun/energy/recharge/kinetic_accelerator/apply_fantasy_bonuses(bonus)
 	. = ..()
@@ -136,7 +136,7 @@
 
 /obj/item/gun/energy/recharge/kinetic_accelerator/item_interaction(mob/living/user, obj/item/tool, list/modifiers)
 	if(!istype(tool, /obj/item/borg/upgrade/modkit))
-		return NONE
+		return ..() // [HORIZON-EDIT] GunRework - Allow attachments
 	astype(tool, /obj/item/borg/upgrade/modkit).install(src, user)
 	return ITEM_INTERACT_SUCCESS
 

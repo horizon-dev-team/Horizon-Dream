@@ -169,8 +169,6 @@
 	var/burst_fire_selection = FALSE
 	/// If it has an icon for a selector switch indicating current firemode.
 	var/selector_switch_icon = FALSE
-	/// Suppressor attached to the gun, if any
-	var/obj/item/suppressor/suppressor = null
 	/// Sound played when the burst mode is changed
 	var/burst_select_sound = /datum/sound_effect/fire_mode_switch
 
@@ -235,8 +233,6 @@
 
 /obj/item/gun/ballistic/Exited(atom/movable/gone, direction)
 	. = ..()
-	if(gone == suppressor)
-		clear_suppressor()
 	if(gone == magazine)
 		if(!QDELETED(magazine))
 			magazine.update_appearance()
@@ -523,8 +519,7 @@
 	// [HORIZON-ADD] GunRework: cock / decock the hammer on break action guns
 	if(bolt_type == BOLT_TYPE_BREAK_ACTION)
 		if(cylinder_open)
-			if(user)
-				balloon_alert(user, "[cylinder_wording] is open!")
+			eject_spent_casings(user)
 			return
 		if(bolt_locked)
 			bolt_locked = FALSE
@@ -624,7 +619,7 @@
 /obj/item/gun/ballistic/item_interaction(mob/living/user, obj/item/tool, list/modifiers)
 	. = ..()
 	if (.)
-		return
+		return . // [HORIZON-EDIT] GunRework: preserve handled attachment results.
 
 	if (!internal_magazine && istype(tool, /obj/item/ammo_box/magazine))
 		if (!magazine)
@@ -647,26 +642,7 @@
 				return ITEM_INTERACT_SUCCESS
 			return ITEM_INTERACT_FAILURE
 
-	if(istype(tool, /obj/item/suppressor))
-		if(!can_suppress)
-			balloon_alert(user, "[tool.name] doesn't fit!")
-			return ITEM_INTERACT_FAILURE
-
-		if(!user.is_holding(src))
-			balloon_alert(user, "not in hand!")
-			return ITEM_INTERACT_FAILURE
-
-		if(suppressed)
-			balloon_alert(user, "already has a suppressor!")
-			return ITEM_INTERACT_FAILURE
-
-		if(!user.transferItemToLoc(tool, src))
-			balloon_alert(user, "cannot attach!")
-			return ITEM_INTERACT_FAILURE
-
-		balloon_alert(user, "[tool.name] attached")
-		install_suppressor(tool)
-		return ITEM_INTERACT_SUCCESS
+	// [HORIZON-REMOVE] GunRework: `/obj/item/suppressor` move to attachments
 
 	if (can_be_sawn_off && try_sawoff(user, tool))
 		return ITEM_INTERACT_SUCCESS
@@ -675,11 +651,13 @@
 	if(bolt_type == BOLT_TYPE_BREAK_ACTION && !cylinder_open) // [HORIZON-ADD] GunRework
 		balloon_alert(user, "[cylinder_wording] is closed!")
 		return FALSE
-	if (chambered && !chambered.loaded_projectile)
-		chambered.forceMove(drop_location())
-		if(length(magazine?.stored_ammo) && chambered != magazine.stored_ammo[1])
-			magazine.stored_ammo -= chambered
-		chambered = null
+	// [HORIZON-EDIT] GunRework: movement clears chambered through its signal.
+	// Let the cylinder's Exited handler preserve the empty chamber position.
+	if(chambered && !chambered.loaded_projectile)
+		var/obj/item/ammo_casing/spent_casing = chambered
+		clear_chambered()
+		spent_casing.forceMove(drop_location())
+	// [/HORIZON-EDIT]
 
 	var/num_loaded = magazine?.try_load(user, ammo, silent = TRUE)
 	if (!num_loaded)
@@ -700,15 +678,16 @@
 	return TRUE
 
 /obj/item/gun/ballistic/process_fire(atom/target, mob/living/user, message = TRUE, params = null, zone_override = "", bonus_spread = 0)
-	// If our ammo is overpressurized, we misfire
-	var/overpressurized_ammo = chambered.casing_pressure > pressure_threshold
-	if(target != user && !never_misfire && chambered.loaded_projectile && prob(misfire_probability))
+	// [HORIZON-EDIT] GunRework: delayed/direct fire calls may have no chambered round.
+	var/overpressurized_ammo = chambered && chambered.casing_pressure > pressure_threshold
+	if(target != user && !never_misfire && chambered?.loaded_projectile && prob(misfire_probability))
 		if(overpressurized_ammo && blow_up(user))
 			to_chat(user, span_userdanger("[src] misfires!"))
 		else
 			balloon_alert_to_hearers("*click*")
 			playsound(src, dry_fire_sound, dry_fire_sound_volume, TRUE)
 		return
+	// [/HORIZON-EDIT]
 
 	if(sawn_off)
 		bonus_spread += SAWN_OFF_ACC_PENALTY
@@ -737,31 +716,7 @@
 	misfire_probability += chambered.misfire_increment
 	misfire_probability = clamp(misfire_probability, 0, misfire_probability_cap)
 
-///Installs a new suppressor, assumes that the suppressor is already in the contents of src
-/obj/item/gun/ballistic/proc/install_suppressor(obj/item/suppressor/new_suppressor)
-	suppressor = new_suppressor
-	suppressed = suppressor.suppression
-	update_weight_class(w_class + suppressor.w_class) //so pistols do not fit in pockets when suppressed
-	can_muzzle_flash = FALSE
-	update_appearance()
-
-/obj/item/gun/ballistic/clear_suppressor()
-	suppressed = SUPPRESSED_NONE
-	if(suppressor)
-		update_weight_class(w_class - suppressor.w_class)
-		suppressor = null
-	can_muzzle_flash = initial(can_muzzle_flash)
-	update_appearance()
-
-/obj/item/gun/ballistic/click_alt(mob/user)
-	if(!suppressed || !can_unsuppress)
-		return CLICK_ACTION_BLOCKING
-	if(!user.is_holding(src))
-		return CLICK_ACTION_BLOCKING
-	balloon_alert(user, "[suppressor.name] removed")
-	user.put_in_hands(suppressor)
-	clear_suppressor()
-	return CLICK_ACTION_SUCCESS
+// [HORIZON-REMOVE] GunRework: `/obj/item/suppressor` to attachments
 
 ///Prefire empty checks for the bolt drop
 /obj/item/gun/ballistic/proc/prefire_empty_checks()
@@ -799,6 +754,7 @@
 			casing.forceMove(drop_location())
 			user.put_in_hands(casing)
 			update_appearance()
+			SEND_SIGNAL(src, COMSIG_UPDATE_AMMO_HUD) // [HORIZON-ADD] GunRework
 			return
 	if(!internal_magazine && loc == user && user.is_holding(src) && magazine)
 		eject_magazine(user)
@@ -819,16 +775,9 @@
 			else
 				two_handed_component.wield(user)
 			return
-	// [HORIZON-ADD] GunRework: break action cylinder handling (open: dump
-	// spent casings or close it, closed: break it open unless a
-	// non-semi-auto hammer is cocked).
+	// [HORIZON-ADD] GunRework: break action cylinder handling (open: dump spent casings or close it, closed: break it open unless a non-semi-auto hammer is cocked).
 	if(bolt_type == BOLT_TYPE_BREAK_ACTION)
 		if(cylinder_open)
-			var/live_rounds = get_ammo(FALSE, FALSE)
-			var/all_rounds = get_ammo(FALSE, TRUE)
-			if(all_rounds > live_rounds)
-				eject_spent_casings(user)
-				return
 			toggle_cylinder_open(user)
 			return
 		if(semi_auto || !bolt_locked)
@@ -882,15 +831,16 @@
 	var/count_chambered = !(bolt_type == BOLT_TYPE_NO_BOLT || bolt_type == BOLT_TYPE_OPEN)
 	. += "<b>Capacity:</b> [icon2html(GUN_INFO_ICON_SET, user, "magazine")] [get_ammo(count_chambered)]/[magazine ? magazine.max_ammo : initial(accepted_magazine_type.max_ammo)]"
 
-	// [HORIZON-EDIT] Shown only when it matters (rounds in the magazine but nothing chambered). Original, disabled:
+	// [HORIZON-EDIT] GunRework - Shown only when it matters (rounds in the magazine but nothing chambered). Original, disabled:
 	// if (!chambered && !hidden_chambered)
 	// 	. += "It does not seem to have a round chambered."
 	if (!chambered && !hidden_chambered && get_ammo(FALSE, FALSE))
 		. += span_warning("Chamber empty.")
 	if (bolt_locked)
-		. += "The [bolt_wording] is locked back." // [HORIZON-EDIT] shortened
-	if (suppressor)
-		. += "It has a suppressor [can_unsuppress ? "attached that can be removed with <b>alt+click</b>." : "that is integral or can't otherwise be removed."]"
+		. += "The [bolt_wording] is locked back."
+	if(suppressed)
+		. += "It has a attached suppressor"
+	// [/HORIZON-EDIT]
 
 	// [HORIZON-EDIT] Chamber pressure moved to add_notes_ballistic (the "look closer" weapon description)
 
@@ -961,6 +911,12 @@ GLOBAL_LIST_INIT(gun_saw_types, typecacheof(list(
 	if(sawn_off)
 		balloon_alert(user, "it's already shortened!")
 		return
+	// [HORIZON-ADD] GunRework: remove muzzle hardware before cutting the barrel.
+	var/datum/component/attachment_mount/mount = GetComponent(/datum/component/attachment_mount)
+	if(mount && (mount.has_attachment_in_slot(ATTACHMENT_SLOT_MUZZLE) || mount.has_attachment_in_slot(ATTACHMENT_SLOT_BAYONET)))
+		balloon_alert(user, "remove barrel attachments first!")
+		return
+	// [/HORIZON-ADD]
 	if (SEND_SIGNAL(src, COMSIG_GUN_BEING_SAWNOFF, user) & COMPONENT_CANCEL_SAWING_OFF)
 		return
 	user.changeNext_move(CLICK_CD_MELEE)
@@ -975,6 +931,11 @@ GLOBAL_LIST_INIT(gun_saw_types, typecacheof(list(
 		return
 	if(sawn_off)
 		return
+	// [HORIZON-ADD] GunRework: an attachment may have been installed during the delay.
+	if(mount && (mount.has_attachment_in_slot(ATTACHMENT_SLOT_MUZZLE) || mount.has_attachment_in_slot(ATTACHMENT_SLOT_BAYONET)))
+		balloon_alert(user, "remove barrel attachments first!")
+		return
+	// [/HORIZON-ADD]
 	user.visible_message(span_notice("[user] shortens [src]!"), span_notice("You shorten [src]."))
 	. = do_sawoff()
 	update_appearance()
@@ -1030,15 +991,11 @@ GLOBAL_LIST_INIT(gun_saw_types, typecacheof(list(
 	if(!isnull(chambered)) //if there is a cartridge in the chamber, we remove it
 		rack()
 
+// [HORIZON-EDIT] GunRework
+/// Compatibility path for existing maps; all behavior comes from the attachment.
 /obj/item/suppressor
-	name = "suppressor"
-	desc = "A multi-caliber suppressor for the discreet massacre of homeless, children, and homeless children." // [HORIZON-EDIT] GunRework
-	icon = '_horizon/icons/obj/items/gun_mods/mods.dmi' // [HORIZON-EDIT] GunRework
-	icon_state = "suppressor"
-	w_class = WEIGHT_CLASS_TINY
-	custom_materials = list(/datum/material/iron = SHEET_MATERIAL_AMOUNT, /datum/material/silver = HALF_SHEET_MATERIAL_AMOUNT)
-	/// How quiet should the gun be when we're installed?
-	var/suppression = SUPPRESSED_QUIET
+	parent_type = /obj/item/attachment/silencer
+// [/HORIZON-EDIT]
 
 // [HORIZON-ADD] GunRework: break action cylinders, caliber modding, drag-eject
 /// Screwdriver tinkering: swap the gun between its initial and alternative
@@ -1114,7 +1071,14 @@ GLOBAL_LIST_INIT(gun_saw_types, typecacheof(list(
 			UnregisterSignal(chambered, COMSIG_MOVABLE_MOVED)
 			chambered = null
 		casing.forceMove(drop_location())
-		casing.bounce_away(bounce_angle = null, still_warm = FALSE, sound_delay = 0)
+		//if(QDELETED(casing))
+		//	continue
+		var/bounce_angle = rand(0, 359)
+		if(user)
+			var/sign_x = (istype(user) && !(user.get_held_index_of_item(src) % RIGHT_HANDS)) ? 1 : -1
+			bounce_angle = SIMPLIFY_DEGREES(dir2angle(user.dir) + (sign_x * 90) + rand(-45, 45))
+		casing.bounce_away(bounce_angle = bounce_angle, still_warm = FALSE, sound_delay = 0)
+		SEND_SIGNAL(casing, COMSIG_CASING_EJECTED)
 		num_ejected++
 	if(num_ejected)
 		if(user)
@@ -1139,6 +1103,7 @@ GLOBAL_LIST_INIT(gun_saw_types, typecacheof(list(
 	if(user)
 		balloon_alert(user, "[cylinder_wording] [cylinder_open ? "open" : "closed"]")
 	update_appearance()
+	SEND_SIGNAL(src, COMSIG_UPDATE_AMMO_HUD) // [HORIZON-ADD] GunRework
 
 /// Break action guns cock themselves (via before_can_shoot_checks) before firing.
 /obj/item/gun/ballistic/before_can_shoot_checks(mob/living/user)
@@ -1148,19 +1113,25 @@ GLOBAL_LIST_INIT(gun_saw_types, typecacheof(list(
 		chamber_round(TRUE)
 		update_appearance()
 
-/// Drag the gun onto a hand slot to eject the magazine into that hand, onto
-/// yourself to eject it normally, and break action guns drag onto a hand slot
-/// to open / close the cylinder.
+/// Drag onto your hand or character to unload, including guns lying on the floor.
+/// Other targets retain the base gun behavior (including folding stocks).
 /obj/item/gun/ballistic/mouse_drop_dragged(atom/over, mob/user, src_location, over_location, params)
-	if(!isliving(user) || !user.Adjacent(src) || HAS_TRAIT(user, TRAIT_INCAPACITATED))
+	var/atom/movable/screen/inventory/hand/hand_slot = over
+	var/onto_hand = istype(hand_slot)
+	if(!onto_hand && over != user)
+		return ..()
+	if(!isliving(user) || !user.can_perform_action(src, NEED_HANDS|NEED_DEXTERITY|FORBID_TELEKINESIS_REACH))
 		return
-	if(istype(over, /atom/movable/screen/inventory/hand))
-		if(bolt_type == BOLT_TYPE_BREAK_ACTION)
-			toggle_cylinder_open(user)
-		else if(!internal_magazine && magazine)
-			var/atom/movable/screen/inventory/hand/hand_slot = over
-			eject_magazine(user, hand_index = hand_slot.held_index)
-	else if(over == user && !user.is_holding(src) && isturf(loc))
-		if(!internal_magazine && magazine)
-			eject_magazine(user)
+	// Do not unload a gun from another character or from inside a container.
+	if(loc != user && !isturf(loc))
+		return
+	if(onto_hand && hand_slot.hud?.mymob != user)
+		return
+	if(onto_hand && bolt_type == BOLT_TYPE_BREAK_ACTION)
+		toggle_cylinder_open(user)
+		return TRUE
+	if(internal_magazine || !magazine)
+		return
+	eject_magazine(user, hand_index = onto_hand ? hand_slot.held_index : null)
+	return TRUE
 // [/HORIZON-ADD]

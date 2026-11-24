@@ -1,7 +1,7 @@
 /obj/projectile/bullet/shotgun_slug
 	name = "12g slug" // [HORIZON-EDIT] GunRework
 	icon_state = "bullet_tracer"
-	damage = 60 // [HORIZON-EDIT] GunRework (was 25)
+	damage = 25
 	armour_penetration = 30
 	sharpness = SHARP_POINTY
 	wound_bonus = 0

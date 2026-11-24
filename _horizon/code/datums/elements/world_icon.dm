@@ -16,21 +16,20 @@
 	src.inventory_icon = inventory_icon
 	src.world_icon = world_icon
 	RegisterSignal(target, COMSIG_ATOM_UPDATE_ICON, PROC_REF(update_icon))
-	RegisterSignals(target, list(COMSIG_ITEM_EQUIPPED, COMSIG_STORAGE_ENTERED, COMSIG_ITEM_DROPPED, COMSIG_STORAGE_EXITED), PROC_REF(inventory_updated))
+	// Moved covers entering/leaving a storage item (forceMove), which has no dedicated storage signal.
+	RegisterSignals(target, list(COMSIG_ITEM_EQUIPPED, COMSIG_MOVABLE_MOVED, COMSIG_ITEM_DROPPED), PROC_REF(inventory_updated))
 	target.update_appearance(UPDATE_ICON)
 
 /datum/element/world_icon/Detach(atom/source)
 	. = ..()
 	UnregisterSignal(source, COMSIG_ATOM_UPDATE_ICON)
-	UnregisterSignal(source, list(COMSIG_ITEM_EQUIPPED, COMSIG_STORAGE_ENTERED, COMSIG_ITEM_DROPPED, COMSIG_STORAGE_EXITED))
+	UnregisterSignal(source, list(COMSIG_ITEM_EQUIPPED, COMSIG_MOVABLE_MOVED, COMSIG_ITEM_DROPPED))
 	source.update_appearance(UPDATE_ICON)
 
 /datum/element/world_icon/proc/update_icon(obj/item/source, updates)
 	SIGNAL_HANDLER
 
-	if((source.item_flags & IN_INVENTORY) || \
-	(source.stored_in && (SEND_SIGNAL(source.stored_in, COMSIG_CONTAINS_STORAGE))) || \
-	(source.loc && SEND_SIGNAL(source.loc, COMSIG_CONTAINS_STORAGE)))
+	if(world_icon_in_inventory(source))
 		if(attached_proc)
 			return
 		return default_inventory_icon(source)
@@ -39,6 +38,14 @@
 		return call(source, attached_proc)(updates)
 	else
 		return default_world_icon(source)
+
+/// True when the item is held or equipped by a mob, or sits inside a storage item (backpack, box).
+/// Items on a turf (dropped out of a backpack, thrown, or spilled) are in the world.
+/proc/world_icon_in_inventory(obj/item/source)
+	if(source.item_flags & IN_INVENTORY)
+		return TRUE
+	var/atom/holder = source.loc
+	return !isnull(holder) && !isturf(holder) && !isnull(holder.atom_storage)
 
 /datum/element/world_icon/proc/inventory_updated(obj/item/source)
 	SIGNAL_HANDLER

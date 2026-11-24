@@ -61,7 +61,7 @@
 	pixel_x = base_pixel_x + rand(-10, 10)
 	pixel_y = base_pixel_y + rand(-10, 10)
 	setDir(pick(GLOB.alldirs))
-	 // [HORIZON-ADD] GunRework
+		// [HORIZON-ADD] GunRework
 	if(auto_rotate)
 		transform = transform.Turn(round(45 * rand(0, 32) / 2))
 	if(world_icon)
@@ -177,7 +177,7 @@
 			boolets++
 
 	var/spent = 0
-	var/can_take_spent = istype(box, /obj/item/ammo_box/magazine/ammo_stack) || !istype(box, /obj/item/ammo_box/magazine)
+	var/can_take_spent = !istype(box, /obj/item/ammo_box/magazine)
 	if(can_take_spent)
 		for(var/obj/item/ammo_casing/bullet as anything in on_tile)
 			if (box.stored_ammo.len >= box.max_ammo)

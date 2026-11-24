@@ -1,9 +1,11 @@
 /obj/item/ammo_box/magazine/m12g
 	name = "shotgun magazine (12g buckshot shells)"
 	desc = "A drum magazine of shotgun shells, suitable for the Bulldog combat shotgun."
-	icon = '_horizon/icons/obj/items/ammo/shotgun.dmi' // [HORIZON-EDIT] GunRework
-	icon_state = "m12" // [HORIZON-EDIT] GunRework
-	base_icon_state = "m12" // [HORIZON-EDIT] GunRework
+	// [HORIZON-EDIT] GunRework
+	icon = '_horizon/icons/obj/items/ammo/shotgun.dmi'
+	icon_state = "m12"
+	base_icon_state = "m12"
+	// [/HORIZON-EDIT]
 	ammo_type = /obj/item/ammo_casing/shotgun/buckshot/milspec
 	caliber = CALIBER_SHOTGUN
 	max_ammo = 8
@@ -68,8 +70,7 @@
 		. += span_warning("<i>Oh god, where did they pull this from, a landfill?</i>")
 		human_sniffer.add_mood_event("stink-pocket", /datum/mood_event/disgusted)
 
-
-// ======== [HORIZON-ADD] GunRework: hd_gun shotgun magazines ========
+// [HORIZON-ADD] GunRework
 /obj/item/ammo_box/magazine/abyss_shotgun_drum
 	name = "\improper Abyss Shotgun magazine"
 	desc = "A 20-shell capacity magazine for the AN-12 shotgun."
@@ -83,5 +84,5 @@
 
 /obj/item/ammo_box/magazine/abyss_shotgun_drum/update_icon_state()
 	. = ..()
-	icon_state = "[base_icon_state]-[ammo_count()]"
-// ======== [/HORIZON-ADD] ========
+	icon_state = "[base_icon_state]-[ammo_count() ? max_ammo : 0]"
+// [/HORIZON-ADD]

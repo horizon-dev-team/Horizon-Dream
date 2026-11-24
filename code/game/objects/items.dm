@@ -1163,7 +1163,7 @@ GAME_VERB_SRC(/obj/item, verb_pickup, oview(1), "Pick up", null)
 	if(last_force_string_check != force && !(item_flags & FORCE_STRING_OVERRIDE))
 		set_force_string()
 
-	var/content_str = "<table>[desc]"
+	var/content_str = "<table>"
 	content_str += get_extra_tooltip(user)
 
 	var/dmg_icon_state

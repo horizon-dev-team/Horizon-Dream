@@ -1,4 +1,3 @@
-// [HORIZON-ADD] GunRework
 //The ammo stack object itself
 /obj/item/ammo_box/magazine/ammo_stack
 	name = "ammo stack"
@@ -22,8 +21,10 @@
 		AddElement(/datum/element/world_icon, PROC_REF(update_icon_world))
 
 /obj/item/ammo_box/magazine/ammo_stack/update_icon(updates)
-	icon = initial(icon)
-	cut_overlays()
+	// Keep the inventory sprite while carried or stored; the world sprite comes back when the stack lands on a turf.
+	if(world_icon_in_inventory(src))
+		icon = initial(icon)
+		cut_overlays()
 	return ..()
 
 /obj/item/ammo_box/magazine/ammo_stack/update_icon_state()

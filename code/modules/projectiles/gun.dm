@@ -132,8 +132,7 @@
 	add_bayonet_point()
 	add_deep_lore()
 	RegisterSignal(src, COMSIG_ITEM_IN_UNWRAPPED_TRAITOR_MAIL, PROC_REF(on_mail_unwrap))
-	// [HORIZON-ADD] GunRework: folding stock / full auto / two-handed wield
-	// component / safety action / attachment mount
+	// [HORIZON-ADD] GunRework
 	if(foldable)
 		add_item_action(/datum/action/item_action/toggle_stock)
 	if(full_auto)
@@ -230,18 +229,10 @@
 	target.apply_damage(damage = max(w_class * 5 - throwforce, 10), damagetype = BRUTE, def_zone = thrower.zone_selected, wound_bonus = CANT_WOUND, attacking_item = src)
 	return TRUE
 
+// [HORIZON-EDIT] GunRework
 /obj/item/gun/examine(mob/user)
 	. = ..()
 	if(!pinless)
-		// [HORIZON-EDIT] One line for the pin instead of "It has a pin installed" + removal hint. Original, disabled:
-		// if(pin)
-		// 	. += "It has \a [pin] installed."
-		// 	if(pin.pin_removable)
-		// 		. += span_info("[pin] looks like [pin.p_they()] could be removed with some <b>tools</b>.")
-		// 	else
-		// 		. += span_info("[pin] looks like [pin.p_theyre()] firmly locked in, [pin.p_they()] look[pin.p_s()] impossible to remove.")
-		// else
-		// 	. += "It doesn't have a <b>firing pin</b> installed, and won't fire."
 		if(pin)
 			. += "<b>Firing pin:</b> [replacetext(pin.name, " firing pin", "")]."
 		else
@@ -256,9 +247,10 @@
 		if(0 to 25)
 			. += span_boldwarning("It's falling apart!")
 
-	var/safety_readout = safety_examine(user) // [HORIZON-ADD] GunRework
+	var/safety_readout = safety_examine(user)
 	if(LAZYLEN(safety_readout))
 		. += safety_readout
+// [/HORIZON-ADD]
 
 // [HORIZON-EDIT] PHYSICS
 //called after the gun has successfully fired its chambered ammo.
@@ -580,15 +572,17 @@
 					user.dropItemToGround(src, TRUE)
 				return TRUE
 
+// [HORIZON-EDIT] GunRework
 /obj/item/gun/can_trigger_gun(mob/living/user, akimbo_usage)
 	. = ..()
 	if(!.)
 		return .
 	if(!handle_pins(user))
 		return FALSE
-	if(safety_flags & GUN_SAFETY_ENABLED) // [HORIZON-ADD] GunRework: safety blocks the trigger
+	if(safety_flags & GUN_SAFETY_ENABLED) // Safety blocks the trigger
 		return FALSE
 	return TRUE
+// [/HORIZON-EDIT]
 
 /obj/item/gun/proc/handle_pins(mob/living/user)
 	if(pinless)
@@ -625,8 +619,6 @@
 		to_chat(user, span_warning("[src] is lethally chambered! You don't want to risk harming anyone..."))
 		firing_burst = FALSE
 		return FALSE
-
-	// [HORIZON-REMOVE] GunRework: unwielded spread is calculated once by process_fire().
 
 	var/sprd = 0
 	if(randomspread)
@@ -690,9 +682,8 @@
 		bonus_spread = bonus_spread_values[MAX_BONUS_SPREAD_INDEX]
 
 	SEND_SIGNAL(src, COMSIG_GUN_FIRED, user, target, params, zone_override)
-	SEND_SIGNAL(src, COMSIG_UPDATE_AMMO_HUD) // [HORIZON-ADD] GunRework
-
-	// [HORIZON-ADD] GunRework: extra spread when firing two-handed guns one-handed
+	// [HORIZON-ADD] GunRework
+	SEND_SIGNAL(src, COMSIG_UPDATE_AMMO_HUD)
 	if(spread_unwielded && !HAS_TRAIT(src, TRAIT_WIELDED))
 		bonus_spread += rand(0, spread_unwielded)
 	// [/HORIZON-ADD]
@@ -893,27 +884,18 @@
 	var/safety_on_sound = '_horizon/sound/weapons/guns/safety1.ogg'
 	/// Sound when safety is toggled off
 	var/safety_off_sound = '_horizon/sound/weapons/guns/safety1.ogg'
-	/// Volume of safety toggle sounds (both on and off)
-	var/safety_sound_volume = 50
-	/// Whether to vary safety toggle sounds or not
-	var/safety_sound_vary = FALSE
-
-	// ~ICON VARIABLES
 	/// Mouse pointer icon when holding this gun while the safety is disabled
 	var/mouse_pointer_icon = '_horizon/icons/effects/mouse_pointers/weapon_pointer.dmi'
 	/// Does the gun have a unique icon_state when nothing is chambered?
 	var/empty_icon_state = FALSE
+
 	/// Does the gun have unique inhands when wielded?
 	var/wielded_inhand_state = FALSE
 	/// Does the inhand state get modifier when sawn?
 	var/sawn_inhand_state = FALSE
-
 	/// NO FULL AUTO IN BUILDINGS!
 	var/full_auto = FALSE
-
-	/// Extra random spread when firing this gun without a two-handed grip
-	/// (wielded_inhand_state guns). 0 = no penalty. Used with the laser sight
-	/// attachment, which reduces both spread and spread_unwielded.
+	/// Extra random spread when firing this gun without a two-handed grip. 0 = no penalty.
 	var/spread_unwielded = 0
 
 	// Folding stock variables
@@ -928,18 +910,15 @@
 	/// Every time you fiddle with the stock
 	var/fiddle = '_horizon/sound/effects/fiddle.wav'
 
-	// ~Attachment system (Shiptest port)
-	/// Assoc list of attachment slot -> how many attachments fit in that slot
+	// ~Attachment system
 	var/list/slot_available = ATTACHMENT_DEFAULT_SLOT_AVAILABLE
-	/// Whitelist of attachment types this gun accepts. Defaults to all attachments.
-	var/list/valid_attachments = list(/obj/item/attachment, /obj/item/flashlight/seclite) // [HORIZON-EDIT] GunRework
-	/// The single source of attachment anchors: slot -> list("x" = n, "y" = n).
-	/// Subtypes update individual anchors in add_attachment_slots().
-	var/list/slot_offsets = list(ATTACHMENT_SLOT_RAIL = list("x" = 17, "y" = 17))
-	/// Sprite from bayonets.dmi used by knives installed in the bayonet slot.
-	var/bayonet_overlay = "bayonet"
-	/// Attachment typepaths this gun spawns with already installed.
 	var/list/default_attachments = null
+	/// Whitelist of attachment types this gun accepts. Defaults to all attachments.
+	var/list/valid_attachments = list(/obj/item/attachment, /obj/item/flashlight/seclite)
+
+	/// slot -> list("x" = n, "y" = n).
+	var/list/slot_offsets = list(ATTACHMENT_SLOT_RAIL = list("x" = 17, "y" = 17))
+	var/bayonet_overlay = "bayonet"
 
 	// ~Firing animations
 	/// If set, shows a gunshot overlay when firing. Format: list("icon" = ..., "icon_state" = ..., "pixel_x" = ..., "pixel_y" = ..., "duration" = ..., "inactive_when_suppressed" = TRUE/FALSE)
@@ -1041,11 +1020,11 @@
 	if(safety_flags & GUN_SAFETY_ENABLED)
 		safety_flags &= ~GUN_SAFETY_ENABLED
 		if(safety_off_sound)
-			playsound(src, safety_off_sound, safety_sound_volume, safety_sound_vary)
+			playsound(src, safety_off_sound, 50, FALSE)
 	else
 		safety_flags |= GUN_SAFETY_ENABLED
 		if(safety_on_sound)
-			playsound(src, safety_on_sound, safety_sound_volume, safety_sound_vary)
+			playsound(src, safety_on_sound, 50, FALSE)
 	if(user)
 		to_chat(user, span_notice("I [safety_flags & GUN_SAFETY_ENABLED ? "enable" : "disable"] [src]'s safety."))
 		user.update_mouse_pointer()

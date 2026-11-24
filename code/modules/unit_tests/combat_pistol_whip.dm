@@ -32,11 +32,16 @@
 
 	// Combat mode RMB click in melee range with bayonet -> bayonet stab
 	var/obj/item/knife/combat/knife = EASY_ALLOCATE()
-	gun.AddComponent(/datum/component/bayonet_attachable, starting_bayonet = knife)
+	// [HORIZON-EDIT] GunRework: explicitly add a lug to this test pistol.
+	var/datum/component/attachment_mount/mount = gun.GetComponent(/datum/component/attachment_mount)
+	mount.slot_capacity[ATTACHMENT_SLOT_BAYONET] = 1
+	mount.valid_types = typecacheof(list(/obj/item/knife/combat))
+	TEST_ASSERT(mount.try_attach(knife), "Test bayonet could not be attached")
+	// [/HORIZON-EDIT]
 
 	attacker.set_combat_mode(TRUE)
 	click_wrapper(attacker, victim, list(RIGHT_CLICK = TRUE, BUTTON = RIGHT_CLICK))
-	TEST_ASSERT_NOTEQUAL(victim.get_brute_loss(), 0, "Victim did not take brute damage from being bayonet stabbed.")
+	TEST_ASSERT(victim.get_brute_loss() > gun.force, "Bayonet dealt only gun-bash damage instead of knife damage") // [HORIZON-EDIT] GunRework
 	victim.fully_heal()
 
 /// Test that bayonetted weapons can be used to butcher
@@ -50,8 +55,10 @@
 	butcher.set_combat_mode(TRUE)
 	var/obj/item/gun/energy/recharge/kinetic_accelerator/gun = EASY_ALLOCATE()
 	var/obj/item/knife/combat/knife = EASY_ALLOCATE()
-	var/datum/component/bayonet_attachable/bayonet = gun.GetComponent(/datum/component/bayonet_attachable)
-	bayonet.add_bayonet(knife)
+	// [HORIZON-EDIT] GunRework
+	var/datum/component/attachment_mount/mount = gun.GetComponent(/datum/component/attachment_mount)
+	TEST_ASSERT(mount.try_attach(knife), "Butchering bayonet could not be attached")
+	// [/HORIZON-EDIT]
 	var/datum/component/butchering/butcher_comp = knife.GetComponent(/datum/component/butchering)
 	butcher_comp.speed = 1 SECONDS
 

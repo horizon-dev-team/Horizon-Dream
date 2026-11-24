@@ -44,8 +44,33 @@
 	. = ..()
 	check_for_del()
 
+/// Loaded stacks use actual casings, so their material totals are known from the start.
+/obj/item/ammo_box/magazine/ammo_stack/top_off(load_type, starting = FALSE)
+	if(!load_type)
+		load_type = ammo_type
+	while(length(stored_ammo) < max_ammo)
+		var/obj/item/ammo_casing/casing = new load_type(src)
+		if(!give_round(casing))
+			qdel(casing)
+			break
+	update_appearance()
+
+/obj/item/ammo_box/magazine/ammo_stack/is_compatible_round(obj/item/ammo_casing/new_round)
+	if(!..())
+		return FALSE
+	var/obj/item/ammo_casing/stack_round = ammo_type
+	return new_round.stack_type == initial(stack_round.stack_type)
+
 /obj/item/ammo_box/magazine/ammo_stack/remove_from_stored_ammo(atom/movable/gone)
-	. = ..()
+	stored_ammo -= gone
+	// Rebuild instead of subtracting: removing the last casing must clear materials,
+	// not pass zero-valued entries to set_custom_materials().
+	var/list/materials = list()
+	for(var/obj/item/ammo_casing/casing as anything in stored_ammo)
+		for(var/material in casing.custom_materials)
+			materials[material] += casing.custom_materials[material]
+	set_custom_materials(materials)
+	update_appearance()
 	addtimer(CALLBACK(src, PROC_REF(check_for_del)), 0)
 
 /obj/item/ammo_box/magazine/ammo_stack/Destroy(force)

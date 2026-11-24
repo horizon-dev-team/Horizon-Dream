@@ -1,15 +1,4 @@
-// horizon-dev-sync[bot] rewrite of the Shiptest-derived gun attachment system.
-//
-// The system is built from two components that talk through direct proc calls
-// instead of a custom signal bus:
-//   /datum/component/attachment_mount - lives on the gun, owns the installed attachments
-//   /datum/component/gun_attachment   - lives on the attachment item, holds its behaviour
-// See _horizon/code/datums/components/gun_attachment.dm for how to add a new attachment.
-
-// =============================================================================
 // SLOTS
-// =============================================================================
-
 #define ATTACHMENT_SLOT_MUZZLE "muzzle"
 #define ATTACHMENT_SLOT_SCOPE "scope"
 #define ATTACHMENT_SLOT_GRIP "grip"
@@ -25,11 +14,6 @@
 	ATTACHMENT_SLOT_RAIL = 1, \
 	ATTACHMENT_SLOT_STOCK = 1, \
 )
-
-// =============================================================================
-// FEATURE FLAGS (/datum/component/gun_attachment::feature_flags)
-// =============================================================================
-
 /// Can be removed with an empty-handed alt-click.
 #define ATTACH_REMOVABLE_HAND (1<<0)
 /// Can be removed by prying with a crowbar.
@@ -38,13 +22,6 @@
 #define ATTACH_TOGGLE (1<<2)
 /// Draws no overlay on the gun.
 #define ATTACH_NO_SPRITE (1<<3)
-
-// =============================================================================
-// HOOK FLAGS (/datum/component/gun_attachment::hook_flags)
-// An attachment sets the hooks it implements. The mount only listens for the
-// matching engine signal on the gun while at least one installed attachment
-// asked for it.
-// =============================================================================
 
 /// on_try_fire(): return TRUE to cancel the shot.
 #define ATTACH_HOOK_FIRE (1<<0)

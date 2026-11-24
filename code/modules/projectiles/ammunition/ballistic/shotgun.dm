@@ -264,13 +264,6 @@
 	custom_materials = list(/datum/material/iron=SHEET_MATERIAL_AMOUNT*2)
 
 // [HORIZON-EDIT] GunRework
-/// 0.1% of all spawned slugs are Reggie. He likes penetrating IIIA body armor.
-/obj/item/ammo_casing/shotgun/Initialize(mapload)
-	if((type == /obj/item/ammo_casing/shotgun) && prob(0.1))
-		name = "reggie slug"
-		desc = "Hi, my name is Reggie, I like penetrating IIIA body armor."
-	return ..()
-
 // 4 gauge KS-23 shells (Destruidor de Bolas)
 /obj/item/ammo_casing/shotgun/bolas
 	name =  "Consumidor de Buceta 4 guage slug"

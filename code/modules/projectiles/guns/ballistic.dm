@@ -523,7 +523,7 @@
 			return
 		if(bolt_locked)
 			bolt_locked = FALSE
-			chamber_round(TRUE)
+			chamber_round(spin_cylinder = TRUE)
 			playsound(src, rack_sound, rack_sound_volume, rack_sound_vary)
 		else
 			bolt_locked = TRUE
@@ -735,7 +735,7 @@
 		if (last_shot_succeeded && bolt_type == BOLT_TYPE_LOCKING && semi_auto)
 			bolt_locked = TRUE
 			update_appearance()
-	if (bolt_type == BOLT_TYPE_BREAK_ACTION && !cylinder_open) // [HORIZON-ADD] GunRework: break actions lock open after firing
+	if (last_shot_succeeded && bolt_type == BOLT_TYPE_BREAK_ACTION && !cylinder_open) // [HORIZON-EDIT] GunRework: rejected attempts must not lower the hammer
 		bolt_locked = TRUE
 		update_appearance()
 
@@ -1099,18 +1099,18 @@ GLOBAL_LIST_INIT(gun_saw_types, typecacheof(list(
 			chambered = null
 	else
 		playsound(src, lock_back_sound, lock_back_sound_volume, lock_back_sound_vary)
-		chamber_round()
+		chamber_round(spin_cylinder = FALSE)
 	if(user)
 		balloon_alert(user, "[cylinder_wording] [cylinder_open ? "open" : "closed"]")
 	update_appearance()
-	SEND_SIGNAL(src, COMSIG_UPDATE_AMMO_HUD) // [HORIZON-ADD] GunRework
+	SEND_SIGNAL(src, COMSIG_UPDATE_AMMO_HUD)
 
 /// Break action guns cock themselves (via before_can_shoot_checks) before firing.
 /obj/item/gun/ballistic/before_can_shoot_checks(mob/living/user)
 	. = ..()
 	if((bolt_type == BOLT_TYPE_BREAK_ACTION) && !cylinder_open && semi_auto && bolt_locked)
 		bolt_locked = FALSE
-		chamber_round(TRUE)
+		chamber_round(spin_cylinder = TRUE)
 		update_appearance()
 
 /// Drag onto your hand or character to unload, including guns lying on the floor.

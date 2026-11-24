@@ -34,15 +34,31 @@
 	// [/HORIZON-EDIT]
 	if(chambered)
 		UnregisterSignal(chambered, COMSIG_MOVABLE_MOVED)
-	if (spin_cylinder)
+	if(spin_cylinder)
 		chambered = magazine.get_round()
 	else
 		chambered = magazine.stored_ammo[1]
-		if (ispath(chambered))
+		if(ispath(chambered))
 			chambered = new chambered(magazine)
 			magazine.stored_ammo[1] = chambered
 	if(chambered)
 		RegisterSignal(chambered, COMSIG_MOVABLE_MOVED, PROC_REF(clear_chambered))
+	SEND_SIGNAL(src, COMSIG_UPDATE_AMMO_HUD) // [HORIZON-ADD] GunRework
+
+// [HORIZON-ADD] GunRework
+/obj/item/gun/ballistic/revolver/handle_chamber(mob/living/user, empty_chamber = TRUE, from_firing = TRUE, chamber_next_round = TRUE)
+	if(bolt_type != BOLT_TYPE_BREAK_ACTION)
+		return ..()
+	if(from_firing && chamber_next_round && semi_auto && !cylinder_open)
+		chamber_round()
+
+/obj/item/gun/ballistic/revolver/postfire_empty_checks(last_shot_succeeded)
+	var/hammer_was_cocked = !bolt_locked
+	. = ..()
+	if(last_shot_succeeded && hammer_was_cocked && semi_auto && !cylinder_open && bolt_type == BOLT_TYPE_BREAK_ACTION)
+		bolt_locked = FALSE
+		update_appearance()
+// [/HORIZON-ADD]
 
 /obj/item/gun/ballistic/revolver/shoot_with_empty_chamber(mob/living/user as mob|obj)
 	..()

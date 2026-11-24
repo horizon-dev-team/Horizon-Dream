@@ -1,7 +1,3 @@
-// [HORIZON-ADD] GunRework
-// Ammo counter HUD: screen object shown while holding a ballistic gun with
-// an ammo counter attachment (/datum/component/ammo_hud).
-
 #define ui_ammocounter "EAST-1:28,CENTER+1:25"
 
 /atom/movable/screen/ammo_counter

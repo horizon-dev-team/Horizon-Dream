@@ -195,7 +195,7 @@
 	if(corrupted)
 		. += span_danger("This [name] seems to be faulty!")
 	else if(!isnull(charge_light_type))
-		. += "<b>Charge:</b> [icon2html(GUN_INFO_ICON_SET, user, "battery")] [CEILING(percent(), 0.1)]%." //so it doesn't say 0% charge when the overlay indicates it still has charge // [HORIZON-EDIT] GunRework
+		. += "<b>Charge:</b> [icon2html(DAMAGE_ICON_SET, user, "charge")] [CEILING(percent(), 0.1)]%." //so it doesn't say 0% charge when the overlay indicates it still has charge // [HORIZON-EDIT] GunRework
 
 /obj/item/stock_parts/power_store/proc/try_explode(max_charge = FALSE)
 	var/check_charge = charge

@@ -14,6 +14,7 @@
 	inhand_icon_state = "chlake"
 	icon_state = "chinalake"
 	base_icon_state = "chinalake"
+	cartridge_wording = "grenade"
 	fire_sound = '_horizon/sound/weapons/guns/launcher/batata.wav'
 	lock_back_sound = '_horizon/sound/weapons/guns/launcher/batata_lock_back.ogg'
 	bolt_drop_sound = '_horizon/sound/weapons/guns/launcher/batata_lockin.wav'

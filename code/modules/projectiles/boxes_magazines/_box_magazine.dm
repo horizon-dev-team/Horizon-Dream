@@ -44,6 +44,7 @@
 	var/ammo_band_icon
 	/// Is the greyscale icon used for the ammo band when it's empty of bullets, only if it's not null.
 	var/ammo_band_icon_empty
+	var/tips_ammo = "bullet"
 
 /obj/item/ammo_box/Initialize(mapload)
 	. = ..()
@@ -275,7 +276,7 @@
 	var/obj/item/ammo_casing/top_round = get_round()
 	if(!top_round)
 		return
-	. += "<b>Capacity:</b> [icon2html(GUN_INFO_ICON_SET, user, "magazine")] [shells_left]/[max_ammo] [casing_phrasing]\s." // [HORIZON-ADD] GunRework
+	. += "<b>Capacity:</b> [shells_left]/[max_ammo] [icon2html(DAMAGE_ICON_SET, user, "bullet")] [casing_phrasing]\s." // [HORIZON-ADD] GunRework
 	// this is kind of awkward phrasing, but it's the top/ready ammo in the box
 	// intended for people who have like three mislabeled magazines
 	. += span_notice("\A <b>[top_round]</b> is ready.")

@@ -829,7 +829,7 @@
 /obj/item/gun/ballistic/examine(mob/user)
 	. = ..()
 	var/count_chambered = !(bolt_type == BOLT_TYPE_NO_BOLT || bolt_type == BOLT_TYPE_OPEN)
-	. += "<b>Capacity:</b> [icon2html(GUN_INFO_ICON_SET, user, "magazine")] [get_ammo(count_chambered)]/[magazine ? magazine.max_ammo : initial(accepted_magazine_type.max_ammo)]"
+	. += "<b>Capacity:</b> [icon2html(DAMAGE_ICON_SET, user, cartridge_wording)] [get_ammo(count_chambered)]/[magazine ? magazine.max_ammo : initial(accepted_magazine_type.max_ammo)]"
 
 	// [HORIZON-EDIT] GunRework - Shown only when it matters (rounds in the magazine but nothing chambered). Original, disabled:
 	// if (!chambered && !hidden_chambered)

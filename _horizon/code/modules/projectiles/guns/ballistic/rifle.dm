@@ -163,6 +163,38 @@
 	foldable = TRUE
 	folded = FALSE
 
+/obj/item/gun/ballistic/automatic/hd_gun/remis/abyss/warfare/m545/add_attachment_slots()
+	..()
+	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 43, 15)
+
+/obj/item/gun/ballistic/automatic/hd_gun/remis/abyss/warfare/m545/ak/add_attachment_slots()
+	..()
+	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 44, 18)
+
+/obj/item/gun/ballistic/automatic/hd_gun/remis/winter/add_attachment_slots()
+	..()
+	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 43, 16)
+
+/obj/item/gun/ballistic/automatic/hd_gun/remis/abyss/add_attachment_slots()
+	..()
+	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 47, 16)
+
+/obj/item/gun/ballistic/automatic/hd_gun/remis/abyss/donator/add_attachment_slots()
+	..()
+	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 47, 16)
+
+/obj/item/gun/ballistic/automatic/hd_gun/remis/steyr/add_attachment_slots()
+	..()
+	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 43, 14)
+
+/obj/item/gun/ballistic/automatic/hd_gun/remis/svd/add_attachment_slots()
+	..()
+	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 59, 14)
+
+/obj/item/gun/ballistic/automatic/hd_gun/remis/g36/add_attachment_slots()
+	..()
+	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 49, 14)
+
 //donator gun
 /obj/item/gun/ballistic/automatic/hd_gun/remis/abyss/donator
 	name = "\improper AN-95 5.4539mm Abyss Armaments Paypig Assault Rifle"
@@ -456,3 +488,35 @@
 	full_auto = TRUE
 	foldable = TRUE
 	folded = FALSE
+
+/obj/item/gun/ballistic/automatic/hd_gun/remis/abyss/warfare/m545/add_attachment_slots()
+	..()
+	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 43, 15)
+
+/obj/item/gun/ballistic/automatic/hd_gun/remis/abyss/warfare/m545/ak/add_attachment_slots()
+	..()
+	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 44, 18)
+
+/obj/item/gun/ballistic/automatic/hd_gun/remis/winter/add_attachment_slots()
+	..()
+	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 43, 16)
+
+/obj/item/gun/ballistic/automatic/hd_gun/remis/abyss/add_attachment_slots()
+	..()
+	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 47, 16)
+
+/obj/item/gun/ballistic/automatic/hd_gun/remis/abyss/donator/add_attachment_slots()
+	..()
+	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 47, 16)
+
+/obj/item/gun/ballistic/automatic/hd_gun/remis/steyr/add_attachment_slots()
+	..()
+	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 43, 14)
+
+/obj/item/gun/ballistic/automatic/hd_gun/remis/svd/add_attachment_slots()
+	..()
+	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 59, 14)
+
+/obj/item/gun/ballistic/automatic/hd_gun/remis/g36/add_attachment_slots()
+	..()
+	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 49, 14)

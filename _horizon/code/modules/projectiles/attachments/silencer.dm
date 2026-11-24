@@ -1,15 +1,3 @@
-// Muzzle silencer attachment.
-//
-// It reuses the gun's own suppression: while installed the gun counts as suppressed, so it
-// plays its own suppressed_sound at suppressed_volume and skips the muzzle flash, exactly
-// as with a suppressor item.
-//
-// Guns have no suppressor overlay of their own for this, the silencer draws its sprite itself
-// ("silencer-attached") at the gun's muzzle point from slot_offsets
-// (see _gun_muzzle_offsets.dm). To stop a gun that does have a "_suppressor" state from
-// drawing a second silencer, can_unsuppress is switched off while the attachment is fitted:
-// the gun only draws that state, and offers the alt-click unscrew, when it is set.
-
 /obj/item/attachment/silencer
 	name = "silencer"
 	desc = "A threaded silencer, designed to be fitted to the muzzle of a compatible firearm to muffle its report."
@@ -22,17 +10,12 @@
 /datum/component/gun_attachment/silencer
 	slot = ATTACHMENT_SLOT_MUZZLE
 	feature_flags = ATTACH_REMOVABLE_HAND
-	// The sprite is drawn from its own bottom-left corner, which sits exactly on the muzzle point.
 	overlay_shift_x = 0
 	overlay_shift_y = 0
-	/// Weight added to the gun, so a suppressed pistol stops fitting in pockets, like with a suppressor item.
-	var/added_weight = 0
-	/// can_unsuppress of the gun before the silencer took it over.
+	/// Before values ​​before installing a silencer.
 	var/previous_can_unsuppress = FALSE
-	/// Restore the actual pre-install flash setting, not the type's initial value.
 	var/previous_can_muzzle_flash = TRUE
 
-/// Only guns that take suppressors, and only if they are not suppressed already.
 /datum/component/gun_attachment/silencer/get_attach_error(obj/item/gun/gun, mob/user)
 	. = ..()
 	if(.)

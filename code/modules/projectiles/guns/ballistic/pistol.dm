@@ -47,8 +47,11 @@
 	. = ..()
 	pin.pin_removable = FALSE
 
-
 // [HORIZON-EDIT] GunRework
+/obj/item/gun/ballistic/automatic/pistol/add_attachment_slots()
+	..()
+	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 25, 19)
+
 /obj/item/gun/ballistic/automatic/pistol/suppressed
 	default_attachments = list(/obj/item/attachment/silencer)
 // [/HORIZON-EDIT]
@@ -60,6 +63,12 @@
 	accepted_magazine_type = /obj/item/ammo_box/magazine/m10mm
 	empty_indicator = TRUE
 	suppressor_x_offset = 12
+
+// [HORIZON-EDIT] GunRework
+/obj/item/gun/ballistic/automatic/pistol/clandestine/add_attachment_slots()
+	..()
+	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 26, 19)
+// [/HORIZON-EDIT]
 
 /obj/item/gun/ballistic/automatic/pistol/clandestine/add_deep_lore()
 	AddElement(/datum/element/examine_lore, \
@@ -248,12 +257,20 @@
 	actions_types = list(/datum/action/item_action/toggle_firemode)
 	suppressor_x_offset = 6
 
+/obj/item/gun/ballistic/automatic/pistol/aps/add_attachment_slots() // [HORIZON-ADD] GunRework
+	..()
+	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 27, 17)
+
 /obj/item/gun/ballistic/automatic/pistol/stickman
 	name = "flat gun"
 	desc = "A 2 dimensional gun.. what?"
 	icon_state = "flatgun"
 	mag_display = FALSE
 	show_bolt_icon = FALSE
+
+/obj/item/gun/ballistic/automatic/pistol/stickman/add_attachment_slots() // [HORIZON-ADD] GunRework
+	..()
+	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 23, 18)
 
 /obj/item/gun/ballistic/automatic/pistol/stickman/equipped(mob/user, slot)
 	..()

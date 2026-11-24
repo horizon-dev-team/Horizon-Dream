@@ -513,6 +513,10 @@
 	suppressor_x_offset = 3
 	suppressor_y_offset = 3
 
+/obj/item/gun/ballistic/rifle/sniper_rifle/add_attachment_slots()
+	..()
+	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 30, 28)
+
 /obj/item/gun/ballistic/rifle/sniper_rifle/examine(mob/user)
 	. = ..()
 	. += span_warning("<b>It seems to have a warning label:</b> Do NOT, under any circumstances, attempt to 'quickscope' with this rifle.")
@@ -624,3 +628,7 @@
 	actions_types = list()
 	suppressor_x_offset = 3
 	suppressor_y_offset = 3
+
+/obj/item/gun/ballistic/automatic/lahti/add_attachment_slots()
+	..()
+	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 71, 16)

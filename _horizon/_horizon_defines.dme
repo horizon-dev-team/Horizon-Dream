@@ -11,7 +11,6 @@
 // BEGIN_INCLUDE
 #include "code\__DEFINES\_helpers.dm"
 #include "code\__DEFINES\_signals.dm"
-#include "code\__DEFINES\_signals_horizon.dm"
 #include "code\__DEFINES\buildmode.dm"
 #include "code\__DEFINES\dir_slash.dm"
 #include "code\__DEFINES\hud.dm"
@@ -20,4 +19,5 @@
 #include "code\__DEFINES\particles.dm"
 #include "code\__DEFINES\physics.dm"
 #include "code\__DEFINES\weight.dm"
+#include "code\__DEFINES\world_icon.dm"
 // END_INCLUDE

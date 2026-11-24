@@ -72,6 +72,12 @@
 	casing_ejector = FALSE
 	gun_flags = GUN_SMOKE_PARTICLES // [HORIZON-ADD] Ballistic_Impact
 
+// [HORIZON-ADD] GunRework
+/obj/item/gun/ballistic/automatic/gyropistol/add_attachment_slots()
+	..()
+	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 27, 18)
+// [/HORIZON-ADD]
+
 /obj/item/gun/ballistic/rocketlauncher
 	name = "\improper Dardo-RE Rocket Launcher"
 	desc = "A reusable rocket propelled grenade launcher. An arrow pointing toward the front of the launcher \

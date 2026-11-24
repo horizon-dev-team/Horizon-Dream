@@ -40,6 +40,10 @@
 	)
 	custom_price = 3000
 
+/obj/item/gun/ballistic/automatic/pistol/hd_gun/ruger/add_attachment_slots()
+	..()
+	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 17, 12)
+
 // BERETTA 69R
 /obj/item/gun/ballistic/automatic/pistol/hd_gun/aps
 	name = "\improper 69R machine pistol"
@@ -75,7 +79,10 @@
 	custom_price = 4500
 	full_auto = TRUE
 
-// M1911
+/obj/item/gun/ballistic/automatic/pistol/hd_gun/aps/add_attachment_slots()
+	..()
+	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 25, 6)
+
 /obj/item/gun/ballistic/automatic/pistol/hd_gun/m1911
 	name = "\improper Cold 1911"
 	desc = "A classical copy of a antique design, even centuries later is efficient for close-quarter combat and self-defence at the cost of magazine capacity."
@@ -95,7 +102,10 @@
 	carry_weight = 1 KILOGRAMS
 	custom_price = 3500
 
-// USP
+/obj/item/gun/ballistic/automatic/pistol/hd_gun/m1911/add_attachment_slots()
+	..()
+	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 23, 14)
+
 /obj/item/gun/ballistic/automatic/pistol/hd_gun/cortes
 	name = "\improper Cortes .45"
 	desc = "A lavish pistol for a lavish life."
@@ -119,7 +129,6 @@
 	carry_weight = 1 KILOGRAMS
 	custom_price = 3500
 
-// STI 2011 COMBAT MASTER
 /obj/item/gun/ballistic/automatic/pistol/hd_gun/combatmaster
 	name = "\improper Frag Master 2511"
 	desc = "An expensive, reliable handgun with a large magazine capacity. \
@@ -145,7 +154,10 @@
 	carry_weight = 1 KILOGRAMS
 	custom_price = 4500
 
-// GLOCK-17
+/obj/item/gun/ballistic/automatic/pistol/hd_gun/combatmaster/add_attachment_slots()
+	..()
+	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 29, 14)
+
 /obj/item/gun/ballistic/automatic/pistol/hd_gun/glock17
 	name = "\improper Gosma-17 9mm pistol"
 	desc = "A chunky pistol often accompanied with the screams of thugs."
@@ -169,6 +181,10 @@
 	w_class = WEIGHT_CLASS_NORMAL
 	carry_weight = 1 KILOGRAMS
 	custom_price = 2500
+
+/obj/item/gun/ballistic/automatic/pistol/hd_gun/glock17/add_attachment_slots()
+	..()
+	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 27, 18)
 
 // WALTHER PPK
 /obj/item/gun/ballistic/automatic/pistol/hd_gun/ppk
@@ -203,6 +219,10 @@
 	suppressor_x_offset = 8
 	custom_price = 900
 
+/obj/item/gun/ballistic/automatic/pistol/hd_gun/ppk/add_attachment_slots()
+	..()
+	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 22, 12)
+
 // "DEAGLE"
 /obj/item/gun/ballistic/automatic/pistol/hd_gun/aniquilador
 	name = "\improper Aniquilador .50 LE Anti-Personnel Firearm"
@@ -232,6 +252,10 @@
 	carry_weight = 2 KILOGRAMS
 	custom_price = 5500
 
+/obj/item/gun/ballistic/automatic/pistol/hd_gun/aniquilador/add_attachment_slots()
+	..()
+	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 27, 16)
+
 /obj/item/gun/ballistic/automatic/pistol/hd_gun/john
 	name = "\improper John .50 AE Pistol"
 	desc = "Who's that? Oh It's just John, don't worry. It's a plinking pistol."
@@ -257,6 +281,10 @@
 	can_unsuppress = FALSE
 	carry_weight = 2 KILOGRAMS
 	custom_price = 5500
+
+/obj/item/gun/ballistic/automatic/pistol/hd_gun/john/add_attachment_slots()
+	..()
+	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 30, 18)
 
 /obj/item/gun/ballistic/automatic/pistol/hd_gun/pm9
 	name = "\improper PM9 Evil Gun"
@@ -294,3 +322,7 @@
 	carry_weight = 2
 	custom_price = 5500
 	can_suppress = FALSE
+
+/obj/item/gun/ballistic/automatic/pistol/hd_gun/pm9/add_attachment_slots()
+	..()
+	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 27, 16)

@@ -250,6 +250,9 @@ GAME_VERB(/obj/item/gun/ballistic/revolver, spin, "Spin Cylinder", null) // [HOR
 
 	accepted_magazine_type = /obj/item/ammo_box/magazine/internal/cylinder/rev762
 
+/obj/item/gun/ballistic/revolver/nagant/add_attachment_slots() // [HORIZON-ADD] GunRework
+	..()
+	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 27, 17)
 
 // A gun to play Russian Roulette!
 // You can spin the cylinder to randomize the position of the bullet.

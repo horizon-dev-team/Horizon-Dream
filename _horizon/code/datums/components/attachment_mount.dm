@@ -72,9 +72,7 @@
 	slot_offsets = null
 	return ..()
 
-// =============================================================================
-// QUERIES
-// =============================================================================
+// MARK: QUERIES
 
 /// Returns the gun-attachment component of an item. Attachment items that have not
 /// finished initializing yet (default attachments) get theirs created on the spot.
@@ -142,7 +140,8 @@
 	if(conflict)
 		return "[attachment_item] can't be fitted to [gun] while [conflict.parent] is installed!"
 	return attachment.get_attach_error(gun, user)
-// INSTALLING AND REMOVING
+
+// MARK: INSTALLING AND REMOVING
 
 /// Installs an attachment item into the gun. Returns TRUE on success, and tells the user why on failure.
 /datum/component/attachment_mount/proc/try_attach(obj/item/attachment_item, mob/user)
@@ -206,9 +205,7 @@
 		return
 	release(attachment, null)
 
-// =============================================================================
-// LAZY HOOK SIGNALS
-// =============================================================================
+// MARK: LAZY HOOK SIGNALS
 
 /// Registers or unregisters the engine signals so that exactly the hooks wanted by installed attachments are listened to.
 /datum/component/attachment_mount/proc/sync_hooks()
@@ -312,7 +309,8 @@
 	for(var/datum/component/gun_attachment/attachment as anything in installed)
 		if((attachment.hook_flags & ATTACH_HOOK_CTRL_CLICK) && attachment.on_ctrl_click(source, user))
 			return CLICK_ACTION_SUCCESS
-// PLAYER INTERACTIONS
+
+// MARK: PLAYER INTERACTIONS
 
 /// Shared checks for menus, delayed actions and direct attachment use.
 /datum/component/attachment_mount/proc/can_interact(mob/user)
@@ -402,7 +400,8 @@
 	if(!selected || selected.mount != src || !can_interact(user))
 		return
 	selected.toggle(user)
-// EXAMINE AND APPEARANCE
+
+// MARK: EXAMINE AND APPEARANCE
 
 /datum/component/attachment_mount/proc/handle_examine(atom/source, mob/user, list/examine_list)
 	SIGNAL_HANDLER

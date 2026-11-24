@@ -36,11 +36,15 @@
 	w_class = WEIGHT_CLASS_NORMAL
 	selfcharge = TRUE
 	custom_price = 100000
-	gunshot_animation_information = list("icon_state" = "energyshot", \
-							"pixel_x" = 16, \
-							"pixel_y" = 2)
-	recoil_animation_information = list("recoil_angle_upper" = -15, \
-							"recoil_angle_lower" = -30)
+	gunshot_animation_information = list(
+		"icon_state" = "energyshot", \
+		"pixel_x" = 16, \
+		"pixel_y" = 2,
+		)
+	recoil_animation_information = list(
+		"recoil_angle_upper" = -15, \
+		"recoil_angle_lower" = -30
+		)
 
 /obj/item/gun/energy/hd_gun/nasr/process(delta_time)
 	if(selfcharge && cell && cell.percent() < 100)

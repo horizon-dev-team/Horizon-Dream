@@ -17,6 +17,10 @@
 	can_muzzle_flash = FALSE
 	min_recoil = 0
 
+/obj/item/gun/ballistic/automatic/toy/add_attachment_slots()
+	..()
+	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 24, 16)
+
 /obj/item/gun/ballistic/automatic/toy/riot
 	spawn_magazine_type = /obj/item/ammo_box/magazine/toy/smg/riot
 

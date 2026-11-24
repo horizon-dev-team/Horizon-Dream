@@ -826,11 +826,12 @@
 	update_appearance()
 	SEND_SIGNAL(src, COMSIG_UPDATE_AMMO_HUD) // [HORIZON-ADD] ammo counter refresh
 
+/obj/item/gun/ballistic/get_extra_tooltip(mob/user)
+	var/count_chambered = !(bolt_type == BOLT_TYPE_NO_BOLT || bolt_type == BOLT_TYPE_OPEN)
+	. += "<br><tr><td><b>Capacity:</b></td><td>[icon2html(DAMAGE_ICON_SET, user, cartridge_wording)] [get_ammo(count_chambered)]/[magazine ? magazine.max_ammo : initial(accepted_magazine_type.max_ammo)]</td></tr>"
+
 /obj/item/gun/ballistic/examine(mob/user)
 	. = ..()
-	var/count_chambered = !(bolt_type == BOLT_TYPE_NO_BOLT || bolt_type == BOLT_TYPE_OPEN)
-	. += "<b>Capacity:</b> [icon2html(DAMAGE_ICON_SET, user, cartridge_wording)] [get_ammo(count_chambered)]/[magazine ? magazine.max_ammo : initial(accepted_magazine_type.max_ammo)]"
-
 	// [HORIZON-EDIT] GunRework - Shown only when it matters (rounds in the magazine but nothing chambered). Original, disabled:
 	// if (!chambered && !hidden_chambered)
 	// 	. += "It does not seem to have a round chambered."

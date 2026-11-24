@@ -32,6 +32,10 @@
 	. = ..()
 	AddComponent(/datum/component/automatic_fire, 0.2 SECONDS)
 
+/obj/item/gun/ballistic/automatic/proto/add_attachment_slots() // [HORIZON-ADD] GunRework
+	..()
+	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 24, 16)
+
 /obj/item/gun/ballistic/automatic/proto/unrestricted
 	pin = /obj/item/firing_pin
 
@@ -49,14 +53,14 @@
 	mag_display_ammo = TRUE
 	empty_indicator = TRUE
 
+// [HORIZON-EDIT] GunRework
 /obj/item/gun/ballistic/automatic/c20r/add_bayonet_point()
-	set_bayonet_slot(26, 12) // [HORIZON-EDIT] GunRework
+	set_bayonet_slot(26, 12)
 
-// [HORIZON-ADD] GunRework
 /obj/item/gun/ballistic/automatic/c20r/add_attachment_slots()
 	..()
 	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 25, 16)
-// [/HORIZON-ADD]
+// [/HORIZON-EDIT]
 
 /obj/item/gun/ballistic/automatic/c20r/update_overlays()
 	. = ..()
@@ -134,6 +138,10 @@
 	show_bolt_icon = FALSE
 	mag_display = TRUE
 	rack_sound = 'sound/items/weapons/gun/pistol/slide_lock.ogg'
+
+/obj/item/gun/ballistic/automatic/mini_uzi/add_attachment_slots()
+	..()
+	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 30, 20)
 
 /**
  * Weak uzi for syndicate chimps. It comes in a 4 TC kit.
@@ -396,6 +404,10 @@
 	var/explosion_timer
 
 	SET_BASE_PIXEL(-8, 0)
+
+/obj/item/gun/ballistic/automatic/battle_rifle/add_attachment_slots()
+	..()
+	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 39, 14)
 
 /obj/item/gun/ballistic/automatic/battle_rifle/Initialize(mapload)
 	. = ..()

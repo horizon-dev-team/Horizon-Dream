@@ -48,6 +48,10 @@
 	slot_flags = ITEM_SLOT_BACK | ITEM_SLOT_SUITSTORE
 	spread_unwielded = 12
 
+/obj/item/gun/ballistic/shotgun/hd_gun/add_attachment_slots()
+	..()
+	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 38, 16)
+
 // DOUBLE BARRELED SHOTGUN
 /obj/item/gun/ballistic/shotgun/doublebarrel/hd_gun
 	pb_knockback = 0
@@ -117,6 +121,9 @@
 	empty_indicator = FALSE
 	spawn_magazine_type = /obj/item/ammo_box/magazine/internal/shot/lethal
 
+/obj/item/gun/ballistic/shotgun/hd_gun/ithaca/add_attachment_slots()
+	..()
+	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 38, 16)
 
 /obj/item/gun/ballistic/shotgun/hd_gun/hunting
 	name = "ОД Папасши \"Охотник\""
@@ -124,6 +131,10 @@
 	icon_state = "huntingshot"
 	base_icon_state = "huntingshot"
 	empty_icon_state = TRUE
+
+/obj/item/gun/ballistic/shotgun/hd_gun/hunting/add_attachment_slots()
+	..()
+	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 39, 16)
 
 // ??? SHOTGUN
 /obj/item/gun/ballistic/shotgun/hd_gun/riot
@@ -148,6 +159,10 @@
 		"recoil_angle_lower" = -30, \
 	)
 	suppressor_x_offset = 14
+
+/obj/item/gun/ballistic/shotgun/hd_gun/riot/add_attachment_slots()
+	..()
+	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 39, 16)
 
 /obj/item/gun/ballistic/shotgun/automatic/hd_gun
 	bolt_type = BOLT_TYPE_LOCKING
@@ -285,6 +300,10 @@
 	can_suppress = TRUE
 	suppressor_x_offset = 12
 
+/obj/item/gun/ballistic/shotgun/hd_gun/bulldog/add_attachment_slots()
+	..()
+	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 37, 16)
+
 // SAIGA-12 AUTOMATIC SHOTGUN
 /obj/item/gun/ballistic/shotgun/hd_gun/abyss
 	name = "\improper АД-12 Папасши"
@@ -330,6 +349,10 @@
 	accepted_magazine_type = /obj/item/ammo_box/magazine/abyss_shotgun_drum
 	suppressor_x_offset = 8
 
+/obj/item/gun/ballistic/shotgun/hd_gun/abyss/add_attachment_slots()
+	..()
+	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 45, 16)
+
 // KS23 | TOZ-123 DESTROYER
 /obj/item/gun/ballistic/shotgun/hd_gun/bolas
 	name = "\improper ДС-4 Папасши"
@@ -354,6 +377,10 @@
 	can_suppress = TRUE
 	suppressor_x_offset = 11
 
+/obj/item/gun/ballistic/shotgun/hd_gun/bolas/add_attachment_slots()
+	..()
+	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 45, 16)
+
 // SPAS 12
 /obj/item/gun/ballistic/shotgun/hd_gun/denominator
 	name = "\improper Riot-S12 \"Special\""
@@ -375,27 +402,7 @@
 	fold_close_sound = '_horizon/sound/weapons/guns/rifle/ak_stock_close.wav'
 	spawn_magazine_type = /obj/item/ammo_box/magazine/internal/shot/spas
 
-/obj/item/gun/ballistic/shotgun/hd_gun/denominator/item_interaction_secondary(mob/living/user, obj/item/tool, list/modifiers)
-	. = ..()
-	if(bolt_locked || (safety_flags & GUN_SAFETY_ENABLED))
-		var/wontbudge = span_notice("Флажок переключателя режимов не поддаётся.")
-		if(safety_flags & GUN_SAFETY_ENABLED)
-			wontbudge += span_warning(" Предохранитель должен быть снят.")
-		if(bolt_locked)
-			wontbudge += span_danger(" Затвор должен быть передёрнут.")
-		to_chat(user, wontbudge)
-		return ITEM_INTERACT_BLOCKING
-	semi = !semi
-	user.visible_message(span_warning("[user] переключает переключатель режимов огня на [semi ? "S" : "F"]."), \
-	span_notice("Я переключил переключатель режимов огня на позицию [semi ? "S" : "F"]."))
-	if(semi)
-		playsound(src, safety_off_sound, safety_sound_volume, safety_sound_vary)
-	else
-		playsound(src, safety_on_sound, safety_sound_volume, safety_sound_vary)
-	return ITEM_INTERACT_SUCCESS
 
-/obj/item/gun/ballistic/shotgun/hd_gun/denominator/shoot_live_shot(mob/living/user)
-	. = ..()
-	if(semi)
-		playsound(src, spas_semi_click, 80, FALSE)
-		rack()
+/obj/item/gun/ballistic/shotgun/hd_gun/denominator/add_attachment_slots()
+	..()
+	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 41, 16)

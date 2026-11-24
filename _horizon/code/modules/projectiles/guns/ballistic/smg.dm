@@ -34,6 +34,10 @@
 	burst_size = 3
 	custom_price = 4000
 
+/obj/item/gun/ballistic/automatic/hd_gun/remis/smg/ppsh/add_attachment_slots()
+	..()
+	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 31, 16)
+
 // hksmg
 /obj/item/gun/ballistic/automatic/hd_gun/remis/smg/solitario
 	name = "\improper Solitario Inseguro R5 submachine gun"
@@ -82,6 +86,10 @@
 	)
 	custom_price = 10000
 
+/obj/item/gun/ballistic/automatic/hd_gun/remis/smg/solitario/add_attachment_slots()
+	..()
+	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 30, 16)
+
 /obj/item/gun/ballistic/automatic/hd_gun/remis/smg/bastardo
 	name = "\improper Feio Bastardo R1 submachine gun"
 	desc = "A fully-automatic submachine gun issued to ZoomTech officers and military force with an accelerated fire delay, comes with a folding stock, and a threaded barrel for suppression."
@@ -129,6 +137,10 @@
 	)
 	custom_price = 20000
 
+/obj/item/gun/ballistic/automatic/hd_gun/remis/smg/bastardo/add_attachment_slots()
+	..()
+	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 42, 18)
+
 /obj/item/gun/ballistic/automatic/hd_gun/remis/smg/thump
 	name = "\improper Cesno Thump R2 submachine gun"
 	desc = "A fully-automatic submachine gun that fires in optional three-round bursts, comes with a threaded barrel, and was engineered as a direct upgrade to the Solitario to .45 ACP."
@@ -164,6 +176,10 @@
 		"duration" = 1, \
 	)
 
+/obj/item/gun/ballistic/automatic/hd_gun/remis/smg/thump/add_attachment_slots()
+	..()
+	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 43, 16)
+
 /// Adds a seclite (flashlight) attachment point to this SMG.
 /obj/item/gun/ballistic/automatic/hd_gun/remis/smg/thump/add_seclight_point()
 	AddComponent(/datum/component/seclite_attachable, \
@@ -198,6 +214,9 @@
 	)
 	default_attachments = list(/obj/item/attachment/silencer/integrated)
 
+/obj/item/gun/ballistic/automatic/hd_gun/remis/smg/solitario/suppressed/add_attachment_slots()
+	..()
+	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 46, 16)
 
 /obj/item/gun/ballistic/automatic/hd_gun/remis/smg/solitario/suppressed/no_mag
 	spawnwithmagazine = FALSE
@@ -256,3 +275,7 @@
 		"duration" = 1,
 	)
 	custom_price = 20000
+
+/obj/item/gun/ballistic/automatic/hd_gun/remis/smg/bolsa/add_attachment_slots()
+	..()
+	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 41, 18)

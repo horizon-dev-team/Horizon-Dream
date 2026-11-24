@@ -88,9 +88,7 @@
 	slot = slot_choices[(index % length(slot_choices)) + 1]
 	return TRUE
 
-// =============================================================================
-// ATTACH / DETACH
-// =============================================================================
+// MARK: ATTACH / DETACH
 
 /**
  * Returns a player readable reason why this attachment can't be fitted to the gun,
@@ -149,9 +147,7 @@
 	if(!QDELETED(attachment_item))
 		attachment_item.update_appearance()
 
-// =============================================================================
-// TOGGLING
-// =============================================================================
+// MARK: TOGGLING
 
 /**
  * Returns a player readable reason why this attachment can't be toggled right now,
@@ -198,9 +194,7 @@
 /datum/component/gun_attachment/proc/on_toggled(obj/item/gun/gun, mob/user, silent)
 	return
 
-// =============================================================================
-// STAT MODIFIERS
-// =============================================================================
+// MARK: STAT MODIFIERS
 
 /// Applies stat_modifiers to the gun. Does nothing if they are already applied.
 /datum/component/gun_attachment/proc/apply_modifiers(obj/item/gun/gun)
@@ -222,9 +216,7 @@
 		gun.vars[stat_name] -= applied_modifiers[stat_name]
 	applied_modifiers = null
 
-// =============================================================================
-// APPEARANCE
-// =============================================================================
+// MARK: APPEARANCE
 
 /// Returns the overlay to draw on the gun, or null for none. The mount positions it.
 /datum/component/gun_attachment/proc/get_overlay()
@@ -232,19 +224,12 @@
 		return null
 	var/obj/item/attachment_item = parent
 	var/overlay_state = "[attachment_item.icon_state]-attached"
-	// [HORIZON-FIX] This codebase's mutable_appearance() takes an offset_spokesman
-	// argument BEFORE plane (Shiptest's does not). Passing the plane positionally
-	// sent FLOAT_PLANE (-32767) into offset_spokesman and spammed a runtime on every
-	// update_appearance() of a gun with attachments. Only pass a plane when it is
-	// really set, with the attachment item as the plane-offset context atom.
 	if(overlay_plane != FLOAT_PLANE)
 		return mutable_appearance(attachment_item.icon, overlay_state, overlay_layer, attachment_item, overlay_plane)
 	return mutable_appearance(attachment_item.icon, overlay_state, overlay_layer)
 
-// =============================================================================
-// OPTIONAL HOOKS
+// MARK: OPTIONAL HOOKS
 // Only called while the matching ATTACH_HOOK_* flag is set in hook_flags.
-// =============================================================================
 
 /// Examining the gun. Always called, add your own lines to examine_list.
 /datum/component/gun_attachment/proc/on_examine(mob/user, list/examine_list)
@@ -278,16 +263,13 @@
 /datum/component/gun_attachment/proc/on_ctrl_click(obj/item/gun/gun, mob/user)
 	return FALSE
 
-// =============================================================================
-// TOGGLE BUTTON
-// =============================================================================
+// MARK: TOGGLE BUTTON
 
 /// Action button for toggling an installed attachment. Its target is the attachment item,
 /// so the button takes the attachment's icon, but it is granted to whoever holds the gun.
 /datum/action/item_action/attachment_toggle
 	name = "Toggle Attachment"
 	check_flags = AB_CHECK_HANDS_BLOCKED|AB_CHECK_CONSCIOUS
-	/// The attachment this button controls.
 	var/datum/component/gun_attachment/attachment
 
 /datum/action/item_action/attachment_toggle/Destroy()

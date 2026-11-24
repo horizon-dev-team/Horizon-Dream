@@ -374,10 +374,10 @@
 	update_appearance()
 
 // [HORIZON-ADD] GunRework
-/obj/item/gun/energy/examine(mob/user)
+/obj/item/gun/energy/get_extra_tooltip(mob/user)
 	. = ..()
 	if(cell)
-		. += "<b>Charge:</b> [icon2html(DAMAGE_ICON_SET, user, "charge")] [CEILING(cell.percent(), 1)]%"
+		. += "<br><tr><td><b>Capacity:</b></td><td>[icon2html(DAMAGE_ICON_SET, user, "charge")][CEILING(cell.percent(), 1)]%</td></tr>"
 	else
 		. += span_warning("It has no power cell installed.")
 // [/HORIZON-ADD]

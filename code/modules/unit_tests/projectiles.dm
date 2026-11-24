@@ -180,6 +180,80 @@
 	TEST_ASSERT_EQUAL(gun.get_ammo(TRUE, TRUE), gun.magazine.max_ammo - 2, "Open cylinder did not eject its spent casing")
 	TEST_ASSERT(gun.cylinder_open, "Ejecting spent casings unexpectedly closed cylinder")
 
+/// Cylinder selection and HUD stay synchronized without rotating on close.
+/datum/unit_test/revolver_hud_selection/Run()
+	var/obj/item/gun/ballistic/revolver/gun = allocate(/obj/item/gun/ballistic/revolver)
+	var/mob/living/carbon/human/user = allocate(/mob/living/carbon/human/consistent)
+	var/mob/living/carbon/human/victim = allocate(/mob/living/carbon/human/consistent)
+	var/atom/movable/screen/ammo_counter/counter = allocate(/atom/movable/screen/ammo_counter)
+	var/datum/component/ammo_hud/ammo_hud = gun.AddComponent(/datum/component/ammo_hud)
+	user.put_in_hands(gun, forced = TRUE)
+	ammo_hud.hud = counter
+	ammo_hud.turn_on()
+	gun.never_misfire = TRUE
+	var/obj/item/ammo_casing/selected = gun.chambered
+	TEST_ASSERT(gun.process_fire(victim, user), "Revolver failed to fire its initial round")
+	TEST_ASSERT_EQUAL(gun.magazine.stored_ammo[gun.magazine.max_ammo], selected, "Initial shot did not advance the cylinder")
+	var/list/fired_chamber = counter.revolver_chambers[gun.magazine.max_ammo]
+	TEST_ASSERT_EQUAL(fired_chamber[1], "revolver_casing", "Initial shot did not shift the spent casing in the HUD")
+	TEST_ASSERT_EQUAL(length(counter.overlays), gun.magazine.max_ammo, "Initial shot did not render the casing overlays")
+	gun.postfire_empty_checks(TRUE)
+	var/obj/item/ammo_casing/next_round = gun.chambered
+	gun.before_can_shoot_checks(user)
+	TEST_ASSERT_EQUAL(gun.chambered, next_round, "Next trigger advanced the cylinder twice")
+	gun.toggle_cylinder_open()
+	gun.toggle_cylinder_open()
+	TEST_ASSERT_EQUAL(gun.chambered, next_round, "Opening and closing rotated the cylinder")
+	gun.bolt_locked = TRUE
+	gun.rack(user)
+	TEST_ASSERT(gun.chambered != next_round, "Manual cocking did not advance the cylinder")
+	var/list/previous_chamber = counter.revolver_chambers[gun.magazine.max_ammo - 1]
+	TEST_ASSERT_EQUAL(previous_chamber[1], "revolver_casing", "Manual cocking left the HUD in its old position")
+	gun.toggle_cylinder_open()
+	gun.eject_spent_casings(user)
+	var/obj/item/ammo_casing/refill = allocate(/obj/item/ammo_casing/c357)
+	TEST_ASSERT(gun.load_gun(refill, user), "Open cylinder could not be reloaded")
+	gun.toggle_cylinder_open()
+	TEST_ASSERT_EQUAL(length(counter.revolver_chambers), gun.magazine.max_ammo, "Closing a reloaded cylinder hid its casings")
+	TEST_ASSERT_EQUAL(counter.icon_state, "revolver_backing_[gun.magazine.max_ammo]", "Reload changed cylinder HUD capacity")
+	TEST_ASSERT_EQUAL(length(counter.overlays), gun.magazine.max_ammo, "Closing a reloaded cylinder cleared the rendered casings")
+	ammo_hud.update_hud()
+	TEST_ASSERT_EQUAL(length(counter.overlays), gun.magazine.max_ammo, "Unchanged refresh cleared the rendered casings")
+	ammo_hud.turn_off()
+
+/// Identical refreshes must retain actual appearances, not just the chamber data cache.
+/datum/unit_test/ammo_counter_repeated_refresh/Run()
+	var/atom/movable/screen/ammo_counter/counter = allocate(/atom/movable/screen/ammo_counter)
+	for(var/count in list(1, 6))
+		var/list/chambers = list()
+		for(var/index in 1 to count)
+			chambers.len++
+			chambers[index] = list("revolver_casing_live", index, 2)
+		for(var/refresh in 1 to 3)
+			counter.set_revolver_hud("revolver_backing_6", chambers)
+			TEST_ASSERT_EQUAL(length(counter.overlays), count, "Repeated refresh lost rendered cylinder overlays")
+			var/image/casing = counter.overlays[1]
+			TEST_ASSERT_EQUAL(casing.icon_state, "revolver_casing_live", "Refresh changed casing state")
+			TEST_ASSERT_EQUAL(casing.pixel_x, 1, "Refresh changed casing position")
+	for(var/refresh in 1 to 3)
+		counter.set_hud("#ff0000ff", "o1", "", "", "bullet")
+		TEST_ASSERT_EQUAL(length(counter.overlays), 2, "Repeated refresh lost numeric counter overlays")
+
+/// Single-action revolvers must still wait for a manual hammer cock.
+/datum/unit_test/revolver_manual_hammer/Run()
+	var/obj/item/gun/ballistic/revolver/gun = allocate(/obj/item/gun/ballistic/revolver/hd_gun/nova)
+	var/mob/living/carbon/human/user = allocate(/mob/living/carbon/human/consistent)
+	var/mob/living/carbon/human/victim = allocate(/mob/living/carbon/human/consistent)
+	user.put_in_hands(gun, forced = TRUE)
+	gun.never_misfire = TRUE
+	var/obj/item/ammo_casing/selected = gun.chambered
+	TEST_ASSERT(gun.process_fire(victim, user), "Manual revolver failed to fire")
+	gun.postfire_empty_checks(TRUE)
+	TEST_ASSERT_EQUAL(gun.chambered, selected, "Manual revolver advanced without cocking")
+	TEST_ASSERT(gun.bolt_locked, "Manual hammer did not lower after firing")
+	gun.rack(user)
+	TEST_ASSERT(gun.chambered != selected, "Manual cocking did not select the next chamber")
+
 /// Racking an open cylinder ejects only spent casings without cocking or rotating it.
 /datum/unit_test/revolver_open_cylinder_rack/Run()
 	var/obj/item/gun/ballistic/revolver/gun = allocate(/obj/item/gun/ballistic/revolver)
@@ -210,8 +284,10 @@
 		next_round = new next_round(gun.magazine)
 		gun.magazine.stored_ammo[2] = next_round
 	empty_position.forceMove(user.loc)
-	gun.shoot_with_empty_chamber(user)
-	gun.postfire_empty_checks(FALSE)
+	user.put_in_hands(gun, forced = TRUE)
+	user.set_combat_mode(FALSE)
+	gun.fire_gun(user, user, FALSE)
+	TEST_ASSERT(gun.bolt_locked, "Dry-click interaction result incorrectly readied the hammer")
 	TEST_ASSERT_NULL(gun.chambered, "Dry click advanced the cylinder before cocking")
 	gun.before_can_shoot_checks(user)
 	TEST_ASSERT_EQUAL(gun.chambered, next_round, "Trigger after a dry click skipped the next live round")

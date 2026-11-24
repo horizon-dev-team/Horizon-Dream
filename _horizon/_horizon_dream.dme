@@ -27,7 +27,6 @@
 #include "code\datums\elements\cutting_tool_target.dm"
 #include "code\datums\elements\directional_attack.dm"
 #include "code\datums\elements\world_icon.dm"
-#include "code\datums\keybinding\toggle_throw_mode_unbound.dm"
 #include "code\datums\particles\leaves.dm"
 #include "code\datums\storage\subtypes.dm"
 #include "code\game\aesthetics\item.dm"

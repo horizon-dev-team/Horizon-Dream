@@ -7,14 +7,6 @@
 
 	attachment_component_type = /datum/component/gun_attachment/ammo_counter
 
-/// In-hand use: switch between the scope and rail mounting slots.
-/obj/item/attachment/ammo_counter/attack_self(mob/user)
-	. = ..()
-	playsound(src, 'sound/items/click.ogg', 25)
-	if(!attachment_comp?.cycle_slot(user))
-		return
-	to_chat(user, span_notice("You adjust [src] to fit on a gun's [attachment_comp.slot]."))
-
 /datum/component/gun_attachment/ammo_counter
 	slot = ATTACHMENT_SLOT_SCOPE
 	slot_choices = list(ATTACHMENT_SLOT_SCOPE, ATTACHMENT_SLOT_RAIL)

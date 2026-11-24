@@ -152,8 +152,16 @@
 /obj/item/ammo_box/magazine/ammo_stack/c38/pluspee/loaded
 	start_empty = FALSE
 
+/obj/item/ammo_box/magazine/ammo_stack/c357
+	name = ".357 rounds"
+	icon_state = "c357-1"
+	base_icon_state = "c357"
+	world_icon_state = "sb-casing"
+	caliber = CALIBER_357_38
+	ammo_type = /obj/item/ammo_casing/c357
+
 /obj/item/ammo_box/magazine/ammo_stack/a357
-	name = "357 magnum rounds"
+	name = ".357 magnum rounds"
 	icon_state = "c357-1"
 	base_icon_state = "c357"
 	world_icon_state = "sb-casing"
@@ -164,7 +172,7 @@
 	start_empty = FALSE
 
 /obj/item/ammo_box/magazine/ammo_stack/a500
-	name = "500 magnum rounds"
+	name = ".500 magnum rounds"
 	icon_state = "c44-1"
 	base_icon_state = "c44"
 	world_icon_state = "sb-casing"

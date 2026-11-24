@@ -138,17 +138,6 @@
 	. = ..()
 	icon_state = "[base_icon_state]-[ammo_count()]"
 
-/obj/item/ammo_box/magazine/a545/donator
-	name = "Abyss-Platform paypig magazine (5.45x39)"
-	icon_state = "gabrifle"
-	base_icon_state = "gabrifle"
-	ammo_type = /obj/item/ammo_casing/a762
-	caliber = CALIBER_A762
-
-/obj/item/ammo_box/magazine/a545/donator/update_icon_state()
-	. = ..()
-	icon_state = "[base_icon_state]-[ammo_count() ? 30 : 0]"
-
 /obj/item/ammo_box/magazine/a49234g11
 	name = "Unwieldly O Guloseim magazine (4.92x34mm)"
 	icon = '_horizon/icons/obj/items/ammo/rifle.dmi'

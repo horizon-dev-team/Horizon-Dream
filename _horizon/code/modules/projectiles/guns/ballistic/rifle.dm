@@ -179,10 +179,6 @@
 	..()
 	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 47, 16)
 
-/obj/item/gun/ballistic/automatic/hd_gun/remis/abyss/donator/add_attachment_slots()
-	..()
-	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 47, 16)
-
 /obj/item/gun/ballistic/automatic/hd_gun/remis/steyr/add_attachment_slots()
 	..()
 	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 43, 14)
@@ -194,23 +190,6 @@
 /obj/item/gun/ballistic/automatic/hd_gun/remis/g36/add_attachment_slots()
 	..()
 	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 49, 14)
-
-//donator gun
-/obj/item/gun/ballistic/automatic/hd_gun/remis/abyss/donator
-	name = "\improper AN-95 5.4539mm Abyss Armaments Paypig Assault Rifle"
-	spawn_magazine_type = /obj/item/ammo_box/magazine/a545/donator
-	worn_icon_state = "goldonov"
-	inhand_icon_state = "goldonov"
-	icon_state = "goldonov"
-	base_icon_state = "goldonov"
-	fire_sound = '_horizon/sound/weapons/guns/rifle/goldonov.wav'
-	suppressed_sound = '_horizon/sound/weapons/guns/rifle/goldonov.wav'
-	can_unsuppress = FALSE
-	suppressor_x_offset = 2
-
-/obj/item/gun/ballistic/automatic/hd_gun/remis/abyss/donator
-	suppressed = SUPPRESSED_QUIET
-	can_muzzle_flash = FALSE
 
 /obj/item/gun/ballistic/automatic/hd_gun/remis/g11
 	name = "\improper Kh11 4.92x34mm Assault Rifle"
@@ -502,10 +481,6 @@
 	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 43, 16)
 
 /obj/item/gun/ballistic/automatic/hd_gun/remis/abyss/add_attachment_slots()
-	..()
-	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 47, 16)
-
-/obj/item/gun/ballistic/automatic/hd_gun/remis/abyss/donator/add_attachment_slots()
 	..()
 	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 47, 16)
 

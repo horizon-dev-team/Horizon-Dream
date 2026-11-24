@@ -25,10 +25,10 @@
 	w_class = WEIGHT_CLASS_BULKY
 
 /obj/item/gun/ballistic/automatic/hd_gun/remis/abyss/warfare
-	icon = '_horizon/icons/obj/items/guns/alter/48x32.dmi'
-	worn_icon = '_horizon/icons/obj/items/guns/alter/worn/back.dmi'
-	lefthand_file = '_horizon/icons/obj/items/guns/alter/inhands/rifle_lefthand.dmi'
-	righthand_file = '_horizon/icons/obj/items/guns/alter/inhands/rifle_righthand.dmi'
+	icon = '_horizon/icons/obj/items/guns/48x32.dmi'
+	worn_icon = '_horizon/icons/obj/items/guns//worn/back.dmi'
+	lefthand_file = '_horizon/icons/obj/items/guns/inhands/rifle_lefthand.dmi'
+	righthand_file = '_horizon/icons/obj/items/guns/inhands/rifle_righthand.dmi'
 	equip_sound = '_horizon/sound/weapons/guns/rifle_holster.ogg'
 
 /obj/item/gun/ballistic/automatic/hd_gun/remis/abyss/warfare/m545

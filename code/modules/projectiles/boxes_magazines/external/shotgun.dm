@@ -17,46 +17,32 @@
 
 /obj/item/ammo_box/magazine/m12g/stun
 	name = "shotgun magazine (12g taser slugs)"
-	icon_state = "m12" // [HORIZON-EDIT] GunRework
-	base_icon_state = "m12" // [HORIZON-EDIT] GunRework
 	ammo_type = /obj/item/ammo_casing/shotgun/stunslug
 
 /obj/item/ammo_box/magazine/m12g/slug
 	name = "shotgun magazine (12g slugs)"
-	icon_state = "m12" // [HORIZON-EDIT] GunRework
-	base_icon_state = "m12" // [HORIZON-EDIT] GunRework
 	ammo_type = /obj/item/ammo_casing/shotgun/milspec
 
 /obj/item/ammo_box/magazine/m12g/dragon
 	name = "shotgun magazine (12g dragon's breath)"
-	icon_state = "m12" // [HORIZON-EDIT] GunRework
-	base_icon_state = "m12" // [HORIZON-EDIT] GunRework
 	ammo_type = /obj/item/ammo_casing/shotgun/dragonsbreath
 
 /obj/item/ammo_box/magazine/m12g/bioterror
 	name = "shotgun magazine (12g bioterror)"
-	icon_state = "m12" // [HORIZON-EDIT] GunRework
-	base_icon_state = "m12" // [HORIZON-EDIT] GunRework
 	ammo_type = /obj/item/ammo_casing/shotgun/dart/bioterror
 
 /obj/item/ammo_box/magazine/m12g/meteor
 	name = "shotgun magazine (12g meteor slugs)"
-	icon_state = "m12" // [HORIZON-EDIT] GunRework
-	base_icon_state = "m12" // [HORIZON-EDIT] GunRework
 	ammo_type = /obj/item/ammo_casing/shotgun/meteorslug
 
 /obj/item/ammo_box/magazine/m12g/flechette
 	name = "shotgun magazine (12g flechette)"
-	icon_state = "m12gfl"
-	base_icon_state = "m12gfl"
 	ammo_type = /obj/item/ammo_casing/shotgun/flechette
 
 /obj/item/ammo_box/magazine/m12g/donk
 	name = "shotgun magazine (12g Donk Co. 'Donk Spike' flechette)"
 	desc = "A drum magazine of shotgun shells, suitable for the Bulldog combat shotgun. It is covered in Donk Co. scratch-and-sniff \
 		stickers. You're not sure you want to try and get a whiff..."
-	icon_state = "m12gd"
-	base_icon_state = "m12gd"
 	ammo_type = /obj/item/ammo_casing/shotgun/flechette/donk
 
 /obj/item/ammo_box/magazine/m12g/donk/examine_more(mob/user)

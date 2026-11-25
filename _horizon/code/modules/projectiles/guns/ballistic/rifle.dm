@@ -46,9 +46,11 @@
 	safety_off_sound = '_horizon/sound/weapons/guns/rifle/msafety.wav'
 	safety_on_sound = '_horizon/sound/weapons/guns/rifle/msafety.wav'
 	rack_sound = '_horizon/sound/weapons/guns/rifle/mrack.wav'
-	fireselector_auto = '_horizon/sound/weapons/guns/rifle/aksafety2.wav'
-	fireselector_burst = '_horizon/sound/weapons/guns/rifle/aksafety2.wav'
-	fireselector_semi = '_horizon/sound/weapons/guns/rifle/aksafety1.wav'
+	fireselector = '_horizon/sound/weapons/guns/rifle/aksafety1.wav'
+
+/obj/item/gun/ballistic/automatic/hd_gun/remis/abyss/warfare/m545/add_attachment_slots()
+	..()
+	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 43, 15)
 
 /obj/item/gun/ballistic/automatic/hd_gun/remis/abyss/warfare/m545/ak
 	name = "\improper Eclipse 545"
@@ -65,9 +67,11 @@
 	safety_off_sound = '_horizon/sound/weapons/guns/rifle/aksafety2.wav'
 	safety_on_sound = '_horizon/sound/weapons/guns/rifle/aksafety1.wav'
 	rack_sound = '_horizon/sound/weapons/guns/rifle/akrack.wav'
-	fireselector_auto = '_horizon/sound/weapons/guns/rifle/aksafety2.wav'
-	fireselector_burst = '_horizon/sound/weapons/guns/rifle/aksafety2.wav'
-	fireselector_semi = '_horizon/sound/weapons/guns/rifle/aksafety1.wav'
+	fireselector = '_horizon/sound/weapons/guns/rifle/aksafety1.wav'
+
+/obj/item/gun/ballistic/automatic/hd_gun/remis/abyss/warfare/m545/ak/add_attachment_slots()
+	..()
+	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 44, 18)
 
 /obj/item/gun/ballistic/automatic/hd_gun/remis/winter
 	name = "\improper Inverno Genocídio NK-49 Assault Rifle"
@@ -98,7 +102,9 @@
 	force = 14
 	custom_price = 45000
 	carry_weight = 3 KILOGRAMS
+	suppressed = SUPPRESSED_QUIET
 	can_unsuppress = FALSE
+	can_muzzle_flash = FALSE
 	recoil_animation_information = list(
 		"recoil_angle_upper" = -15, \
 		"recoil_angle_lower" = -25, \
@@ -108,9 +114,11 @@
 		"duration" = 1,
 	)
 
+/obj/item/gun/ballistic/automatic/hd_gun/remis/winter/add_attachment_slots()
+	..()
+	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 43, 16)
+
 /obj/item/gun/ballistic/automatic/hd_gun/remis/winter
-	suppressed = SUPPRESSED_QUIET
-	can_muzzle_flash = FALSE
 
 //Darkworld Gun
 /obj/item/gun/ballistic/automatic/hd_gun/remis/abyss
@@ -134,9 +142,7 @@
 	safety_off_sound = '_horizon/sound/weapons/guns/rifle/aksafety2.wav'
 	safety_on_sound = '_horizon/sound/weapons/guns/rifle/aksafety1.wav'
 	rack_sound = '_horizon/sound/weapons/guns/rifle/akrack.wav'
-	fireselector_auto = '_horizon/sound/weapons/guns/rifle/aksafety2.wav'
-	fireselector_burst = '_horizon/sound/weapons/guns/rifle/aksafety2.wav'
-	fireselector_semi = '_horizon/sound/weapons/guns/rifle/aksafety1.wav'
+	fireselector = '_horizon/sound/weapons/guns/rifle/aksafety1.wav'
 	fold_open_sound = '_horizon/sound/weapons/guns/rifle/ak_stock_open.wav'
 	fold_close_sound = '_horizon/sound/weapons/guns/rifle/ak_stock_close.wav'
 	force = 16
@@ -163,33 +169,9 @@
 	foldable = TRUE
 	folded = FALSE
 
-/obj/item/gun/ballistic/automatic/hd_gun/remis/abyss/warfare/m545/add_attachment_slots()
-	..()
-	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 43, 15)
-
-/obj/item/gun/ballistic/automatic/hd_gun/remis/abyss/warfare/m545/ak/add_attachment_slots()
-	..()
-	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 44, 18)
-
-/obj/item/gun/ballistic/automatic/hd_gun/remis/winter/add_attachment_slots()
-	..()
-	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 43, 16)
-
 /obj/item/gun/ballistic/automatic/hd_gun/remis/abyss/add_attachment_slots()
 	..()
 	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 47, 16)
-
-/obj/item/gun/ballistic/automatic/hd_gun/remis/steyr/add_attachment_slots()
-	..()
-	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 43, 14)
-
-/obj/item/gun/ballistic/automatic/hd_gun/remis/svd/add_attachment_slots()
-	..()
-	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 59, 14)
-
-/obj/item/gun/ballistic/automatic/hd_gun/remis/g36/add_attachment_slots()
-	..()
-	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 49, 14)
 
 /obj/item/gun/ballistic/automatic/hd_gun/remis/g11
 	name = "\improper Kh11 4.92x34mm Assault Rifle"
@@ -210,9 +192,7 @@
 	safety_off_sound = '_horizon/sound/weapons/guns/rifle/g11safety2.wav'
 	safety_on_sound = '_horizon/sound/weapons/guns/rifle/g11safety1.wav'
 	rack_sound = '_horizon/sound/weapons/guns/rifle/g11rack.wav'
-	fireselector_auto = '_horizon/sound/weapons/guns/rifle/g11safety2.wav'
-	fireselector_burst = '_horizon/sound/weapons/guns/rifle/g11safety2.wav'
-	fireselector_semi = '_horizon/sound/weapons/guns/rifle/g11safety1.wav'
+	fireselector = '_horizon/sound/weapons/guns/rifle/g11safety1.wav'
 	force = 12
 	fire_delay = 0.7
 	burst_size = 3
@@ -297,6 +277,10 @@
 	)
 	custom_price = 80000
 
+/obj/item/gun/ballistic/automatic/hd_gun/remis/steyr/add_attachment_slots()
+	..()
+	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 43, 14)
+
 /obj/item/gun/ballistic/automatic/hd_gun/remis/steyr/click_alt(mob/user)
 	if(suppressed)
 		return ..()
@@ -371,6 +355,10 @@
 		"duration" = 2,
 	)
 
+/obj/item/gun/ballistic/automatic/hd_gun/remis/svd/add_attachment_slots()
+	..()
+	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 59, 14)
+
 /obj/item/gun/ballistic/rifle/boltaction/hd_gun/remis
 	worn_icon = '_horizon/icons/obj/items/guns/worn/back.dmi'
 	icon = '_horizon/icons/obj/items/guns/48x32.dmi'
@@ -439,9 +427,7 @@
 	safety_off_sound = '_horizon/sound/weapons/guns/rifle/msafety.wav'
 	safety_on_sound = '_horizon/sound/weapons/guns/rifle/msafety.wav'
 	rack_sound = '_horizon/sound/weapons/guns/smg/thump_rack.wav'
-	fireselector_auto = '_horizon/sound/weapons/guns/rifle/msafety.wav'
-	fireselector_burst = '_horizon/sound/weapons/guns/rifle/msafety.wav'
-	fireselector_semi = '_horizon/sound/weapons/guns/rifle/msafety.wav'
+	fireselector = '_horizon/sound/weapons/guns/rifle/msafety.wav'
 	fold_open_sound = '_horizon/sound/weapons/guns/rifle/g36_fold.ogg'
 	fold_close_sound = '_horizon/sound/weapons/guns/rifle/g36_unfold.ogg'
 	force = 18
@@ -467,30 +453,6 @@
 	full_auto = TRUE
 	foldable = TRUE
 	folded = FALSE
-
-/obj/item/gun/ballistic/automatic/hd_gun/remis/abyss/warfare/m545/add_attachment_slots()
-	..()
-	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 43, 15)
-
-/obj/item/gun/ballistic/automatic/hd_gun/remis/abyss/warfare/m545/ak/add_attachment_slots()
-	..()
-	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 44, 18)
-
-/obj/item/gun/ballistic/automatic/hd_gun/remis/winter/add_attachment_slots()
-	..()
-	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 43, 16)
-
-/obj/item/gun/ballistic/automatic/hd_gun/remis/abyss/add_attachment_slots()
-	..()
-	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 47, 16)
-
-/obj/item/gun/ballistic/automatic/hd_gun/remis/steyr/add_attachment_slots()
-	..()
-	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 43, 14)
-
-/obj/item/gun/ballistic/automatic/hd_gun/remis/svd/add_attachment_slots()
-	..()
-	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 59, 14)
 
 /obj/item/gun/ballistic/automatic/hd_gun/remis/g36/add_attachment_slots()
 	..()

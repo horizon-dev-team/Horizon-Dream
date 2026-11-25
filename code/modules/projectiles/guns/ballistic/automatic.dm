@@ -571,6 +571,7 @@
 /obj/item/gun/ballistic/automatic
 	/// Position of the fire selector: 1 = semi, 2 = burst, 3 = full auto.
 	var/select = 3
+	var/fireselector = '_horizon/sound/weapons/guns/rifle/msafety.wav'
 	/// Burst length while select == 2. Defaults to the gun's initial
 	/// burst_size, which also marks the gun as having no separate burst mode.
 	var/burst_size_toggled
@@ -652,7 +653,7 @@
 				autofire.autofire_on(user?.client)
 			to_chat(user, span_notice("I switch [src] to automatic."))
 
-	playsound(user, '_horizon/sound/weapons/guns/rifle/msafety.wav', 90, FALSE)
+	playsound(user, fireselector, 90, FALSE)
 	update_appearance()
 	update_item_action_buttons()
 // [/HORIZON-ADD]

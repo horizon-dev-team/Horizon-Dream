@@ -451,7 +451,7 @@ GLOBAL_LIST_INIT(all_precise_body_zones, list(BODY_ZONE_PRECISE_EYES, BODY_ZONE_
 ///Do we block carbon-level flash_act() from performing its default stamina damage/knockdown/confusion?
 #define FLASH_COMPLETED "flash_completed"
 
-// ======== [HORIZON-ADD] GunRework ========
+// [HORIZON-ADD] GunRework
 /// Gun has no moving bolt mechanism, it cannot be racked, but can be broken open.
 /// Example: break action shotguns, revolvers.
 #define BOLT_TYPE_BREAK_ACTION 5
@@ -471,4 +471,4 @@ GLOBAL_LIST_INIT(all_precise_body_zones, list(BODY_ZONE_PRECISE_EYES, BODY_ZONE_
 /// Default safety flags: gun HAS a safety and it spawns ENABLED (ON).
 /// The gun cannot fire until the player toggles safety off (right-click).
 #define GUN_SAFETY_FLAGS_DEFAULT (GUN_SAFETY_HAS_SAFETY|GUN_SAFETY_ENABLED)
-// ======== [/HORIZON-ADD] ========
+// [/HORIZON-ADD]

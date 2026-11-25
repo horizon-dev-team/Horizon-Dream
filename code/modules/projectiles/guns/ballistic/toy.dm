@@ -17,7 +17,7 @@
 	can_muzzle_flash = FALSE
 	min_recoil = 0
 
-/obj/item/gun/ballistic/automatic/toy/add_attachment_slots()
+/obj/item/gun/ballistic/automatic/toy/add_attachment_slots() // [HORIZON-ADD] GunRework
 	..()
 	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 24, 16)
 

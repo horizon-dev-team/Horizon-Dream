@@ -271,7 +271,7 @@
 		return
 	balloon_alert(user, "bowstring loosened")
 	playsound(src, rack_sound, rack_sound_volume, rack_sound_vary)
-	handle_chamber(user, empty_chamber =  FALSE, from_firing = FALSE, chamber_next_round = FALSE)
+	handle_chamber(user, empty_chamber =  FALSE, from_firing = FALSE, chamber_next_round = FALSE) // [HORIZON-EDIT] GunRework
 	bolt_locked = TRUE
 	update_appearance()
 
@@ -513,7 +513,7 @@
 	suppressor_x_offset = 3
 	suppressor_y_offset = 3
 
-/obj/item/gun/ballistic/rifle/sniper_rifle/add_attachment_slots()
+/obj/item/gun/ballistic/rifle/sniper_rifle/add_attachment_slots() // [HORIZON-ADD] GunRework
 	..()
 	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 30, 28)
 
@@ -629,6 +629,6 @@
 	suppressor_x_offset = 3
 	suppressor_y_offset = 3
 
-/obj/item/gun/ballistic/automatic/lahti/add_attachment_slots()
+/obj/item/gun/ballistic/automatic/lahti/add_attachment_slots() // [HORIZON-ADD] GunRework
 	..()
 	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 71, 16)

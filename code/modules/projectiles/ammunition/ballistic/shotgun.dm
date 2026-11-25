@@ -156,7 +156,7 @@
 	desc = "A 12 gauge steel flechette. Contains 20 individual projectiles" // [HORIZON-EDIT] GunRework
 	icon_state = "flechette"
 	stack_type = /obj/item/ammo_box/magazine/ammo_stack/shotgun/flechette
-	projectile_type = /obj/projectile/bullet/pellet/shotgun_flechette // [HORIZON-EDIT] GunRework
+	projectile_type = /obj/projectile/bullet/pellet/flechette
 	custom_materials = list(/datum/material/iron = SMALL_MATERIAL_AMOUNT * 3, /datum/material/glass = SMALL_MATERIAL_AMOUNT * 2)
 	pellets = 20
 	variance = 18.5

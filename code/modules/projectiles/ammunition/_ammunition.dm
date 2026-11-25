@@ -48,6 +48,13 @@
 // [HORIZON-ADD] - Rotate_Item
 	var/auto_rotate = TRUE
 	item_flags = NO_ROTATE_RANDOM_THROW
+
+	/// Icon used for the casing while it lies on the floor (world_icon element swaps to it outside inventories).
+	var/world_icon = '_horizon/icons/obj/items/ammo/casings_world.dmi'
+	/// Icon state used for the world sprite. "-live" is appended while the casing still holds a projectile.
+	var/world_icon_state = "s-casing"
+	/// Ammo stack type two of these casings merge into when clicked together.
+	var/obj/item/ammo_box/magazine/stack_type
 // [/HORIZON-ADD]
 
 /obj/item/ammo_casing/spent
@@ -128,6 +135,19 @@
 		readout += "[!readout.len ? "Most monkeys" : "More fortunate monkeys"] collapsed from exhaustion after [span_warning("[HITS_TO_CRIT((initial(exam_proj.stamina) * proj_damage_mult) * pellets)] impact\s")] of these [span_warning("[caliber]")] rounds."
 	return readout.Join("\n") // Sending over a single string, rather than the whole list
 
+// [HORIZON-ADD] GunRework
+/// reset the icon the world_icon element swapped away from.
+/obj/item/ammo_casing/update_icon(updates)
+	icon = initial(icon)
+	return ..()
+
+/// world sprite proc for the world_icon element.
+/obj/item/ammo_casing/proc/update_icon_world()
+	icon = world_icon
+	icon_state = "[world_icon_state][loaded_projectile ? "-live" : ""]"
+	return UPDATE_ICON_STATE | UPDATE_OVERLAYS
+// [/HORIZON-ADD]
+
 /obj/item/ammo_casing/update_icon_state()
 	icon_state = "[initial(icon_state)][loaded_projectile ? "-live" : null]"
 	return ..()
@@ -199,11 +219,14 @@
 	return ..()
 
 // [HORIZON-EDIT] PHYSICS
-/obj/item/ammo_casing/proc/bounce_away(bounce_angle, spread_multiplier = 1, still_warm = FALSE, sound_delay = 3)
+/obj/item/ammo_casing/proc/bounce_away(bounce_angle, spread_multiplier = 1, pixel_mess = TRUE, still_warm = FALSE, sound_delay = 3)
 	update_appearance()
 	var/turf/our_turf = get_turf(src)
 	if(!our_turf)
 		return
+	if(pixel_mess)
+		pixel_x = base_pixel_x + rand(-world.icon_size/4, world.icon_size/4)
+		pixel_y = base_pixel_y + rand(-world.icon_size/4, world.icon_size/4)
 	if(!isnull(bounce_angle))
 		//cool awesome physics this is so sick tbh
 		AddComponent(/datum/component/movable_physics, \
@@ -215,8 +238,6 @@
 			vertical_friction = 10 * spread_multiplier * 0.05, \
 			z_floor = 0, \
 		)
-		pixel_x = base_pixel_x + rand(-world.icon_size/4, world.icon_size/4)
-		pixel_y = base_pixel_y + rand(-world.icon_size/4, world.icon_size/4)
 	else
 		undo_messy()
 		do_messy()
@@ -225,24 +246,3 @@
 	else if(our_turf.bullet_bounce_sound)
 		addtimer(CALLBACK(GLOBAL_PROC, GLOBAL_PROC_REF(playsound), src, our_turf.bullet_bounce_sound, 20, 1), sound_delay) //Soft / non-solid turfs that shouldn't make a sound when a shell casing is ejected over them.
 // [/HORIZON-EDIT]
-
-// [HORIZON-ADD] GunRework
-/obj/item/ammo_casing
-	/// Icon used for the casing while it lies on the floor (world_icon element swaps to it outside inventories).
-	var/world_icon = '_horizon/icons/obj/items/ammo/casings_world.dmi'
-	/// Icon state used for the world sprite. "-live" is appended while the casing still holds a projectile.
-	var/world_icon_state = "s-casing"
-	/// Ammo stack type two of these casings merge into when clicked together.
-	var/obj/item/ammo_box/magazine/stack_type
-
-/// reset the icon the world_icon element swapped away from.
-/obj/item/ammo_casing/update_icon(updates)
-	icon = initial(icon)
-	return ..()
-
-/// world sprite proc for the world_icon element.
-/obj/item/ammo_casing/proc/update_icon_world()
-	icon = world_icon
-	icon_state = "[world_icon_state][loaded_projectile ? "-live" : ""]"
-	return UPDATE_ICON_STATE | UPDATE_OVERLAYS
-// [/HORIZON-ADD]

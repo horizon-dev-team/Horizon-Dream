@@ -239,13 +239,13 @@
 	icon_state = "[base_icon_state]-[ammo_count() ? max_ammo : 0]"
 
 /obj/item/ammo_box/magazine/pm9
-	name = "PM9 Evil Magazine (nine milie meter)"
+	name = "PM9 Magazine"
 	icon = '_horizon/icons/obj/items/ammo/pistol.dmi'
-	icon_state = "cunny"
-	base_icon_state = "cunny"
+	icon_state = "pm9"
+	base_icon_state = "pm9"
 	ammo_type = /obj/item/ammo_casing/c9mm
 	caliber = CALIBER_9MM
-	max_ammo = 25
+	max_ammo = 10
 	multiple_sprites = AMMO_BOX_ONE_SPRITE
 	drop_sound = '_horizon/sound/weapons/plastic_drop.ogg'
 

@@ -576,7 +576,6 @@
 /obj/item/gun/ballistic/automatic/Initialize(mapload)
 	. = ..()
 	if(GetComponent(/datum/component/automatic_fire))
-		// The component repeats single shots; burst_size only configures burst mode.
 		burst_size = 1
 
 /// Let ordinary clicks through in semi/burst mode, including after re-equipping.

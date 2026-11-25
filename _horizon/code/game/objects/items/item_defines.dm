@@ -1,6 +1,4 @@
 /obj/item
-	/// Organ storage component requires this
-	var/atom/stored_in
 	/// Used for unturning when picked up by a mob (do_messy/undo_messy)
 	var/our_angle = 0
 
@@ -63,9 +61,7 @@
 			w = weight_class_to_kg(initial(casing.w_class))
 		. += w
 
-/// Cool drop / throw effect: randomises pixel offset and rotation a bit
-/// so dropped items look less stiff. Ported from legacy
-/// modular_septic/code/game/objects/items.dm.
+/// Cool drop / throw effect: randomises pixel offset and rotation a bit so dropped items look less stiff.
 /obj/item/proc/do_messy(pixel_variation = 8, angle_variation = 360, duration = 0)
 	if(item_flags & NO_ANGLE_RANDOM_DROP)
 		return

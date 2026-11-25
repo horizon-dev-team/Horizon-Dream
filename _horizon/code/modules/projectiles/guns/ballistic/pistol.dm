@@ -44,45 +44,6 @@
 	..()
 	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 17, 12)
 
-// BERETTA 69R
-/obj/item/gun/ballistic/automatic/pistol/hd_gun/aps
-	name = "\improper 69R machine pistol"
-	desc = "A machine pistol made by some crazy italians, capable of shooting in 3-round bursts. \
-		Uses 9mm ammo. Has a threaded barrel for suppressors."
-	fire_sound = '_horizon/sound/weapons/guns/pistol/aps.ogg'
-	suppressed_sound = '_horizon/sound/weapons/guns/pistol/glock_suppressed.wav'
-	load_sound = '_horizon/sound/weapons/guns/pistol/aps_magin.wav'
-	load_empty_sound = '_horizon/sound/weapons/guns/pistol/aps_magin.wav'
-	eject_sound = '_horizon/sound/weapons/guns/pistol/aps_magout.ogg'
-	eject_empty_sound = '_horizon/sound/weapons/guns/pistol/aps_magout.ogg'
-	lock_back_sound = '_horizon/sound/weapons/guns/pistol/aps_lockback.wav'
-	bolt_drop_sound = '_horizon/sound/weapons/guns/pistol/aps_lockin.wav'
-	rack_sound = '_horizon/sound/weapons/guns/pistol/aps_rack.ogg'
-	icon = '_horizon/icons/obj/items/guns/pistol.dmi'
-	icon_state = "b93r"
-	base_icon_state = "b93r"
-	gunshot_animation_information = list(
-		"pixel_x" = 15, \
-		"pixel_y" = 2, \
-		"inactive_when_suppressed" = TRUE, \
-	)
-	recoil_animation_information = list(
-		"recoil_angle_upper" = -15, \
-		"recoil_angle_lower" = -30, \
-		"recoil_burst_speed" = 0.5, \
-		"return_burst_speed" = 0.5, \
-	)
-	burst_size = 3
-	suppressor_x_offset = 11
-	w_class = WEIGHT_CLASS_NORMAL
-	carry_weight = 1.5 KILOGRAMS
-	custom_price = 4500
-	full_auto = TRUE
-
-/obj/item/gun/ballistic/automatic/pistol/hd_gun/aps/add_attachment_slots()
-	..()
-	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 25, 6)
-
 /obj/item/gun/ballistic/automatic/pistol/hd_gun/m1911
 	name = "\improper Cold 1911"
 	desc = "A classical copy of a antique design, even centuries later is efficient for close-quarter combat and self-defence at the cost of magazine capacity."
@@ -286,10 +247,10 @@
 	..()
 	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 30, 18)
 
+
 /obj/item/gun/ballistic/automatic/pistol/hd_gun/pm9
-	name = "\improper PM9 Evil Gun"
-	desc = "This is a strown together pack of metal that has just enough things touching eachother in the certain way to not burst in your hands when you fire. \
-	A unholy abomination, a devious, godforsaken handgun. Use it with care."
+	name = "\improper PM9"
+	desc = "An old Soviet pistol. It fires quickly. Uses 9mm ammo."
 	icon = '_horizon/icons/obj/items/guns/pistol.dmi'
 	lefthand_file = '_horizon/icons/obj/items/guns/inhands/pistol_lefthand.dmi'
 	righthand_file = '_horizon/icons/obj/items/guns/inhands/pistol_righthand.dmi'

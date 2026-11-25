@@ -1,11 +1,3 @@
-// c20r
-/obj/item/gun/ballistic/automatic/hd_gun/c20r
-	pin = /obj/item/firing_pin
-
-// m90
-/obj/item/gun/ballistic/automatic/hd_gun/m90
-	pin = /obj/item/firing_pin
-
 /obj/item/gun/ballistic/automatic/hd_gun/remis/smg
 	worn_icon = '_horizon/icons/obj/items/guns/worn/back.dmi'
 	equip_sound = '_horizon/sound/weapons/guns/weap_away.ogg'

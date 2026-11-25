@@ -145,7 +145,7 @@
 	var/stamina_damage = initial_stamina ? "[icon2html(DAMAGE_ICON_SET, user, "STAMINA")] [initial_stamina]" : ""
 	if(!damage && !stamina_damage)
 		return
-	. += "<br><tr><td><b>Damage:</b></td><td>[damage] [stamina_damage]</td></tr>"
+	. += "<tr><td><b>Damage:</b></td><td>[damage] [stamina_damage]</td></tr>"
 	. += "<br><tr><td><b>Count:</b></td><td>[icon2html(DAMAGE_ICON_SET, user, "bullet")] [pellets]</td></tr>"
 
 /// reset the icon the world_icon element swapped away from.

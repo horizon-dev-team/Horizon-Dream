@@ -328,7 +328,7 @@
 		. += "[icon_state]_toy"
 
 	if(cylinder_open && cylinder_shows_open)
-		. += "[icon_state]_cylinder[cylinder_shows_ammo_count ? "-[magazine ? magazine.ammo_count() : 0]" : ""]"
+		. += "[initial(icon_state)]_cylinder[cylinder_shows_ammo_count ? "-[magazine ? magazine.ammo_count() : 0]" : ""]"
 
 	if(!magazine || internal_magazine || !mag_display)
 		return

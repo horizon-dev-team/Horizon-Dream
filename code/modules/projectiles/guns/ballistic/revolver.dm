@@ -121,9 +121,8 @@ GAME_VERB(/obj/item/gun/ballistic/revolver, spin, "Spin Cylinder", null) // [HOR
 /obj/item/gun/ballistic/revolver/get_ammo(countchambered = FALSE, countempties = TRUE)
 	var/boolets = 0 //mature var names for mature people
 	// [HORIZON-EDIT] GunRework: a revolver chambers a round that stays inside the cylinder,
-	// so counting it on top of the cylinder reported one round too many (9/8 on an 8-round
-	// cylinder). Only count it once it really left the cylinder.
-	var/list/cylinder_rounds = magazine?.stored_ammo
+	// (9/8 on an 8-round cylinder). Only count it once it really left the cylinder.
+	var/list/cylinder_rounds = magazine.stored_ammo
 	if (chambered && countchambered && !(chambered in cylinder_rounds))
 		boolets++
 	// [/HORIZON-EDIT]

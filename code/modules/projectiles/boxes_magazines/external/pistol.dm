@@ -3,11 +3,8 @@
 
 /obj/item/ammo_box/magazine/m9mm
 	name = "pistol magazine (9mm)"
-	// [HORIZON-EDIT] GunRework
-	icon = '_horizon/icons/obj/items/ammo/pistol.dmi'
-	icon_state = "ruger9mm" // ("9x19p")
-	base_icon_state = "ruger9mm" // ("9x19p")
-	// [/HORIZON-EDIT]
+	icon_state = "9x19p"
+	base_icon_state = "9x19p"
 	desc = "A 9mm handgun magazine, suitable for the Makarov pistol."
 	ammo_band_icon = "+9x19ab"
 	ammo_band_color = null
@@ -33,14 +30,13 @@
 	ammo_type = /obj/item/ammo_casing/c9mm/ap
 
 // Stechkin APS (9mm) //
-
+// [HORIZON-EDIT] GunRework
 /obj/item/ammo_box/magazine/m9mm_aps
-	name = "pernetta 69r magazine (9mm)" // [HORIZON-EDIT] GunRework
+	name = "stechkin pistol magazine (9mm)"
 	desc = "A 9mm handgun magazine, suitable for the Stechkin APS machine pistol."
 	icon = '_horizon/icons/obj/items/ammo/pistol.dmi'
 	icon_state = "beretta9mm" // ("9mmaps-15")
 	base_icon_state = "beretta9mm" // ("9mmaps")
-	// [HORIZON-EDIT] GunRework
 	ammo_band_icon = "+9mmapsab"
 	ammo_band_color = null
 	ammo_type = /obj/item/ammo_casing/c9mm
@@ -48,7 +44,7 @@
 	max_ammo = 15
 	drop_sound = '_horizon/sound/weapons/plastic_drop.ogg'
 	multiple_sprites = AMMO_BOX_FULL_EMPTY
-	// [HORIZON-ADD] GunRework
+// [/HORIZON-EDIT]
 
 /obj/item/ammo_box/magazine/m9mm_aps/update_icon_state()
 	. = ..()
@@ -115,11 +111,11 @@
 	multiple_sprites = AMMO_BOX_FULL_EMPTY
 	multiple_sprite_use_base = TRUE
 	drop_sound = '_horizon/sound/weapons/plastic_drop.ogg'
-	// [HORIZON-ADD] GunRework
 
 /obj/item/ammo_box/magazine/m45/update_icon_state()
 	. = ..()
 	icon_state = "[base_icon_state]-[min(round(ammo_count(), 2), 8)]"
+// [HORIZON-ADD] GunRework
 
 // Desert Eagle (.50 AE) //
 
@@ -180,7 +176,7 @@
 
 /obj/item/ammo_box/magazine/combatmaster9mm/update_icon_state()
 	. = ..()
-	icon_state = "[base_icon_state]-[ammo_count()]"
+	icon_state = "[base_icon_state]-[ammo_count() ? max_ammo : 0]"
 
 /obj/item/ammo_box/magazine/glock9mm
 	name = "Gosma-17 magazine (9mm)"
@@ -195,7 +191,7 @@
 
 /obj/item/ammo_box/magazine/glock9mm/update_icon_state()
 	. = ..()
-	icon_state = "[base_icon_state]-[ammo_count()]"
+	icon_state = "[base_icon_state]-[ammo_count() ? max_ammo : 0]"
 
 /obj/item/ammo_box/magazine/ppk22lr
 	name = "walter bombeiro magazine (.22lr)"
@@ -225,7 +221,7 @@
 
 /obj/item/ammo_box/magazine/aniquilador/update_icon_state()
 	. = ..()
-	icon_state = "[base_icon_state]-[ammo_count()]"
+	icon_state = "[base_icon_state]-[ammo_count() ? max_ammo : 0]"
 
 /obj/item/ammo_box/magazine/john
 	name = "John Magazine (.50 AE)"
@@ -240,7 +236,7 @@
 
 /obj/item/ammo_box/magazine/john/update_icon_state()
 	. = ..()
-	icon_state = "[base_icon_state]-[ammo_count()]"
+	icon_state = "[base_icon_state]-[ammo_count() ? max_ammo : 0]"
 
 /obj/item/ammo_box/magazine/pm9
 	name = "PM9 Evil Magazine (nine milie meter)"
@@ -255,5 +251,5 @@
 
 /obj/item/ammo_box/magazine/pm9/update_icon_state()
 	. = ..()
-	icon_state = "[base_icon_state]-[ammo_count()]"
+	icon_state = "[base_icon_state]-[ammo_count() ? max_ammo : 0]"
 // [/HORIZON-ADD]

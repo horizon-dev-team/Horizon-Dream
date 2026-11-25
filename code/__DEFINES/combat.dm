@@ -224,6 +224,9 @@ GLOBAL_LIST_INIT(shove_disarming_types, typecacheof(list(
 ///Gun has a bolt, it locks back when empty. It can be released to chamber a round if a magazine is in.
 ///  Example: Pistols with a slide lock, some SMGs
 #define BOLT_TYPE_LOCKING 4
+/// Gun has no moving bolt mechanism, it cannot be racked, but can be broken open.
+/// Example: Break action shotguns, revolvers.
+#define BOLT_TYPE_BREAK_ACTION 5 // [HORIZON-ADD] GunRework
 //Sawn off nerfs
 ///accuracy penalty of sawn off guns
 #define SAWN_OFF_ACC_PENALTY 25
@@ -452,10 +455,6 @@ GLOBAL_LIST_INIT(all_precise_body_zones, list(BODY_ZONE_PRECISE_EYES, BODY_ZONE_
 #define FLASH_COMPLETED "flash_completed"
 
 // [HORIZON-ADD] GunRework
-/// Gun has no moving bolt mechanism, it cannot be racked, but can be broken open.
-/// Example: break action shotguns, revolvers.
-#define BOLT_TYPE_BREAK_ACTION 5
-
 // ~Gun safety flags
 /// Gun has a safety system.
 #define GUN_SAFETY_HAS_SAFETY (1<<0)

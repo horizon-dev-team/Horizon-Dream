@@ -45,7 +45,7 @@
 	/// Set when this casing is fired. Only used for checking if it should burn a user's hand when caught from an ejection port.
 	var/shot_timestamp = 0
 
-// [HORIZON-ADD] - Rotate_Item
+// [HORIZON-ADD] Rotate_Item | GunRework
 	var/auto_rotate = TRUE
 	item_flags = NO_ROTATE_RANDOM_THROW
 
@@ -182,32 +182,30 @@
 		return ITEM_INTERACT_BLOCKING
 	return ITEM_INTERACT_SUCCESS
 
+// [HORIZON-EDIT] PHYSICS | GunRework
 /// Collects the casing and its like on its tile into the passed box, TRUE if anything collected.
 /obj/item/ammo_casing/proc/collect_into_box(mob/living/user, obj/item/ammo_box/box)
 	var/boolets = 0
-	var/list/obj/item/ammo_casing/on_tile = list()
 	for(var/obj/item/ammo_casing/bullet in loc)
-		on_tile += bullet
-	for(var/obj/item/ammo_casing/bullet as anything in on_tile)
-		if (box.stored_ammo.len >= box.max_ammo)
+		if(box.stored_ammo.len >= box.max_ammo)
 			break
-		if (!bullet.loaded_projectile)
+		if(!bullet.loaded_projectile)
 			continue
-		if (box.give_round(bullet, 0))
+		if(box.give_round(bullet, 0))
 			boolets++
 
 	var/spent = 0
 	var/can_take_spent = !istype(box, /obj/item/ammo_box/magazine)
 	if(can_take_spent)
 		for(var/obj/item/ammo_casing/bullet as anything in on_tile)
-			if (box.stored_ammo.len >= box.max_ammo)
+			if(box.stored_ammo.len >= box.max_ammo)
 				break
-			if (bullet.loaded_projectile)
+			if(bullet.loaded_projectile)
 				continue
-			if (box.give_round(bullet, 0))
+			if(box.give_round(bullet, 0))
 				spent++
 
-	if (!boolets && !spent)
+	if(!boolets && !spent)
 		to_chat(user, span_warning("You fail to collect anything!"))
 		return FALSE
 	box.update_appearance()
@@ -218,7 +216,6 @@
 	bounce_away(bounce_angle = rand(0, 360), spread_multiplier = 0.75, still_warm = FALSE, sound_delay = 0) // [HORIZON-ADD] PHYSICS
 	return ..()
 
-// [HORIZON-EDIT] PHYSICS
 /obj/item/ammo_casing/proc/bounce_away(bounce_angle, spread_multiplier = 1, pixel_mess = TRUE, still_warm = FALSE, sound_delay = 3)
 	update_appearance()
 	var/turf/our_turf = get_turf(src)

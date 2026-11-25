@@ -725,8 +725,3 @@
 #define COMSIG_MOVABLE_BLOCKING_AIRLOCK "movable_blocking_airlock"
 	/// Forces the airlock to crush whatever's blocking it even if it normally wouldn't
 	#define AIRLOCK_BLOCK_FORCE_CRUSH (1<<0)
-
-// ======== [HORIZON-ADD] GunRework ========
-/// Sent to a gun when its ammo count changes and the ammo HUD needs a refresh. (gun)
-#define COMSIG_UPDATE_AMMO_HUD "update_ammo_hud"
-// ======== [/HORIZON-ADD] ========

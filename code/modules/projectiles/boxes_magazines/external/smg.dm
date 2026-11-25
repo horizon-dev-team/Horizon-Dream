@@ -113,7 +113,7 @@
 
 // [HORIZON-ADD] GunRework
 /obj/item/ammo_box/magazine/ppsh9mm
-	name = "Mamasha magazine (9mm)"
+	name = "ppsh magazine (9mm)"
 	icon = '_horizon/icons/obj/items/ammo/smg.dmi'
 	icon_state = "550"
 	base_icon_state = "550"
@@ -195,4 +195,4 @@
 /obj/item/ammo_box/magazine/thump45/update_icon_state()
 	. = ..()
 	icon_state = "[base_icon_state]-[ammo_count() ? max_ammo : 0]"
-// ======== [/HORIZON-ADD] ========
+// [/HORIZON-ADD]

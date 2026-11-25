@@ -6,6 +6,7 @@
 	icon_state = "c9mm"
 	base_icon_state = "c9mm"
 	item_flags = NO_PIXEL_RANDOM_DROP | NO_ANGLE_RANDOM_DROP
+	appearance_flags = TILE_BOUND|LONG_GLIDE|PIXEL_SCALE
 	multiple_sprites = AMMO_BOX_ONE_SPRITE
 	ammo_box_multiload = AMMO_BOX_MULTILOAD_NONE
 	start_empty = TRUE
@@ -94,9 +95,10 @@
 		var/obj/item/ammo_casing/casing_ref = casing
 		var/state = "[world_icon_state][(ispath(casing) || casing_ref.loaded_projectile) ? "-live" : ""]"
 		var/image/bullet = image(world_icon, src, state)
+		bullet.appearance_flags ^= PIXEL_SCALE
 		bullet.pixel_x = rand(-12, 12)
 		bullet.pixel_y = rand(-12, 12)
-		bullet.transform = bullet.transform.Turn(rand(0, 360))
+		bullet.transform = bullet.transform.Turn(round(45 * rand(0, 32) / 2))
 		add_overlay(bullet)
 	return UPDATE_ICON_STATE | UPDATE_OVERLAYS
 

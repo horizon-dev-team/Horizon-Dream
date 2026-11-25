@@ -68,7 +68,7 @@
 	pixel_x = base_pixel_x + rand(-10, 10)
 	pixel_y = base_pixel_y + rand(-10, 10)
 	setDir(pick(GLOB.alldirs))
-		// [HORIZON-ADD] GunRework
+	// [HORIZON-ADD] GunRework
 	if(auto_rotate)
 		transform = transform.Turn(round(45 * rand(0, 32) / 2))
 	if(world_icon)

@@ -140,13 +140,13 @@
 	. = ..()
 	var/obj/projectile/bullet = projectile_type
 	var/initial_damage = initial(bullet.damage)
-	var/damage = initial_damage ? "[icon2html(DAMAGE_ICON_SET, user, "bullet")] [initial_damage]" : ""
+	var/damage = initial_damage ? "[icon2html(DAMAGE_ICON_SET, user, "Bullet")] [initial_damage]" : ""
 	var/initial_stamina = initial(bullet.stamina)
 	var/stamina_damage = initial_stamina ? "[icon2html(DAMAGE_ICON_SET, user, "STAMINA")] [initial_stamina]" : ""
 	if(!damage && !stamina_damage)
 		return
-	. += "<br><b>Damage:</b> [damage] [stamina_damage]"
-	. += "<br><b>Count:</b> [pellets]"
+	. += "<br><tr><td><b>Damage:</b></td><td>[damage] [stamina_damage]</td></tr>"
+	. += "<br><tr><td><b>Count:</b></td><td>[icon2html(DAMAGE_ICON_SET, user, "bullet")] [pellets]</td></tr>"
 
 /// reset the icon the world_icon element swapped away from.
 /obj/item/ammo_casing/update_icon(updates)

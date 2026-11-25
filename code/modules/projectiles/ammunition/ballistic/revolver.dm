@@ -47,8 +47,8 @@
 	icon_state = "c38"
 	base_icon_state = "c38"
 	stack_type = /obj/item/ammo_box/magazine/ammo_stack/c38
+	caliber = CALIBER_38
 	// [/HORIZON-ADD]
-	caliber = CALIBER_357_38
 	projectile_type = /obj/projectile/bullet/c38
 	casing_pressure = AMMO_CASING_PRESSURE_LOW // .38 rounds can be fired from .357 chambered guns, and technically vice versa, but watch out!
 	/// Used for icon building for things like speedloaders and the like to determine what kind of sprite this casing uses. Actually accepts any string, just make sure there is a matching positional sprite in _/icons/obj/weapons/guns/ammo.dmi.

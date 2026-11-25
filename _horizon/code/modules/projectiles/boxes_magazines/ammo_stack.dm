@@ -229,6 +229,15 @@
 /obj/item/ammo_box/magazine/ammo_stack/c45/loaded
 	start_empty = FALSE
 
+/obj/item/ammo_box/magazine/ammo_stack/a223
+	name = "5.56 rounds"
+	icon_state = "c545-1"
+	base_icon_state = "c545"
+	world_icon_state = "545-casing"
+	caliber = CALIBER_A223
+	max_ammo = 8
+	ammo_type = /obj/item/ammo_casing/a223
+
 /obj/item/ammo_box/magazine/ammo_stack/aniquilador
 	name = "50 LE rounds"
 	icon_state = "c45-1"

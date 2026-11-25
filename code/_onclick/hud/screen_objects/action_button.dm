@@ -23,6 +23,8 @@
 	var/mutable_appearance/keybind_maptext
 	/// if observers can trigger this action at any time
 	var/allow_observer_click = FALSE
+	/// Whether this button can be moved by the user
+	var/can_move = TRUE // [HORIZON-ADD] GunRework
 
 /atom/movable/screen/movable/action_button/Destroy()
 	if(our_hud)
@@ -62,8 +64,9 @@
 		linked_action?.begin_creating_bind(src, usr)
 		return TRUE
 	if(LAZYACCESS(modifiers, SHIFT_CLICK))
-		var/datum/hud/our_hud = usr.hud_used
-		our_hud.position_action(src, SCRN_OBJ_DEFAULT)
+		if(can_move) // [HORIZON-EDIT] GunRework
+			var/datum/hud/our_hud = usr.hud_used
+			our_hud.position_action(src, SCRN_OBJ_DEFAULT)
 		return TRUE
 	if(usr.next_click > world.time)
 		return
@@ -77,6 +80,10 @@
 // Entered and Exited won't fire while you're dragging something, because you're still "holding" it
 // Very much byond logic, but I want nice behavior, so we fake it with drag
 /atom/movable/screen/movable/action_button/MouseDrag(atom/over_object, src_location, over_location, src_control, over_control, params)
+	if(!can_move) // [HORIZON-ADD] GunRework
+		last_hovored_ref = null
+		usr.hud_used.hide_landings()
+		return
 	. = ..()
 	if(!can_use(usr))
 		return
@@ -111,8 +118,9 @@
 	updateToolTip(user, title = name, content = desc)
 
 /atom/movable/screen/movable/action_button/mouse_drop_dragged(atom/over_object, mob/user, src_location, over_location, params)
-	last_hovored_ref = null
-	if(!can_use(usr))
+	if(!can_move) // [HORIZON-ADD] GunRework
+		last_hovored_ref = null
+		usr.hud_used.hide_landings() // [HORIZON-ADD] GunRework
 		return
 
 	var/datum/hud/our_hud = usr.hud_used
@@ -147,6 +155,8 @@
 	our_hud.hide_landings()
 
 /atom/movable/screen/movable/action_button/proc/save_position()
+	if(!can_move) // [HORIZON-ADD] GunRework
+		return
 	var/mob/user = our_hud.mymob
 	if(!user?.client)
 		return
@@ -162,6 +172,9 @@
 	user.client.prefs.action_buttons_screen_locs["[name]_[id]"] = position_info
 
 /atom/movable/screen/movable/action_button/proc/load_position()
+	if(!can_move)
+		our_hud.position_action(src, linked_action.default_button_position) // [HORIZON-ADD] GunRework
+		return
 	var/mob/user = our_hud.mymob
 	if(!user)
 		return

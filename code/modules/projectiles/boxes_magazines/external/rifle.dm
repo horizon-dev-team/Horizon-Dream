@@ -150,8 +150,6 @@
 
 /obj/item/ammo_box/magazine/a49234g11/update_icon_state()
 	. = ..()
-/obj/item/ammo_box/magazine/a545/update_icon_state()
-	. = ..()
 	icon_state = "[base_icon_state]-[ammo_count() ? max_ammo : 0]"
 
 /obj/item/ammo_box/magazine/a556steyr

@@ -17,9 +17,9 @@
 
 // ppsh
 /obj/item/gun/ballistic/automatic/hd_gun/remis/smg/ppsh
-	name = "\improper ППС"
-	desc = "Автоматический пистолет пулемёт Папасши, простой в производстве. Вмещает в себя магазины по 32 патрона. \
-		Калибр - 9мм."
+	name = "\improper PPS"
+	desc = "A Papaschi machine pistol, simple to produce. Takes 32-round magazines. \
+		Chambered in 9mm."
 	icon = '_horizon/icons/obj/items/guns/smg.dmi'
 	base_icon_state = "ppsh"
 	icon_state = "ppsh"

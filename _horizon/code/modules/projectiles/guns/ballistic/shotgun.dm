@@ -87,8 +87,8 @@
 
 // The legendary
 /obj/item/gun/ballistic/shotgun/doublebarrel/hd_gun/bobox
-	name = "\"Палач рока\""
-	desc = "\"Фирменный\" дробовик с двумя стволами. Не в бровь, а в глаз."
+	name = "\"Executioner of Fate\""
+	desc = "A \"signature\" double-barreled shotgun. Not in the brow - straight in the eye."
 	icon = '_horizon/icons/obj/items/guns/shotgun.dmi'
 	inhand_icon_state = "bobox"
 	lefthand_file = '_horizon/icons/obj/items/guns/inhands/shotgun_lefthand.dmi'
@@ -126,8 +126,8 @@
 	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 38, 16)
 
 /obj/item/gun/ballistic/shotgun/hd_gun/hunting
-	name = "ОД Папасши \"Охотник\""
-	desc = "Охотничный дробовик Папасши. Калибр - 12-ый."
+	name = "OD Papaschi \"Hunter\""
+	desc = "A Papaschi hunting shotgun. Chambered in 12 gauge."
 	icon_state = "huntingshot"
 	base_icon_state = "huntingshot"
 	empty_icon_state = TRUE
@@ -139,9 +139,9 @@
 // ??? SHOTGUN
 /obj/item/gun/ballistic/shotgun/hd_gun/riot
 	name = "\improper Riot-S12 \"Downer\""
-	desc = "Дробовик компании Riot Solution с фиксированной тактическим прикладом. Был разработан в качестве решения для подавления беспорядков нелетальной силой. \
-		Тем не менее летальные боеприпасы без труда можно использовать. \
-		Калибр - 12-ый."
+	desc = "A Riot Solution shotgun with a fixed tactical stock. It was developed as a non-lethal riot suppression solution. \
+		Nevertheless, lethal ammunition can be used just as easily. \
+		Chambered in 12 gauge."
 	icon = '_horizon/icons/obj/items/guns/40x32.dmi'
 	icon_state = "riot"
 	base_icon_state = "riot"
@@ -172,7 +172,7 @@
 // BENELLI M4 SHOTGUN
 /obj/item/gun/ballistic/shotgun/automatic/hd_gun/combat
 	name = "\improper Shottex CQB shotgun"
-	desc = "Полуавтоматический дробовик в обвесе. Имеет магазин в 6(+1) патрон. Калибр - 12-ый."
+	desc = "A semi-automatic shotgun that comes already kitted out. Holds 6(+1) rounds. Chambered in 12 gauge."
 	icon = '_horizon/icons/obj/items/guns/40x32.dmi'
 	icon_state = "combat"
 	base_icon_state = "combat"
@@ -204,8 +204,8 @@
 // BROWNING 2000 SHOTGUN
 /obj/item/gun/ballistic/shotgun/automatic/hd_gun/b2000
 	name = "\improper Shottex \"Classical\""
-	desc = "Классический помповый дробовик компании Shottex, их слоган: \"Без дробовика - и жизнь худа!\". \
-		Вмещает в себя 4(+1) патрона. Калибр - 12-ый."
+	desc = "A classic pump-action shotgun by Shottex, their slogan: \"No shotgun in the house - and life goes south!\". \
+		Holds 4(+1) rounds. Chambered in 12 gauge."
 	icon = '_horizon/icons/obj/items/guns/40x32.dmi'
 	icon_state = "b2000"
 	base_icon_state = "b2000"
@@ -229,9 +229,9 @@
 // BELADOR 2021 SILENCED SHOTGUN
 /obj/item/gun/ballistic/shotgun/automatic/hd_gun/b2021
 	name = "\improper Shottex \"Pigeon\""
-	desc = "Дробовик компании Shottex \"Голубь\" сочетает в себе кастомизацию, грубую отладку и убойную точность. \
-		Имеет встроенный глушитель. \
-		Вмещает в себя 9(+1) патрон. Калибр - 12-й."
+	desc = "The Shottex \"Pigeon\" shotgun combines customization, crude engineering and killer accuracy. \
+		Has a built-in suppressor. \
+		Holds 9(+1) rounds. Chambered in 12 gauge."
 	icon = '_horizon/icons/obj/items/guns/40x32.dmi'
 	icon_state = "b2021"
 	inhand_icon_state = "b2021"
@@ -260,9 +260,9 @@
 // AA12 i guess AUTOMATIC SHOTGUN
 /obj/item/gun/ballistic/shotgun/hd_gun/bulldog
 	name = "\improper Modelo 1337 \"Torturador\""
-	desc = "Полуавтоматический дробовик магазинного типа. Производитель - испанцы из Modelo. \
-		К его шахте заряжания подходят только барабанные магазины на 8(+1 в стволе) пуль! \
-		Калибр - 12-ый. "
+	desc = "A magazine-fed semi-automatic shotgun. Manufactured by the Spaniards over at Modelo. \
+		Only 8(+1 in the chamber) round drum magazines fit its loading port! \
+		Chambered in 12 gauge. "
 	icon = '_horizon/icons/obj/items/guns/40x32.dmi'
 	icon_state = "automatic"
 	base_icon_state = "automatic"
@@ -306,9 +306,9 @@
 
 // SAIGA-12 AUTOMATIC SHOTGUN
 /obj/item/gun/ballistic/shotgun/hd_gun/abyss
-	name = "\improper АД-12 Папасши"
-	desc = "Автоматический дробовик Папасши магазинной системы заряжания. Вмещает в себя 20 патрон. \
-		Калибр - 12-ый."
+	name = "\improper AD-12 Papaschi"
+	desc = "A magazine-fed Papaschi automatic shotgun. Holds 20 rounds. \
+		Chambered in 12 gauge."
 	icon = '_horizon/icons/obj/items/guns/48x32.dmi'
 	lefthand_file = '_horizon/icons/obj/items/guns/inhands/shotgun_lefthand.dmi'
 	righthand_file = '_horizon/icons/obj/items/guns/inhands/shotgun_righthand.dmi'
@@ -355,9 +355,9 @@
 
 // KS23 | TOZ-123 DESTROYER
 /obj/item/gun/ballistic/shotgun/hd_gun/bolas
-	name = "\improper ДС-4 Папасши"
-	desc = "Громоздкий дробовик, вмещающий в себя 4 огромных патрона. \
-		Калибр - 4-ый."
+	name = "\improper DS-4 Papaschi"
+	desc = "A cumbersome shotgun that holds 4 enormous shells. \
+		Chambered in 4 gauge."
 	icon = '_horizon/icons/obj/items/guns/48x32.dmi'
 	icon_state = "bolas"
 	base_icon_state = "bolas"
@@ -384,8 +384,8 @@
 // SPAS 12
 /obj/item/gun/ballistic/shotgun/hd_gun/denominator
 	name = "\improper Riot-S12 \"Special\""
-	desc = "Автоматический дробовик с помповым заряжанием. Имеет выбор с полуавтоматического режима на автоматический. \
-	Нажми на СКМ, когда помпа в закрытом положении и предохранитель отключен."
+	desc = "An automatic shotgun with pump-action cocking. Can switch between semi-automatic and fully automatic fire modes. \
+	Press MMB while the pump is closed and the safety is off."
 	icon = '_horizon/icons/obj/items/guns/48x32.dmi'
 	icon_state = "spas"
 	base_icon_state = "spas"

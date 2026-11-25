@@ -53,6 +53,16 @@
 	seen += src
 	return carry_weight_per_unit * amount
 
+/obj/item/ammo_box/get_carry_weight(list/seen)
+	. = ..(seen)
+	for(var/obj/item/ammo_casing/casing as anything in stored_ammo)
+		if(!ispath(casing))
+			continue
+		var/w = initial(casing.carry_weight)
+		if(isnull(w))
+			w = weight_class_to_kg(initial(casing.w_class))
+		. += w
+
 /// Cool drop / throw effect: randomises pixel offset and rotation a bit
 /// so dropped items look less stiff. Ported from legacy
 /// modular_septic/code/game/objects/items.dm.

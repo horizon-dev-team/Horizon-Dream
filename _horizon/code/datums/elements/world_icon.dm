@@ -49,15 +49,12 @@
 
 /datum/element/world_icon/proc/inventory_updated(obj/item/source)
 	SIGNAL_HANDLER
-
 	source.update_appearance(UPDATE_ICON)
 
 /datum/element/world_icon/proc/default_inventory_icon(obj/item/source)
 	SIGNAL_HANDLER
-
 	source.icon = inventory_icon
 
 /datum/element/world_icon/proc/default_world_icon(obj/item/source)
 	SIGNAL_HANDLER
-
 	source.icon = world_icon

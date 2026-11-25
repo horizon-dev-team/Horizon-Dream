@@ -56,4 +56,4 @@
 		if(!chambered)
 			recharge_newshot(TRUE)
 		flick("nasr_reload", src)
-		playsound(src, '_horizon/sound/weapons/guns/energy/nasrcharge.wav', 75, FALSE)
+		playsound(src, '_horizon/sound/weapons/guns/energy/nasrcharge.wav', 30, FALSE)

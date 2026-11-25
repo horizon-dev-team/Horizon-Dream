@@ -16,12 +16,12 @@
 /obj/item/ammo_casing/energy/siren
 	fire_sound = '_horizon/sound/weapons/guns/energy/siren.wav'
 	select_name = "well done steak"
-	e_cost = 85
+	e_cost = LASER_SHOTS(10, STANDARD_CELL_CHARGE)
 	projectile_type = /obj/projectile/beam/laser/siren
 
 /obj/item/ammo_casing/energy/nasr
 	fire_sound = '_horizon/sound/weapons/guns/energy/nasr.wav'
 	select_name = "glue melter"
-	e_cost = 100
+	e_cost = LASER_SHOTS(15, STANDARD_CELL_CHARGE)
 	projectile_type = /obj/projectile/beam/laser/nasr
 // [/HORIZON-ADD]

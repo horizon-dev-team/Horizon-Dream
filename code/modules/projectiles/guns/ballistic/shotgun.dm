@@ -30,6 +30,7 @@
 
 	pb_knockback = 2
 	gun_flags = GUN_SMOKE_PARTICLES // [HORIZON-ADD] Ballistic_Impact
+	safety_flags = NONE
 
 /obj/item/gun/ballistic/shotgun/blow_up(mob/user)
 	. = 0

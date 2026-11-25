@@ -383,10 +383,6 @@
 	can_be_sawn_off = FALSE
 	can_jam = FALSE
 	safety_flags = NONE
-	pickup_sound = '_horizon/sound/weapons/guns/generic_draw.wav' // [HORIZON-ADD] GunRework family default
-	dry_fire_sound = '_horizon/sound/weapons/guns/empty.wav' // [HORIZON-ADD] GunRework family default
-	carry_weight = 2.5 KILOGRAMS // [HORIZON-ADD] GunRework family default
-	client_recoil_animation_information = list("strength" = 0.35, "duration" = 2) // [HORIZON-ADD] GunRework family default
 
 /obj/item/gun/ballistic/rifle/boltaction/hd_gun/remis/federson
 	name = "\improper Dreaderson \"Brass Rain\" bolt-action rifle"

@@ -14,10 +14,6 @@
 	suppressed = SUPPRESSED_NONE
 	full_auto = TRUE
 	w_class = WEIGHT_CLASS_BULKY
-	pickup_sound = '_horizon/sound/weapons/guns/generic_draw.wav' // [HORIZON-ADD] GunRework family default
-	dry_fire_sound = '_horizon/sound/weapons/guns/empty.wav' // [HORIZON-ADD] GunRework family default
-	carry_weight = 2.5 KILOGRAMS // [HORIZON-ADD] GunRework family default
-	client_recoil_animation_information = list("strength" = 0.35, "duration" = 2) // [HORIZON-ADD] GunRework family default
 
 // ppsh
 /obj/item/gun/ballistic/automatic/hd_gun/remis/smg/ppsh

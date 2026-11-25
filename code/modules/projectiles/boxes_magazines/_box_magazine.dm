@@ -44,7 +44,12 @@
 	var/ammo_band_icon
 	/// Is the greyscale icon used for the ammo band when it's empty of bullets, only if it's not null.
 	var/ammo_band_icon_empty
+
+	// [HORIZON-ADD] GunRework
+	drop_sound = '_horizon/sound/weapons/mag_drop.wav'
+	pickup_sound = '_horizon/sound/weapons/mag_pickup.ogg'
 	var/tips_ammo = "bullet"
+	// [/HORIZON-ADD]
 
 /obj/item/ammo_box/Initialize(mapload)
 	. = ..()
@@ -327,19 +332,3 @@
 	while (casing)
 		casing.forceMove(turf_mag)
 		casing = get_round()
-
-// [HORIZON-ADD] GunRework
-/obj/item/ammo_box/magazine
-	drop_sound = '_horizon/sound/weapons/mag_drop.wav'
-	pickup_sound = '_horizon/sound/weapons/mag_pickup.ogg'
-
-/obj/item/ammo_box/get_carry_weight(list/seen)
-	. = ..(seen)
-	for(var/obj/item/ammo_casing/casing as anything in stored_ammo)
-		if(!ispath(casing))
-			continue
-		var/w = initial(casing.carry_weight)
-		if(isnull(w))
-			w = weight_class_to_kg(initial(casing.w_class))
-		. += w
-// [/HORIZON-ADD]

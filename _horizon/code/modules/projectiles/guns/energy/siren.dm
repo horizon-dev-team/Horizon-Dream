@@ -34,15 +34,13 @@
 	force = 15
 	w_class = WEIGHT_CLASS_HUGE
 	weapon_weight = WEAPON_HEAVY
-	burst_size = 3
+	burst_size = 2
 	carry_weight = 5 KILOGRAMS
 	gunshot_animation_information = list("icon_state" = "boltshot", \
 						"pixel_x" = 28, \
 						"pixel_y" = 13)
 	recoil_animation_information = list("recoil_angle_upper" = -15, \
 						"recoil_angle_lower" = -25)
-	pickup_sound = '_horizon/sound/weapons/guns/generic_draw.wav' // [HORIZON-ADD] GunRework family default
-	dry_fire_sound = '_horizon/sound/weapons/guns/empty.wav' // [HORIZON-ADD] GunRework family default
 
 /obj/item/gun/energy/hd_gun/heavy_plasma/siren/Initialize(mapload)
 	. = ..()

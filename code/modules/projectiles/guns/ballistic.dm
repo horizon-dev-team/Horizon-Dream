@@ -384,17 +384,17 @@
 	update_item_action_buttons()
 
 // Didn't attempt to catch the casing.
-#define CASING_CATCH_NO_ATTEMPT 0
+#define CASING_CATCH_NO_ATTEMPT	0
 // Tried to catch, failed because casing was hot and hands were unprotected.
-#define CASING_CATCH_FAILED_SPICY       1
+#define CASING_CATCH_FAILED_SPICY	1
 // Tried to catch, failed because clumsy.
-#define CASING_CATCH_FAILED_CLUMSY      2
+#define CASING_CATCH_FAILED_CLUMSY	2
 // Tried to catch, failed because hands full.
-#define CASING_CATCH_FAILED_PLACEMENT   3
+#define CASING_CATCH_FAILED_PLACEMENT	3
 // Tried to catch, succeeded. Hands protected or casing was cold (not recently fired).
-#define CASING_CATCH_SUCCESSFUL 4
+#define CASING_CATCH_SUCCESSFUL	4
 // Tried to catch, succeeded. Casing was hot, hands were unprotected, hands burned.
-#define CASING_CATCH_SUCCESSFUL_OUCH    5
+#define CASING_CATCH_SUCCESSFUL_OUCH	5
 // Offset added to an ejected casing's fire timestamp;
 // if world.time is past the casing's fired timestamp plus this offset, casing is considered cold, and won't burn hands.
 #define CASING_HOT_DELAY (5 SECONDS)
@@ -841,9 +841,9 @@
 		. += "The [bolt_wording] is locked back."
 	if(suppressed)
 		. += "It has a attached suppressor"
-	// [/HORIZON-EDIT]
 
-	// [HORIZON-EDIT] Chamber pressure moved to add_notes_ballistic (the "look closer" weapon description)
+	// Chamber pressure -> add_notes_ballistic
+	// [/HORIZON-EDIT]
 
 	if(chambered && !hidden_chambered && chambered.casing_pressure > pressure_threshold && !never_misfire)
 		. += span_danger("You get the feeling this might explode if you fire it with the currently loaded round...")
@@ -992,11 +992,8 @@ GLOBAL_LIST_INIT(gun_saw_types, typecacheof(list(
 	if(!isnull(chambered)) //if there is a cartridge in the chamber, we remove it
 		rack()
 
-// [HORIZON-EDIT] GunRework
-/// Compatibility path for existing maps; all behavior comes from the attachment.
 /obj/item/suppressor
-	parent_type = /obj/item/attachment/silencer
-// [/HORIZON-EDIT]
+	parent_type = /obj/item/attachment/silencer // [HORIZON-EDIT] GunRework -> moved to attachments
 
 // [HORIZON-ADD] GunRework: break action cylinders, caliber modding, drag-eject
 /// Screwdriver tinkering: swap the gun between its initial and alternative
@@ -1072,8 +1069,6 @@ GLOBAL_LIST_INIT(gun_saw_types, typecacheof(list(
 			UnregisterSignal(chambered, COMSIG_MOVABLE_MOVED)
 			chambered = null
 		casing.forceMove(drop_location())
-		//if(QDELETED(casing))
-		//	continue
 		var/bounce_angle = rand(0, 359)
 		if(user)
 			var/sign_x = (istype(user) && !(user.get_held_index_of_item(src) % RIGHT_HANDS)) ? 1 : -1

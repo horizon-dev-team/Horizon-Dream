@@ -439,7 +439,7 @@
 	name = "laser"
 	icon = '_horizon/icons/obj/items/guns/projectiles/projectiles.dmi'
 	icon_state = "laser"
-	damage = 70
+	damage = 30
 	light_color = LIGHT_COLOR_BLOOD_MAGIC
 	impact_effect_type = /obj/effect/temp_visual/impact_effect/red_laser
 	muzzle_type = /obj/effect/projectile/muzzle/laser
@@ -450,7 +450,7 @@
 	name = "plasma ball"
 	icon = '_horizon/icons/obj/items/guns/projectiles/projectiles.dmi'
 	icon_state = "plasma"
-	damage = 30
+	damage = 15
 	light_color = LIGHT_COLOR_LIGHT_CYAN
 	impact_effect_type = /obj/effect/temp_visual/impact_effect/blue_laser
 	muzzle_type = /obj/effect/projectile/muzzle/disabler

@@ -136,6 +136,18 @@
 	return readout.Join("\n") // Sending over a single string, rather than the whole list
 
 // [HORIZON-ADD] GunRework
+/obj/item/ammo_casing/get_extra_tooltip(mob/user)
+	. = ..()
+	var/obj/projectile/bullet = projectile_type
+	var/initial_damage = initial(bullet.damage)
+	var/damage = initial_damage ? "[icon2html(DAMAGE_ICON_SET, user, "bullet")] [initial_damage]" : ""
+	var/initial_stamina = initial(bullet.stamina)
+	var/stamina_damage = initial_stamina ? "[icon2html(DAMAGE_ICON_SET, user, "STAMINA")] [initial_stamina]" : ""
+	if(!damage && !stamina_damage)
+		return
+	. += "<br><b>Damage:</b> [damage] [stamina_damage]"
+	. += "<br><b>Count:</b> [pellets]"
+
 /// reset the icon the world_icon element swapped away from.
 /obj/item/ammo_casing/update_icon(updates)
 	icon = initial(icon)
@@ -182,36 +194,25 @@
 		return ITEM_INTERACT_BLOCKING
 	return ITEM_INTERACT_SUCCESS
 
-// [HORIZON-EDIT] PHYSICS | GunRework
 /// Collects the casing and its like on its tile into the passed box, TRUE if anything collected.
 /obj/item/ammo_casing/proc/collect_into_box(mob/living/user, obj/item/ammo_box/box)
 	var/boolets = 0
 	for(var/obj/item/ammo_casing/bullet in loc)
-		if(box.stored_ammo.len >= box.max_ammo)
+		if (box.stored_ammo.len >= box.max_ammo)
 			break
-		if(!bullet.loaded_projectile)
+		if (!bullet.loaded_projectile)
 			continue
-		if(box.give_round(bullet, 0))
+		if (box.give_round(bullet, 0))
 			boolets++
 
-	var/spent = 0
-	var/can_take_spent = !istype(box, /obj/item/ammo_box/magazine)
-	if(can_take_spent)
-		for(var/obj/item/ammo_casing/bullet as anything in on_tile)
-			if(box.stored_ammo.len >= box.max_ammo)
-				break
-			if(bullet.loaded_projectile)
-				continue
-			if(box.give_round(bullet, 0))
-				spent++
-
-	if(!boolets && !spent)
+	if (!boolets)
 		to_chat(user, span_warning("You fail to collect anything!"))
 		return FALSE
 	box.update_appearance()
-	to_chat(user, span_notice("You collect [boolets + spent] [box.casing_phrasing]\s[spent ? " ([spent] spent)" : ""]. [box] now contains [box.stored_ammo.len] [box.casing_phrasing]\s."))
+	to_chat(user, span_notice("You collect [boolets] [box.casing_phrasing]\s. [box] now contains [box.stored_ammo.len] [box.casing_phrasing]\s."))
 	return TRUE
 
+// [HORIZON-EDIT] PHYSICS | GunRework
 /obj/item/ammo_casing/throw_impact(atom/hit_atom, datum/thrownthing/throwingdatum)
 	bounce_away(bounce_angle = rand(0, 360), spread_multiplier = 0.75, still_warm = FALSE, sound_delay = 0) // [HORIZON-ADD] PHYSICS
 	return ..()

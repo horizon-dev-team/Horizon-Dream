@@ -10,6 +10,7 @@
 	caliber = CALIBER_SHOTGUN
 	max_ammo = 8
 	casing_phrasing = "shell"
+	custom_materials = list(/datum/material/iron = SHEET_MATERIAL_AMOUNT * 2) // [HORIZON-ADD] GunRework
 
 /obj/item/ammo_box/magazine/m12g/update_icon_state()
 	. = ..()

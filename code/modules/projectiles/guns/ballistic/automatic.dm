@@ -139,7 +139,7 @@
 	mag_display = TRUE
 	rack_sound = 'sound/items/weapons/gun/pistol/slide_lock.ogg'
 
-/obj/item/gun/ballistic/automatic/mini_uzi/add_attachment_slots()
+/obj/item/gun/ballistic/automatic/mini_uzi/add_attachment_slots() // [HORIZON-ADD] GunRework
 	..()
 	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 30, 20)
 
@@ -405,7 +405,7 @@
 
 	SET_BASE_PIXEL(-8, 0)
 
-/obj/item/gun/ballistic/automatic/battle_rifle/add_attachment_slots()
+/obj/item/gun/ballistic/automatic/battle_rifle/add_attachment_slots() // [HORIZON-ADD] GunRework
 	..()
 	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 39, 14)
 
@@ -571,18 +571,6 @@
 /obj/item/gun/ballistic/automatic
 	/// Position of the fire selector: 1 = semi, 2 = burst, 3 = full auto.
 	var/select = 3
-	/// The sound effect for switching your gun back to semi-automatic
-	var/fireselector_semi = '_horizon/sound/weapons/guns/rifle/msafety.wav'
-	var/fireselector_semi_vary = FALSE
-	var/fireselector_semi_volume = 90
-	/// The sound effect for switching your gun to burst fire
-	var/fireselector_burst = '_horizon/sound/weapons/guns/rifle/msafety.wav'
-	var/fireselector_burst_vary = FALSE
-	var/fireselector_burst_volume = 90
-	/// The sound effect for switching your gun to full auto fire
-	var/fireselector_auto = '_horizon/sound/weapons/guns/rifle/msafety.wav'
-	var/fireselector_auto_vary = FALSE
-	var/fireselector_auto_volume = 90
 	/// Burst length while select == 2. Defaults to the gun's initial
 	/// burst_size, which also marks the gun as having no separate burst mode.
 	var/burst_size_toggled
@@ -647,7 +635,6 @@
 			burst_fire_selection = FALSE
 			autofire?.autofire_off()
 			to_chat(user, span_notice("I switch [src] to semi-automatic."))
-			playsound(user, fireselector_semi, fireselector_semi_volume, fireselector_semi_vary)
 		if(2) // burst
 			burst_size = burst_size_toggled
 			fire_delay = fire_delay_toggled
@@ -656,7 +643,6 @@
 				autofire.autofire_stat = AUTOFIRE_STAT_IDLE
 				autofire.autofire_on(user?.client)
 			to_chat(user, span_notice("I switch [src] to [burst_size]-round burst."))
-			playsound(user, fireselector_burst, fireselector_burst_volume, fireselector_burst_vary)
 		if(3) // full auto
 			burst_size = burst_size_auto
 			fire_delay = initial(fire_delay)
@@ -665,8 +651,8 @@
 				autofire.autofire_stat = AUTOFIRE_STAT_IDLE
 				autofire.autofire_on(user?.client)
 			to_chat(user, span_notice("I switch [src] to automatic."))
-			playsound(user, fireselector_auto, fireselector_auto_volume, fireselector_auto_vary)
 
+	playsound(user, '_horizon/sound/weapons/guns/rifle/msafety.wav', 90, FALSE)
 	update_appearance()
 	update_item_action_buttons()
 // [/HORIZON-ADD]

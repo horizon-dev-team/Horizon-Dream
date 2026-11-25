@@ -57,7 +57,7 @@
 	/// Can this action be shared with our rider?
 	var/can_be_shared = TRUE
 	/// Whether this action's HUD button can be moved by the user
-	var/can_move = TRUE
+	var/button_can_move = TRUE
 
 /datum/action/New(Target)
 	link_to(Target)
@@ -389,7 +389,7 @@
 	var/atom/movable/screen/movable/action_button/button = viewer.hud_used.add_screen_object(/atom/movable/screen/movable/action_button)
 	button.linked_action = src
 	button.allow_observer_click = allow_observer_click
-	button.can_move = can_move
+	button.button_can_move = button_can_move
 	build_button_icon(button, ALL, TRUE)
 	return button
 

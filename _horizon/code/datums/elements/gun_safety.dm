@@ -4,7 +4,7 @@
 	button_icon_state = "safety1"
 	default_button_position = "CENTER+2:3,SOUTH+1:4"
 	background_icon = NONE
-	can_move = FALSE
+	button_can_move = FALSE
 
 /datum/action/item_action/toggle_safety/New(Target)
 	. = ..()

@@ -84,8 +84,8 @@
 		return null
 
 	var/firing_dir
-	var/firing_angle
 	// [HORIZON-EDIT] GunRework
+	var/firing_angle
 	var/atom/flash_anchor = user || get_turf(src)
 	if(target && flash_anchor)
 		firing_angle = get_angle(get_turf(flash_anchor), target)

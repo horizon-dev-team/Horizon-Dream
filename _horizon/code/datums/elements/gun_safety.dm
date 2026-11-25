@@ -2,7 +2,7 @@
 	name = "Toggle Safety"
 	button_icon = '_horizon/icons/ui/gun_actions.dmi'
 	button_icon_state = "safety1"
-	default_button_position = "EAST-1:28,SOUTH+1:27"
+	default_button_position = "CENTER+2:3,SOUTH+1:4"
 	background_icon = NONE
 
 /datum/action/item_action/toggle_safety/New(Target)

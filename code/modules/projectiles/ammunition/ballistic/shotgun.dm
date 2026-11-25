@@ -36,11 +36,6 @@
 /obj/item/ammo_casing/shotgun/beanbag
 	name = "beanbag slug"
 	desc = "A weak beanbag slug for riot control."
-	// [HORIZON-EDIT] GunRework
-	icon_state = "12gauge"
-	base_icon_state = "12gauge"
-	world_icon_state = "gshell"
-	// [/HORIZON-EDIT]
 	custom_materials = list(/datum/material/iron = SMALL_MATERIAL_AMOUNT * 3)
 	projectile_type = /obj/projectile/bullet/shotgun_beanbag
 
@@ -99,14 +94,9 @@
 /obj/item/ammo_casing/shotgun/buckshot
 	name = "buckshot shell"
 	desc = "A 12 gauge buckshot shell."
-	// [HORIZON-EDIT] GunRework
-	icon_state = "12gauge"
-	base_icon_state = "12gauge"
-	world_icon_state = "gshell"
 	projectile_type = /obj/projectile/bullet/pellet/shotgun_buckshot
-	pellets = 8
-	variance = 4.5
-	// [/HORIZON-EDIT]
+	pellets = 6
+	variance = 15
 	randomspread = TRUE
 
 /obj/item/ammo_casing/shotgun/buckshot/old
@@ -130,14 +120,9 @@
 /obj/item/ammo_casing/shotgun/rubbershot
 	name = "rubber shot"
 	desc = "A shotgun casing filled with densely-packed rubber balls, used to incapacitate crowds from a distance."
-	// [HORIZON-EDIT] GunRework
-	icon_state = "12gauge"
-	base_icon_state = "12gauge"
-	world_icon_state = "gshell"
 	projectile_type = /obj/projectile/bullet/pellet/shotgun_rubbershot
-	pellets = 12
-	variance = 4
-	// [/HORIZON-EDIT]
+	pellets = 6
+	variance = 15
 	randomspread = TRUE
 	custom_materials = list(/datum/material/iron = SMALL_MATERIAL_AMOUNT * 3)
 
@@ -152,15 +137,14 @@
 
 /obj/item/ammo_casing/shotgun/flechette
 	name = "flechette shell"
-	// [HORIZON-EDIT] GunRework
-	desc = "A 12 gauge steel flechette. Contains 20 individual projectiles" // [HORIZON-EDIT] GunRework
+	desc = "A shotgun casing filled with small metal darts. Pokes many tiny holes into meat and kevlar alike. Useful for turning someones insides \
+		into outsides."
 	icon_state = "flechette"
-	stack_type = /obj/item/ammo_box/magazine/ammo_stack/shotgun/flechette
+	stack_type = /obj/item/ammo_box/magazine/ammo_stack/shotgun/flechette // [HORIZON-EDIT] GunRework
 	projectile_type = /obj/projectile/bullet/pellet/flechette
 	custom_materials = list(/datum/material/iron = SMALL_MATERIAL_AMOUNT * 3, /datum/material/glass = SMALL_MATERIAL_AMOUNT * 2)
-	pellets = 20
-	variance = 18.5
-	// [/HORIZON-EDIT]
+	pellets = 8
+	variance = 10
 
 /obj/item/ammo_casing/shotgun/flechette/donk
 	name = "\improper Donk Co. 'Donk Spike' Shell"

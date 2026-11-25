@@ -32,7 +32,7 @@
 // Stechkin APS (9mm) //
 // [HORIZON-EDIT] GunRework
 /obj/item/ammo_box/magazine/m9mm_aps
-	name = "stechkin pistol magazine (9mm)"
+	name = "69R pistol magazine (9mm)"
 	desc = "A 9mm handgun magazine, suitable for the Stechkin APS machine pistol."
 	icon = '_horizon/icons/obj/items/ammo/pistol.dmi'
 	icon_state = "beretta9mm" // ("9mmaps-15")

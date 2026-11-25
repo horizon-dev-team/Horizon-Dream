@@ -55,7 +55,7 @@ GLOBAL_LIST_EMPTY(blood_particles)
 			target_pixel_y = 16
 		if(SOUTH)
 			target_pixel_y = -16
-			layer = ABOVE_MOB_LAYER
+			plane = ABOVE_GAME_PLANE
 		if(EAST)
 			target_pixel_x = 16
 		if(WEST)
@@ -69,11 +69,11 @@ GLOBAL_LIST_EMPTY(blood_particles)
 		if(SOUTHEAST)
 			target_pixel_x = 16
 			target_pixel_y = -16
-			layer = ABOVE_MOB_LAYER
+			plane = ABOVE_GAME_PLANE
 		if(SOUTHWEST)
 			target_pixel_x = -16
 			target_pixel_y = -16
-			layer = ABOVE_MOB_LAYER
+			plane = ABOVE_GAME_PLANE
 	transform = matrix().Turn(angle)
 	animate(src, pixel_x = target_pixel_x, pixel_y = target_pixel_y, alpha = 0, time = duration, flags = CUBIC_EASING | EASE_OUT)
 // [/HORIZON-EDIT]
@@ -86,44 +86,106 @@ GLOBAL_LIST_EMPTY(blood_particles)
 	duration = 10
 	randomdir = 0
 
+// [HORIZON-EDIT] GunRework
 /obj/effect/temp_visual/dir_setting/firing_effect
-	icon = 'icons/effects/effects.dmi'
-	icon_state = "firing_effect"
-	duration = 3
+	icon = '_horizon/icons/effects/muzzle.dmi'
+	icon_state = "muzzle_flash"
+	appearance_flags = KEEP_APART|TILE_BOUND|PIXEL_SCALE
+	randomdir = FALSE
+	duration = 3.2
 
-/obj/effect/temp_visual/dir_setting/firing_effect/Initialize(mapload, set_dir)
+/obj/effect/temp_visual/dir_setting/firing_effect/Initialize(mapload, set_dir, firing_angle)
 	. = ..()
+	if(!isnull(firing_angle))
+		aim(firing_angle)
 	if (ismovable(loc))
 		var/atom/movable/spawned_inside = loc
 		spawned_inside.vis_contents += src
 
 /obj/effect/temp_visual/dir_setting/firing_effect/setDir(newdir)
-	switch(newdir)
-		if(NORTH)
-			layer = BELOW_MOB_LAYER
-			pixel_x = rand(-3,3)
-			pixel_y = rand(4,6)
-		if(SOUTH)
-			pixel_x = rand(-3,3)
-			pixel_y = rand(-1,1)
-		else
-			pixel_x = rand(-1,1)
-			pixel_y = rand(-1,1)
 	..()
+	var/angle = dir2angle(newdir)
+	if(!isnull(angle))
+		aim(angle)
+
+/// Places the flash in front of the shooter. Angle is north-zero, clockwise, the same scale as get_angle().
+/// Does not assign dir: `dir =` calls setDir(), and setDir() calls aim().
+/obj/effect/temp_visual/dir_setting/firing_effect/proc/aim(firing_angle)
+	firing_angle = firing_angle % 360
+	if(firing_angle < 0)
+		firing_angle += 360
+	layer = initial(layer)
+	switch(firing_angle)
+		if(0, 360)
+			pixel_x = 0
+			pixel_y = 8
+		if(1 to 44)
+			pixel_x = round(4 * (firing_angle / 45))
+			pixel_y = 8
+		if(45)
+			pixel_x = 8
+			pixel_y = 8
+		if(46 to 89)
+			pixel_x = 8
+			pixel_y = round(4 * ((90 - firing_angle) / 45))
+		if(90)
+			pixel_x = 8
+			pixel_y = 0
+		if(91 to 134)
+			pixel_x = 8
+			pixel_y = round(-3 * ((firing_angle - 90) / 45))
+		if(135)
+			pixel_x = 8
+			pixel_y = -6
+		if(136 to 179)
+			pixel_x = round(4 * ((180 - firing_angle) / 45))
+			pixel_y = -6
+			plane = ABOVE_GAME_PLANE
+		if(180)
+			pixel_x = 0
+			pixel_y = -6
+			plane = ABOVE_GAME_PLANE
+		if(181 to 224)
+			pixel_x = round(-6 * ((firing_angle - 180) / 45))
+			pixel_y = -6
+			plane = ABOVE_GAME_PLANE
+		if(225)
+			pixel_x = -6
+			pixel_y = -6
+		if(226 to 269)
+			pixel_x = -6
+			pixel_y = round(-6 * ((270 - firing_angle) / 45))
+		if(270)
+			pixel_x = -6
+			pixel_y = 0
+		if(271 to 314)
+			pixel_x = -6
+			pixel_y = round(8 * ((firing_angle - 270) / 45))
+		if(315)
+			pixel_x = -6
+			pixel_y = 8
+		if(316 to 359)
+			pixel_x = round(-6 * ((360 - firing_angle) / 45))
+			pixel_y = 8
+	pixel_x += rand(-1,1)
+	pixel_y += rand(-1,1)
+	transform = matrix().Turn(firing_angle)
 
 /obj/effect/temp_visual/dir_setting/firing_effect/blue
-	icon = 'icons/effects/effects.dmi'
-	icon_state = "firing_effect_blue"
+	icon = '_horizon/icons/effects/muzzle.dmi'
+	icon_state = "muzzle_flash_blue"
 	duration = 3
 
 /obj/effect/temp_visual/dir_setting/firing_effect/red
-	icon = 'icons/effects/effects.dmi'
-	icon_state = "firing_effect_red"
+	icon = '_horizon/icons/effects/muzzle.dmi'
+	icon_state = "muzzle_flash_red"
 	duration = 3
 
 /obj/effect/temp_visual/dir_setting/firing_effect/magic
+	icon = 'icons/effects/effects.dmi'
 	icon_state = "shieldsparkles"
 	duration = 3
+// [/HORIZON-EDIT]
 
 /obj/effect/temp_visual/dir_setting/ninja
 	name = "ninja shadow"

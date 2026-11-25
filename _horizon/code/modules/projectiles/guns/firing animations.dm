@@ -10,13 +10,12 @@
 /obj/item/gun/proc/gunshot_animation(mob/user, burst_fire = FALSE)
 	if(!can_muzzle_flash || (suppressed && LAZYACCESS(gunshot_animation_information, "inactive_when_suppressed")))
 		return
-	var/shot_icon = gunshot_animation_information["icon"] || '_horizon/icons/effects/gunshot.dmi'
+	var/shot_icon = '_horizon/icons/effects/gunshot.dmi'
 	var/shot_icon_state = gunshot_animation_information["icon_state"] || "gunshot"
 	var/shot_duration = gunshot_animation_information["duration"] || 2
 	var/shot_pixel_x = gunshot_animation_information["pixel_x"] || 0
 	var/shot_pixel_y = gunshot_animation_information["pixel_y"] || 0
-	var/image/shots_fired = image(icon = shot_icon, loc = src, icon_state = shot_icon_state, layer = ABOVE_MOB_LAYER)
-	SET_PLANE_EXPLICIT(shots_fired, ABOVE_GAME_PLANE, src)
+	var/image/shots_fired = image(shot_icon, shot_icon_state, src, src.layer - 0.01)
 	shots_fired.pixel_x = shot_pixel_x
 	shots_fired.pixel_y = shot_pixel_y
 	add_overlay(shots_fired)
@@ -32,7 +31,7 @@
 	var/recoil_angle_upper = recoil_animation_information["recoil_angle_upper"] || -20
 	var/recoil_angle_lower = recoil_animation_information["recoil_angle_lower"] || -40
 	var/recoil_speed = recoil_animation_information["recoil_speed"] || 2
-	var return_speed = recoil_animation_information["return_speed"] || 2
+	var/return_speed = recoil_animation_information["return_speed"] || 2
 	var/recoil_easing = recoil_animation_information["recoil_easing"] || ELASTIC_EASING
 	var/return_easing = recoil_animation_information["return_easing"] || ELASTIC_EASING
 	var/matrix/return_matrix = matrix(transform)

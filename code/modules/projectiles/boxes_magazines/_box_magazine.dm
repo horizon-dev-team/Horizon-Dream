@@ -275,6 +275,16 @@
 	to_chat(user, span_notice("You remove a [casing_phrasing] from [src]!"))
 	update_appearance()
 
+// [HORIZON-ADD] GunRework
+/obj/item/ammo_box/get_extra_tooltip(mob/user)
+	. = ..()
+	var/shells_left = LAZYLEN(stored_ammo)
+	var/obj/item/ammo_casing/top_round = get_round()
+	if(!top_round)
+		return
+	. += "<b>Capacity:</b> [icon2html(DAMAGE_ICON_SET, user, "bullet")] [shells_left]/[max_ammo] [casing_phrasing]\s."
+// [/HORIZON-ADD]
+
 /obj/item/ammo_box/examine(mob/user)
 	. = ..()
 	var/shells_left = LAZYLEN(stored_ammo)

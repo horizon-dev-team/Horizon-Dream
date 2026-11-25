@@ -415,6 +415,39 @@
 			TEST_ASSERT("[prefix]_burst" in gun_overlays, "[gun_type] lost its selector overlay")
 		TEST_ASSERT("[prefix]_mag" in icon_states(gun.icon), "[gun_type] has no matching magazine sprite")
 
+/// Optional overlays must exist, while the toy SMG retains its real selector.
+/datum/unit_test/ballistic_optional_overlays/Run()
+	var/obj/item/gun/ballistic/shotgun/shotgun = allocate(/obj/item/gun/ballistic/shotgun)
+	var/list/shotgun_overlays = shotgun.update_overlays()
+	TEST_ASSERT(!("shotgun_bolt" in shotgun_overlays), "Shotgun requested a nonexistent bolt sprite")
+	var/obj/item/gun/ballistic/automatic/proto/saber = allocate(/obj/item/gun/ballistic/automatic/proto)
+	var/list/saber_overlays = saber.update_overlays()
+	TEST_ASSERT(!("saber_burst" in saber_overlays), "Saber inherited a toy selector")
+	var/obj/item/gun/ballistic/automatic/toy/toy = allocate(/obj/item/gun/ballistic/automatic/toy)
+	var/list/toy_overlays = toy.update_overlays()
+	TEST_ASSERT("saber_burst" in toy_overlays, "Toy SMG lost its valid burst selector")
+	toy.burst_fire_selection = FALSE
+	toy_overlays = toy.update_overlays()
+	TEST_ASSERT("saber_semi" in toy_overlays, "Toy SMG lost its valid semi selector")
+
+/// Projectile muzzle effects must use a plane above the separate mob plane.
+/datum/unit_test/projectile_muzzle_plane/Run()
+	var/obj/effect/projectile/muzzle/bullet/flash = allocate(/obj/effect/projectile/muzzle/bullet)
+	TEST_ASSERT_EQUAL(PLANE_TO_TRUE(flash.plane), ABOVE_GAME_PLANE, "Projectile muzzle renders below mobs")
+
+/// Sawn rifles must not draw the full-length bolt over their shortened body.
+/datum/unit_test/ballistic_sawn_overlays/Run()
+	var/obj/item/gun/ballistic/rifle/boltaction/gun = allocate(/obj/item/gun/ballistic/rifle/boltaction)
+	gun.do_sawoff()
+	for(var/locked in list(FALSE, TRUE))
+		gun.bolt_locked = locked
+		gun.update_appearance()
+		var/list/gun_overlays = gun.update_overlays()
+		var/bolt_state = "sakhno_sawn_bolt[locked ? "_locked" : ""]"
+		TEST_ASSERT(bolt_state in icon_states(gun.icon), "Sawn rifle has no matching bolt asset")
+		TEST_ASSERT(bolt_state in gun_overlays, "Sawn rifle lost its shortened bolt")
+		TEST_ASSERT(!("sakhno_bolt[locked ? "_locked" : ""]" in gun_overlays), "Sawn rifle draws a full-length bolt")
+
 /// Muzzle flashes render above mobs, using the gun's multiz plane offset.
 /datum/unit_test/gunshot_overlay_plane/Run()
 	var/obj/item/gun/gun = allocate(/obj/item/gun/ballistic/automatic/pistol)
@@ -426,6 +459,28 @@
 	TEST_ASSERT_EQUAL(flash.icon_state, "gunshot", "Gunshot image arguments lost its icon state")
 	TEST_ASSERT_EQUAL(PLANE_TO_TRUE(flash.plane), ABOVE_GAME_PLANE, "Gunshot overlay renders below mobs")
 	TEST_ASSERT_EQUAL(flash.layer, ABOVE_MOB_LAYER, "Gunshot overlay uses the item's lower layer")
+	TEST_ASSERT(flash.appearance_flags & KEEP_APART, "Flash is flattened into the gun's lower-plane KEEP_TOGETHER group")
 	sleep(3)
 	TEST_ASSERT_EQUAL(length(gun.overlays), 0, "Gunshot animation left a permanent overlay")
+	var/mob/living/carbon/human/user = allocate(/mob/living/carbon/human/consistent)
+	user.put_in_hands(gun, forced = TRUE)
+	gun.cut_overlays()
+	var/list/original_overlays = user.overlays.Copy()
+	user.setDir(NORTH)
+	gun.gunshot_animation_information["pixel_x"] = 15
+	gun.gunshot_animation_information["pixel_y"] = 1
+	INVOKE_ASYNC(gun, TYPE_PROC_REF(/obj/item/gun, gunshot_animation), user)
+	TEST_ASSERT_EQUAL(length(gun.overlays), 0, "Held flash was drawn on the HUD item rather than its holder")
+	var/list/flash_overlays = user.overlays - original_overlays
+	TEST_ASSERT_EQUAL(length(flash_overlays), 1, "Held gun did not display a flash on its holder")
+	var/image/held_flash = flash_overlays[1]
+	TEST_ASSERT_EQUAL(PLANE_TO_TRUE(held_flash.plane), ABOVE_GAME_PLANE, "Held flash uses the wrong plane")
+	TEST_ASSERT(held_flash.appearance_flags & KEEP_APART, "Held flash cannot escape the holder's render group")
+	TEST_ASSERT_EQUAL(round(held_flash.pixel_x), -1, "North-facing flash kept its east-facing X offset")
+	TEST_ASSERT_EQUAL(round(held_flash.pixel_y), 15, "North-facing flash did not rotate its muzzle offset")
+	var/matrix/flash_transform = held_flash.transform
+	TEST_ASSERT_EQUAL(round(flash_transform.a), 0, "One-direction flash sprite did not turn by a quarter rotation")
+	TEST_ASSERT_EQUAL(round(abs(flash_transform.b)), 1, "One-direction flash sprite lost its rotation")
+	sleep(3)
+	TEST_ASSERT_EQUAL(length(user.overlays - original_overlays), 0, "Held flash was not removed")
 // [/HORIZON-ADD]

@@ -306,9 +306,13 @@
 	var/overlay_state = base_icon_state
 	if(!overlay_state)
 		overlay_state = initial(icon_state)
+	if(sawn_off)
+		overlay_state = "[overlay_state]_sawn"
 
 	if(selector_switch_icon)
-		. += "[overlay_state]_[burst_fire_selection ? "burst" : "semi"]"
+		var/selector_state = "[overlay_state]_[burst_fire_selection ? "burst" : "semi"]"
+		if(icon_exists(icon, selector_state))
+			. += selector_state
 	if(suppressed && can_unsuppress) // integrated suppressors don't get an overlay
 		var/image/suppressor_overlay = image(icon, "[overlay_state]_suppressor")
 		if(suppressor_x_offset)
@@ -319,7 +323,10 @@
 
 	if(show_bolt_icon)
 		if(bolt_type == BOLT_TYPE_LOCKING || bolt_type == BOLT_TYPE_OPEN || bolt_type == BOLT_TYPE_STANDARD)
-			. += "[overlay_state]_bolt[bolt_locked ? "_locked" : ""]"
+			// Standard-bolt guns need not have a separate bolt sprite.
+			var/bolt_state = "[overlay_state]_bolt[bolt_locked ? "_locked" : ""]"
+			if(icon_exists(icon, bolt_state))
+				. += bolt_state
 
 	// Duplicated in C-20r's update_overlays to keep the empty indicator on top.
 	if(!chambered && empty_indicator)

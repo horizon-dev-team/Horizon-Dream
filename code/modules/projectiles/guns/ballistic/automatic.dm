@@ -571,29 +571,21 @@
 /obj/item/gun/ballistic/automatic
 	/// Position of the fire selector: 1 = semi, 2 = burst, 3 = full auto.
 	var/select = 3
-	var/fireselector = '_horizon/sound/weapons/guns/rifle/msafety.wav'
-	/// Burst length while select == 2. Defaults to the gun's initial
-	/// burst_size, which also marks the gun as having no separate burst mode.
-	var/burst_size_toggled
-	/// Fire delay while select == 2. Defaults to the gun's initial fire_delay.
-	var/fire_delay_toggled
-	/// Burst length while select == 3 (full auto).
-	var/burst_size_auto
-	/// Fire delay while select == 3 (full auto).
-	var/fire_delay_auto
+	burst_select_sound = '_horizon/sound/weapons/guns/rifle/msafety.wav'
 
 /obj/item/gun/ballistic/automatic/Initialize(mapload)
 	. = ..()
-	if(isnull(burst_size_toggled))
-		burst_size_toggled = initial(burst_size)
-	if(isnull(fire_delay_toggled))
-		fire_delay_toggled = initial(fire_delay)
-	if(isnull(burst_size_auto))
-		burst_size_auto = initial(burst_size)
-	if(isnull(fire_delay_auto))
-		fire_delay_auto = initial(fire_delay)
+	if(GetComponent(/datum/component/automatic_fire))
+		// The component repeats single shots; burst_size only configures burst mode.
+		burst_size = 1
 
-/// The autofire component only fires while the selector is on full auto.
+/// Let ordinary clicks through in semi/burst mode, including after re-equipping.
+/obj/item/gun/ballistic/automatic/autofire_bypass_check(datum/source, client/clicker, atom/target, turf/location, control, params)
+	SIGNAL_HANDLER
+	if(select != 3)
+		return COMPONENT_AUTOFIRE_ONMOUSEDOWN_BYPASS
+	return ..()
+
 /obj/item/gun/ballistic/automatic/on_autofire_start(mob/living/shooter)
 	if(select != 3)
 		return NONE
@@ -605,55 +597,44 @@
 		return NONE
 	return ..()
 
-/// Full-auto automatics pass their full-auto fire delay to the component.
 /obj/item/gun/ballistic/automatic/initialize_full_auto()
 	if(!full_auto)
 		return FALSE
-	AddComponent(/datum/component/automatic_fire, fire_delay_auto)
+	AddComponent(/datum/component/automatic_fire, fire_delay)
 
-/// Fire selector: cycles semi -> burst -> auto and applies the stats,
-/// replacing the plain semi/burst toggle from the base gun.
+/// Guns without an autofire component retain the upstream semi/burst toggle.
 /obj/item/gun/ballistic/automatic/burst_select()
-	var/mob/living/carbon/human/user = usr
+	if(firing_burst)
+		return
 	var/datum/component/automatic_fire/autofire = GetComponent(/datum/component/automatic_fire)
-
-	if(!autofire && burst_size_toggled == initial(burst_size))
+	if(!autofire)
 		return ..()
 
-	// Cycle the selector: semi -> burst -> auto -> semi.
+	var/mob/living/user = usr
+	// Stop an active firing loop before changing mode, never overwrite its state.
+	autofire.autofire_off()
 	switch(select)
 		if(1)
-			select = (burst_size_toggled != initial(burst_size)) ? 2 : 3
+			select = initial(burst_size) > 1 ? 2 : 3
 		if(2)
-			select = autofire ? 3 : 1
+			select = 3
 		else
 			select = 1
 
+	burst_size = 1
+	fire_delay = initial(fire_delay)
+	burst_fire_selection = select != 1
 	switch(select)
-		if(1) // semi
-			burst_size = 1
-			fire_delay = initial(fire_delay)
-			burst_fire_selection = FALSE
-			autofire?.autofire_off()
+		if(1)
 			to_chat(user, span_notice("I switch [src] to semi-automatic."))
-		if(2) // burst
-			burst_size = burst_size_toggled
-			fire_delay = fire_delay_toggled
-			burst_fire_selection = TRUE
-			if(autofire)
-				autofire.autofire_stat = AUTOFIRE_STAT_IDLE
-				autofire.autofire_on(user?.client)
+		if(2)
+			burst_size = initial(burst_size)
 			to_chat(user, span_notice("I switch [src] to [burst_size]-round burst."))
-		if(3) // full auto
-			burst_size = burst_size_auto
-			fire_delay = initial(fire_delay)
-			burst_fire_selection = TRUE
-			if(autofire)
-				autofire.autofire_stat = AUTOFIRE_STAT_IDLE
-				autofire.autofire_on(user?.client)
+		if(3)
+			autofire.autofire_on(user?.client)
 			to_chat(user, span_notice("I switch [src] to automatic."))
 
-	playsound(user, fireselector, 90, FALSE)
+	playsound(src, burst_select_sound, 90, FALSE)
 	update_appearance()
 	update_item_action_buttons()
 // [/HORIZON-ADD]

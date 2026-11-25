@@ -219,7 +219,7 @@
 // [HORIZON-ADD] GunRework
 /obj/projectile/bullet/shotgun_bolas
 	name = "4g slug"
-	damage = 80
+	damage = 55
 	wound_bonus = 10
 	sharpness = SHARP_POINTY
 

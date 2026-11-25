@@ -299,16 +299,18 @@
 	if(cylinder_open && cylinder_shows_open)
 		icon_state = "[icon_state]_open"
 
+// [HORIZON-EDIT] GunRework
 /obj/item/gun/ballistic/update_overlays()
 	. = ..()
-	// Fire selector icon (upstream automatics like the C-20r use this).
+	// Upstream guns often define only icon_state; never build states like "_mag".
+	var/overlay_state = base_icon_state
+	if(!overlay_state)
+		overlay_state = initial(icon_state)
+
 	if(selector_switch_icon)
-		if(burst_fire_selection)
-			. += "[base_icon_state]_burst"
-		else
-			. += "[base_icon_state]_semi"
+		. += "[overlay_state]_[burst_fire_selection ? "burst" : "semi"]"
 	if(suppressed && can_unsuppress) // integrated suppressors don't get an overlay
-		var/image/suppressor_overlay = image(icon, "[base_icon_state]_suppressor")
+		var/image/suppressor_overlay = image(icon, "[overlay_state]_suppressor")
 		if(suppressor_x_offset)
 			suppressor_overlay.pixel_x = suppressor_x_offset
 		if(suppressor_y_offset)
@@ -317,29 +319,28 @@
 
 	if(show_bolt_icon)
 		if(bolt_type == BOLT_TYPE_LOCKING || bolt_type == BOLT_TYPE_OPEN || bolt_type == BOLT_TYPE_STANDARD)
-			. += "[base_icon_state]_bolt[bolt_locked ? "_locked" : ""]"
+			. += "[overlay_state]_bolt[bolt_locked ? "_locked" : ""]"
 
-	//this is duplicated in c20's update_overlays due to a layering issue with the select fire icon
+	// Duplicated in C-20r's update_overlays to keep the empty indicator on top.
 	if(!chambered && empty_indicator)
-		. += "[base_icon_state]_empty"
+		. += "[overlay_state]_empty"
 
 	if(gun_flags & TOY_FIREARM_OVERLAY)
-		. += "[base_icon_state]_toy"
+		. += "[overlay_state]_toy"
 
-	// [HORIZON-ADD] GunRework: break action cylinder overlay
 	if(cylinder_open && cylinder_shows_open)
-		. += "[base_icon_state]_cylinder[cylinder_shows_ammo_count ? "-[magazine ? magazine.ammo_count() : 0]" : ""]"
+		. += "[overlay_state]_cylinder[cylinder_shows_ammo_count ? "-[magazine ? magazine.ammo_count() : 0]" : ""]"
 
 	if(!magazine || internal_magazine || !mag_display)
 		return
 
 	if(special_mags)
-		. += "[base_icon_state]_mag_[initial(magazine.icon_state)]"
+		. += "[overlay_state]_mag_[initial(magazine.icon_state)]"
 		if(mag_display_ammo && !magazine.ammo_count())
-			. += "[base_icon_state]_mag_empty"
+			. += "[overlay_state]_mag_empty"
 		return
 
-	. += "[base_icon_state]_mag"
+	. += "[overlay_state]_mag"
 	if(!mag_display_ammo)
 		return
 
@@ -356,7 +357,8 @@
 		if(0.2 to 0.4)
 			capacity_number = 20
 	if(capacity_number)
-		. += "[base_icon_state]_mag_[capacity_number]"
+		. += "[overlay_state]_mag_[capacity_number]"
+// [/HORIZON-EDIT]
 
 /obj/item/gun/ballistic/ui_action_click(mob/user, actiontype)
 	if(istype(actiontype, /datum/action/item_action/toggle_firemode))

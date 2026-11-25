@@ -1077,7 +1077,8 @@
 	var/shot_duration = gunshot_animation_information["duration"] || 2
 	var/shot_pixel_x = gunshot_animation_information["pixel_x"] || 0
 	var/shot_pixel_y = gunshot_animation_information["pixel_y"] || 0
-	var/image/shots_fired = image(shot_icon, shot_icon_state, src, src.layer - 0.01)
+	var/image/shots_fired = image(icon = shot_icon, loc = src, icon_state = shot_icon_state, layer = ABOVE_MOB_LAYER)
+	SET_PLANE_EXPLICIT(shots_fired, ABOVE_GAME_PLANE, src)
 	shots_fired.pixel_x = shot_pixel_x
 	shots_fired.pixel_y = shot_pixel_y
 	add_overlay(shots_fired)

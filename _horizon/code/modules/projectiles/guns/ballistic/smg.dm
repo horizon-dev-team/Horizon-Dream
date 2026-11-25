@@ -105,7 +105,7 @@
 	rack_sound = '_horizon/sound/weapons/guns/rifle/akrack.wav'
 	suppressed_sound = '_horizon/sound/weapons/guns/smg/vityaz_silenced.ogg'
 	fire_sound = '_horizon/sound/weapons/guns/smg/vityaz.ogg'
-	fireselector = '_horizon/sound/weapons/guns/rifle/aksafety1.wav'
+	burst_select_sound = '_horizon/sound/weapons/guns/rifle/aksafety1.wav'
 	accepted_magazine_type = /obj/item/ammo_box/magazine/bastardo9mm
 	weapon_weight = WEAPON_MEDIUM
 	force = 10
@@ -234,7 +234,7 @@
 	fire_sound = '_horizon/sound/weapons/guns/smg/bolsa.wav'
 	lock_back_sound = '_horizon/sound/weapons/guns/smg/bolsa_lockback.wav'
 	bolt_drop_sound = '_horizon/sound/weapons/guns/smg/bolsa_lockin.wav'
-	fireselector = '_horizon/sound/weapons/guns/smg/bolsa_safety.wav'
+	burst_select_sound = '_horizon/sound/weapons/guns/smg/bolsa_safety.wav'
 	safety_off_sound = '_horizon/sound/weapons/guns/smg/bolsa_safety.wav'
 	safety_on_sound = '_horizon/sound/weapons/guns/smg/bolsa_safety.wav'
 	accepted_magazine_type = /obj/item/ammo_box/magazine/uzi9mm

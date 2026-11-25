@@ -46,7 +46,7 @@
 	safety_off_sound = '_horizon/sound/weapons/guns/rifle/msafety.wav'
 	safety_on_sound = '_horizon/sound/weapons/guns/rifle/msafety.wav'
 	rack_sound = '_horizon/sound/weapons/guns/rifle/mrack.wav'
-	fireselector = '_horizon/sound/weapons/guns/rifle/aksafety1.wav'
+	burst_select_sound = '_horizon/sound/weapons/guns/rifle/aksafety1.wav'
 
 /obj/item/gun/ballistic/automatic/hd_gun/remis/abyss/warfare/m545/add_attachment_slots()
 	..()
@@ -67,7 +67,7 @@
 	safety_off_sound = '_horizon/sound/weapons/guns/rifle/aksafety2.wav'
 	safety_on_sound = '_horizon/sound/weapons/guns/rifle/aksafety1.wav'
 	rack_sound = '_horizon/sound/weapons/guns/rifle/akrack.wav'
-	fireselector = '_horizon/sound/weapons/guns/rifle/aksafety1.wav'
+	burst_select_sound = '_horizon/sound/weapons/guns/rifle/aksafety1.wav'
 
 /obj/item/gun/ballistic/automatic/hd_gun/remis/abyss/warfare/m545/ak/add_attachment_slots()
 	..()
@@ -142,7 +142,7 @@
 	safety_off_sound = '_horizon/sound/weapons/guns/rifle/aksafety2.wav'
 	safety_on_sound = '_horizon/sound/weapons/guns/rifle/aksafety1.wav'
 	rack_sound = '_horizon/sound/weapons/guns/rifle/akrack.wav'
-	fireselector = '_horizon/sound/weapons/guns/rifle/aksafety1.wav'
+	burst_select_sound = '_horizon/sound/weapons/guns/rifle/aksafety1.wav'
 	fold_open_sound = '_horizon/sound/weapons/guns/rifle/ak_stock_open.wav'
 	fold_close_sound = '_horizon/sound/weapons/guns/rifle/ak_stock_close.wav'
 	force = 16
@@ -192,7 +192,7 @@
 	safety_off_sound = '_horizon/sound/weapons/guns/rifle/g11safety2.wav'
 	safety_on_sound = '_horizon/sound/weapons/guns/rifle/g11safety1.wav'
 	rack_sound = '_horizon/sound/weapons/guns/rifle/g11rack.wav'
-	fireselector = '_horizon/sound/weapons/guns/rifle/g11safety1.wav'
+	burst_select_sound = '_horizon/sound/weapons/guns/rifle/g11safety1.wav'
 	force = 12
 	fire_delay = 0.7
 	burst_size = 3
@@ -423,7 +423,7 @@
 	safety_off_sound = '_horizon/sound/weapons/guns/rifle/msafety.wav'
 	safety_on_sound = '_horizon/sound/weapons/guns/rifle/msafety.wav'
 	rack_sound = '_horizon/sound/weapons/guns/smg/thump_rack.wav'
-	fireselector = '_horizon/sound/weapons/guns/rifle/msafety.wav'
+	burst_select_sound = '_horizon/sound/weapons/guns/rifle/msafety.wav'
 	fold_open_sound = '_horizon/sound/weapons/guns/rifle/g36_fold.ogg'
 	fold_close_sound = '_horizon/sound/weapons/guns/rifle/g36_unfold.ogg'
 	force = 18

@@ -580,7 +580,6 @@
 
 /// Let ordinary clicks through in semi/burst mode, including after re-equipping.
 /obj/item/gun/ballistic/automatic/autofire_bypass_check(datum/source, client/clicker, atom/target, turf/location, control, params)
-	SIGNAL_HANDLER
 	if(select != 3)
 		return COMPONENT_AUTOFIRE_ONMOUSEDOWN_BYPASS
 	return ..()
@@ -591,7 +590,6 @@
 	return ..()
 
 /obj/item/gun/ballistic/automatic/do_autofire(datum/source, atom/target, mob/living/shooter, allow_akimbo, params)
-	SIGNAL_HANDLER
 	if(select != 3)
 		return NONE
 	return ..()

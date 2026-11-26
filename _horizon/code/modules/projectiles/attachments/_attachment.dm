@@ -15,7 +15,7 @@
 	attachment_comp = null
 	return ..()
 
-/obj/item/attachment/proc/get_attachment_component()
+/obj/item/attachment/proc/get_attachment_component() as /datum/component/gun_attachment
 	if(!attachment_comp)
 		attachment_comp = AddComponent(attachment_component_type)
 	return attachment_comp

@@ -1122,8 +1122,10 @@ GLOBAL_LIST_INIT(gun_saw_types, typecacheof(list(
 	// Do not unload a gun from another character or from inside a container.
 	if(loc != user && !isturf(loc))
 		return
-	if(onto_hand && hand_slot.hud?.mymob != user)
-		return
+	if(onto_hand)
+		var/datum/hud/user_hud = user.hud_used
+		if(isnull(user_hud) || user_hud.screen_objects[hand_slot.hud_key] != hand_slot)
+			return
 	if(onto_hand && bolt_type == BOLT_TYPE_BREAK_ACTION)
 		toggle_cylinder_open(user)
 		return TRUE

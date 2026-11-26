@@ -314,7 +314,7 @@
 /obj/item/gun/ballistic/automatic/hd_gun/remis/svd
 	name = "\proper Judgement semi-automatic designated marksman rifle"
 	desc = "A Judgement sniper-rifle firing in 7.62x54R, the design allows for comfortable medium and long range combat, and unconventional, but effective CQC against armored targets. \
-	 Has a dovetail mount for a PSO-1M2-1 4x24 scope and a threaded barrel for a sound-suppressor. "
+	Has a dovetail mount for a PSO-1M2-1 4x24 scope and a threaded barrel for a sound-suppressor. "
 	icon = '_horizon/icons/obj/items/guns/64x32.dmi'
 	lefthand_file = '_horizon/icons/obj/items/guns/inhands/rifle_lefthand.dmi'
 	righthand_file = '_horizon/icons/obj/items/guns/inhands/rifle_righthand.dmi'

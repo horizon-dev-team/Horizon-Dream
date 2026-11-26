@@ -97,13 +97,13 @@
 
 
 /*
- - Скорость снарядов у дробовиков TG
- - Какой то плохо работает
- - Бинбег снаряды у дробовиков (найти)
- - ПП путь стреляет автоматом-по 2 пули
- - Сделать предметы в руках весят в 2 раза меньше
- - /obj/item/stack/medical/wrap/sticky_tape
- - /obj/item/stack/medical
+- Скорость снарядов у дробовиков TG
+- Какой то плохо работает
+- Бинбег снаряды у дробовиков (найти)
+- ПП путь стреляет автоматом-по 2 пули
+- Сделать предметы в руках весят в 2 раза меньше
+- /obj/item/stack/medical/wrap/sticky_tape
+- /obj/item/stack/medical
 */
 // MARK: Guns
 // Empty body; magazine, cell and chambered rounds add themselves.

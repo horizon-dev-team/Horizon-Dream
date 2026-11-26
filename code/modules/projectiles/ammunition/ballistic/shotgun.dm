@@ -5,9 +5,9 @@
 	desc = "A 12 gauge lead slug."
 	// [HORIZON-ADD] GunRework
 	icon = '_horizon/icons/obj/items/ammo/casings.dmi'
-	icon_state = "12gauge_slug"
-	base_icon_state = "12gauge_slug"
-	world_icon_state = "gshells"
+	icon_state = "12gauge-slug"
+	base_icon_state = "12gauge-slug"
+	world_icon_state = "12gshell-slug"
 	stack_type = /obj/item/ammo_box/magazine/ammo_stack/shotgun
 	// [/HORIZON-ADD]
 	worn_icon_state = "shell"
@@ -24,13 +24,18 @@
 /obj/item/ammo_casing/shotgun/executioner
 	name = "executioner slug"
 	desc = "A 12 gauge lead slug purpose built to annihilate flesh on impact."
-	icon_state = "stunshell"
+	icon_state = "12gshell-stun"
+	base_icon_state = "12gshell-stun"
+	world_icon_state = "12gshell-stun"
 	projectile_type = /obj/projectile/bullet/shotgun_slug/executioner
 
 /obj/item/ammo_casing/shotgun/pulverizer
 	name = "pulverizer slug"
 	desc = "A 12 gauge lead slug purpose built to annihilate bones on impact."
-	icon_state = "stunshell"
+	icon_state = "12gauge-stun"
+	base_icon_state = "12gauge-stun"
+	world_icon_state = "12gshell-stun"
+	stack_type = /obj/item/ammo_box/magazine/ammo_stack/shotgun/pulverizer
 	projectile_type = /obj/projectile/bullet/shotgun_slug/pulverizer
 
 /obj/item/ammo_casing/shotgun/beanbag
@@ -42,7 +47,9 @@
 /obj/item/ammo_casing/shotgun/incendiary
 	name = "incendiary slug"
 	desc = "An incendiary-coated shotgun slug."
-	icon_state = "ishell"
+	icon_state = "12gauge-hell"
+	base_icon_state = "12gauge-hell"
+	world_icon_state = "12gshell-hell"
 	projectile_type = /obj/projectile/bullet/incendiary/shotgun
 	custom_materials = list(/datum/material/iron = SMALL_MATERIAL_AMOUNT * 3)
 
@@ -54,7 +61,10 @@
 /obj/item/ammo_casing/shotgun/dragonsbreath
 	name = "dragonsbreath shell"
 	desc = "A shotgun shell which fires a cloud of incendiary pellets."
-	icon_state = "ishell2"
+	icon_state = "12gauge-dragon"
+	base_icon_state = "12gauge-dragon"
+	world_icon_state = "12gshell-dragon"
+	stack_type = /obj/item/ammo_box/magazine/ammo_stack/shotgun/dragonsbreath
 	projectile_type = /obj/projectile/bullet/incendiary/shotgun/dragonsbreath
 	pellets = 6
 	variance = 15
@@ -64,7 +74,9 @@
 /obj/item/ammo_casing/shotgun/stunslug
 	name = "taser slug"
 	desc = "A stunning taser slug."
-	icon_state = "stunshell"
+	icon_state = "12gshell-stun"
+	base_icon_state = "12gshell-stun"
+	world_icon_state = "12gshell-stun"
 	projectile_type = /obj/projectile/bullet/shotgun_stunslug
 	custom_materials = list(/datum/material/iron=SMALL_MATERIAL_AMOUNT*2.5)
 

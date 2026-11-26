@@ -255,7 +255,7 @@
 	base_icon_state = "c762"
 	world_icon_state = "762-casing"
 	caliber = CALIBER_A762
-	max_ammo = 8
+	max_ammo = 5
 	ammo_type = /obj/item/ammo_casing/a762
 
 /obj/item/ammo_box/magazine/ammo_stack/a762/loaded
@@ -298,12 +298,11 @@
 
 /obj/item/ammo_box/magazine/ammo_stack/a556steyr
 	name = "5.56x45mm SCF rounds"
-	world_icon = '_horizon/icons/obj/items/ammo/casings.dmi'
 	icon_state = "flechette-1"
 	base_icon_state = "flechette"
 	world_icon_state = "flechette"
 	caliber = CALIBER_FLECHETTE
-	max_ammo = 8
+	max_ammo = 5
 	ammo_type = /obj/item/ammo_casing/a556steyr
 
 /obj/item/ammo_box/magazine/ammo_stack/a556steyr/loaded
@@ -351,22 +350,54 @@
 	name = "12 gauge buckshot"
 	icon_state = "12gauge-1"
 	base_icon_state = "12gauge"
-	world_icon_state = "gshell"
-	max_ammo = 8
+	world_icon_state = "12gauge"
+	max_ammo = 5
 	caliber = CALIBER_SHOTGUN
 	ammo_type = /obj/item/ammo_casing/shotgun/buckshot
 
 /obj/item/ammo_box/magazine/ammo_stack/shotgun/loaded
 	start_empty = FALSE
 
+/*
+/obj/item/ammo_box/magazine/ammo_stack/shotgun/
+	name = "10 gauge buckshot"
+	icon_state = "10gauge-1"
+	base_icon_state = "10gauge"
+	world_icon_state = "10gshell"
+
+/obj/item/ammo_box/magazine/ammo_stack/shotgun/bolas/loaded
+	start_empty = FALSE
+*/
+
+
 /obj/item/ammo_box/magazine/ammo_stack/shotgun/flechette
 	name = "12 gauge flechette shells"
 	desc = "A stack of 12 gauge flechette shells."
 	icon_state = "flechette-1"
 	base_icon_state = "flechette"
-	world_icon = '_horizon/icons/obj/items/ammo/casings.dmi'
 	world_icon_state = "flechette"
 	ammo_type = /obj/item/ammo_casing/shotgun/flechette
+
+/obj/item/ammo_box/magazine/ammo_stack/shotgun/pulverizer
+	name = "12 gauge buckshot"
+	icon_state = "12gauge-stun-1"
+	base_icon_state = "12gauge-stun"
+	world_icon_state = "12shells-stun"
+	ammo_type = /obj/item/ammo_casing/shotgun/pulverizer
+
+/obj/item/ammo_box/magazine/ammo_stack/shotgun/incendiary
+	name = "12 gauge buckshot"
+	icon_state = "12gauge-hell-1"
+	base_icon_state = "12gauge-hell"
+	world_icon_state = "12shells-hell"
+	ammo_type = /obj/item/ammo_casing/shotgun/incendiary
+
+/obj/item/ammo_box/magazine/ammo_stack/shotgun/dragonsbreath
+	name = "12 gauge dragonsbreath shells"
+	icon_state = "12gauge-dragon-1"
+	base_icon_state = "12gauge-dragon"
+	world_icon_state = "12shells-dragon"
+	ammo_type = /obj/item/ammo_casing/shotgun/dragonsbreath
 
 /obj/item/ammo_box/magazine/ammo_stack/shotgun/flechette/loaded
 	start_empty = FALSE
@@ -376,7 +407,6 @@
 	icon_state = "8gauge-1"
 	base_icon_state = "8gauge"
 	world_icon_state = "8gshell"
-	max_ammo = 8
 	caliber = CALIBER_KS23
 	ammo_type = /obj/item/ammo_casing/shotgun/bolas/buckshot
 

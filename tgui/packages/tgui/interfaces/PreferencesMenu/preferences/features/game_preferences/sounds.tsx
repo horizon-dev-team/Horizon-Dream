@@ -9,6 +9,35 @@ import { FeatureDropdownInput } from '../dropdowns';
 
 // [HORIZON-EDIT] Master_Sounds
 // Volumes are now configured per channel in the Volume Mixer tab.
+
+//export const sound_ambience_volume: Feature<number> = {
+//  name: 'Ambience volume',
+//  category: 'SOUND',
+//  description: `Ambience refers to the more noticeable ambient sounds that play on occasion.`,
+//  component: FeatureSliderInput,
+//};
+
+export const sound_ambience_mute_during_music: FeatureToggle = {
+  name: 'Mute ambience during admin music',
+  category: 'SOUND',
+  description: 'When enabled, ambience stops while admin music is playing.',
+  component: CheckboxInput,
+};
+
+//export const sound_breathing: FeatureToggle = {
+//  name: 'Enable breathing sounds',
+//  category: 'SOUND',
+//  description: 'When enabled, hear breathing sounds when using internals.',
+//  component: CheckboxInput,
+//};
+
+//export const sound_announcements: FeatureToggle = {
+//  name: 'Enable announcement sounds',
+//  category: 'SOUND',
+//  description: 'When enabled, hear sounds for command reports, notices, etc.',
+//  component: CheckboxInput,
+//};
+
 export const sound_ghost_poll_prompt: FeatureChoiced = {
   name: 'Ghost poll prompt',
   category: 'SOUND',

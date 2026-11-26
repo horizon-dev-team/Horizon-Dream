@@ -50,6 +50,51 @@
 	if(sound_to_send)
 		SEND_SOUND(client.mob, sound_to_send)
 
+/// Controls hearing lobby music
+///datum/preference/numeric/volume/sound_lobby_volume
+//	category = PREFERENCE_CATEGORY_GAME_PREFERENCES
+//	savefile_key = "sound_lobby_volume"
+//	savefile_identifier = PREFERENCE_PLAYER
+
+///datum/preference/numeric/volume/sound_lobby_volume/apply_to_client_updated(client/client, value)
+//	if (value && isnewplayer(client.mob))
+//		client.playtitlemusic()
+//	else
+//		client.mob.stop_sound_channel(CHANNEL_LOBBYMUSIC)
+
+///// Controls hearing admin music
+///datum/preference/numeric/volume/sound_midi
+//	category = PREFERENCE_CATEGORY_GAME_PREFERENCES
+//	savefile_key = "sound_midi"
+//	savefile_identifier = PREFERENCE_PLAYER
+
+/// Controls whether admin internet music mutes ambience
+/datum/preference/toggle/sound_ambience_mute_during_music
+	category = PREFERENCE_CATEGORY_GAME_PREFERENCES
+	savefile_key = "sound_ambience_mute_during_music"
+	savefile_identifier = PREFERENCE_PLAYER
+
+///// Controls ship ambience volume
+///datum/preference/numeric/volume/sound_ship_ambience_volume
+//	category = PREFERENCE_CATEGORY_GAME_PREFERENCES
+//	savefile_key = "sound_ship_ambience_volume"
+//	savefile_identifier = PREFERENCE_PLAYER
+
+///datum/preference/numeric/volume/sound_ship_ambience_volume/apply_to_client_updated(client/client, value)
+//	client.mob.refresh_looping_ambience()
+
+///// Controls radio noise volume
+///datum/preference/numeric/volume/sound_radio_noise
+//	category = PREFERENCE_CATEGORY_GAME_PREFERENCES
+//	savefile_key = "sound_radio_noise"
+//	savefile_identifier = PREFERENCE_PLAYER
+
+///// Controls hearing AI VOX announcements
+///datum/preference/numeric/volume/sound_ai_vox
+//	category = PREFERENCE_CATEGORY_GAME_PREFERENCES
+//	savefile_key = "sound_ai_vox"
+//	savefile_identifier = PREFERENCE_PLAYER
+
 /// Choice of which ghost poll prompt to use
 /datum/preference/choiced/sound_ghost_poll_prompt
 	category = PREFERENCE_CATEGORY_GAME_PREFERENCES

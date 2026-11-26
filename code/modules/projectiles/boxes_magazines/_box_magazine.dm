@@ -282,7 +282,7 @@
 	var/obj/item/ammo_casing/top_round = get_round()
 	if(!top_round)
 		return
-	. += "<b>Capacity:</b> [icon2html(DAMAGE_ICON_SET, user, "ammo_bullet")] [shells_left]/[max_ammo] [casing_phrasing]\s."
+	. += "<br><tr><td><b>Capacity:</b></b></td><td>[icon2html(DAMAGE_ICON_SET, user, "ammo_bullet")] [shells_left]/[max_ammo] [casing_phrasing]\s.</td></tr>"
 // [/HORIZON-ADD]
 
 /obj/item/ammo_box/examine(mob/user)

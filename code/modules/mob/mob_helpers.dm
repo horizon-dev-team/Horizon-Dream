@@ -157,6 +157,16 @@
 		. += letter
 	return sanitize(.)
 
+// [HORIZON-ADD] NEED_WATER
+/proc/thirstymessage(message)
+	. = ""
+	for(var/n = 1, n <= length_char(message), n++)
+		var/chance = prob(THIRST_STUTTER_RATE)
+		. += chance ? "-" : copytext_char(message, n, n + 1)
+
+	return sanitize(.)
+// [/HORIZON-ADD]
+
 #define TILES_PER_SECOND 0.7
 ///Shake the camera of the person viewing the mob SO REAL!
 ///Takes the mob to shake, the time span to shake for, and the amount of tiles we're allowed to shake by in tiles

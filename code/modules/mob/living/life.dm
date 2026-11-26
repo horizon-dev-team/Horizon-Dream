@@ -63,6 +63,12 @@
 		update_nutrition()
 		living_flags &= ~QUEUE_NUTRITION_UPDATE
 
+	// [HORIZON-ADD] NEED_WATER
+	if(living_flags & QUEUE_THIRST_UPDATE)
+		update_thirst()
+		living_flags &= ~QUEUE_THIRST_UPDATE
+	// [/HORIZON-ADD]
+
 	if(living_flags & BLOOD_UPDATE_QUEUED)
 		update_blood_effects()
 		living_flags &= ~BLOOD_UPDATE_QUEUED
@@ -99,12 +105,16 @@
  *
  * Returns a number representing fullness, scaled similarly to nutrition.
  */
-/mob/living/proc/get_fullness(only_consumable)
+// [HORIZON-EDIT] NEED_WATER
+/mob/living/proc/get_fullness(only_consumable, thirst_flag = FALSE)
+	if(thirst_flag)
+		return thirst
 	var/fullness = nutrition
 	// we add the nutrition value of what we're currently digesting
 	for(var/datum/reagent/consumable/bits in reagents.reagent_list)
 		fullness += bits.get_nutriment_factor(src) * bits.volume / bits.metabolization_rate
 	return fullness
+// [/HORIZON-EDIT]
 
 /**
  * Check if the mob contains this reagent.

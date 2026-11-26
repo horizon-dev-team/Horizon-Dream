@@ -1160,30 +1160,113 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 	icon_state = "stamina0"
 	screen_loc = ui_stamina
 
-#define HUNGER_STATE_FAT 5
-#define HUNGER_STATE_FULL 4
-#define HUNGER_STATE_FINE 3
-#define HUNGER_STATE_HUNGRY 2
-#define HUNGER_STATE_VERY_HUNGRY 1
-#define HUNGER_STATE_STARVING 0
+// [HORIZON-EDIT] WEIGHT_AND_WATER
+/**
+ * One layer of the crossfading status circle backdrop.
+ */
+/atom/movable/screen/status_circle
+	icon = '_horizon/icons/ui/icons_status.dmi'
+	icon_state = ""
+	vis_flags = VIS_INHERIT_ID | VIS_INHERIT_PLANE
+	mouse_opacity = MOUSE_OPACITY_TRANSPARENT
+
+/atom/movable/screen/status_circle/Initialize(mapload, datum/hud/hud_owner)
+	. = ..()
+	var/atom/movable/movable_loc = ismovable(loc) ? loc : null
+	screen_loc = movable_loc?.screen_loc
+
+/**
+ * Shared plumbing for the round status indicators (hunger, thirst, encumbrance).
+ */
+/atom/movable/screen/need_status
+	icon = '_horizon/icons/ui/icons_status.dmi'
+	mouse_opacity = MOUSE_OPACITY_ICON
+	/// Circle currently shown (or fading in)
+	VAR_PRIVATE/atom/movable/screen/status_circle/circle_shown
+	/// Circle holding the previous state while it fades out
+	VAR_PRIVATE/atom/movable/screen/status_circle/circle_fading
+	/// Last atlas state we set on the circle, null before the first update
+	VAR_PRIVATE/last_circle_state
+	/// Visibility the indicator is currently holding or animating towards;
+	VAR_PRIVATE/visible_target = TRUE
+
+/atom/movable/screen/need_status/Initialize(mapload, datum/hud/hud_owner)
+	. = ..()
+	circle_shown = new(src, null)
+	circle_shown.layer = layer - 1
+	circle_fading = new(src, null)
+	circle_fading.layer = layer - 2
+	circle_fading.alpha = 0
+	vis_contents += circle_fading
+	vis_contents += circle_shown
+
+/atom/movable/screen/need_status/proc/set_circle_state(circle_state, instant = FALSE)
+	if(circle_state == last_circle_state)
+		return
+	last_circle_state = circle_state
+	if(instant)
+		circle_shown.icon_state = circle_state
+		circle_shown.alpha = 255
+		circle_fading.alpha = 0
+		return
+	circle_fading.icon_state = circle_shown.icon_state
+	circle_fading.alpha = circle_shown.alpha
+	circle_shown.icon_state = circle_state
+	circle_shown.alpha = 0
+	animate(circle_shown, alpha = 255, time = 0.5 SECONDS)
+	animate(circle_fading, alpha = 0, time = 0.5 SECONDS)
+
+/// Fades the whole indicator in or out. A hidden indicator also stops eating clicks meant for what sits under it.
+/atom/movable/screen/need_status/proc/fade_visibility(should_show, instant = FALSE)
+	if(should_show == visible_target)
+		return
+	visible_target = should_show
+	mouse_opacity = should_show ? MOUSE_OPACITY_ICON : MOUSE_OPACITY_TRANSPARENT
+	if(instant)
+		animate(src, flags = ANIMATION_END_NOW)
+		alpha = should_show ? 255 : 0
+		return
+	animate(src, alpha = should_show ? 255 : 0, time = 1 SECONDS)
+
+/atom/movable/screen/need_status/proc/set_warning_pulse(warning)
+	var/list/blink_targets = list(src, circle_shown, circle_fading)
+	if(!warning)
+		for(var/atom/movable/target in blink_targets)
+			target.remove_filter("status_warning")
+		return
+	for(var/atom/movable/target in blink_targets)
+		if(target.get_filter("status_warning"))
+			continue
+		target.add_filter("status_warning", 1, list("type" = "outline", "color" = "#FF0033", "alpha" = 0, "size" = 2))
+		animate(target.get_filter("status_warning"), alpha = 200, time = 1.5 SECONDS, loop = -1)
+		animate(alpha = 0, time = 1.5 SECONDS)
+
+/// Need indicators close their hover tooltip when the mouse leaves them.
+/atom/movable/screen/need_status/MouseExited(location, control, params)
+	closeToolTip(usr)
+	return ..()
+
+// Hunger is drawn as a burger over a crossfading status circle instead of a bar.
+#define HUNGER_CIRCLE_STARVING 0
+#define HUNGER_CIRCLE_VERY_HUNGRY 1
+#define HUNGER_CIRCLE_HUNGRY 2
+#define HUNGER_CIRCLE_FINE 3
+#define HUNGER_CIRCLE_FED 4
+#define HUNGER_CIRCLE_WELL_FED 5
+#define HUNGER_CIRCLE_OVERATE 6
 
 /atom/movable/screen/hunger
+	parent_type = /atom/movable/screen/need_status
 	name = "hunger"
-	icon_state = "hungerbar"
+	icon_state = "hburger"
 	screen_loc = ui_hunger
-	mouse_opacity = MOUSE_OPACITY_TRANSPARENT
-	/// What state of hunger are we in?
-	VAR_PRIVATE/state
-	/// What was the last fullness we recorded?
+	mouse_over_pointer = MOUSE_HAND_POINTER
+	/// Which circle of the status atlas we are on (HUNGER_CIRCLE_*)
+	VAR_PRIVATE/circle_level
+	/// The last fullness we recorded
 	VAR_PRIVATE/fullness
-	/// What food icon do we show by the bar
-	var/food_icon = 'icons/obj/food/burgerbread.dmi'
-	/// What food icon state do we show by the bar
-	var/food_icon_state = "hburger"
-	/// The image shown by the bar.
-	VAR_PRIVATE/image/food_image
-	/// The actual bar
-	VAR_PRIVATE/atom/movable/screen/hunger_bar/hunger_bar
+	/// Is food currently digesting towards nutrition?
+	VAR_PRIVATE/digesting
 
 /atom/movable/screen/hunger/Initialize(mapload, datum/hud/hud_owner)
 	. = ..()
@@ -1191,154 +1274,91 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 	if(!istype(hungry))
 		return
 
-	if(isnull(hungry.mob_mood))
-		screen_loc = ui_mood // Slot in where mood normally is if mood is not here (we arent a human)
+	update_status(instant = TRUE)
 
-	// Burger next to the bar
-	food_image = image(icon = food_icon, icon_state = food_icon_state, pixel_x = -5)
-	food_image.plane = plane
-	food_image.appearance_flags |= KEEP_APART // To be unaffected by filters applied to src
-	food_image.add_filter("simple_outline", 2, outline_filter(1, COLOR_BLACK, OUTLINE_SHARP))
-	underlays += food_image // To be below filters applied to src
+/atom/movable/screen/hunger/MouseEntered(location, control, params)
+	. = ..()
+	openToolTip(usr, src, params, title = "Hunger", content = hunger_text())
 
-	// The actual bar
-	hunger_bar = new(src, null)
-	vis_contents += hunger_bar
+/// Band phrases mirroring the nutrition moodlets, shown on hover.
+/atom/movable/screen/hunger/proc/hunger_text()
+	switch(circle_level)
+		if(HUNGER_CIRCLE_STARVING)
+			return "I'm starving!"
+		if(HUNGER_CIRCLE_VERY_HUNGRY)
+			return "I'm hungry!"
+		if(HUNGER_CIRCLE_HUNGRY)
+			return "I'm getting a bit hungry."
+		if(HUNGER_CIRCLE_FINE)
+			return "I'm not hungry."
+		if(HUNGER_CIRCLE_FED)
+			return "I have recently had some food."
+		if(HUNGER_CIRCLE_WELL_FED)
+			return "I'm stuffed!"
+		if(HUNGER_CIRCLE_OVERATE)
+			return "I think I've eaten too much."
 
-	update_hunger_bar(instant = TRUE)
-
+/// Works out the hunger circle level and fullness from the mob. Special diets pin both.
 /atom/movable/screen/hunger/proc/update_hunger_state()
 	var/mob/living/hungry = hud?.mymob
 	if(!istype(hungry))
 		return
 
+	digesting = FALSE
 	if(HAS_TRAIT(hungry, TRAIT_NOHUNGER) || (ishuman(hungry) && !hungry.get_organ_slot(ORGAN_SLOT_STOMACH)))
 		fullness = NUTRITION_LEVEL_FED
-		state = HUNGER_STATE_FINE
+		circle_level = HUNGER_CIRCLE_FINE
 		return
 	if(HAS_TRAIT(hungry, TRAIT_FAT))
 		fullness = NUTRITION_LEVEL_FAT
-		state = HUNGER_STATE_FAT
+		circle_level = HUNGER_CIRCLE_OVERATE
 		return
 
 	if(HAS_TRAIT(hungry, TRAIT_GLUTTON))
 		fullness = NUTRITION_LEVEL_VERY_HUNGRY
-		state = HUNGER_STATE_HUNGRY // Can't get enough
+		circle_level = HUNGER_CIRCLE_VERY_HUNGRY // Can't get enough
 		return
 
-	fullness = round(hungry.get_fullness(only_consumable = TRUE), 0.05)
-	switch(fullness)
+	fullness = round(hungry.get_fullness(only_consumable = TRUE, thirst_flag = FALSE), 0.05)
+	digesting = abs(fullness - hungry.nutrition) >= 1
+	switch(ceil(fullness))
 		if(1 + NUTRITION_LEVEL_FULL to INFINITY)
-			state = HUNGER_STATE_FULL
-		if(1 + NUTRITION_LEVEL_HUNGRY to NUTRITION_LEVEL_FULL)
-			state = HUNGER_STATE_FINE
+			circle_level = HUNGER_CIRCLE_OVERATE
+		if(1 + NUTRITION_LEVEL_WELL_FED to NUTRITION_LEVEL_FULL)
+			circle_level = HUNGER_CIRCLE_WELL_FED
+		if(1 + NUTRITION_LEVEL_FED to NUTRITION_LEVEL_WELL_FED)
+			circle_level = HUNGER_CIRCLE_FED
+		if(1 + NUTRITION_LEVEL_HUNGRY to NUTRITION_LEVEL_FED)
+			circle_level = HUNGER_CIRCLE_FINE
 		if(1 + NUTRITION_LEVEL_VERY_HUNGRY to NUTRITION_LEVEL_HUNGRY)
-			state = HUNGER_STATE_FINE
+			circle_level = HUNGER_CIRCLE_HUNGRY
 		if(1 + NUTRITION_LEVEL_STARVING to NUTRITION_LEVEL_VERY_HUNGRY)
-			state = HUNGER_STATE_HUNGRY
+			circle_level = HUNGER_CIRCLE_VERY_HUNGRY
 		if(0 to NUTRITION_LEVEL_STARVING)
-			state = HUNGER_STATE_STARVING
+			circle_level = HUNGER_CIRCLE_STARVING
 
 /atom/movable/screen/hunger/update_appearance(updates)
-	update_hunger_bar()
+	update_status()
 	return ..()
 
-/// Updates the hunger bar's appearance.
-/// If `instant` is TRUE, the bar will update immediately rather than animating.
-/atom/movable/screen/hunger/proc/update_hunger_bar(instant = FALSE)
-	var/old_state = state
-	var/old_fullness = fullness
+/// Updates the hunger indicator (burger over the status circle).
+/atom/movable/screen/hunger/proc/update_status(instant = FALSE)
 	update_hunger_state()
-	if(old_state != state || old_fullness != fullness)
-		// Fades out if we ARE "fine" AND if our stomach has no food digesting
-		var/mob/living/hungry = hud?.mymob
-		if(alpha == 255 && (state == HUNGER_STATE_FINE && abs(fullness - hungry.nutrition) < 1))
-			if(instant)
-				alpha = 0
-			else
-				animate(src, alpha = 0, time = 1 SECONDS)
-		// Fades in if we WERE "fine" OR if our stomach has food digesting
-		else if(alpha == 0 && (state != HUNGER_STATE_FINE || abs(fullness - hungry.nutrition) >= 1))
-			if(instant)
-				alpha = 255
-			else
-				animate(src, alpha = 255, time = 1 SECONDS)
 
-	if(old_state != state)
-		// Update filter around the bar
-		if(state == HUNGER_STATE_STARVING)
-			if(!get_filter("hunger_outline"))
-				add_filter("hunger_outline", 1, list("type" = "outline", "color" = "#FF0033", "alpha" = 0, "size" = 2))
-				animate(get_filter("hunger_outline"), alpha = 200, time = 1.5 SECONDS, loop = -1)
-				animate(alpha = 0, time = 1.5 SECONDS)
+	// Visible while food is digesting, or on the extreme bands
+	var/should_show = digesting || circle_level <= HUNGER_CIRCLE_VERY_HUNGRY || circle_level >= HUNGER_CIRCLE_OVERATE
+	fade_visibility(should_show, instant)
+	set_circle_state("[circle_level]", instant || !visible_target)
+	set_warning_pulse(circle_level == HUNGER_CIRCLE_STARVING)
 
-		else if(old_state == HUNGER_STATE_STARVING)
-			remove_filter("hunger_outline")
-
-		// Update color of the food
-		if((state == HUNGER_STATE_FAT) != (old_state == HUNGER_STATE_FAT))
-			underlays -= food_image
-			food_image.color = state == HUNGER_STATE_FAT ? COLOR_DARK : null
-			underlays += food_image
-
-	// Update hunger bar
-	if(old_fullness != fullness)
-		// instant if invisible OR if instant is set
-		hunger_bar.update_fullness(fullness, alpha == 0 || instant)
-
-/atom/movable/screen/hunger_bar
-	icon_state = "hungerbar_bar"
-	screen_loc = ui_hunger
-	vis_flags = VIS_INHERIT_ID | VIS_INHERIT_PLANE
-	/// Mask
-	VAR_PRIVATE/static/icon/bar_mask
-	/// Gradient used to color the bar
-	VAR_PRIVATE/static/list/hunger_gradient = list(
-		0.0, "#FF0000",
-		0.2, "#FF8000",
-		0.4, "#f0f000",
-		0.6, "#00FF00",
-		0.8, "#46daff",
-		1.0, "#2A72AA",
-		1.2, "#494949",
-	)
-	/// Offset of the mask
-	VAR_PRIVATE/bar_offset
-	/// Last "fullness" value (rounded) we used to update the bar
-	VAR_PRIVATE/last_fullness_band = -1
-
-/atom/movable/screen/hunger_bar/Initialize(mapload, datum/hud/hud_owner)
-	. = ..()
-	var/atom/movable/movable_loc = ismovable(loc) ? loc : null
-	screen_loc = movable_loc?.screen_loc
-	bar_mask ||= icon(icon, "hungerbar_mask")
-
-/atom/movable/screen/hunger_bar/proc/update_fullness(new_fullness, instant)
-	new_fullness = round(new_fullness / NUTRITION_LEVEL_FULL, 0.05)
-	if(new_fullness == last_fullness_band)
-		return
-	last_fullness_band = new_fullness
-	// Update color
-	var/new_color = gradient(hunger_gradient, clamp(new_fullness, 0, 1.2))
-	if(instant)
-		color = new_color
-	else
-		animate(src, color = new_color, 0.5 SECONDS)
-	// Update mask
-	var/old_bar_offset = bar_offset
-	bar_offset = clamp(-20 + (20 * new_fullness), -20, 0)
-	if(old_bar_offset != bar_offset)
-		if(instant || isnull(old_bar_offset))
-			add_filter("hunger_bar_mask", 1, alpha_mask_filter(0, bar_offset, bar_mask))
-		else
-			transition_filter("hunger_bar_mask", alpha_mask_filter(0, bar_offset), 0.5 SECONDS)
-
-#undef HUNGER_STATE_FAT
-#undef HUNGER_STATE_FINE
-#undef HUNGER_STATE_FULL
-#undef HUNGER_STATE_HUNGRY
-#undef HUNGER_STATE_STARVING
-#undef HUNGER_STATE_VERY_HUNGRY
+#undef HUNGER_CIRCLE_STARVING
+#undef HUNGER_CIRCLE_VERY_HUNGRY
+#undef HUNGER_CIRCLE_HUNGRY
+#undef HUNGER_CIRCLE_FINE
+#undef HUNGER_CIRCLE_FED
+#undef HUNGER_CIRCLE_WELL_FED
+#undef HUNGER_CIRCLE_OVERATE
+// [/HORIZON-EDIT]
 
 #define FORMAT_BLOOD_LEVEL_HUD_MAPTEXT(value) MAPTEXT("<div align='center' valign='middle' style='position:relative; top:0px; left:6px'><font color='#FFDDDD'>[round(value,1)]</font></div>")
 
@@ -1480,3 +1500,181 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen) // I hate this place
 
 #undef FORMAT_XENOBIO_HUD_MAPTEXT
 #undef POTION_DROP_SPEED
+
+// [HORIZON-ADD] NEED_WATER + CARRY_WEIGHT
+// Thirst is drawn as a water glass over a crossfading status circle instead of a bar.
+#define THIRST_CIRCLE_DEHYDRATED 0
+#define THIRST_CIRCLE_THIRSTY 1
+#define THIRST_CIRCLE_DRY 2
+#define THIRST_CIRCLE_FINE 3
+#define THIRST_CIRCLE_HYDRATED 4
+#define THIRST_CIRCLE_QUENCHED 5
+#define THIRST_CIRCLE_OVERHYDRATED 6
+
+/// Even 50u steps between THIRST_LEVEL_NORMAL and THIRST_LEVEL_OVERHYDRATED for extra circle resolution
+#define THIRST_LEVEL_MILD (THIRST_LEVEL_NORMAL + 50)
+#define THIRST_LEVEL_HIGH (THIRST_LEVEL_NORMAL + 100)
+/// How long the thirst indicator stays up after a drink stops landing, so the player notices it
+#define THIRST_LINGER_TIME (5 SECONDS)
+
+/atom/movable/screen/thirst
+	parent_type = /atom/movable/screen/need_status
+	name = "thirst"
+	icon_state = "hthirst"
+	screen_loc = ui_thirst
+	mouse_over_pointer = MOUSE_HAND_POINTER
+	/// Which circle of the status atlas we are on (THIRST_CIRCLE_*)
+	VAR_PRIVATE/circle_level
+	/// The last fullness_water we recorded
+	VAR_PRIVATE/fullness_water
+	/// Is a drink currently being absorbed (thirst still rising)?
+	VAR_PRIVATE/absorbing
+	/// Fullness recorded on the previous update, used to spot rising thirst
+	VAR_PRIVATE/last_fullness_water
+	/// When thirst was last seen rising (a drink landing), for lingering visibility
+	VAR_PRIVATE/last_absorb_time
+
+/atom/movable/screen/thirst/Initialize(mapload, datum/hud/hud_owner)
+	. = ..()
+	var/mob/living/need_water = hud_owner?.mymob
+	if(!istype(need_water))
+		return
+
+	update_status(instant = TRUE)
+
+/atom/movable/screen/thirst/MouseEntered(location, control, params)
+	. = ..()
+	openToolTip(usr, src, params, title = "Thirst", content = thirst_text())
+
+/// Band phrases mirroring the thirst moodlets, shown on hover.
+/atom/movable/screen/thirst/proc/thirst_text()
+	switch(circle_level)
+		if(THIRST_CIRCLE_DEHYDRATED)
+			return "I need water!"
+		if(THIRST_CIRCLE_THIRSTY)
+			return "I could use a drink."
+		if(THIRST_CIRCLE_DRY)
+			return "My throat is a bit dry."
+		if(THIRST_CIRCLE_FINE)
+			return "I'm not thirsty."
+		if(THIRST_CIRCLE_HYDRATED)
+			return "I'm not thirsty anymore."
+		if(THIRST_CIRCLE_QUENCHED)
+			return "I'm not thirsty anymore."
+		if(THIRST_CIRCLE_OVERHYDRATED)
+			return "I've had too much water..."
+
+/atom/movable/screen/thirst/proc/update_thirst_state()
+	var/mob/living/need_water = hud?.mymob
+	if(!istype(need_water))
+		return
+
+	absorbing = FALSE
+	if(!need_water.can_get_thirsty())
+		fullness_water = need_water.thirst
+		last_fullness_water = fullness_water
+		circle_level = THIRST_CIRCLE_FINE
+		return
+
+	fullness_water = round(need_water.get_fullness(only_consumable = TRUE, thirst_flag = TRUE), 0.05)
+	// Water does not pool up in the stomach like food does, so a rising thirst
+	// (a drink being absorbed) stands in for the hunger indicator's "digesting" check
+	absorbing = !isnull(last_fullness_water) && fullness_water > last_fullness_water
+	if(absorbing)
+		last_absorb_time = world.time
+	last_fullness_water = fullness_water
+
+	// Same whole-number range gap as the hunger indicator, see there
+	switch(ceil(fullness_water))
+		if(1 + THIRST_LEVEL_OVERHYDRATED to INFINITY)
+			circle_level = THIRST_CIRCLE_OVERHYDRATED
+		if(1 + THIRST_LEVEL_HIGH to THIRST_LEVEL_OVERHYDRATED)
+			circle_level = THIRST_CIRCLE_QUENCHED
+		if(1 + THIRST_LEVEL_MILD to THIRST_LEVEL_HIGH)
+			circle_level = THIRST_CIRCLE_HYDRATED
+		if(1 + THIRST_LEVEL_NORMAL to THIRST_LEVEL_MILD)
+			circle_level = THIRST_CIRCLE_FINE
+		if(1 + THIRST_LEVEL_THIRSTY to THIRST_LEVEL_NORMAL)
+			circle_level = THIRST_CIRCLE_DRY
+		if(1 + THIRST_LEVEL_DEHYDRATED to THIRST_LEVEL_THIRSTY)
+			circle_level = THIRST_CIRCLE_THIRSTY
+		if(0 to THIRST_LEVEL_DEHYDRATED)
+			circle_level = THIRST_CIRCLE_DEHYDRATED
+
+/atom/movable/screen/thirst/update_appearance(updates)
+	update_status()
+	return ..()
+
+/// Updates the thirst indicator (water glass over the status circle).
+/atom/movable/screen/thirst/proc/update_status(instant = FALSE)
+	update_thirst_state()
+
+	// Stays up for a few seconds after a drink so the player notices they drank, or on the extreme bands
+	var/lingering = !isnull(last_absorb_time) && (world.time - last_absorb_time) < THIRST_LINGER_TIME
+	var/should_show = lingering || circle_level <= THIRST_CIRCLE_THIRSTY || circle_level >= THIRST_CIRCLE_OVERHYDRATED
+	fade_visibility(should_show, instant)
+	set_circle_state("[circle_level]", instant || !visible_target)
+	set_warning_pulse(circle_level == THIRST_CIRCLE_DEHYDRATED)
+
+/**
+ * Encumbrance indicator: the kettlebell over a status circle, green on a light load,
+ * orange in the middle and red from 80% of the maximum carry weight. From 100% the indicator
+ * blinks red; at >=120% the circle goes grey while the load pins the carbon down.
+ * Driven by the carry weight system (_horizon/code/modules/mob/living/carry_weight.dm).
+ */
+/atom/movable/screen/encumbrance
+	parent_type = /atom/movable/screen/need_status
+	name = "encumbrance"
+	icon_state = "weight"
+	screen_loc = ui_weight
+	mouse_over_pointer = MOUSE_HAND_POINTER
+
+/atom/movable/screen/encumbrance/Initialize(mapload, datum/hud/hud_owner)
+	. = ..()
+	update_status(instant = TRUE)
+
+/atom/movable/screen/encumbrance/MouseEntered(location, control, params)
+	. = ..()
+	var/mob/living/carbon/encumbered = hud?.mymob
+	if(!istype(encumbered))
+		return
+	openToolTip(usr, src, params, title = "Encumbrance weight", content = "[round(encumbered.carry_weight, 0.01)] / [round(encumbered.maximum_carry_weight, 0.01)] kg - [encumbered.encumbrance_text()]")
+
+/atom/movable/screen/encumbrance/proc/update_status(instant = FALSE)
+	var/mob/living/carbon/encumbered = hud?.mymob
+	if(!istype(encumbered))
+		return
+
+	// Green on a light load, yellow then orange in the middle, red from 80% up
+	var/circle_state = "3"
+	switch(encumbered.encumbrance)
+		if(ENCUMBRANCE_IMPOSSIBLE)
+			circle_state = "6" // Grey blinking Red
+		if(ENCUMBRANCE_EXTREME)
+			circle_state = "0" // Red blinking
+		if(ENCUMBRANCE_HEAVY)
+			circle_state = "0" // Red
+		if(ENCUMBRANCE_STRENUOUS)
+			circle_state = "1" // Orange
+		if(ENCUMBRANCE_MEDIUM)
+			circle_state = "2" // Yellow
+		if(ENCUMBRANCE_LIGHT)
+			circle_state = "3" // Green
+
+	var/should_show = encumbered.encumbrance != ENCUMBRANCE_NONE
+	fade_visibility(should_show, instant)
+	if(should_show)
+		set_circle_state(circle_state, instant || !visible_target)
+	set_warning_pulse(encumbered.encumbrance >= ENCUMBRANCE_EXTREME)
+
+#undef THIRST_CIRCLE_DEHYDRATED
+#undef THIRST_CIRCLE_THIRSTY
+#undef THIRST_CIRCLE_DRY
+#undef THIRST_CIRCLE_FINE
+#undef THIRST_CIRCLE_HYDRATED
+#undef THIRST_CIRCLE_QUENCHED
+#undef THIRST_CIRCLE_OVERHYDRATED
+#undef THIRST_LEVEL_MILD
+#undef THIRST_LEVEL_HIGH
+#undef THIRST_LINGER_TIME
+// [/HORIZON-ADD]

@@ -544,7 +544,8 @@
 		TRAIT_STUNIMMUNE,
 		TRAIT_NEVER_WOUNDED,
 		TRAIT_PACIFISM,
-		TRAIT_NOHUNGER
+		TRAIT_NOHUNGER,
+		TRAIT_NOTHIRST // [HORIZON-ADD] NEED_WATER
 	)
 	texture_type = /datum/bodypart_texture/mesh/firesuit
 	/// Boolean if you are brain dead so the sound doesn't spam during the delay

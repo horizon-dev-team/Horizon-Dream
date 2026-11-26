@@ -5,6 +5,7 @@
 	inherent_traits = list(
 		TRAIT_NOBREATH,
 		TRAIT_NOHUNGER,
+		TRAIT_NOTHIRST, // [HORIZON-ADD] NEED_WATER
 		TRAIT_USES_SKINTONES,
 		TRAIT_ADVANCEDTOOLUSER, // Normally applied by brain but we don't have one
 		TRAIT_LITERATE,

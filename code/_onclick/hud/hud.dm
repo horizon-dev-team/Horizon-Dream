@@ -10,6 +10,7 @@ GLOBAL_LIST_INIT(available_ui_styles, list(
 	"Atomic" = '_horizon/icons/ui/themed/screen_atomic.dmi',
 	"Expanse" = '_horizon/icons/ui/themed/screen_expanse.dmi',
 	"Belter" = '_horizon/icons/ui/themed/screen_belter.dmi',
+	"Sunset" = '_horizon/icons/ui/themed/screen_reddawn.dmi',
 ))
 
 // Mapping of UI styles to their corresponding 48x32 wide HUD icons (hands, back, belt, suit storage)
@@ -17,12 +18,14 @@ GLOBAL_LIST_INIT(available_wide_icons, list(
 	"Atomic" = '_horizon/icons/ui/themed/screen_wide_atomic.dmi',
 	"Expanse" = '_horizon/icons/ui/themed/screen_wide_expanse.dmi',
 	"Belter" = '_horizon/icons/ui/themed/screen_wide_belter.dmi',
+	"Sunset" = '_horizon/icons/ui/themed/screen_wide_reddawn.dmi',
 ))
 
 GLOBAL_LIST_INIT(available_progbar_icons, list(
 	"Atomic" = '_horizon/icons/ui/themed/progessbar_atomic.dmi',
 	"Expanse" = '_horizon/icons/ui/themed/progessbar_expanse.dmi',
 	"Belter" = '_horizon/icons/ui/themed/progessbar_belter.dmi',
+	"Sunset" = '_horizon/icons/ui/themed/progessbar_reddawn.dmi',
 ))
 
 /proc/ui_style2icon(ui_style)
@@ -66,7 +69,7 @@ GLOBAL_LIST_INIT(available_progbar_icons, list(
 	/// This is updated by the preference for cheaper reads than would be
 	/// had with a proc call, especially on one of the hottest procs in the
 	/// game (MouseEntered).
-	var/screentips_enabled = SCREENTIP_PREFERENCE_ENABLED
+	var/screentips_enabled = SCREENTIP_PREFERENCE_CONTEXT_ONLY // [HORIZON-EDIT] Shadow-Render
 	/// Whether to use text or images for click hints.
 	/// Same behavior as `screentips_enabled`--very hot, updated when the preference is updated.
 	var/screentip_images = TRUE

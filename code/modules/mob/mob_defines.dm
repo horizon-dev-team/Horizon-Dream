@@ -114,6 +114,10 @@
 
 	/// Hunger level of the mob
 	var/nutrition = NUTRITION_LEVEL_START_MIN // randomised in Initialize
+
+	/// Thirst level of the mob // [HORIZON-ADD] NEED_WATER
+	var/thirst = THIRST_LEVEL_START_MIN
+
 	/// Satiation level of the mob
 	var/satiety = 0//Carbon
 

@@ -1,3 +1,4 @@
+/*
 /// Whether or not to toggle multiz parallax, the parallax effect for lower z-levels.
 /datum/preference/toggle/multiz_parallax
 	category = PREFERENCE_CATEGORY_GAME_PREFERENCES
@@ -13,3 +14,4 @@
 	for(var/group_key, _group in my_hud.master_groups)
 		var/datum/plane_master_group/group = _group
 		group.refresh_planes_offset()
+*/

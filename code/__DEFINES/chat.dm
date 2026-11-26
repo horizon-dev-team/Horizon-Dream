@@ -52,6 +52,14 @@
 #define fieldset_block(title, content, classes) ("<fieldset class='fieldset " + classes + "'><legend class='fieldset_legend'>" + title + "</legend>" + content + "</fieldset>")
 /// Makes a horizontal line with text in the middle
 #define separator_hr(str) ("<div class='separator'>" + str + "</div>")
+// [HORIZON-EDIT] STATUS_TWEAKS
+/// Self-check (check_self_for_injuries) tag colors.
+#define SELF_CHECK_BRUTE_COLOR "#ff4d4d"
+#define SELF_CHECK_BURN_COLOR "#ffc14d"
+#define SELF_CHECK_BLEED_COLOR "#ff6685"
+#define SELF_CHECK_BONE_COLOR "#b2b2b2"
+#define SELF_CHECK_MISSING_COLOR "#808080"
+// [HORIZON-ADD] STATUS_TWEAKS
 /// Emboldens runechat messages
 #define RUNECHAT_BOLD(str) "+[str]+"
 /// Helper which creates a chat message which may have a tooltip in some contexts, but not others.

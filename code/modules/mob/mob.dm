@@ -92,6 +92,7 @@
 		alt_hud.apply_to_new_mob(src)
 
 	set_nutrition(rand(NUTRITION_LEVEL_START_MIN, NUTRITION_LEVEL_START_MAX))
+	set_thirst(rand(THIRST_LEVEL_START_MIN, THIRST_LEVEL_START_MAX)) // [HORIZON-ADD] NEED_WATER
 	. = ..()
 	setup_hud_traits()
 	update_config_movespeed()
@@ -1485,6 +1486,8 @@ GAME_VERB_NATIVE(/mob, DisDblClick, ".dblclick", null, argu = null as anything, 
 
 /mob/living/adjust_nutrition(change, forced)
 	. = ..()
+	if(!change) // [HORIZON-ADD] NEED_WATER
+		return
 	// Queue update if change is small enough (6 is 1% of nutrition softcap)
 	if(abs(change) >= 6)
 		update_nutrition()
@@ -1507,13 +1510,71 @@ GAME_VERB_NATIVE(/mob, DisDblClick, ".dblclick", null, argu = null as anything, 
 	else
 		living_flags |= QUEUE_NUTRITION_UPDATE
 
+// [HORIZON-EDIT] NEED_WATER
 /// Updates nutrition related effects
 /mob/living/proc/update_nutrition()
 	mob_mood?.update_nutrition_moodlets()
-	var/atom/movable/screen/hunger/hunger_bar = hud_used?.screen_objects[HUD_MOB_HUNGER]
-	if (hunger_bar)
-		hunger_bar.update_hunger_bar()
+	var/atom/movable/screen/hunger/hunger_status = hud_used?.screen_objects[HUD_MOB_HUNGER]
+	if (hunger_status)
+		hunger_status.update_status()
 	SEND_SIGNAL(src, COMSIG_LIVING_UPDATE_NUTRITION)
+// [/HORIZON-EDIT]
+
+// [HORIZON-ADD] NEED_WATER
+/// Whether this mob is subject to thirst at all. Single source of truth for the HUD, moodlets, speech, examine and drain.
+/mob/proc/can_get_thirsty()
+	return !HAS_TRAIT(src, TRAIT_NOTHIRST)
+
+/// Carbons additionally need a stomach to get thirsty.
+/mob/living/carbon/can_get_thirsty()
+	return ..() && !isnull(get_organ_slot(ORGAN_SLOT_STOMACH))
+
+/// Gaining or losing TRAIT_NOTHIRST must refresh moodlets and HUD, otherwise stale thirst effects linger.
+/mob/living/proc/on_thirst_trait_change(datum/source)
+	SIGNAL_HANDLER
+	living_flags |= QUEUE_THIRST_UPDATE
+
+/// Updates thirst related effects
+/mob/living/proc/update_thirst()
+	mob_mood?.update_thirst_moodlets()
+	var/atom/movable/screen/thirst/thirst_status = hud_used?.screen_objects[HUD_MOB_THIRST]
+	if (thirst_status)
+		thirst_status.update_status()
+	SEND_SIGNAL(src, COMSIG_LIVING_UPDATE_THIRST)
+
+///Adjust the thirst of a mob
+/mob/proc/adjust_thirst(change, forced = FALSE)
+	if(HAS_TRAIT(src, TRAIT_NOTHIRST) && !forced)
+		return
+
+	thirst = clamp(thirst + change, 0, THIRST_LEVEL_MAX)
+
+/mob/living/adjust_thirst(change, forced)
+	. = ..()
+	if(!change) // [HORIZON-ADD] NEED_WATER
+		return
+	// Queue update if change is small enough (6 is 1% of thirst softcap)
+	if(abs(change) >= 6)
+		update_thirst()
+	else
+		living_flags |= QUEUE_THIRST_UPDATE
+
+///Force set the mob thirst
+/mob/proc/set_thirst(set_to, forced = FALSE)
+	if(HAS_TRAIT(src, TRAIT_NOTHIRST) && !forced)
+		return
+
+	thirst = clamp(set_to, 0, THIRST_LEVEL_MAX)
+
+/mob/living/set_thirst(set_to, forced)
+	var/old_thirst = thirst
+	. = ..()
+	// Queue update if change is small enough (6 is 1% of thirst softcap)
+	if(abs(old_thirst - thirst) >= 6)
+		update_thirst()
+	else
+		living_flags |= QUEUE_THIRST_UPDATE
+// [/HORIZON-ADD]
 
 /// Apply a proper movespeed modifier based on items we have equipped
 /mob/proc/update_equipment_speed_mods()

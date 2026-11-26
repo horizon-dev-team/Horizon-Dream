@@ -12,15 +12,17 @@
 	if(!limb.can_bleed())
 		return ..()
 
+	// [HORIZON-EDIT] STATUS_TWEAKS
 	switch(severity)
 		if(WOUND_SEVERITY_TRIVIAL)
-			return span_danger("It's leaking blood from a small [LOWER_TEXT(undiagnosed_name || name)].")
+			return "<i>SMALL [uppertext(undiagnosed_name)]</i>"
 		if(WOUND_SEVERITY_MODERATE)
-			return span_warning("It's leaking blood from a [LOWER_TEXT(undiagnosed_name || name)].")
+			return "DEEP [uppertext(undiagnosed_name)]"
 		if(WOUND_SEVERITY_SEVERE)
-			return span_boldwarning("It's leaking blood from a serious [LOWER_TEXT(undiagnosed_name || name)]!")
+			return "<b>OPEN [uppertext(undiagnosed_name)]</b>"
 		if(WOUND_SEVERITY_CRITICAL)
-			return span_boldwarning("It's leaking blood from a major [LOWER_TEXT(undiagnosed_name || name)]!!")
+			return "<span class='slightly_larger'><b>ARTERIAL [uppertext(undiagnosed_name)]</b></span>"
+	// [/HORIZON-EDIT]
 
 /datum/wound/slash/wound_injury(datum/wound/old_wound, attack_direction)
 	var/obj/item/stack/medical/wrap/current_gauze = LAZYACCESS(limb.applied_items, LIMB_ITEM_GAUZE)

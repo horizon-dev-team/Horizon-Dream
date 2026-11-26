@@ -377,7 +377,7 @@
 /obj/item/gun/energy/get_extra_tooltip(mob/user)
 	. = ..()
 	if(cell)
-		. += "<br><tr><td><b>Capacity:</b></td><td>[icon2html(DAMAGE_ICON_SET, user, "charge")][CEILING(cell.percent(), 1)]%</td></tr>"
+		. += "<br><tr><td><b>Capacity:</b></td><td>[icon2html(DAMAGE_ICON_SET, user, "ammo_charge")][CEILING(cell.percent(), 1)]%</td></tr>"
 	else
 		. += span_warning("It has no power cell installed.")
 // [/HORIZON-ADD]

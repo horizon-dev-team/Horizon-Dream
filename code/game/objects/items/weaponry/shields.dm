@@ -61,6 +61,29 @@
 	if(.)
 		on_shield_block(owner, hitby, attack_text, damage, attack_type, damage_type)
 
+// [HORIZON-ADD] GunRework
+/obj/item/shield/get_extra_tooltip(mob/user)
+	var/datum/armor/armor = src.get_armor()
+	if(!armor.has_any_armor())
+		return ""
+
+	var/list/armor_lines = list()
+	armor_lines += "<br><tr><td><b>Shield Resists:</b></td></tr>"
+	for(var/damage_key in ARMOR_LIST_DAMAGE)
+		var/rating = armor.get_rating(damage_key)
+		var/armor_type = armor_to_protection_name(damage_key)
+		if(rating)
+			armor_lines += "<tr><td>[icon2html(DAMAGE_ICON_SET, user, armor_type)] [armor_type]</td><td>[armor_to_protection_class(rating)]</td></tr>"
+
+	if(block_chance)
+		armor_lines += "<tr><td>[icon2html(DAMAGE_ICON_SET, user, "BLOCK_CHANCE")] BLOCK:</td><td>[block_chance]%</td></tr>"
+
+	if(armor_lines.len)
+		return span_smallnotice("[armor_lines.Join(" ")]")
+
+	return ""
+// [/HORIZON-ADD]
+
 /obj/item/shield/examine(mob/user)
 	. = ..()
 	var/healthpercent = round((atom_integrity/max_integrity) * 100, 1)

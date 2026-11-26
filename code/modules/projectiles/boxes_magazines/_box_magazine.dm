@@ -282,7 +282,7 @@
 	var/obj/item/ammo_casing/top_round = get_round()
 	if(!top_round)
 		return
-	. += "<b>Capacity:</b> [icon2html(DAMAGE_ICON_SET, user, "bullet")] [shells_left]/[max_ammo] [casing_phrasing]\s."
+	. += "<b>Capacity:</b> [icon2html(DAMAGE_ICON_SET, user, "ammo_bullet")] [shells_left]/[max_ammo] [casing_phrasing]\s."
 // [/HORIZON-ADD]
 
 /obj/item/ammo_box/examine(mob/user)
@@ -291,7 +291,7 @@
 	var/obj/item/ammo_casing/top_round = get_round()
 	if(!top_round)
 		return
-	. += "<b>Capacity:</b> [icon2html(DAMAGE_ICON_SET, user, "bullet")] [shells_left]/[max_ammo] [casing_phrasing]\s." // [HORIZON-ADD] GunRework
+	. += "<b>Capacity:</b> [icon2html(DAMAGE_ICON_SET, user, "ammo_bullet")] [shells_left]/[max_ammo] [casing_phrasing]\s." // [HORIZON-ADD] GunRework
 	// this is kind of awkward phrasing, but it's the top/ready ammo in the box
 	// intended for people who have like three mislabeled magazines
 	. += span_notice("\A <b>[top_round]</b> is ready.")

@@ -383,13 +383,15 @@
 	armor_lines += "<br><tr><td><b>ARMOR:</b></td></tr>"
 	for(var/damage_key in ARMOR_LIST_DAMAGE)
 		var/rating = armor.get_rating(damage_key)
+		var/armor_type = armor_to_protection_name(damage_key)
 		if(rating)
-			armor_lines += "<tr><td>[armor_to_protection_name(damage_key)]</td><td>[armor_to_protection_class(rating)]</td></tr>"
+			armor_lines += "<tr><td>" + icon2html(DAMAGE_ICON_SET, user, armor_type) + " [armor_type]</td><td>[armor_to_protection_class(rating)]</td></tr>"
 	armor_lines += "<tr><td><b>DURABILITY:</b></td></tr>"
 	for(var/durability_key in ARMOR_LIST_DURABILITY)
 		var/rating = armor.get_rating(durability_key)
+		var/durability = armor_to_protection_name(durability_key)
 		if(rating)
-			armor_lines += "<tr><td>[armor_to_protection_name(durability_key)]</td><td>[armor_to_protection_class(rating)]</td></tr>"
+			armor_lines += "<tr><td>" + icon2html(DAMAGE_ICON_SET, user, durability) + " [durability]</td><td>[armor_to_protection_class(rating)]</td></tr>"
 
 	if(armor_lines.len)
 		return span_smallnotice("[armor_lines.Join(" ")]")

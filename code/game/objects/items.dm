@@ -1177,9 +1177,9 @@ GAME_VERB_SRC(/obj/item, verb_pickup, oview(1), "Pick up", null)
 		else
 			dmg_icon_state = "MELEE"
 	if(!(item_flags & FORCE_STRING_OVERRIDE))
-		if(force) content_str += "<tr><td><b>Force:</b></td><td>"+ icon2html(DAMAGE_ICON_SET, user, dmg_icon_state) +" [force_string]</td></tr>"
+		if(force) content_str += "<tr><td><b>Force:</b></td><td>"+ icon2html(DAMAGE_ICON_SET, user, "ATK_[dmg_icon_state]") +" [force_string]</td></tr>"
 	else
-		content_str += "<tr><td><b>Force:</b></td><td>"+ icon2html(DAMAGE_ICON_SET, user, dmg_icon_state) + " [force_string]</td></tr>"
+		content_str += "<tr><td><b>Force:</b></td><td>"+ icon2html(DAMAGE_ICON_SET, user, "ATK_[dmg_icon_state]") + " [force_string]</td></tr>"
 
 	if(resistance_flags & INDESTRUCTIBLE)
 		content_str += "<tr><td><b>Armor:</b></td><td>" + icon2html(DAMAGE_ICON_SET, user, "Indestructible") + " Invulnerable.</td></tr>"
@@ -1188,11 +1188,11 @@ GAME_VERB_SRC(/obj/item, verb_pickup, oview(1), "Pick up", null)
 		if(resistance_flags & LAVA_PROOF)
 			rfm += icon2html(DAMAGE_ICON_SET, user, "Lava")
 		if(resistance_flags & (ACID_PROOF | UNACIDABLE))
-			rfm += icon2html(DAMAGE_ICON_SET, user, "Acid")
+			rfm += icon2html(DAMAGE_ICON_SET, user, "ACID")
 		if(resistance_flags & FREEZE_PROOF)
 			rfm += icon2html(DAMAGE_ICON_SET, user, "Cold")
 		if(resistance_flags & FIRE_PROOF)
-			rfm += icon2html(DAMAGE_ICON_SET, user, "Fire")
+			rfm += icon2html(DAMAGE_ICON_SET, user, "FIRE")
 		if(rfm.len)
 			content_str += "<tr><td><b>Durability:</b></td><td> [rfm.Join(" ")]</td></tr>"
 

@@ -68,8 +68,8 @@
 	var/mob/living/carbon/human/user = allocate(/mob/living/carbon/human/consistent)
 	var/obj/item/ammo_box/magazine/magazine = gun.magazine
 	gun.forceMove(user.loc)
-	// Invoke the protected drag handler without requiring a connected client.
-	call(gun, TYPE_PROC_REF(/obj/item/gun/ballistic, mouse_drop_dragged))(user, user)
+	// Invoke the protected drag handler by name, without requiring a connected client.
+	call(gun, "mouse_drop_dragged")(user, user)
 	TEST_ASSERT_NULL(gun.magazine, "Dragging a floor gun onto the user did not unload it")
 	TEST_ASSERT(user.is_holding(magazine), "Floor gun's magazine did not reach the user's hands")
 

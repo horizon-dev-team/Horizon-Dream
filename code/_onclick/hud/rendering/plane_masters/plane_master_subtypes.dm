@@ -946,8 +946,16 @@
 		eye_turf = get_turf(our_mob)
 	if(!eye_turf)
 		return
-	var/viewed_z_offset = GET_Z_PLANE_OFFSET(eye_turf.z)
-	var/mob_z_offset = GET_Z_PLANE_OFFSET(our_mob.z)
+	// GET_Z_PLANE_OFFSET is a bare list lookup; z=0 (nullspace / early Login) and
+	// z levels not yet registered in SSmapping runtime with "list index out of bounds".
+	var/list/z_offsets = SSmapping.z_level_to_plane_offset
+	var/eye_z = eye_turf.z
+	if(!eye_z || eye_z > length(z_offsets))
+		return
+	var/viewed_z_offset = z_offsets[eye_z]
+	// Mob may not be on a turf yet while the eye already is (new_player Login).
+	var/mob_z = our_mob.z
+	var/mob_z_offset = (mob_z && mob_z <= length(z_offsets)) ? z_offsets[mob_z] : viewed_z_offset
 	if(offset == mob_z_offset || offset == viewed_z_offset)
 		enable_alpha()
 	else

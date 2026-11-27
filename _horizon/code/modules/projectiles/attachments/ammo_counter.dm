@@ -38,6 +38,3 @@
 	var/obj/item/gun/ballistic/ballistic_gun = gun
 	if(istype(ballistic_gun))
 		ballistic_gun.empty_alarm = initial(ballistic_gun.empty_alarm)
-
-
-

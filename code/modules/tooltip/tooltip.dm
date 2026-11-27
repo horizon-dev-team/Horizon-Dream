@@ -1,3 +1,4 @@
+// [HORIZON-EDIT] NewTooltip
 /*
 Call openToolTip(usr, src, params, title, content) from MouseEntered() and closeToolTip(usr) from MouseExited().
 The tooltip is attached to the object (screen-loc minus icon-x/y), measured while hidden, then placed with one winset.
@@ -13,12 +14,9 @@ Themes are CSS classes in tooltip.html; by default one is chosen from the player
 	var/window_created_at = 0
 	var/loaded = FALSE
 	var/active = FALSE
-	/// Read by action buttons to decide whether updateToolTip() still applies
 	var/atom/last_target
-	/// Bumped on every show and hide; the page drops work belonging to an older number
 	var/seq = 0
 	var/list/options
-	/// A show that arrived before the page finished loading
 	var/pending_payload
 
 /datum/tooltip/New(client/C)

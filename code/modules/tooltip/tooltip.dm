@@ -1,131 +1,236 @@
+// [HORIZON-EDIT] NewTooltip
 /*
-Usage:
-- Define mouse event procs on your (probably HUD) object and simply call the show and hide procs respectively:
-	/atom/movable/screen/hud
-		MouseEntered(location, control, params)
-			usr.client.tooltip.show(params, title = src.name, content = src.desc)
-
-		MouseExited()
-			usr.client.tooltip.hide()
-
-Customization:
-- Theming can be done by passing the theme var to show() and using css in the html file to change the look
-- For your convenience some pre-made themes are included
-
-Notes:
-- You may have noticed 90% of the work is done via javascript on the client. Gotta save those cycles man.
+Call openToolTip(usr, src, params, title, content) from MouseEntered() and closeToolTip(usr) from MouseExited().
+The tooltip is attached to the object (screen-loc minus icon-x/y), measured while hidden, then placed with one winset.
+Themes are CSS classes in tooltip.html; by default one is chosen from the player's UI style.
 */
 
-#define TOOLTIP_TITLE 1
-#define TOOLTIP_DESCRIPTION 2
+#define TOOLTIP_WINDOW_PREFIX "ttooltip"
+#define TOOLTIP_LOAD_TIMEOUT (5 SECONDS)
 
 /datum/tooltip
 	var/client/owner
-	var/control = SKIN_MAINWINDOW_TOOLTIP
-	var/showing = 0
-	var/queueHide = 0
-	var/init = 0
+	var/window
+	var/window_created_at = 0
+	var/loaded = FALSE
+	var/active = FALSE
 	var/atom/last_target
-	var/params
-	var/list/view_size
+	var/seq = 0
+	var/list/options
+	var/pending_payload
 
 /datum/tooltip/New(client/C)
-	if (C)
-		owner = C
-		var/datum/asset/stuff = get_asset_datum(/datum/asset/simple/jquery)
-		stuff.send(owner)
-		owner << browse(file2text('code/modules/tooltip/tooltip.html'), "window=[control]")
-
 	..()
+	if(!istype(C))
+		return
+	owner = C
+	INVOKE_ASYNC(src, PROC_REF(create_window))
 
+/datum/tooltip/Destroy(force)
+	clear_target()
+	if(owner && window)
+		winset(owner, window, "parent=none")
+	owner = null
+	options = null
+	pending_payload = null
+	return ..()
 
-/datum/tooltip/proc/show(atom/movable/thing, params = null, list/contents = null, theme = "default", special = "none")
-	if (!thing || !params || !length(contents) || !owner || !isnum(ICON_SIZE_ALL))
+/datum/tooltip/proc/create_window()
+	if(!owner)
+		return
+	if(window)
+		winset(owner, window, "parent=none")
+	window = "[TOOLTIP_WINDOW_PREFIX][round(world.time)][rand(1, 999999)]"
+	loaded = FALSE
+	window_created_at = world.time
+	winset(owner, window, list2params(list(
+		"parent" = SKIN_MAP_SCREEN,
+		"type" = "browser",
+		"pos" = "0,0",
+		"size" = "1x1",
+		"anchor1" = "0,0",
+		"is-visible" = "false",
+		"is-disabled" = "true", // never steal mouse input from the map
+	)))
+	owner << browse(build_page(), "window=[window]")
+	winset(owner, SKIN_MAPWINDOW_MAP, "focus=1") // browse() takes focus
+
+/datum/tooltip/proc/build_page()
+	var/html = file2text('code/modules/tooltip/tooltip.html')
+	var/map_control = SKIN_MAPWINDOW_MAP
+	var/config = "<script>window.tooltip_config = { ref: '[REF(src)]', windowId: '[window]', mapControlId: '[map_control]' };</script>"
+	return replacetext(html, "<!-- TOOLTIP_CONFIG -->", config)
+
+/// Rebuild the window if its page never reported in
+/datum/tooltip/proc/ensure_window()
+	if(!window || (!loaded && world.time - window_created_at > TOOLTIP_LOAD_TIMEOUT))
+		create_window()
+
+/// Show a tooltip below `target` (above if there is no room). `mouse` is the params string of MouseEntered().
+/datum/tooltip/proc/show(atom/target, mouse, title, content, theme = "default")
+	if(!owner || QDELETED(target))
+		return FALSE
+	if(!title && !content)
+		return FALSE
+	var/list/mouse_data = parse_mouse(mouse)
+	if(!mouse_data)
 		return FALSE
 
-	if (!isnull(last_target))
-		UnregisterSignal(last_target, COMSIG_QDELETING)
+	ensure_window()
+	set_target(target)
 
-	RegisterSignal(thing, COMSIG_QDELETING, PROC_REF(on_target_qdel))
+	var/list/text_parts = build_text(title, content)
+	var/list/view_tiles = getviewsize(owner.view)
 
-	last_target = thing
-
-	if (!init)
-		//Initialize some vars
-		init = 1
-		owner << output(list2params(list(ICON_SIZE_ALL, control)), "[control]:tooltip.init")
-
-	showing = 1
-
-	set_title(contents)
-
-	//Make our dumb param object
-	src.params = {"{ "cursor": "[params]", "screenLoc": "[thing.screen_loc]" }"}
-
-	//Send stuff to the tooltip
-	view_size = getviewsize(owner.view)
-	owner << output(list2params(list(src.params, view_size[1] , view_size[2], "[contents[TOOLTIP_TITLE]][contents[TOOLTIP_DESCRIPTION]]", theme, special)), "[control]:tooltip.update")
-
-	//If a hide() was hit while we were showing, run hide() again to avoid stuck tooltips
-	showing = 0
-	if (queueHide)
-		hide()
-
+	options = list(
+		"title" = text_parts[1],
+		"content" = text_parts[2],
+		"theme" = theme || "default",
+		"mouse" = mouse_data,
+		"bounds" = get_target_bounds(target),
+		"view" = list("width" = view_tiles[1], "height" = view_tiles[2]),
+	)
+	active = TRUE
+	push()
 	return TRUE
 
-///Updates the user's tooltips given a new title/content, keeping everything else the same.
-/datum/tooltip/proc/update_text(list/contents)
-	if (!params || !length(contents) || !owner)
+/// Replace the text of the tooltip that is showing, keeping its place
+/datum/tooltip/proc/update_text(title, content)
+	if(!active || !owner || !length(options))
 		return FALSE
-	set_title(contents)
-	owner << output(list2params(list(src.params, view_size[1] , view_size[2], "[contents[TOOLTIP_TITLE]][contents[TOOLTIP_DESCRIPTION]]")), "[control]:tooltip.update")
+	var/list/text_parts = build_text(title, content)
+	options["title"] = text_parts[1]
+	options["content"] = text_parts[2]
+	push()
 	return TRUE
 
 /datum/tooltip/proc/hide()
-	queueHide = showing ? TRUE : FALSE
-
-	if (queueHide)
-		addtimer(CALLBACK(src, PROC_REF(do_hide)), 0.1 SECONDS)
-	else
-		do_hide()
-
+	pending_payload = null
+	clear_target()
+	if(!active)
+		return TRUE
+	active = FALSE
+	seq++
+	if(loaded && owner)
+		owner << output(list2params(list(seq)), "[window]:tooltip.hide")
 	return TRUE
 
-/datum/tooltip/proc/set_title(list/contents)
-	var/title = contents[TOOLTIP_TITLE]
-	var/content = contents[TOOLTIP_DESCRIPTION]
+/datum/tooltip/proc/push()
+	seq++
+	var/payload = json_encode(list(
+		"seq" = seq,
+		"options" = options,
+		"tile" = list("width" = ICON_SIZE_X, "height" = ICON_SIZE_Y),
+	))
+	if(!loaded)
+		pending_payload = payload
+		return
+	pending_payload = null
+	owner << output(list2params(list(payload)), "[window]:tooltip.show")
 
-	if (title && content)
+/datum/tooltip/proc/build_text(title, content)
+	if(istext(title) && istext(content) && length(title) && length(content))
 		title = "<h1>[title]</h1>"
 		content = "<p>[content]</p>"
-	else if (title && !content)
+	else if(length(title))
 		title = "<p>[title]</p>"
-	else if (!title && content)
+	else if(length(content))
 		content = "<p>[content]</p>"
+	if(istext(title))
+		title = replacetext(title, "\proper", "")
+		title = replacetext(title, "\improper", "")
+	return list(title || "", content || "")
 
-	// Strip macros from item names
-	title = replacetext(title, "\proper", "")
-	title = replacetext(title, "\improper", "")
+/// screen-loc is the cursor on screen, icon-x/y (vis-x/y for vis_contents) the cursor inside the object's icon.
+/// Returns null when screen-loc is missing or malformed.
+/datum/tooltip/proc/parse_mouse(mouse)
+	if(!istext(mouse))
+		return null
+	var/list/params_list = params2list(mouse)
+	var/screen_loc_text = params_list["screen-loc"]
+	if(!istext(screen_loc_text))
+		return null
+	var/list/screen_loc = splittext(screen_loc_text, ",")
+	if(length(screen_loc) != 2)
+		return null
+	var/list/left_parts = splittext(screen_loc[1], ":")
+	var/list/bottom_parts = splittext(screen_loc[2], ":")
+	var/left_tiles = text2num(left_parts[1])
+	var/bottom_tiles = text2num(bottom_parts[1])
+	if(isnull(left_tiles) || isnull(bottom_tiles))
+		return null
+	return list(
+		"left" = list(
+			"tiles" = left_tiles,
+			"pixels" = length(left_parts) >= 2 ? text2num(left_parts[2]) : 0,
+			"icon" = text2num(params_list["icon-x"]),
+			"vis" = text2num(params_list["vis-x"]),
+		),
+		"bottom" = list(
+			"tiles" = bottom_tiles,
+			"pixels" = length(bottom_parts) >= 2 ? text2num(bottom_parts[2]) : 0,
+			"icon" = text2num(params_list["icon-y"]),
+			"vis" = text2num(params_list["vis-y"]),
+		),
+	)
 
-	contents[TOOLTIP_TITLE] = title
-	contents[TOOLTIP_DESCRIPTION] = content
+/// Size of the object on screen in unscaled pixels (wide HUD slots are 48x32)
+/datum/tooltip/proc/get_target_bounds(atom/target)
+	var/static/list/dimensions_by_file = list()
+	var/target_icon = target.icon
+	if(!isfile(target_icon))
+		return list("width" = ICON_SIZE_X, "height" = ICON_SIZE_Y)
+	var/cache_key = "[target_icon]"
+	var/list/dimensions = dimensions_by_file[cache_key]
+	if(!dimensions)
+		var/icon/measured = icon(target_icon)
+		dimensions = list(measured.Width() || ICON_SIZE_X, measured.Height() || ICON_SIZE_Y)
+		dimensions_by_file[cache_key] = dimensions
+	return list("width" = dimensions[1], "height" = dimensions[2])
 
-/datum/tooltip/proc/on_target_qdel()
+/datum/tooltip/proc/set_target(atom/target)
+	if(last_target == target)
+		return
+	if(last_target)
+		UnregisterSignal(last_target, COMSIG_QDELETING)
+	last_target = target
+	RegisterSignal(target, COMSIG_QDELETING, PROC_REF(on_target_qdel))
+
+/datum/tooltip/proc/clear_target()
+	if(last_target)
+		UnregisterSignal(last_target, COMSIG_QDELETING)
+		last_target = null
+
+/datum/tooltip/proc/on_target_qdel(datum/source)
 	SIGNAL_HANDLER
 
+	if(source != last_target)
+		return
+	last_target = null
 	INVOKE_ASYNC(src, PROC_REF(hide))
-	last_target = null
 
-/datum/tooltip/proc/do_hide()
-	winshow(owner, control, FALSE)
+/// The page only reports that it has loaded, or that something went wrong
+/datum/tooltip/Topic(href, href_list)
+	..()
+	if(!owner || usr?.client != owner)
+		return
+	if(href_list["window"] != window) // late word from a replaced window
+		return
+	switch(href_list["action"])
+		if("loaded")
+			loaded = TRUE
+			if(active && pending_payload)
+				var/payload = pending_payload
+				pending_payload = null
+				owner << output(list2params(list(payload)), "[window]:tooltip.show")
+		if("error")
+			log_world("TOOLTIP ERROR ([window]): [copytext(href_list["message"], 1, 200)]")
 
-/datum/tooltip/Destroy(force)
-	last_target = null
-	return ..()
+/datum/tooltip/proc/reset()
+	hide()
+	create_window()
 
-//Open a tooltip for user, at a location based on params
-//Theme is a CSS class in tooltip.html, by default this wrapper chooses a CSS class based on the user's UI_style (Midnight, Plasmafire, Retro, etc)
-//Includes sanity.checks
+/// Theme is a CSS class in tooltip.html; by default it is chosen from the user's UI style
 /proc/openToolTip(mob/user = null, atom/movable/tip_src = null, params = null, title = "", content = "", theme = "")
 	if(!istype(user) || !user.client?.tooltips)
 		return
@@ -134,21 +239,22 @@ Notes:
 		theme = LOWER_TEXT(ui_style)
 	if(!theme)
 		theme = "default"
-	user.client.tooltips.show(tip_src, params, list(title, content), theme)
+	user.client.tooltips.show(tip_src, params, title, content, theme)
 
-
-//Arbitrarily close a user's tooltip
-//Includes sanity checks.
 /proc/closeToolTip(mob/user)
 	if(!istype(user) || !user.client?.tooltips)
 		return
 	user.client.tooltips.hide()
 
-///Updates a user's tooltip to show new title/contents.
 /proc/updateToolTip(mob/user = null, title = "", content = "")
 	if(!istype(user) || !user.client?.tooltips)
 		return
-	user.client.tooltips.update_text(list(title, content))
+	user.client.tooltips.update_text(title, content)
 
-#undef TOOLTIP_TITLE
-#undef TOOLTIP_DESCRIPTION
+GAME_VERB(/client, reset_tooltips, "Reset Tooltips", "OOC")
+	tooltips?.reset()
+	to_chat(src, span_notice("Tooltips reset."))
+
+#undef TOOLTIP_WINDOW_PREFIX
+#undef TOOLTIP_LOAD_TIMEOUT
+// [/HORIZON-EDIT]

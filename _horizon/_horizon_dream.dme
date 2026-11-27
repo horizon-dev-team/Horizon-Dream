@@ -75,6 +75,7 @@
 #include "code\modules\projectiles\attachments\gun_light.dm"
 #include "code\modules\projectiles\attachments\laser_sight.dm"
 #include "code\modules\projectiles\attachments\silencer.dm"
+#include "code\modules\projectiles\boxes_magazines\ammo_interactions.dm"
 #include "code\modules\projectiles\boxes_magazines\ammo_stack.dm"
 #include "code\modules\projectiles\guns\firing animations.dm"
 #include "code\modules\projectiles\guns\ballistic\launchers.dm"

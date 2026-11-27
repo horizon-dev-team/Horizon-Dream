@@ -1,35 +1,65 @@
 <!doctype html>
 <html>
   <head>
+    <meta charset="UTF-8" />
     <title>Tooltip</title>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <!-- TOOLTIP_CONFIG -->
     <style type="text/css">
-      body,
-      html {
+      html,
+      body {
         margin: 0;
         padding: 0;
         overflow: hidden;
       }
 
-      .wrap {
-        position: absolute;
-        top: 0;
-        left: 0;
-        max-width: 298px;
-        border: 2px solid #1b2967;
+      /* never white, not even for the first frame; place() sets the theme's colour */
+      html {
+        background: #1b2967;
       }
 
-      .content {
+      /* #probe measures, #view shows; max-content keeps the size independent of the window */
+      .tt {
+        --tt-frame: #1b2967;
+        --tt-border: #0033cc;
+        --tt-bg: #005cb8;
+        --tt-fg: #ffffff;
+
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: max-content;
+        max-width: 298px;
+        border: 2px solid var(--tt-frame);
+      }
+
+      #probe {
+        visibility: hidden;
+        pointer-events: none;
+      }
+
+      /* fills the whole window, so rounding in the window size never shows the page behind it */
+      #view {
+        box-sizing: border-box;
+        width: 100vw;
+        height: 100vh;
+        max-width: none;
+      }
+
+      #view .tt-content {
+        box-sizing: border-box;
+        height: 100%;
+      }
+
+      .tt-content {
         font:
           bold 12px Arial,
           "Helvetica Neue",
           Helvetica,
           sans-serif;
-        color: #ffffff;
+        color: var(--tt-fg);
         padding: 8px;
-        border: 2px solid #0033cc;
-        background: #005cb8;
+        border: 2px solid var(--tt-border);
+        background: var(--tt-bg);
       }
 
       h1 {
@@ -43,263 +73,420 @@
         line-height: 1.2;
       }
 
-      /* Custom Themes */
-      .blob .wrap {border-color: #2e2e2e;}
-      .blob .content {color: #82ed00; border-color: #4e4c4a; background-color: #191918;}
+      /* Themes: lowercased UI style or a name passed to openToolTip(). Must stay after .tt */
+      .blob       { --tt-frame: #2e2e2e; --tt-fg: #82ed00; --tt-border: #4e4c4a; --tt-bg: #191918; }
+      .parasite   { --tt-frame: #88868d; --tt-fg: #efeeef; --tt-border: #35333a; --tt-bg: #636169; }
+      .alien      { --tt-frame: #33165b; --tt-fg: #25004a; --tt-border: #5a3076; --tt-bg: #6d3a8e; }
+      .wraith     { --tt-frame: #492136;                     --tt-border: #331726; --tt-bg: #471962; }
+      .cult       { --tt-frame: #292222; --tt-fg: #ff0000; --tt-border: #4c4343; --tt-bg: #3c3434; }
+      .pod        { --tt-frame: #052401;                     --tt-border: #326d29; --tt-bg: #569f4b; }
+      .colo-pod   { --tt-frame: #256fb9;                     --tt-border: #000000; --tt-bg: #000000; }
+      .hisgrace   { --tt-frame: #7c1414; --tt-fg: #15d512; --tt-border: #9d1414; --tt-bg: #861414; }
 
-      .parasite .wrap {border-color: #88868d;}
-      .parasite .content {color: #efeeef; border-color: #35333a; background-color: #636169;}
-
-      .alien .wrap {border-color: #33165b;}
-      .alien .content {color: #25004a; border-color: #5a3076; background-color: #6d3a8e;}
-
-      .wraith .wrap {border-color: #492136;}
-      .wraith .content {border-color: #331726; background-color: #471962;}
-
-      .cult .wrap {border-color: #292222;}
-      .cult .content {color: #ff0000; border-color: #4c4343; background-color: #3c3434;}
-
-      .pod .wrap {border-color: #052401;}
-      .pod .content {border-color: #326d29; background-color: #569f4b;}
-
-      .colo-pod .wrap {border-color: #256fb9;}
-      .colo-pod .content {border-color: #000000; background-color: #000000;}
-
-      .hisgrace .wrap {border-color: #7c1414;}
-      .hisgrace .content {color: #15d512; border-color: #9d1414; background-color: #861414;}
-
-      /* TG: Themes */
-      /* ScreenUI */
-		  .expanse .wrap {border-color: #2b2b33;}
-		  .expanse .content {color: #6b97cd; border-color: #40404a; background-color: #1e1d21;}
-
-      .atomic .wrap {border-color: #1b1b2f;}
-		  .atomic .content {color: #c49e0e; border-color: #2b2e41; background-color: #1e1d21;}
-
-      .belter .wrap {border-color: #373f4b;}
-      .belter .content {color: #59cf93; border-color: #707a79; background-color: #1e1d21;}
-
-      .sunset .wrap {border-color: #2b1d22;}
-      .sunset .content {color: #e73a3a; border-color: #4a4045; background-color: #1a1618;}
+      /* UI styles (GLOB.available_ui_styles) */
+      .expanse    { --tt-frame: #2b2b33; --tt-fg: #6b97cd; --tt-border: #40404a; --tt-bg: #1e1d21; }
+      .atomic     { --tt-frame: #1b1b2f; --tt-fg: #c49e0e; --tt-border: #2b2e41; --tt-bg: #1e1d21; }
+      .belter     { --tt-frame: #373f4b; --tt-fg: #59cf93; --tt-border: #707a79; --tt-bg: #1e1d21; }
+      .sunset     { --tt-frame: #2b1d22; --tt-fg: #e73a3a; --tt-border: #4a4045; --tt-bg: #1a1618; }
     </style>
   </head>
   <body>
-    <div id="wrap" class="wrap">
-      <div id="content" class="content"></div>
-    </div>
-    <script type="text/javascript" src="jquery.min.js"></script>
+    <div id="probe" class="tt"><div class="tt-content"></div></div>
+    <div id="view" class="tt" style="visibility: hidden"><div class="tt-content"></div></div>
     <script type="text/javascript">
-      var tooltip = {
-        tileSize: 32,
-        control: "",
-        params: {},
-        client_view_w: 0,
-        client_view_h: 0,
-        text: "",
-        theme: "",
-        padding: 2,
-        init: function (tileSize, control) {
-          tooltip.tileSize = parseInt(tileSize);
-          tooltip.control = control;
-        },
-        hide: function () {
-          window.location =
-            "byond://winset?id=" + tooltip.control + ";is-visible=false";
-        },
-        updateCallback: function (map) {
-          if (typeof map === "undefined" || !map) {
-            return false;
+      "use strict";
+      (function () {
+        var config = window.tooltip_config || {};
+        var PADDING = 2;
+        var IMAGE_WAIT_MS = 400;
+        var MAP_WAIT_MS = 1500;
+        var RESIZE_WAIT_MS = 100;
+
+        /* LAYOUT: a pure function of its input. "view px" are unscaled map pixels, "screen px" real ones. */
+        function num(value, fallback) {
+          return typeof value === "number" && isFinite(value)
+            ? value
+            : fallback;
+        }
+
+        function clamp(value, min, max) {
+          return Math.min(Math.max(value, min), max);
+        }
+
+        function computeLayout(input) {
+          var map = input.map;
+          var view = input.view;
+          var tile = input.tile;
+          var mouse = input.mouse;
+          var bounds = input.bounds;
+
+          var viewPxW = view.width * tile.width;
+          var viewPxH = view.height * tile.height;
+          var scaleX = map.view.x / viewPxW;
+          var scaleY = map.view.y / viewPxH;
+          if (!(scaleX > 0 && scaleY > 0 && isFinite(scaleX + scaleY))) {
+            return null;
           }
 
-          //alert(tooltip.params+' | '+tooltip.clientView+' | '+tooltip.text+' | '+tooltip.theme); //DEBUG
+          /* letterbox bars when the control is bigger than the view */
+          var letterX = Math.max(0, (map.pane.x - map.view.x) / 2);
+          var letterY = Math.max(0, (map.pane.y - map.view.y) / 2);
 
-          //Some reset stuff to avoid fringe issues with sizing
-          window.location =
-            "byond://winset?id=" +
-            tooltip.control +
-            ";anchor1=0,0;size=999x999";
+          /* cursor, view px from the left / bottom */
+          var cursorX =
+            (mouse.left.tiles - 1) * tile.width + num(mouse.left.pixels, 0);
+          var cursorY =
+            (mouse.bottom.tiles - 1) * tile.height + num(mouse.bottom.pixels, 0);
 
-          //Get the real icon size according to the client view
-          //FYI, this bit is even more borrowed from goon, our widescreen broke tooltips so I took a look at how they do it
-          //To improve our code. Thanks gooncoders, very cool
-          var mapWidth = map["view-size"].x,
-            mapHeight = map["view-size"].y,
-            tilesShownX = tooltip.client_view_w,
-            tilesShownY = tooltip.client_view_h,
-            realIconSizeX = mapWidth / tilesShownX,
-            realIconSizeY = mapHeight / tilesShownY,
-            resizeRatioX = realIconSizeX / tooltip.tileSize,
-            resizeRatioY = realIconSizeY / tooltip.tileSize,
-            //Calculate letterboxing offsets
-            leftOffset = (map.size.x - mapWidth) / 2,
-            topOffset = (map.size.y - mapHeight) / 2;
+          /* cursor inside the object's icon: vis-*, else icon-*, else the tile origin */
+          var insideX = num(
+            mouse.left.vis,
+            num(mouse.left.icon, num(mouse.left.pixels, 0)),
+          );
+          var insideY = num(
+            mouse.bottom.vis,
+            num(mouse.bottom.icon, num(mouse.bottom.pixels, 0)),
+          );
 
-          //alert(realIconSize + ' | ' +tooltip.tileSize + ' | ' + resizeRatio); //DEBUG
+          /* object rectangle, view px (y from the bottom) */
+          var objLeft = cursorX - insideX;
+          var objBottom = cursorY - insideY;
+          var objRight = objLeft + bounds.width;
+          var objTop = objBottom + bounds.height;
 
-          const parameters = new Object();
+          /* ... and screen px (y from the top) */
+          var left = letterX + objLeft * scaleX;
+          var right = letterX + objRight * scaleX;
+          var top = letterY + (viewPxH - objTop) * scaleY;
+          var bottom = letterY + (viewPxH - objBottom) * scaleY;
 
-          //Parse out the contents of params (e.g. "icon-x=32;icon-y=29;screen-loc=3:10,15:29")
-          //It is worth noting that params is not always ordered in the same way. We therefore need to write the code
-          //To load their values in independantly of their order
-          var paramsA = tooltip.params.cursor.split(";");
-          for (var i = 0; i < paramsA.length; i++) {
-            var entry = paramsA[i];
-            var nameAndValue = entry.split("=");
-            parameters[nameAndValue[0]] = nameAndValue[1];
+          var boxW = Math.min(input.box.width, map.pane.x);
+          var boxH = Math.min(input.box.height, map.pane.y);
+
+          /* below the object, flipped above when there is no room */
+          var x = left + PADDING;
+          var y = bottom + PADDING;
+          if (y + boxH > map.pane.y) {
+            y = top - PADDING - boxH;
           }
 
-          //Sometimes screen-loc is never sent ahaha fuck you byond
-          if (
-            !parameters["icon-x"] ||
-            !parameters["icon-y"] ||
-            !parameters["screen-loc"]
-          ) {
-            return false;
-          }
-          //icon-x
-          var iconX = parseInt(parameters["icon-x"]);
-          //icon-y
-          var iconY = parseInt(parameters["icon-y"]);
-          //screen-loc
-          var screenLoc = parameters["screen-loc"];
-          screenLoc = screenLoc.split(",");
-          if (screenLoc.length < 2) {
-            return false;
-          }
-          var left = screenLoc[0];
-          var top = screenLoc[1];
-          if (!left || !top) {
-            return false;
-          }
-          screenLoc = left.split(":");
-          left = parseInt(screenLoc[0]);
-          var enteredX = parseInt(screenLoc[1]);
-          screenLoc = top.split(":");
-          top = parseInt(screenLoc[0]);
-          var enteredY = parseInt(screenLoc[1]);
+          x = clamp(x, 0, Math.max(0, map.pane.x - boxW));
+          y = clamp(y, 0, Math.max(0, map.pane.y - boxH));
 
-          //Screen loc offsets on objects (e.g. "WEST+0:6,NORTH-1:26") can royally mess with positioning depending on where the cursor enters
-          //This is a giant bitch to parse. Note that it only expects screen_loc in the format <west>,<north>.
-          var oScreenLoc = tooltip.params.screenLoc.split(","); //o for original ok
+          return {
+            x: Math.round(x),
+            y: Math.round(y),
+            width: Math.round(boxW),
+            height: Math.round(boxH),
+            anchor: { left: left, top: top, right: right, bottom: bottom },
+          };
+        }
 
-          var west = oScreenLoc[0].split(":");
-          if (west.length > 1) {
-            //Only if west has a pixel offset
-            var westOffset = parseInt(west[1]);
-            if (westOffset !== 0) {
-              if (iconX + westOffset !== enteredX) {
-                //Cursor entered on the offset tile
-                left = left + (westOffset < 0 ? 1 : -1);
-              }
-              leftOffset = leftOffset + westOffset * resizeRatioX;
+        /* TRANSPORT: BYOND 516 JS API, with byond:// links for older clients */
+        var hasApi = !!(
+          window.BYOND &&
+          typeof window.BYOND.winset === "function" &&
+          typeof window.BYOND.winget === "function"
+        );
+
+        var mapWaiters = [];
+        var lastMap = null;
+
+        function navigate(url) {
+          if (typeof config.navigate === "function") {
+            config.navigate(url);
+          } else {
+            window.location = url;
+          }
+        }
+
+        function callByond(params) {
+          var parts = ["src=" + config.ref, "window=" + config.windowId];
+          for (var key in params) {
+            if (Object.prototype.hasOwnProperty.call(params, key)) {
+              parts.push(key + "=" + encodeURIComponent(params[key]));
             }
           }
+          navigate("byond://?" + parts.join("&"));
+        }
 
-          if (oScreenLoc.length > 1) {
-            //If north is given
-            var north = oScreenLoc[1].split(":");
-            if (north.length > 1) {
-              //Only if north has a pixel offset
-              var northOffset = parseInt(north[1]);
-              if (northOffset !== 0) {
-                if (iconY + northOffset === enteredY) {
-                  //Cursor entered on the original tile
-                  top--;
-                  topOffset =
-                    topOffset - (tooltip.tileSize + northOffset) * resizeRatioY;
-                } else {
-                  //Cursor entered on the offset tile
-                  if (northOffset < 0) {
-                    //Offset southwards
-                    topOffset =
-                      topOffset -
-                      (tooltip.tileSize + northOffset) * resizeRatioY;
-                  } else {
-                    //Offset northwards
-                    top--;
-                    topOffset = topOffset - northOffset * resizeRatioY;
-                  }
-                }
-              }
+        function reportError(message) {
+          callByond({ action: "error", message: String(message) });
+        }
+
+        function setWindow(opts) {
+          if (hasApi) {
+            var api = {};
+            if (opts.size) {
+              api.size = opts.size;
             }
+            if (opts.pos) {
+              api.pos = opts.pos;
+            }
+            api.isVisible = opts.visible; /* last, so the window never shows at its old size or place */
+            window.BYOND.winset(config.windowId, api);
+            return;
           }
-
-          //Handle special cases (for fuck sake)
-          if (tooltip.special !== "none") {
-            //Put yo special cases here
+          var parts = ["id=" + config.windowId];
+          if (opts.size) {
+            parts.push("size=" + opts.size);
           }
-
-          //Clamp values
-          left = left < 0 ? 0 : left > tilesShownX ? tilesShownX : left;
-          top = top < 0 ? 0 : top > tilesShownY ? tilesShownY : top;
-
-          //Calculate where on the screen the popup should appear (below the hovered tile)
-          var posX = Math.round(
-            (left - 1) * realIconSizeX + leftOffset + tooltip.padding,
-          ); //-1 to position at the left of the target tile
-          var posY = Math.round(
-            (tilesShownY - top + 1) * realIconSizeY +
-              topOffset +
-              tooltip.padding,
-          ); //+1 to position at the bottom of the target tile
-
-          //alert(mapWidth+' | '+mapHeight+' | '+tilesShown+' | '+realIconSize+' | '+leftOffset+' | '+topOffset+' | '+left+' | '+top+' | '+posX+' | '+posY); //DEBUG
-
-          $("body").attr("class", tooltip.theme);
-
-          var $content = $("#content"),
-            $wrap = $("#wrap");
-          $wrap.attr("style", "");
-          $content.off("mouseover");
-          $content.html(tooltip.text);
-
-          $wrap.width($wrap.width() + 2); //Dumb hack to fix a bizarre sizing bug
-
-          var pixelRatio = 1;
-          if (window.devicePixelRatio) {
-            pixelRatio = window.devicePixelRatio;
+          if (opts.pos) {
+            parts.push("pos=" + opts.pos);
           }
+          parts.push("is-visible=" + (opts.visible ? "true" : "false"));
+          navigate("byond://winset?" + parts.join(";"));
+        }
 
-          var docWidth = Math.floor($wrap.outerWidth() * pixelRatio),
-            docHeight = Math.floor($wrap.outerHeight() * pixelRatio);
-
-          if (posY + docHeight > map.size.y) {
-            //Is the bottom edge below the window? Snap it up if so
-            posY = posY - docHeight - realIconSizeY - tooltip.padding;
+        function queryMap() {
+          if (hasApi) {
+            return Promise.resolve(
+              window.BYOND.winget(config.mapControlId, ["size", "view-size"]),
+            );
           }
-
-          //Actually size, move and show the tooltip box
-          window.location =
-            "byond://winset?id=" +
-            tooltip.control +
-            ";size=" +
-            docWidth +
-            "x" +
-            docHeight +
-            ";pos=" +
-            posX +
-            "," +
-            posY +
-            ";is-visible=true";
-
-          $content.on("mouseover", function () {
-            tooltip.hide();
+          return new Promise(function (resolve) {
+            mapWaiters.push(resolve);
+            navigate(
+              "byond://winget?callback=tooltip.onMap;id=" +
+                config.mapControlId +
+                ";property=size,view-size",
+            );
           });
-        },
-        update: function (params, client_vw, clien_vh, text, theme, special) {
-          //Assign our global object
-          tooltip.params = $.parseJSON(params);
-          tooltip.client_view_w = parseInt(client_vw);
-          tooltip.client_view_h = parseInt(clien_vh);
-          tooltip.text = text;
-          tooltip.theme = theme;
-          tooltip.special = special;
+        }
 
-          //Go get the map details
-          window.location =
-            "byond://winget?callback=tooltip.updateCallback;id=map_screen.map;property=size,view-size";
-        },
-      };
+        function delay(ms) {
+          return new Promise(function (resolve) {
+            setTimeout(resolve, ms);
+          });
+        }
+
+        function getMap() {
+          var timeout = delay(MAP_WAIT_MS).then(function () {
+            return null;
+          });
+          return Promise.race([queryMap(), timeout]).then(function (map) {
+            if (map && map["size"] && map["view-size"]) {
+              lastMap = map;
+              return map;
+            }
+            if (lastMap) {
+              return lastMap;
+            }
+            throw new Error("map size unavailable");
+          });
+        }
+
+        /* RENDERING */
+        var probe = document.getElementById("probe");
+        var view = document.getElementById("view");
+        var probeContent = probe.firstElementChild;
+        var viewContent = view.firstElementChild;
+
+        /* anything older than this is dead */
+        var currentSeq = 0;
+        /* size we last asked the client for, "WxH" */
+        var lastSize = "";
+
+        function themeClass(theme) {
+          return String(theme || "default").replace(/[^a-z0-9_-]/gi, "");
+        }
+
+        function waitForImages(root, timeoutMs) {
+          var pending = Array.prototype.filter.call(
+            root.querySelectorAll("img"),
+            function (img) {
+              return !img.complete;
+            },
+          );
+          if (!pending.length) {
+            return Promise.resolve();
+          }
+          var settled = Promise.all(
+            pending.map(function (img) {
+              return new Promise(function (resolve) {
+                img.addEventListener("load", resolve, { once: true });
+                img.addEventListener("error", resolve, { once: true });
+              });
+            }),
+          );
+          return Promise.race([settled, delay(timeoutMs)]);
+        }
+
+        function hideWindow() {
+          view.style.visibility = "hidden";
+          setWindow({ visible: false });
+        }
+
+        /* measure the probe, then show size, position and visibility in ONE call */
+        function place(data, map) {
+          var box = probe.getBoundingClientRect();
+          var dpr = window.devicePixelRatio || 1;
+          var options = data.options;
+
+          var layout = computeLayout({
+            map: { pane: map["size"], view: map["view-size"] },
+            view: options.view,
+            tile: data.tile,
+            mouse: options.mouse,
+            bounds: options.bounds,
+            box: {
+              width: Math.ceil(box.width * dpr),
+              height: Math.ceil(box.height * dpr),
+            },
+          });
+          if (!layout) {
+            throw new Error("could not compute tooltip layout");
+          }
+
+          view.className = probe.className;
+          document.documentElement.style.backgroundColor =
+            getComputedStyle(view).borderTopColor;
+          viewContent.replaceChildren.apply(
+            viewContent,
+            Array.prototype.slice.call(probeContent.childNodes),
+          );
+
+          /*
+           * The window changes size first and the page only re-lays-out a moment later, so when the size
+           * changes the content stays hidden (the window shows just its frame colour) until the page
+           * confirms the new size.
+           */
+          var size = layout.width + "x" + layout.height;
+          var resized = size !== lastSize;
+          lastSize = size;
+          view.style.visibility = resized ? "hidden" : "visible";
+          setWindow({
+            visible: true,
+            size: size,
+            pos: layout.x + "," + layout.y,
+          });
+          if (resized) {
+            revealAfterResize(data.seq);
+          }
+          return layout;
+        }
+
+        /* Show the content after the next resize (or after RESIZE_WAIT_MS, so it can never stay hidden) */
+        function revealAfterResize(seq) {
+          var done = false;
+          function finish() {
+            if (done) {
+              return;
+            }
+            done = true;
+            window.removeEventListener("resize", onResize);
+            if (seq === currentSeq) {
+              view.style.visibility = "visible";
+            }
+          }
+          function onResize() {
+            requestAnimationFrame(finish);
+          }
+          window.addEventListener("resize", onResize);
+          setTimeout(finish, RESIZE_WAIT_MS);
+        }
+
+        function render(data) {
+          var seq = data.seq;
+          var options = data.options;
+
+          return getMap().then(function (map) {
+            if (seq !== currentSeq) {
+              return;
+            }
+
+            var html = (options.title || "") + (options.content || "");
+            if (!html) {
+              html = "<p>Unable to display tooltip</p>";
+            }
+            probe.className = "tt " + themeClass(options.theme);
+            probeContent.innerHTML = html;
+
+            return waitForImages(probe, IMAGE_WAIT_MS).then(function () {
+              if (seq !== currentSeq) {
+                return;
+              }
+
+              /* images past the deadline: lay out again when they land */
+              var late = Array.prototype.filter.call(
+                probe.querySelectorAll("img"),
+                function (img) {
+                  return !img.complete;
+                },
+              );
+
+              place(data, map);
+
+              late.forEach(function (img) {
+                img.addEventListener(
+                  "load",
+                  function () {
+                    if (seq !== currentSeq) {
+                      return;
+                    }
+                    probeContent.replaceChildren.apply(
+                      probeContent,
+                      Array.prototype.slice.call(viewContent.childNodes),
+                    );
+                    place(data, map);
+                  },
+                  { once: true },
+                );
+              });
+            });
+          });
+        }
+
+        window.tooltip = {
+          show: function (raw) {
+            var data;
+            try {
+              data = JSON.parse(raw);
+            } catch (e) {
+              reportError("bad payload: " + (e && e.message));
+              return;
+            }
+            currentSeq = data.seq;
+            render(data).catch(function (e) {
+              reportError(e && e.message ? e.message : e);
+            });
+          },
+
+          hide: function (seq) {
+            currentSeq = parseInt(seq, 10) || currentSeq + 1;
+            hideWindow();
+          },
+
+          /* winget callback when there is no JS API */
+          onMap: function (map) {
+            var waiters = mapWaiters;
+            mapWaiters = [];
+            waiters.forEach(function (resolve) {
+              resolve(map);
+            });
+          },
+
+          /* for tests */
+          computeLayout: computeLayout,
+        };
+
+        window.addEventListener("error", function (e) {
+          reportError(
+            (e && (e.message || (e.error && e.error.message))) ||
+              "unknown error",
+          );
+        });
+        window.addEventListener("unhandledrejection", function (e) {
+          reportError(
+            (e && e.reason && (e.reason.message || e.reason)) ||
+              "unhandled rejection",
+          );
+        });
+
+        view.addEventListener("mouseover", hideWindow);
+
+        callByond({ action: "loaded" });
+      })();
     </script>
   </body>
 </html>

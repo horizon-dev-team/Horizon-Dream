@@ -256,3 +256,7 @@ Themes are CSS classes in tooltip.html; by default one is chosen from the player
 GAME_VERB(/client, reset_tooltips, "Reset Tooltips", "OOC")
 	tooltips?.reset()
 	to_chat(src, span_notice("Tooltips reset."))
+
+#undef TOOLTIP_WINDOW_PREFIX
+#undef TOOLTIP_LOAD_TIMEOUT
+// [/HORIZON-EDIT]

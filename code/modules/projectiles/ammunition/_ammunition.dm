@@ -145,8 +145,18 @@
 	var/stamina_damage = initial_stamina ? "[icon2html(DAMAGE_ICON_SET, user, "ATK_STAMINA")] [initial_stamina]" : ""
 	if(!damage && !stamina_damage)
 		return
-	. += "<tr><td><b>Damage:</b></td><td>[damage]<br>[stamina_damage]</td></tr>"
-	. += "<br><tr><td><b>Count:</b></td><td>[icon2html(DAMAGE_ICON_SET, user, "ammo_bullet")] [pellets]</td></tr>"
+	var/list/damage_rows = list()
+	var/list/damage_values = list()
+	var/pellet_multiplier = pellets > 1 ? " ×[pellets]" : ""
+	if(damage)
+		damage_values += damage
+	if(stamina_damage)
+		damage_values += stamina_damage
+	var/damage_and_pellets = "[damage_values.Join("<br>")]"
+	if(pellets > 1)
+		damage_and_pellets = "<table style='border-collapse:collapse;'><tr><td style='padding:0; vertical-align:middle;'>[damage_values.Join("<br>")]</td><td style='padding:0 0 0 2px; vertical-align:middle;'>×[pellets]</td></tr></table>"
+	. += "<tr><td><b>Damage:</b></td><td>[damage_and_pellets]</td></tr>"
+	. += damage_rows.Join()
 
 /// reset the icon the world_icon element swapped away from.
 /obj/item/ammo_casing/update_icon(updates)

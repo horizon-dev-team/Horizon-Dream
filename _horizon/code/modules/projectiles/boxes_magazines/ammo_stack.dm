@@ -235,7 +235,7 @@
 	base_icon_state = "c545"
 	world_icon_state = "545-casing"
 	caliber = CALIBER_A223
-	max_ammo = 8
+	max_ammo = 10
 	ammo_type = /obj/item/ammo_casing/a223
 
 /obj/item/ammo_box/magazine/ammo_stack/aniquilador
@@ -267,7 +267,7 @@
 	base_icon_state = "c545"
 	world_icon_state = "545-casing"
 	caliber = CALIBER_A556
-	max_ammo = 8
+	max_ammo = 10
 	ammo_type = /obj/item/ammo_casing/a556
 
 /obj/item/ammo_box/magazine/ammo_stack/a556/loaded
@@ -279,7 +279,7 @@
 	base_icon_state = "c545"
 	world_icon_state = "545-casing"
 	caliber = CALIBER_545
-	max_ammo = 8
+	max_ammo = 10
 	ammo_type = /obj/item/ammo_casing/a545
 
 /obj/item/ammo_box/magazine/ammo_stack/a545/loaded

@@ -142,12 +142,11 @@
 	var/initial_damage = initial(bullet.damage)
 	var/damage = initial_damage ? "[icon2html(DAMAGE_ICON_SET, user, "ATK_[uppertext(bullet.armor_flag)]")] [initial_damage]" : ""
 	var/initial_stamina = initial(bullet.stamina)
+	var/initial_penetration = initial(bullet.armour_penetration)
 	var/stamina_damage = initial_stamina ? "[icon2html(DAMAGE_ICON_SET, user, "ATK_STAMINA")] [initial_stamina]" : ""
 	if(!damage && !stamina_damage)
 		return
-	var/list/damage_rows = list()
 	var/list/damage_values = list()
-	var/pellet_multiplier = pellets > 1 ? " ×[pellets]" : ""
 	if(damage)
 		damage_values += damage
 	if(stamina_damage)
@@ -156,7 +155,8 @@
 	if(pellets > 1)
 		damage_and_pellets = "<table style='border-collapse:collapse;'><tr><td style='padding:0; vertical-align:middle;'>[damage_values.Join("<br>")]</td><td style='padding:0 0 0 2px; vertical-align:middle;'>×[pellets]</td></tr></table>"
 	. += "<tr><td><b>Damage:</b></td><td>[damage_and_pellets]</td></tr>"
-	. += damage_rows.Join()
+	if(initial_penetration > 0)
+	. += "<tr><td><b>Penetration:</b></td><td>[icon2html(DAMAGE_ICON_SET, user, "")] [initial_penetration]%</td></tr>" // ПОСТАВЬ НОРМАЛЬНУЮ ИКОНКУ А НЕ ЗАГЛУШКУ!!!
 
 /// reset the icon the world_icon element swapped away from.
 /obj/item/ammo_casing/update_icon(updates)

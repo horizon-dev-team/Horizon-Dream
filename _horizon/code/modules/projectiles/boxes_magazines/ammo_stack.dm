@@ -340,7 +340,7 @@
 	base_icon_state = "c762"
 	world_icon_state = "762-casing"
 	caliber = CALIBER_276
-	max_ammo = 8
+	max_ammo = 5
 	ammo_type = /obj/item/ammo_casing/a276
 
 /obj/item/ammo_box/magazine/ammo_stack/a276/loaded

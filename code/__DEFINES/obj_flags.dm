@@ -82,6 +82,7 @@
 #define CAN_BE_OVERSLOT (1<<19)
 //if throwed, it wont have a randomized transform
 #define NO_ROTATE_RANDOM_THROW (1<<20)	// [HORIZON-ADD] - Rotate_Item
+#define NO_ANGLE_RANDOM_DROP (1<<21)	// [HORIZON-ADD] GunRework
 
 // Flags for the clothing_flags var on /obj/item/clothing
 
@@ -137,6 +138,7 @@
 /// Flags for sharpness in obj/item
 #define SHARP_EDGED (1<<0)
 #define SHARP_POINTY (1<<1)
+#define SHARP_IMPALING (1<<2) // [HORIZON-ADD] GunRework
 
 /// Flags for specifically what kind of items to get in get_equipped_items
 #define INCLUDE_POCKETS (1<<0)

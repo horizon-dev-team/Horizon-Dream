@@ -45,9 +45,16 @@
 	/// Set when this casing is fired. Only used for checking if it should burn a user's hand when caught from an ejection port.
 	var/shot_timestamp = 0
 
-// [HORIZON-ADD] - Rotate_Item
+// [HORIZON-ADD] Rotate_Item | GunRework
 	var/auto_rotate = TRUE
 	item_flags = NO_ROTATE_RANDOM_THROW
+
+	/// Icon used for the casing while it lies on the floor (world_icon element swaps to it outside inventories).
+	var/world_icon = '_horizon/icons/obj/items/ammo/casings_world.dmi'
+	/// Icon state used for the world sprite. "-live" is appended while the casing still holds a projectile.
+	var/world_icon_state = "s-casing"
+	/// Ammo stack type two of these casings merge into when clicked together.
+	var/obj/item/ammo_box/magazine/stack_type
 // [/HORIZON-ADD]
 
 /obj/item/ammo_casing/spent
@@ -61,8 +68,12 @@
 	pixel_x = base_pixel_x + rand(-10, 10)
 	pixel_y = base_pixel_y + rand(-10, 10)
 	setDir(pick(GLOB.alldirs))
+	// [HORIZON-ADD] GunRework
 	if(auto_rotate)
-		transform = transform.Turn(round(45 * rand(0, 32) / 2)) // [HORIZON-ADD]
+		transform = transform.Turn(round(45 * rand(0, 32) / 2))
+	if(world_icon)
+		AddElement(/datum/element/world_icon, PROC_REF(update_icon_world))
+	// [/HORIZON-ADD]
 	update_appearance()
 
 /obj/item/ammo_casing/Destroy()
@@ -124,6 +135,41 @@
 		readout += "[!readout.len ? "Most monkeys" : "More fortunate monkeys"] collapsed from exhaustion after [span_warning("[HITS_TO_CRIT((initial(exam_proj.stamina) * proj_damage_mult) * pellets)] impact\s")] of these [span_warning("[caliber]")] rounds."
 	return readout.Join("\n") // Sending over a single string, rather than the whole list
 
+// [HORIZON-ADD] GunRework
+/obj/item/ammo_casing/get_extra_tooltip(mob/user)
+	. = ..()
+	var/obj/projectile/bullet = projectile_type
+	var/initial_damage = initial(bullet.damage)
+	var/damage = initial_damage ? "[icon2html(DAMAGE_ICON_SET, user, "ATK_[uppertext(bullet.armor_flag)]")] [initial_damage]" : ""
+	var/initial_stamina = initial(bullet.stamina)
+	var/initial_penetration = initial(bullet.armour_penetration)
+	var/stamina_damage = initial_stamina ? "[icon2html(DAMAGE_ICON_SET, user, "ATK_STAMINA")] [initial_stamina]" : ""
+	if(!damage && !stamina_damage)
+		return
+	var/list/damage_values = list()
+	if(damage)
+		damage_values += damage
+	if(stamina_damage)
+		damage_values += stamina_damage
+	var/damage_and_pellets = "[damage_values.Join("<br>")]"
+	if(pellets > 1)
+		damage_and_pellets = "<table style='border-collapse:collapse;'><tr><td style='padding:0; vertical-align:middle;'>[damage_values.Join("<br>")]</td><td style='padding:0 0 0 2px; vertical-align:middle;'>×[pellets]</td></tr></table>"
+	. += "<tr><td><b>Damage:</b></td><td>[damage_and_pellets]</td></tr>"
+	if(initial_penetration)
+		. += "<tr><td><b>Penetration:</b></td><td>[icon2html(DAMAGE_ICON_SET, user, "")] [initial_penetration]%</td></tr>" // ПОСТАВЬ НОРМАЛЬНУЮ ИКОНКУ А НЕ ЗАГЛУШКУ!!!
+
+/// reset the icon the world_icon element swapped away from.
+/obj/item/ammo_casing/update_icon(updates)
+	icon = initial(icon)
+	return ..()
+
+/// world sprite proc for the world_icon element.
+/obj/item/ammo_casing/proc/update_icon_world()
+	icon = world_icon
+	icon_state = "[world_icon_state][loaded_projectile ? "-live" : ""]"
+	return UPDATE_ICON_STATE | UPDATE_OVERLAYS
+// [/HORIZON-ADD]
+
 /obj/item/ammo_casing/update_icon_state()
 	icon_state = "[initial(icon_state)][loaded_projectile ? "-live" : null]"
 	return ..()
@@ -176,11 +222,11 @@
 	to_chat(user, span_notice("You collect [boolets] [box.casing_phrasing]\s. [box] now contains [box.stored_ammo.len] [box.casing_phrasing]\s."))
 	return TRUE
 
+// [HORIZON-EDIT] PHYSICS | GunRework
 /obj/item/ammo_casing/throw_impact(atom/hit_atom, datum/thrownthing/throwingdatum)
-	bounce_away(bounce_angle = rand(0, 360), spread_multiplier = 0.75, still_warm = FALSE, sound_delay = 0)	// [HORIZON-ADD] PHYSICS
+	bounce_away(bounce_angle = rand(0, 360), spread_multiplier = 0.75, still_warm = FALSE, sound_delay = 0) // [HORIZON-ADD] PHYSICS
 	return ..()
 
-// [HORIZON-EDIT] PHYSICS
 /obj/item/ammo_casing/proc/bounce_away(bounce_angle, spread_multiplier = 1, pixel_mess = TRUE, still_warm = FALSE, sound_delay = 3)
 	update_appearance()
 	var/turf/our_turf = get_turf(src)
@@ -200,6 +246,9 @@
 			vertical_friction = 10 * spread_multiplier * 0.05, \
 			z_floor = 0, \
 		)
+	else
+		undo_messy()
+		do_messy()
 	if(still_warm && our_turf.bullet_sizzle)
 		addtimer(CALLBACK(GLOBAL_PROC, GLOBAL_PROC_REF(playsound), src, 'sound/items/tools/welder.ogg', 20, 1), sound_delay) //If the turf is made of water and the shell casing is still hot, make a sizzling sound when it's ejected.
 	else if(our_turf.bullet_bounce_sound)

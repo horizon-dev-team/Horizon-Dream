@@ -198,7 +198,7 @@
 		)))
 		if(KIT_JAMES_BOND)
 			new /obj/item/gun/ballistic/automatic/pistol(src) // 7 tc
-			new /obj/item/suppressor(src) // 3 tc
+			new /obj/item/attachment/silencer(src) // 3 tc // [HORIZON-EDIT] GunRework
 			new /obj/item/ammo_box/magazine/m9mm(src) // 1 tc
 			new /obj/item/ammo_box/magazine/m9mm(src)
 			new /obj/item/card/id/advanced/chameleon/elite(src) // 2 tc

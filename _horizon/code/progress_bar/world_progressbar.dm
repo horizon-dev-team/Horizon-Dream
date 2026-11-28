@@ -88,10 +88,6 @@
 	mouse_opacity = MOUSE_OPACITY_TRANSPARENT
 	vis_flags = NONE //We don't want VIS_INHERIT_PLANE
 
-/mob/living/changeNext_move(num)
-	. = ..()
-	SEND_SIGNAL(src, COMSIG_LIVING_CHANGENEXT_MOVE, next_move)
-
 /// Add an atom or list of atoms to our vis_contents
 /atom/proc/add_viscontents(atom/A)
 	src:vis_contents += A

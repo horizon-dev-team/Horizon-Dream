@@ -990,7 +990,7 @@ GAME_VERB_PROC(/mob/living, mob_sleep, "Sleep", null)
 	// Only aheals really do this right now, so this flag should be fine for the time being
 	if(heal_flags & HEAL_ADMIN)
 		set_nutrition(NUTRITION_LEVEL_FED + 50)
-		set_thirst(THIRST_LEVEL_NORMAL + 50) // [HORIZON-ADD] NEED_WATER
+		set_thirst(THIRST_LEVEL_NORMAL + 100) // [HORIZON-ADD] NEED_WATER
 		overeatduration = 0
 		satiety = 0
 
@@ -3186,3 +3186,13 @@ GLOBAL_LIST_EMPTY(fire_appearances)
 	static_image.name = "unknown humanoid"
 
 	return static_image
+
+// [HORIZON-ADD] GunRework
+/mob/living/update_mouse_pointer()
+	. = ..()
+	if(!client || client.mouse_override_icon || istype(loc, /obj/vehicle/sealed))
+		return
+	var/obj/item/gun/held_gun = get_active_held_item()
+	if(istype(held_gun) && held_gun.mouse_pointer_icon && !(held_gun.safety_flags & GUN_SAFETY_ENABLED))
+		client.mouse_pointer_icon = held_gun.mouse_pointer_icon
+// [/HORIZON-ADD]

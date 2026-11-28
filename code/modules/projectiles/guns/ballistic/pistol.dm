@@ -47,11 +47,14 @@
 	. = ..()
 	pin.pin_removable = FALSE
 
+// [HORIZON-EDIT] GunRework
+/obj/item/gun/ballistic/automatic/pistol/add_attachment_slots()
+	..()
+	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 25, 19)
 
-/obj/item/gun/ballistic/automatic/pistol/suppressed/Initialize(mapload)
-	. = ..()
-	var/obj/item/suppressor/S = new(src)
-	install_suppressor(S)
+/obj/item/gun/ballistic/automatic/pistol/suppressed
+	default_attachments = list(/obj/item/attachment/silencer)
+// [/HORIZON-EDIT]
 
 /obj/item/gun/ballistic/automatic/pistol/clandestine
 	name = "\improper Ansem pistol"
@@ -60,6 +63,12 @@
 	accepted_magazine_type = /obj/item/ammo_box/magazine/m10mm
 	empty_indicator = TRUE
 	suppressor_x_offset = 12
+
+// [HORIZON-EDIT] GunRework
+/obj/item/gun/ballistic/automatic/pistol/clandestine/add_attachment_slots()
+	..()
+	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 26, 19)
+// [/HORIZON-EDIT]
 
 /obj/item/gun/ballistic/automatic/pistol/clandestine/add_deep_lore()
 	AddElement(/datum/element/examine_lore, \
@@ -235,10 +244,34 @@
 		B) You are that evangelist, and will soon be adding another chapter to this gun's dark history." \
 	)
 
+// [HORIZON-EDIT] GunRework
 /obj/item/gun/ballistic/automatic/pistol/aps
-	name = "\improper Stechkin APS machine pistol"
-	desc = "An old Soviet machine pistol. It fires quickly, but kicks like a mule. Uses 9mm ammo. Has a threaded barrel for suppressors."
-	icon_state = "aps"
+	name = "\improper 69R machine pistol"
+	desc = "A machine pistol made by some crazy italians, capable of shooting in 3-round bursts. \
+		Uses 9mm ammo. Has a threaded barrel for suppressors."
+	fire_sound = '_horizon/sound/weapons/guns/pistol/aps.ogg'
+	suppressed_sound = '_horizon/sound/weapons/guns/pistol/glock_suppressed.wav'
+	load_sound = '_horizon/sound/weapons/guns/pistol/aps_magin.wav'
+	load_empty_sound = '_horizon/sound/weapons/guns/pistol/aps_magin.wav'
+	eject_sound = '_horizon/sound/weapons/guns/pistol/aps_magout.ogg'
+	eject_empty_sound = '_horizon/sound/weapons/guns/pistol/aps_magout.ogg'
+	lock_back_sound = '_horizon/sound/weapons/guns/pistol/aps_lockback.wav'
+	bolt_drop_sound = '_horizon/sound/weapons/guns/pistol/aps_lockin.wav'
+	rack_sound = '_horizon/sound/weapons/guns/pistol/aps_rack.ogg'
+	icon = '_horizon/icons/obj/items/guns/pistol.dmi'
+	icon_state = "b93r"
+	base_icon_state = "b93r"
+	gunshot_animation_information = list(
+		"pixel_x" = 15, \
+		"pixel_y" = 2, \
+		"inactive_when_suppressed" = TRUE, \
+	)
+	recoil_animation_information = list(
+		"recoil_angle_upper" = -15, \
+		"recoil_angle_lower" = -30, \
+		"recoil_burst_speed" = 0.5, \
+		"return_burst_speed" = 0.5, \
+	)
 	w_class = WEIGHT_CLASS_NORMAL
 	accepted_magazine_type = /obj/item/ammo_box/magazine/m9mm_aps
 	can_suppress = TRUE
@@ -246,7 +279,14 @@
 	burst_delay = 1
 	spread = 10
 	actions_types = list(/datum/action/item_action/toggle_firemode)
-	suppressor_x_offset = 6
+	suppressor_x_offset = 11
+	carry_weight = 1.5 KILOGRAMS
+	full_auto = TRUE
+// [/HORIZON-EDIT]
+
+/obj/item/gun/ballistic/automatic/pistol/aps/add_attachment_slots() // [HORIZON-ADD] GunRework
+	..()
+	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 27, 17)
 
 /obj/item/gun/ballistic/automatic/pistol/stickman
 	name = "flat gun"
@@ -254,6 +294,10 @@
 	icon_state = "flatgun"
 	mag_display = FALSE
 	show_bolt_icon = FALSE
+
+/obj/item/gun/ballistic/automatic/pistol/stickman/add_attachment_slots() // [HORIZON-ADD] GunRework
+	..()
+	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 23, 18)
 
 /obj/item/gun/ballistic/automatic/pistol/stickman/equipped(mob/user, slot)
 	..()

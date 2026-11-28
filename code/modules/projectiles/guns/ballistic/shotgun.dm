@@ -30,6 +30,7 @@
 
 	pb_knockback = 2
 	gun_flags = GUN_SMOKE_PARTICLES // [HORIZON-ADD] Ballistic_Impact
+	safety_flags = NONE // [HORIZON-EDIT] GunRework
 
 /obj/item/gun/ballistic/shotgun/blow_up(mob/user)
 	. = 0
@@ -82,7 +83,7 @@
 
 /obj/item/gun/ballistic/shotgun/automatic/shoot_live_shot(mob/living/user)
 	..()
-	rack()
+	rack(user) // [HORIZON-EDIT] GunRework
 
 /obj/item/gun/ballistic/shotgun/automatic/combat
 	name = "combat shotgun"

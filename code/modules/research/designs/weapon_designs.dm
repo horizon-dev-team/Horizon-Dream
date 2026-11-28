@@ -487,7 +487,7 @@
 	desc = "A reverse-engineered suppressor that fits on most small arms with threaded barrels."
 	build_type = PROTOLATHE | AWAY_LATHE
 	materials = list(/datum/material/iron =SHEET_MATERIAL_AMOUNT, /datum/material/silver =SMALL_MATERIAL_AMOUNT*5)
-	build_path = /obj/item/suppressor
+	build_path = /obj/item/attachment/silencer // [HORIZON-EDIT] GunRework
 	category = list(
 		RND_CATEGORY_WEAPONS + RND_SUBCATEGORY_WEAPONS_PARTS
 	)

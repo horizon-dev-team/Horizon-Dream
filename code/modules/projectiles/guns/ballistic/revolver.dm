@@ -10,7 +10,11 @@
 	dry_fire_sound = 'sound/items/weapons/gun/revolver/dry_fire.ogg'
 	casing_ejector = FALSE
 	internal_magazine = TRUE
-	bolt_type = BOLT_TYPE_NO_BOLT
+	// [HORIZON-EDIT] GunRework: ordinary revolvers share the opening-cylinder flow.
+	bolt_type = BOLT_TYPE_BREAK_ACTION
+	bolt_wording = "hammer"
+	safety_flags = NONE
+	// [/HORIZON-EDIT]
 	tac_reloads = FALSE
 	var/spin_delay = 10
 	var/recent_spin = 0
@@ -23,23 +27,50 @@
 		last_fire = world.time
 
 /obj/item/gun/ballistic/revolver/chamber_round(spin_cylinder = TRUE, replace_new_round)
-	if(!magazine) //if it mag was qdel'd somehow.
-		CRASH("revolver tried to chamber a round without a magazine!")
+	// [HORIZON-EDIT] GunRework
+	if(!magazine || cylinder_open)
+		clear_chambered()
+		return
+	// [/HORIZON-EDIT]
 	if(chambered)
 		UnregisterSignal(chambered, COMSIG_MOVABLE_MOVED)
-	if (spin_cylinder)
+	if(spin_cylinder)
 		chambered = magazine.get_round()
 	else
 		chambered = magazine.stored_ammo[1]
-		if (ispath(chambered))
+		if(ispath(chambered))
 			chambered = new chambered(magazine)
 			magazine.stored_ammo[1] = chambered
 	if(chambered)
 		RegisterSignal(chambered, COMSIG_MOVABLE_MOVED, PROC_REF(clear_chambered))
+	SEND_SIGNAL(src, COMSIG_UPDATE_AMMO_HUD) // [HORIZON-ADD] GunRework
+
+// [HORIZON-ADD] GunRework
+/obj/item/gun/ballistic/revolver/handle_chamber(mob/living/user, empty_chamber = TRUE, from_firing = TRUE, chamber_next_round = TRUE)
+	if(bolt_type != BOLT_TYPE_BREAK_ACTION)
+		return ..()
+	if(from_firing && chamber_next_round && semi_auto && !cylinder_open)
+		chamber_round()
+
+/obj/item/gun/ballistic/revolver/postfire_empty_checks(last_shot_succeeded)
+	var/hammer_was_cocked = !bolt_locked
+	. = ..()
+	if(last_shot_succeeded && hammer_was_cocked && semi_auto && !cylinder_open && bolt_type == BOLT_TYPE_BREAK_ACTION)
+		bolt_locked = FALSE
+		update_appearance()
+// [/HORIZON-ADD]
 
 /obj/item/gun/ballistic/revolver/shoot_with_empty_chamber(mob/living/user as mob|obj)
 	..()
-	chamber_round()
+	// [HORIZON-EDIT] GunRework: rotate once on the next hammer cock, not twice
+	// across a dry click and the following trigger pull.
+	if(cylinder_open)
+		return
+	if(bolt_type == BOLT_TYPE_BREAK_ACTION)
+		bolt_locked = TRUE
+	else
+		chamber_round()
+	// [/HORIZON-EDIT]
 
 /obj/item/gun/ballistic/revolver/click_alt(mob/user)
 	spin_chamber(user)
@@ -58,7 +89,7 @@
 		if(play_click)
 			playsound(src, 'sound/items/weapons/gun/general/ballistic_click.ogg', fire_sound_volume, vary_fire_sound, frequency = click_frequency_to_use)
 
-GAME_VERB(/obj/item/gun/ballistic/revolver, spin, "Spin Chamber", null)
+GAME_VERB(/obj/item/gun/ballistic/revolver, spin, "Spin Cylinder", null) // [HORIZON-EDIT] GunRework
 	spin_chamber(usr)
 
 /obj/item/gun/ballistic/revolver/verb/spin_chamber(mob/living/user)
@@ -72,8 +103,8 @@ GAME_VERB(/obj/item/gun/ballistic/revolver, spin, "Spin Chamber", null)
 
 	if(do_spin())
 		playsound(usr, /datum/sound_effect/revolver_spin, 30, FALSE)
-		visible_message(span_notice("[user] spins [src]'s chamber."), span_notice("You spin [src]'s chamber."))
-		balloon_alert(user, "chamber spun")
+		visible_message(span_notice("[user] spins [src]'s [cylinder_wording]."), span_notice("You spin [src]'s [cylinder_wording].")) // [HORIZON-EDIT] GunRework
+		balloon_alert(user, "[cylinder_wording] spun") // [HORIZON-EDIT] GunRework
 	else
 		verbs -= /obj/item/gun/ballistic/revolver/verb/spin
 
@@ -82,12 +113,19 @@ GAME_VERB(/obj/item/gun/ballistic/revolver, spin, "Spin Chamber", null)
 	. = istype(C)
 	if(.)
 		C.spin()
-		chamber_round(spin_cylinder = FALSE)
+		// [HORIZON-EDIT] GunRework: spinning must not ready a round in an open cylinder.
+		if(!cylinder_open)
+			chamber_round(spin_cylinder = FALSE)
+		// [/HORIZON-EDIT]
 
 /obj/item/gun/ballistic/revolver/get_ammo(countchambered = FALSE, countempties = TRUE)
 	var/boolets = 0 //mature var names for mature people
-	if (chambered && countchambered)
+	// [HORIZON-EDIT] GunRework: a revolver chambers a round that stays inside the cylinder,
+	// (9/8 on an 8-round cylinder). Only count it once it really left the cylinder.
+	var/list/cylinder_rounds = magazine.stored_ammo
+	if (chambered && countchambered && !(chambered in cylinder_rounds))
 		boolets++
+	// [/HORIZON-EDIT]
 	if (magazine)
 		boolets += magazine.ammo_count(countempties)
 	return boolets
@@ -95,8 +133,9 @@ GAME_VERB(/obj/item/gun/ballistic/revolver, spin, "Spin Chamber", null)
 /obj/item/gun/ballistic/revolver/examine(mob/user)
 	. = ..()
 	var/live_ammo = get_ammo(FALSE, FALSE)
-	. += "[live_ammo ? live_ammo : "None"] of those are live rounds."
-	. += span_notice("It can be spun with [EXAMINE_HINT("alt-click")].")
+	if(cylinder_open) // [HORIZON-EDIT] GunRework
+		. += "[live_ammo ? live_ammo : "None"] of those are live rounds."
+	. += span_notice("Its [cylinder_wording] can be spun with [EXAMINE_HINT("alt-click")].") // [HORIZON-EDIT] GunRework
 
 /obj/item/gun/ballistic/revolver/ignition_effect(atom/A, mob/user)
 	if(last_fire && last_fire + 15 SECONDS > world.time)
@@ -210,13 +249,16 @@ GAME_VERB(/obj/item/gun/ballistic/revolver, spin, "Spin Chamber", null)
 
 	accepted_magazine_type = /obj/item/ammo_box/magazine/internal/cylinder/rev762
 
+/obj/item/gun/ballistic/revolver/nagant/add_attachment_slots() // [HORIZON-ADD] GunRework
+	..()
+	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 27, 17)
 
 // A gun to play Russian Roulette!
-// You can spin the chamber to randomize the position of the bullet.
+// You can spin the cylinder to randomize the position of the bullet.
 
 /obj/item/gun/ballistic/revolver/russian
 	name = "\improper Russian revolver"
-	desc = "A Russian-made revolver for drinking games. Uses .357 ammo, and has a mechanism requiring you to spin the chamber before each trigger pull."
+	desc = "A Russian-made revolver for drinking games. Uses .357 ammo, and has a mechanism requiring you to spin the cylinder before each trigger pull." // [HORIZON-EDIT] GunRework
 	icon_state = "russianrevolver"
 	accepted_magazine_type = /obj/item/ammo_box/magazine/internal/cylinder/rus357
 	hidden_chambered = TRUE //Cheater.
@@ -251,12 +293,17 @@ GAME_VERB(/obj/item/gun/ballistic/revolver, spin, "Spin Chamber", null)
 	. = ..()
 	if(.)
 		spun = TRUE
+		// [HORIZON-ADD] GunRework: the spin already selected the roulette chamber.
+		// Do not advance again in before_can_shoot_checks on the next trigger pull.
+		if(!cylinder_open)
+			bolt_locked = FALSE
+		// [/HORIZON-ADD]
 
 /obj/item/gun/ballistic/revolver/russian/can_shoot()
 	SHOULD_CALL_PARENT(FALSE)
 	// we ALWAYS want to shoot.
 	// even if we don't have a chambered round, even if our chambered round has no bullet
-	return TRUE
+	return !cylinder_open // [HORIZON-EDIT] GunRework
 
 /obj/item/gun/ballistic/revolver/russian/load_gun(obj/item/ammo, mob/living/user)
 	. = ..()
@@ -291,7 +338,7 @@ GAME_VERB(/obj/item/gun/ballistic/revolver, spin, "Spin Chamber", null)
 		)
 		return TRUE // no melee attack
 	if(!spun)
-		to_chat(user, span_warning("You need to spin \the [src]'s chamber first!"))
+		to_chat(user, span_warning("You need to spin \the [src]'s [cylinder_wording] first!")) // [HORIZON-EDIT] GunRework
 		return TRUE // no melee attack
 	if(HAS_TRAIT(user, TRAIT_CURSED)) // I cannot live, I cannot die, trapped in myself, body my holding cell.
 		to_chat(user, span_warning("What a horrible night... To have a curse!"))

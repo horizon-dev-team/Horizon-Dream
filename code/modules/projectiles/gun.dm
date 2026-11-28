@@ -22,7 +22,7 @@
 	item_flags = NEEDS_PERMIT
 	attack_verb_continuous = list("strikes", "hits", "bashes")
 	attack_verb_simple = list("strike", "hit", "bash")
-	action_slots = ALL
+	action_slots = ITEM_SLOT_HANDS // [HORIZON-EDIT] GunRework
 
 	// Muzzle Flash
 	light_on = FALSE
@@ -122,10 +122,29 @@
 		pin = new pin
 		pin.gun_insert(new_gun = src, starting = TRUE)
 
+	// [HORIZON-ADD] GunRework
+	slot_offsets = slot_offsets
+	slot_available = slot_available
+	valid_attachments = valid_attachments
+	add_attachment_slots()
+	// [/HORIZON-ADD]
 	add_seclight_point()
 	add_bayonet_point()
 	add_deep_lore()
 	RegisterSignal(src, COMSIG_ITEM_IN_UNWRAPPED_TRAITOR_MAIL, PROC_REF(on_mail_unwrap))
+	// [HORIZON-ADD] GunRework
+	if(foldable)
+		add_item_action(/datum/action/item_action/toggle_stock)
+	if(full_auto)
+		initialize_full_auto()
+	if(wielded_inhand_state)
+		AddComponent(/datum/component/two_handed, \
+			wieldsound = '_horizon/sound/weapons/guns/stock_open.wav', \
+			unwieldsound = '_horizon/sound/weapons/guns/stock_close.wav')
+	if(safety_flags & GUN_SAFETY_HAS_SAFETY)
+		add_item_action(/datum/action/item_action/toggle_safety)
+	AddComponent(/datum/component/attachment_mount, slot_available, valid_attachments, slot_offsets, default_attachments)
+	// [/HORIZON-ADD]
 
 /obj/item/gun/Destroy()
 	if(isobj(pin)) //Can still be the initial path, then we skip
@@ -151,9 +170,28 @@
 /obj/item/gun/proc/add_seclight_point()
 	return
 
-/// Similarly to add_seclight_point(), handles [the bayonet attachment component][/datum/component/bayonet_attachable]
+// [HORIZON-EDIT] GunRework
+/// Configures the bayonet slot before the shared attachment mount is initialized.
 /obj/item/gun/proc/add_bayonet_point()
 	return
+
+/// Override to configure anchors before the mount installs default attachments.
+/// Call the parent first to retain slots configured by ancestor gun types.
+/obj/item/gun/proc/add_attachment_slots()
+	return
+
+/// Changes only this slot. Omit capacity to preserve its existing availability.
+/// Configuration is startup-only: the mount takes its own snapshot afterwards.
+/obj/item/gun/proc/set_attachment_slot(slot, offset_x, offset_y, capacity = null)
+	slot_offsets[slot] = list("x" = offset_x, "y" = offset_y)
+	if(!isnull(capacity))
+		slot_available[slot] = capacity
+
+/obj/item/gun/proc/set_bayonet_slot(offset_x, offset_y, overlay_state = "bayonet")
+	set_attachment_slot(ATTACHMENT_SLOT_BAYONET, offset_x, offset_y, capacity = 1)
+	valid_attachments |= /obj/item/knife/combat
+	bayonet_overlay = overlay_state
+// [/HORIZON-EDIT]
 
 /// For when you want to add the lore element to a gun, this is the proc to use.
 /obj/item/gun/proc/add_deep_lore()
@@ -191,17 +229,14 @@
 	target.apply_damage(damage = max(w_class * 5 - throwforce, 10), damagetype = BRUTE, def_zone = thrower.zone_selected, wound_bonus = CANT_WOUND, attacking_item = src)
 	return TRUE
 
+// [HORIZON-EDIT] GunRework
 /obj/item/gun/examine(mob/user)
 	. = ..()
 	if(!pinless)
 		if(pin)
-			. += "It has \a [pin] installed."
-			if(pin.pin_removable)
-				. += span_info("[pin] looks like [pin.p_they()] could be removed with some <b>tools</b>.")
-			else
-				. += span_info("[pin] looks like [pin.p_theyre()] firmly locked in, [pin.p_they()] look[pin.p_s()] impossible to remove.")
+			. += "<b>Firing pin:</b> [replacetext(pin.name, " firing pin", "")]."
 		else
-			. += "It doesn't have a <b>firing pin</b> installed, and won't fire."
+			. += span_warning("<b>No firing pin</b> installed, it won't fire.")
 
 	var/healthpercent = (atom_integrity/max_integrity) * 100
 	switch(healthpercent)
@@ -211,6 +246,11 @@
 			. += span_warning("It appears heavily damaged.")
 		if(0 to 25)
 			. += span_boldwarning("It's falling apart!")
+
+	var/safety_readout = safety_examine(user)
+	if(LAZYLEN(safety_readout))
+		. += safety_readout
+// [/HORIZON-ADD]
 
 // [HORIZON-EDIT] PHYSICS
 //called after the gun has successfully fired its chambered ammo.
@@ -337,6 +377,12 @@
 	if(.)
 		return
 
+	// [HORIZON-ADD] GunRework: right-click toggles the safety
+	if(safety_flags & GUN_SAFETY_HAS_SAFETY)
+		toggle_safety(user)
+		return SECONDARY_ATTACK_CANCEL_ATTACK_CHAIN
+	// [/HORIZON-ADD]
+
 	if(pinless)
 		return
 
@@ -365,6 +411,37 @@
 		playsound(src, 'sound/items/handling/ammobox_pickup.ogg', 20, FALSE)
 
 	return SECONDARY_ATTACK_CANCEL_ATTACK_CHAIN
+
+// [HORIZON-ADD] GunRework
+/obj/item/gun/item_interaction(mob/living/user, obj/item/tool, list/modifiers)
+	. = ..()
+	if(.)
+		return .
+	var/datum/component/attachment_mount/mount = GetComponent(/datum/component/attachment_mount)
+	return mount?.item_interaction(user, tool, modifiers)
+
+/obj/item/gun/click_alt(mob/user)
+	. = remove_attachment(user)
+	if(.)
+		return .
+	return ..()
+
+/// Alternate gesture preserves cylinder spinning and other subtype alt-click actions.
+/obj/item/gun/click_alt_secondary(mob/user)
+	. = remove_attachment(user)
+	if(.)
+		return .
+	return ..()
+
+/// Click handlers must not sleep, and taking an attachment off asks the user and waits,
+/// so the actual removal runs asynchronously. Only claim the click when it can really start.
+/obj/item/gun/proc/remove_attachment(mob/user)
+	var/datum/component/attachment_mount/mount = GetComponent(/datum/component/attachment_mount)
+	if(!mount?.has_removable_attachment(ATTACH_REMOVABLE_HAND) || !mount.can_interact(user))
+		return NONE
+	INVOKE_ASYNC(mount, TYPE_PROC_REF(/datum/component/attachment_mount, start_detach), user, null)
+	return CLICK_ACTION_SUCCESS
+// [/HORIZON-ADD]
 
 /obj/item/gun/interact_with_atom(atom/interacting_with, mob/living/user, list/modifiers)
 	var/fired = try_fire_gun(interacting_with, user, list2params(modifiers))
@@ -410,6 +487,18 @@
 	if(firing_burst)
 		return NONE
 
+	// [HORIZON-ADD] GunRework: no gun-bashing with safe-only guns, treat
+	// wounds instead of shooting when not in combat mode
+	if(flag)
+		if((safety_flags & GUN_SAFETY_NO_FLOGGING) && user?.combat_mode)
+			return NONE
+	// Safety-on is a dry click. Pin failures already message inside handle_pins.
+	if(istype(user) && (safety_flags & GUN_SAFETY_ENABLED))
+		shoot_with_empty_chamber(user)
+		return NONE
+	before_can_shoot_checks(user)
+	// [/HORIZON-ADD]
+
 	if(SEND_SIGNAL(user, COMSIG_MOB_TRYING_TO_FIRE_GUN, src, target, flag, params) & COMPONENT_CANCEL_GUN_FIRE)
 		return NONE
 
@@ -438,10 +527,13 @@
 	if(check_botched(user, target))
 		return NONE
 
-	var/obj/item/bodypart/other_hand = user.has_hand_for_held_index(user.get_inactive_hand_index()) //returns non-disabled inactive hands
-	if(weapon_weight == WEAPON_HEAVY && (user.get_inactive_held_item() || !other_hand))
-		balloon_alert(user, "use both hands!")
-		return ITEM_INTERACT_BLOCKING
+	// [HORIZON-REMOVE] GunRework
+	//var/obj/item/bodypart/other_hand = user.has_hand_for_held_index(user.get_inactive_hand_index()) //returns non-disabled inactive hands
+	//if(weapon_weight == WEAPON_HEAVY && (user.get_inactive_held_item() || !other_hand))
+	//	balloon_alert(user, "use both hands!")
+	//	return ITEM_INTERACT_BLOCKING
+	// [/HORIZON-REMOVE]
+
 	//DUAL (or more!) WIELDING
 	var/bonus_spread = 0
 	if(user.combat_mode && !HAS_TRAIT(user, TRAIT_NO_GUN_AKIMBO))
@@ -480,10 +572,17 @@
 					user.dropItemToGround(src, TRUE)
 				return TRUE
 
+// [HORIZON-EDIT] GunRework
 /obj/item/gun/can_trigger_gun(mob/living/user, akimbo_usage)
 	. = ..()
+	if(!.)
+		return .
 	if(!handle_pins(user))
 		return FALSE
+	if(safety_flags & GUN_SAFETY_ENABLED) // Safety blocks the trigger
+		return FALSE
+	return TRUE
+// [/HORIZON-EDIT]
 
 /obj/item/gun/proc/handle_pins(mob/living/user)
 	if(pinless)
@@ -532,6 +631,7 @@
 		firing_burst = FALSE
 		return FALSE
 	shoot_live_shot(user, get_dist(user, target) <= 1, target, message)
+	firing_animation(user, TRUE) // [HORIZON-ADD] GunRework
 	if (iteration >= burst_size)
 		firing_burst = FALSE
 
@@ -582,6 +682,11 @@
 		bonus_spread = bonus_spread_values[MAX_BONUS_SPREAD_INDEX]
 
 	SEND_SIGNAL(src, COMSIG_GUN_FIRED, user, target, params, zone_override)
+	// [HORIZON-ADD] GunRework
+	SEND_SIGNAL(src, COMSIG_UPDATE_AMMO_HUD)
+	if(spread_unwielded && !HAS_TRAIT(src, TRAIT_WIELDED))
+		bonus_spread += rand(0, spread_unwielded)
+	// [/HORIZON-ADD]
 
 	add_fingerprint(user)
 
@@ -621,6 +726,7 @@
 			return user.combat_mode ? ITEM_INTERACT_SKIP_TO_ATTACK : NONE
 
 		shoot_live_shot(user, get_dist(user, target) <= 1, target, message)
+		firing_animation(user, FALSE) // [HORIZON-ADD] GunRework
 		// If gun gets destroyed as a result of firing
 		if (!QDELETED(src))
 			process_chamber(user) // [HORIZON-EDIT] PHYSICS
@@ -762,3 +868,144 @@
 
 #undef FIRING_PIN_REMOVAL_DELAY
 #undef DUALWIELD_PENALTY_EXTRA_MULTIPLIER
+
+// [HORIZON-ADD] GunRework
+// Safety, folding stocks, full auto, wielded in-hand sprites, unwielded
+// spread, attachment slots and firing animations.
+/obj/item/gun
+	/// Flags related to gun safety
+	var/safety_flags = GUN_SAFETY_FLAGS_DEFAULT
+	/// Sound when safety is toggled on
+	var/safety_on_sound = '_horizon/sound/weapons/guns/safety1.ogg'
+	/// Sound when safety is toggled off
+	var/safety_off_sound = '_horizon/sound/weapons/guns/safety1.ogg'
+	/// Mouse pointer icon when holding this gun while the safety is disabled
+	var/mouse_pointer_icon = '_horizon/icons/effects/mouse_pointers/weapon_pointer.dmi'
+	/// Does the gun have a unique icon_state when nothing is chambered?
+	var/empty_icon_state = FALSE
+
+	/// Does the gun have unique inhands when wielded?
+	var/wielded_inhand_state = FALSE
+	/// Does the inhand state get modifier when sawn?
+	var/sawn_inhand_state = FALSE
+	/// NO FULL AUTO IN BUILDINGS!
+	var/full_auto = FALSE
+	/// Extra random spread when firing this gun without a two-handed grip. 0 = no penalty.
+	var/spread_unwielded = 0
+
+	// Folding stock variables
+	/// Allows the gun's stock to be folded and unfolded.
+	var/foldable = FALSE
+	/// Whether the stock is folded or not.
+	var/folded = TRUE
+	/// The sound it makes when you fold a stock
+	var/fold_open_sound = '_horizon/sound/weapons/guns/stock_open.wav'
+	/// The sound it makes when you unfold a stock.
+	var/fold_close_sound = '_horizon/sound/weapons/guns/stock_close.wav'
+	/// Every time you fiddle with the stock
+	var/fiddle = '_horizon/sound/effects/fiddle.wav'
+
+	// ~Attachment system
+	var/list/slot_available = ATTACHMENT_DEFAULT_SLOT_AVAILABLE
+	var/list/default_attachments = null
+	/// Whitelist of attachment types this gun accepts. Defaults to all attachments.
+	var/list/valid_attachments = list(/obj/item/attachment, /obj/item/flashlight/seclite)
+
+	/// slot -> list("x" = n, "y" = n).
+	var/list/slot_offsets = list(ATTACHMENT_SLOT_RAIL = list("x" = 17, "y" = 17))
+	var/bayonet_overlay = "bayonet"
+
+	// ~Firing animations
+	/// If set, shows a gunshot overlay when firing. Format: list("icon" = ..., "icon_state" = ..., "pixel_x" = ..., "pixel_y" = ..., "duration" = ..., "inactive_when_suppressed" = TRUE/FALSE)
+	var/list/gunshot_animation_information = null
+	/// If set, plays a recoil animation when firing. Format: list("recoil_angle_upper" = ..., "recoil_angle_lower" = ..., "recoil_speed" = ..., "return_speed" = ...)
+	var/list/recoil_animation_information = null
+	/// If set, applies client-side camera recoil when firing. Format: list("strength" = ..., "duration" = ..., "easing" = ...)
+	var/list/client_recoil_animation_information = null
+	var/doing_recoil_burst_animation = FALSE
+
+/obj/item/gun/update_icon(updates)
+	. = ..()
+	if(wielded_inhand_state)
+		if(HAS_TRAIT(src, TRAIT_WIELDED))
+			inhand_icon_state = "[initial(inhand_icon_state)][(sawn_off && sawn_inhand_state) ? "_sawn" : ""]_wielded"
+		else
+			inhand_icon_state = "[initial(inhand_icon_state)][(sawn_off && sawn_inhand_state) ? "_sawn" : ""]"
+	else if(sawn_inhand_state)
+		inhand_icon_state = "[initial(inhand_icon_state)][sawn_off ? "_sawn" : ""]"
+
+/obj/item/gun/update_overlays()
+	. = ..()
+	if(foldable)
+		//generally, the stock should be below everything else, otherwise it will look very fucked
+		var/image/folding_image = image(icon, src, "[base_icon_state]_[folded ? "folded" : "unfolded"]")
+		folding_image.layer = layer - 1
+		. += folding_image
+	if(safety_flags & GUN_SAFETY_HAS_SAFETY)
+		var/image/safety_overlay
+		if((safety_flags & GUN_SAFETY_ENABLED) && (safety_flags & GUN_SAFETY_OVERLAY_ENABLED))
+			safety_overlay = image(icon, src, "[base_icon_state]_safe")
+		else if(!(safety_flags & GUN_SAFETY_ENABLED) && (safety_flags & GUN_SAFETY_OVERLAY_DISABLED))
+			safety_overlay = image(icon, src, "[base_icon_state]_unsafe")
+		if(safety_overlay)
+			. += safety_overlay
+
+/obj/item/gun/equipped(mob/living/user, slot)
+	. = ..()
+	if(slot == ITEM_SLOT_HANDS)
+		user.update_mouse_pointer()
+
+/obj/item/gun/dropped(mob/user)
+	. = ..()
+	user.update_mouse_pointer()
+
+/// Drag the gun onto an open turf to (un)fold its stock.
+/obj/item/gun/mouse_drop_dragged(atom/over, mob/user, src_location, over_location, params)
+	. = ..()
+	if(!foldable)
+		return
+	if(!isliving(user) || !user.Adjacent(src) || HAS_TRAIT(user, TRAIT_INCAPACITATED))
+		return
+	if(isopenturf(over))
+		toggle_stock(user)
+		return TRUE
+
+/obj/item/gun/ui_action_click(mob/user, actiontype)
+	if(istype(actiontype, /datum/action/item_action/toggle_stock))
+		toggle_stock(user)
+	else if(istype(actiontype, /datum/action/item_action/toggle_safety))
+		toggle_safety(user)
+	else
+		return ..()
+
+/obj/item/gun/proc/initialize_full_auto()
+	if(!full_auto)
+		return FALSE
+	AddComponent(/datum/component/automatic_fire)
+
+/obj/item/gun/proc/before_can_shoot_checks(mob/living/user)
+	return TRUE
+
+/obj/item/gun/proc/toggle_stock(mob/user)
+	if(!foldable)
+		return
+	playsound(src, fiddle, 68, FALSE)
+	if(!do_after(user, 0.5 SECONDS, src))
+		return
+	if(!folded)
+		w_class--
+		folded = TRUE
+		playsound(src, fold_close_sound, 80, FALSE)
+		to_chat(user, span_notice("I fold [src]'s stock."))
+	else
+		w_class++
+		folded = FALSE
+		playsound(src, fold_open_sound, 80, FALSE)
+		to_chat(user, span_notice("I unfold [src]'s stock."))
+	update_appearance()
+
+/datum/action/item_action/toggle_stock
+	name = "Toggle Stock"
+	button_icon = '_horizon/icons/hud/actions.dmi'
+	button_icon_state = "stock"
+// [/HORIZON-ADD]

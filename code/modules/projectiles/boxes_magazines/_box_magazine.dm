@@ -45,6 +45,12 @@
 	/// Is the greyscale icon used for the ammo band when it's empty of bullets, only if it's not null.
 	var/ammo_band_icon_empty
 
+	// [HORIZON-ADD] GunRework
+	drop_sound = '_horizon/sound/weapons/mag_drop.wav'
+	pickup_sound = '_horizon/sound/weapons/mag_pickup.ogg'
+	var/tips_ammo = "bullet"
+	// [/HORIZON-ADD]
+
 /obj/item/ammo_box/Initialize(mapload)
 	. = ..()
 	if(!start_empty)
@@ -269,13 +275,23 @@
 	to_chat(user, span_notice("You remove a [casing_phrasing] from [src]!"))
 	update_appearance()
 
+// [HORIZON-ADD] GunRework
+/obj/item/ammo_box/get_extra_tooltip(mob/user)
+	. = ..()
+	var/shells_left = LAZYLEN(stored_ammo)
+	var/obj/item/ammo_casing/top_round = get_round()
+	if(!top_round)
+		return
+	. += "<br><tr><td><b>Capacity:</b></b></td><td>[icon2html(DAMAGE_ICON_SET, user, "ammo_bullet")] [shells_left]/[max_ammo] [casing_phrasing]\s.</td></tr>"
+// [/HORIZON-ADD]
+
 /obj/item/ammo_box/examine(mob/user)
 	. = ..()
 	var/shells_left = LAZYLEN(stored_ammo)
 	var/obj/item/ammo_casing/top_round = get_round()
 	if(!top_round)
 		return
-	. += "It has <b>[shells_left]</b> [casing_phrasing]\s remaining."
+	. += "<b>Capacity:</b> [icon2html(DAMAGE_ICON_SET, user, "ammo_bullet")] [shells_left]/[max_ammo] [casing_phrasing]\s." // [HORIZON-ADD] GunRework
 	// this is kind of awkward phrasing, but it's the top/ready ammo in the box
 	// intended for people who have like three mislabeled magazines
 	. += span_notice("\A <b>[top_round]</b> is ready.")

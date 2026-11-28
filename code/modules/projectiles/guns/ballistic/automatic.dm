@@ -32,6 +32,10 @@
 	. = ..()
 	AddComponent(/datum/component/automatic_fire, 0.2 SECONDS)
 
+/obj/item/gun/ballistic/automatic/proto/add_attachment_slots() // [HORIZON-ADD] GunRework
+	..()
+	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 24, 16)
+
 /obj/item/gun/ballistic/automatic/proto/unrestricted
 	pin = /obj/item/firing_pin
 
@@ -49,8 +53,14 @@
 	mag_display_ammo = TRUE
 	empty_indicator = TRUE
 
+// [HORIZON-EDIT] GunRework
 /obj/item/gun/ballistic/automatic/c20r/add_bayonet_point()
-	AddComponent(/datum/component/bayonet_attachable, offset_x = 26, offset_y = 12)
+	set_bayonet_slot(26, 12)
+
+/obj/item/gun/ballistic/automatic/c20r/add_attachment_slots()
+	..()
+	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 25, 16)
+// [/HORIZON-EDIT]
 
 /obj/item/gun/ballistic/automatic/c20r/update_overlays()
 	. = ..()
@@ -88,7 +98,7 @@
 	AddComponent(/datum/component/automatic_fire, 0.3 SECONDS)
 
 /obj/item/gun/ballistic/automatic/wt550/add_bayonet_point()
-	AddComponent(/datum/component/bayonet_attachable, offset_x = 25, offset_y = 12)
+	set_bayonet_slot(25, 12) // [HORIZON-EDIT] GunRework
 
 /obj/item/gun/ballistic/automatic/smartgun
 	name = "\improper Abielle Smart-SMG"
@@ -128,6 +138,10 @@
 	show_bolt_icon = FALSE
 	mag_display = TRUE
 	rack_sound = 'sound/items/weapons/gun/pistol/slide_lock.ogg'
+
+/obj/item/gun/ballistic/automatic/mini_uzi/add_attachment_slots() // [HORIZON-ADD] GunRework
+	..()
+	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 30, 20)
 
 /**
  * Weak uzi for syndicate chimps. It comes in a 4 TC kit.
@@ -391,6 +405,10 @@
 
 	SET_BASE_PIXEL(-8, 0)
 
+/obj/item/gun/ballistic/automatic/battle_rifle/add_attachment_slots() // [HORIZON-ADD] GunRework
+	..()
+	set_attachment_slot(ATTACHMENT_SLOT_MUZZLE, 39, 14)
+
 /obj/item/gun/ballistic/automatic/battle_rifle/Initialize(mapload)
 	. = ..()
 	AddComponent(/datum/component/scope, range_modifier = 2)
@@ -547,3 +565,73 @@
 		light_overlay = "flight", \
 		overlay_x = 28, \
 		overlay_y = 12)
+
+// [HORIZON-ADD] GunRework
+// Fire selector (semi / burst / full auto cycling)
+/obj/item/gun/ballistic/automatic
+	/// Position of the fire selector: 1 = semi, 2 = burst, 3 = full auto.
+	var/select = 3
+	burst_select_sound = '_horizon/sound/weapons/guns/rifle/msafety.wav'
+
+/obj/item/gun/ballistic/automatic/Initialize(mapload)
+	. = ..()
+	if(GetComponent(/datum/component/automatic_fire))
+		burst_size = 1
+
+/// Let ordinary clicks through in semi/burst mode, including after re-equipping.
+/obj/item/gun/ballistic/automatic/autofire_bypass_check(datum/source, client/clicker, atom/target, turf/location, control, params)
+	if(select != 3)
+		return COMPONENT_AUTOFIRE_ONMOUSEDOWN_BYPASS
+	return ..()
+
+/obj/item/gun/ballistic/automatic/on_autofire_start(mob/living/shooter)
+	if(select != 3)
+		return NONE
+	return ..()
+
+/obj/item/gun/ballistic/automatic/do_autofire(datum/source, atom/target, mob/living/shooter, allow_akimbo, params)
+	if(select != 3)
+		return NONE
+	return ..()
+
+/obj/item/gun/ballistic/automatic/initialize_full_auto()
+	if(!full_auto)
+		return FALSE
+	AddComponent(/datum/component/automatic_fire, fire_delay)
+
+/// Guns without an autofire component retain the upstream semi/burst toggle.
+/obj/item/gun/ballistic/automatic/burst_select()
+	if(firing_burst)
+		return
+	var/datum/component/automatic_fire/autofire = GetComponent(/datum/component/automatic_fire)
+	if(!autofire)
+		return ..()
+
+	var/mob/living/user = usr
+	// Stop an active firing loop before changing mode, never overwrite its state.
+	autofire.autofire_off()
+	switch(select)
+		if(1)
+			select = initial(burst_size) > 1 ? 2 : 3
+		if(2)
+			select = 3
+		else
+			select = 1
+
+	burst_size = 1
+	fire_delay = initial(fire_delay)
+	burst_fire_selection = select != 1
+	switch(select)
+		if(1)
+			to_chat(user, span_notice("I switch [src] to semi-automatic."))
+		if(2)
+			burst_size = initial(burst_size)
+			to_chat(user, span_notice("I switch [src] to [burst_size]-round burst."))
+		if(3)
+			autofire.autofire_on(user?.client)
+			to_chat(user, span_notice("I switch [src] to automatic."))
+
+	playsound(src, burst_select_sound, 90, FALSE)
+	update_appearance()
+	update_item_action_buttons()
+// [/HORIZON-ADD]

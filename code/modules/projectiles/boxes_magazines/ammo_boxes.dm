@@ -77,3 +77,40 @@
 	icon_state = "foambox_riot_mini"
 	max_ammo = 20
 	custom_materials = list(/datum/material/iron = SHEET_MATERIAL_AMOUNT*12.5)
+
+// [HORIZON-ADD] GunRework
+/obj/item/ammo_box/a762svd
+	name = "ammo box (7.62x54R)"
+	icon = '_horizon/icons/obj/items/ammo/boxes.dmi'
+	icon_state = "riflebox"
+	ammo_type = /obj/item/ammo_casing/a762svd
+	max_ammo = 120
+
+/obj/item/ammo_box/a762svd/ap
+	name = "armor-piercing ammo box (7.62x54R)"
+	icon = '_horizon/icons/obj/items/ammo/boxes.dmi'
+	icon_state = "riflebox-AP"
+	ammo_type = /obj/item/ammo_casing/a762svd/ap
+	max_ammo = 120
+
+/obj/item/ammo_box/a54539abyss
+	name = "ammo box (5.45x39)"
+	icon = '_horizon/icons/obj/items/ammo/boxes.dmi'
+	icon_state = "riflebox"
+	ammo_type = /obj/item/ammo_casing/a545
+	max_ammo = 120
+
+/obj/item/ammo_box/a54539abyss/ap
+	name = "armor-piercing ammo box (5.45x39)"
+	icon = '_horizon/icons/obj/items/ammo/boxes.dmi'
+	icon_state = "riflebox-AP"
+	ammo_type = /obj/item/ammo_casing/a545/ap
+	max_ammo = 120
+
+/obj/item/ammo_box/a556winter
+	name = "ammo box (5.56x45)"
+	icon = '_horizon/icons/obj/items/ammo/boxes.dmi'
+	icon_state = "riflebox"
+	ammo_type = /obj/item/ammo_casing/a556
+	max_ammo = 120
+// [/HORIZON-ADD]

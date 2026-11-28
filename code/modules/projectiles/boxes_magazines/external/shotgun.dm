@@ -67,3 +67,19 @@
 		. += span_warning("<i>Oh god, where did they pull this from, a landfill?</i>")
 		human_sniffer.add_mood_event("stink-pocket", /datum/mood_event/disgusted)
 
+// [HORIZON-ADD] GunRework
+/obj/item/ammo_box/magazine/abyss_shotgun_drum
+	name = "\improper Abyss Shotgun magazine"
+	desc = "A 20-shell capacity magazine for the AN-12 shotgun."
+	icon = '_horizon/icons/obj/items/ammo/shotgun.dmi'
+	icon_state = "saiga_drum"
+	base_icon_state = "saiga_drum"
+	ammo_type = /obj/item/ammo_casing/shotgun/buckshot
+	caliber = CALIBER_SHOTGUN
+	max_ammo = 20
+	multiple_sprites = AMMO_BOX_ONE_SPRITE
+
+/obj/item/ammo_box/magazine/abyss_shotgun_drum/update_icon_state()
+	. = ..()
+	icon_state = "[base_icon_state]-[ammo_count() ? max_ammo : 0]"
+// [/HORIZON-ADD]

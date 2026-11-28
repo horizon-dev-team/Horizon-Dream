@@ -42,7 +42,13 @@
 /obj/item/ammo_casing/c38
 	name = ".38 bullet casing"
 	desc = "A .38 bullet casing."
-	caliber = CALIBER_357_38
+	// [HORIZON-ADD] GunRework
+	icon = '_horizon/icons/obj/items/ammo/casings.dmi'
+	icon_state = "c38"
+	base_icon_state = "c38"
+	stack_type = /obj/item/ammo_box/magazine/ammo_stack/c38
+	caliber = CALIBER_38
+	// [/HORIZON-ADD]
 	projectile_type = /obj/projectile/bullet/c38
 	casing_pressure = AMMO_CASING_PRESSURE_LOW // .38 rounds can be fired from .357 chambered guns, and technically vice versa, but watch out!
 	/// Used for icon building for things like speedloaders and the like to determine what kind of sprite this casing uses. Actually accepts any string, just make sure there is a matching positional sprite in _/icons/obj/weapons/guns/ammo.dmi.
@@ -121,3 +127,33 @@
 	to_chat(user, span_notice("You separate [peas] from [src]."))
 	loaded_projectile = null
 	update_appearance()
+
+// [HORIZON-ADD] GunRework
+/obj/item/ammo_casing/c38/pluspee
+	name = ".38 suspicious +P bullet casing"
+	desc = "A .38 suspicious bullet casing."
+	icon_state = "c38"
+	base_icon_state = "c38"
+	projectile_type = /obj/projectile/bullet/c38/pluspee
+	stack_type = /obj/item/ammo_box/magazine/ammo_stack/c38/pluspee
+
+/obj/item/ammo_casing/a357
+	icon = '_horizon/icons/obj/items/ammo/casings.dmi'
+	name = ".357 magnum bullet casing"
+	desc = "A .357 magnum bullet casing."
+	icon_state = "c357"
+	base_icon_state = "c357"
+	caliber = CALIBER_357
+	projectile_type = /obj/projectile/bullet/a357
+	stack_type = /obj/item/ammo_box/magazine/ammo_stack/a357
+
+/obj/item/ammo_casing/a500
+	icon = '_horizon/icons/obj/items/ammo/casings.dmi'
+	name = ".500 magnum bullet casing"
+	desc = "A .500 magnum bullet casing."
+	icon_state = "c357"
+	base_icon_state = "c357"
+	caliber = CALIBER_500
+	projectile_type = /obj/projectile/bullet/a500
+	stack_type = /obj/item/ammo_box/magazine/ammo_stack/a500
+// [/HORIZON-ADD]

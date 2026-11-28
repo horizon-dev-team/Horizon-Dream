@@ -43,6 +43,8 @@
 
 /// How much faster hunger and thirst drain per step at the current encumbrance level.
 /mob/living/carbon/proc/get_encumbrance_drain_multiplier()
+	if(!has_gravity())
+		return NEEDS_DRAIN_MULT_NONE
 	switch(encumbrance)
 		if(ENCUMBRANCE_IMPOSSIBLE)
 			return NEEDS_DRAIN_MULT_IMPOSSIBLE
@@ -108,6 +110,7 @@
 /// Sets the encumbrance level from the load's share of the basic lift (= maximum_carry_weight / 10):
 /// LIGHT >=20%, MEDIUM >=40%, STRENUOUS >=60%, HEAVY >=80%, EXTREME >=100%, IMPOSSIBLE >=120% of the maximum.
 /// At IMPOSSIBLE the carbon is floored until it sheds weight (see /turf/handle_fall for why it keeps its items).
+/// Without gravity the load is still tracked for HUD/examine, but it does not slow or floor the carbon.
 /mob/living/carbon/proc/update_encumbrance()
 	var/basic_lift = maximum_carry_weight / ENCUMBRANCE_MAXIMUM_PER_LIFT
 	var/old_level = encumbrance
@@ -125,19 +128,24 @@
 		encumbrance = ENCUMBRANCE_LIGHT
 	else
 		encumbrance = ENCUMBRANCE_NONE
-	if(encumbrance == old_level)
-		if(encumbrance < ENCUMBRANCE_EXTREME)
-			return
-		// Above 100% the slowdown scales with the load itself, so recompute on drift
-		update_encumbrance_movespeed_modifier()
-		return
-	// At >=120% the load pins the carbon to the ground until it is shed
-	if(encumbrance >= ENCUMBRANCE_IMPOSSIBLE)
+
+	var/under_gravity = has_gravity()
+	// Weight only pins and slows under gravity. In zero-g the same load is free.
+	if(under_gravity && encumbrance >= ENCUMBRANCE_IMPOSSIBLE)
 		ADD_TRAIT(src, TRAIT_FLOORED, CARRY_WEIGHT_TRAIT)
 	else
 		REMOVE_TRAIT(src, TRAIT_FLOORED, CARRY_WEIGHT_TRAIT)
-	update_encumbrance_movespeed_modifier()
-	notify_encumbrance_change()
+
+	if(under_gravity)
+		if(encumbrance == old_level && encumbrance < ENCUMBRANCE_EXTREME)
+			return
+		// Above 100% the slowdown scales with the load itself, so recompute on drift
+		update_encumbrance_movespeed_modifier()
+	else
+		remove_movespeed_modifier(/datum/movespeed_modifier/carry_weight)
+
+	if(encumbrance != old_level)
+		notify_encumbrance_change()
 
 /// Slowdown curve: get_basic_slowdown() * 0.2/0.4/0.5/0.6 below 100%, then from 100%
 /// to the collapse point (120%) the factor grows linearly from 0.8 to 1.6 with the load itself.
@@ -204,6 +212,8 @@
 	RegisterSignal(parent, COMSIG_MOB_UNEQUIPPED_ITEM, PROC_REF(on_gear_change))
 	// Hunger and thirst change how much we can lift.
 	RegisterSignals(parent, list(COMSIG_LIVING_UPDATE_NUTRITION, COMSIG_LIVING_UPDATE_THIRST), PROC_REF(on_needs_change))
+	// Entering or leaving gravity must clear or reapply floor/slowdown from the load.
+	RegisterSignal(parent, COMSIG_LIVING_GRAVITY_CHANGED, PROC_REF(on_gravity_change))
 	var/mob/living/carbon/owner = parent
 	owner.update_maximum_carry_weight()
 	refresh_timer = addtimer(CALLBACK(src, PROC_REF(on_timer)), ENCUMBRANCE_REFRESH_INTERVAL, TIMER_LOOP | TIMER_STOPPABLE)
@@ -216,6 +226,7 @@
 	var/mob/living/carbon/owner = parent
 	if(owner)
 		owner.remove_movespeed_modifier(/datum/movespeed_modifier/carry_weight)
+		REMOVE_TRAIT(owner, TRAIT_FLOORED, CARRY_WEIGHT_TRAIT)
 	return ..()
 
 /datum/component/carry_weight/proc/on_gear_change()
@@ -229,6 +240,10 @@
 		return
 	if(owner.update_maximum_carry_weight())
 		refresh()
+
+/datum/component/carry_weight/proc/on_gravity_change()
+	SIGNAL_HANDLER
+	refresh()
 
 /datum/component/carry_weight/proc/on_timer()
 	var/mob/living/carbon/owner = parent

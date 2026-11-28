@@ -224,6 +224,9 @@ GLOBAL_LIST_INIT(shove_disarming_types, typecacheof(list(
 ///Gun has a bolt, it locks back when empty. It can be released to chamber a round if a magazine is in.
 ///  Example: Pistols with a slide lock, some SMGs
 #define BOLT_TYPE_LOCKING 4
+/// Gun has no moving bolt mechanism, it cannot be racked, but can be broken open.
+/// Example: Break action shotguns, revolvers.
+#define BOLT_TYPE_BREAK_ACTION 5 // [HORIZON-ADD] GunRework
 //Sawn off nerfs
 ///accuracy penalty of sawn off guns
 #define SAWN_OFF_ACC_PENALTY 25
@@ -450,3 +453,21 @@ GLOBAL_LIST_INIT(all_precise_body_zones, list(BODY_ZONE_PRECISE_EYES, BODY_ZONE_
 
 ///Do we block carbon-level flash_act() from performing its default stamina damage/knockdown/confusion?
 #define FLASH_COMPLETED "flash_completed"
+
+// [HORIZON-ADD] GunRework
+// ~Gun safety flags
+/// Gun has a safety system.
+#define GUN_SAFETY_HAS_SAFETY (1<<0)
+/// The safety is currently enabled.
+#define GUN_SAFETY_ENABLED (1<<1)
+/// Gun has an overlay for enabled safety.
+#define GUN_SAFETY_OVERLAY_ENABLED (1<<2)
+/// Gun has an overlay for disabled safety.
+#define GUN_SAFETY_OVERLAY_DISABLED (1<<3)
+/// Trying to beat someone while the gun is unsafe will not attempt to fire a round.
+#define GUN_SAFETY_NO_FLOGGING (1<<4)
+
+/// Default safety flags: gun HAS a safety and it spawns ENABLED (ON).
+/// The gun cannot fire until the player toggles safety off (right-click).
+#define GUN_SAFETY_FLAGS_DEFAULT (GUN_SAFETY_HAS_SAFETY|GUN_SAFETY_ENABLED)
+// [/HORIZON-ADD]

@@ -433,3 +433,27 @@
 /obj/projectile/magic/shrink/alien
 	antimagic_flags = NONE
 	shrink_time = 9 SECONDS
+
+// [HORIZON-ADD] GunRework
+/obj/projectile/beam/laser/nasr
+	name = "laser"
+	icon = '_horizon/icons/obj/items/guns/projectiles/projectiles.dmi'
+	icon_state = "laser"
+	damage = 30
+	light_color = LIGHT_COLOR_BLOOD_MAGIC
+	impact_effect_type = /obj/effect/temp_visual/impact_effect/red_laser
+	muzzle_type = /obj/effect/projectile/muzzle/laser
+	tracer_type = null
+	impact_type = null
+
+/obj/projectile/beam/laser/siren
+	name = "plasma ball"
+	icon = '_horizon/icons/obj/items/guns/projectiles/projectiles.dmi'
+	icon_state = "plasma"
+	damage = 15
+	light_color = LIGHT_COLOR_LIGHT_CYAN
+	impact_effect_type = /obj/effect/temp_visual/impact_effect/blue_laser
+	muzzle_type = /obj/effect/projectile/muzzle/disabler
+	tracer_type = null
+	impact_type = null
+// [/HORIZON-ADD]

@@ -33,9 +33,6 @@
 /obj/structure/fermenting_barrel/add_debris_element()
 	AddElement(/datum/element/debris, DEBRIS_WOOD, -10, 5)
 
-/obj/structure/barricade/wooden/add_debris_element()
-	AddElement(/datum/element/debris, DEBRIS_WOOD, -10, 5)
-
 /obj/structure/chair/wood/add_debris_element()
 	AddElement(/datum/element/debris, DEBRIS_WOOD, -10, 5)
 
@@ -58,9 +55,6 @@
 	AddElement(/datum/element/debris, DEBRIS_WOOD, -10, 5)
 
 /obj/structure/ore_box/add_debris_element()
-	AddElement(/datum/element/debris, DEBRIS_WOOD, -10, 5)
-
-/obj/structure/fermenting_barrel/add_debris_element()
 	AddElement(/datum/element/debris, DEBRIS_WOOD, -10, 5)
 
 /obj/structure/dresser/add_debris_element()

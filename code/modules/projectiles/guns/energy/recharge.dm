@@ -121,7 +121,7 @@
 	unique_frequency = TRUE
 
 /obj/item/gun/energy/recharge/ebow/add_bayonet_point()
-	AddComponent(/datum/component/bayonet_attachable, offset_x = 20, offset_y = 12)
+	set_bayonet_slot(20, 12) // [HORIZON-EDIT] GunRework
 
 /obj/item/gun/energy/recharge/ebow/halloween
 	name = "candy corn crossbow"

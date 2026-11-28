@@ -1,5 +1,5 @@
 /obj/projectile/bullet/shotgun_slug
-	name = "12g shotgun slug"
+	name = "12g slug" // [HORIZON-EDIT] GunRework
 	icon_state = "bullet_tracer"
 	damage = 25
 	armour_penetration = 30
@@ -58,7 +58,7 @@
 	icon_state = "pellet_tracer"
 	damage = 5
 	wound_bonus = 5
-	speed = 1.1
+	speed = 2.1 // [HORIZON-EDIT] GunRework
 	damage_falloff_tile = -0.5
 	wound_falloff_tile = -1
 	ricochets_max = 2
@@ -100,7 +100,7 @@
 	damage = 5
 	wound_bonus = 5
 	exposed_wound_bonus = 5
-	speed = 1.1
+	speed = 2.1 // [HORIZON-EDIT] GunRework
 	wound_falloff_tile = -0.5 //We would very much like this to cause wounds despite the low damage, so the drop off is relatively slow
 	sharpness = SHARP_EDGED
 
@@ -132,7 +132,7 @@
 	stamina = 10
 	sharpness = NONE
 	embed_type = null
-	speed = 0.8
+	speed = 1.8
 	stamina_falloff_tile = -0.25
 	ricochets_max = 4
 	ricochet_chance = 120
@@ -165,7 +165,7 @@
 	armour_penetration = 30
 	damage_falloff_tile = -0.2
 	wound_falloff_tile = -0.5
-	speed = 1.2
+	speed = 2.2 // [HORIZON-EDIT] GunRework
 	sharpness = SHARP_POINTY
 	embed_type = /datum/embedding/bullet/flechette
 
@@ -215,3 +215,18 @@
 	hitsound = 'sound/items/weapons/sonic_jackhammer.ogg'
 	damage = 5 //does shit damage to everything except doors and windows
 	demolition_mod = 200 //one shot to break a window or grille, or two shots to breach an airlock door
+
+// [HORIZON-ADD] GunRework
+/obj/projectile/bullet/shotgun_bolas
+	name = "4g slug"
+	damage = 55
+	wound_bonus = 10
+	sharpness = SHARP_POINTY
+
+/obj/projectile/bullet/pellet/shotgun_bolas/buckshot
+	name = "4g pellet"
+	damage = 20
+	wound_bonus = 10
+	wound_falloff_tile = 0
+	sharpness = SHARP_POINTY
+// [/HORIZON-ADD]

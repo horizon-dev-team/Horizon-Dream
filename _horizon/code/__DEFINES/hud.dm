@@ -4,3 +4,6 @@
 #define HUD_HUMAN_EDGE_TOP "human_hud_edge_top"
 #define HUD_HUMAN_EDGE_BOTTOM "human_hud_edge_bottom"
 #define HUD_HUMAN_EDGE_BATTERY "human_hud_edge_battery"
+
+/// Ammo counter screen object.
+#define HUD_MOB_AMMO_COUNTER "mob_ammo_counter"

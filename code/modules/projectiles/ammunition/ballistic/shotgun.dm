@@ -3,7 +3,13 @@
 /obj/item/ammo_casing/shotgun
 	name = "shotgun slug"
 	desc = "A 12 gauge lead slug."
-	icon_state = "blshell"
+	// [HORIZON-ADD] GunRework
+	icon = '_horizon/icons/obj/items/ammo/casings.dmi'
+	icon_state = "12g-slug"
+	base_icon_state = "12g-slug"
+	world_icon_state = "12g-slug"
+	stack_type = /obj/item/ammo_box/magazine/ammo_stack/shotgun
+	// [/HORIZON-ADD]
 	worn_icon_state = "shell"
 	caliber = CALIBER_SHOTGUN
 	custom_materials = list(/datum/material/iron=SHEET_MATERIAL_AMOUNT*2)
@@ -18,26 +24,32 @@
 /obj/item/ammo_casing/shotgun/executioner
 	name = "executioner slug"
 	desc = "A 12 gauge lead slug purpose built to annihilate flesh on impact."
-	icon_state = "stunshell"
+	icon_state = "12g-stun"
+	base_icon_state = "12g-stun"
+	world_icon_state = "12g-stun"
 	projectile_type = /obj/projectile/bullet/shotgun_slug/executioner
 
 /obj/item/ammo_casing/shotgun/pulverizer
 	name = "pulverizer slug"
 	desc = "A 12 gauge lead slug purpose built to annihilate bones on impact."
-	icon_state = "stunshell"
+	icon_state = "12g-stun"
+	base_icon_state = "12g-stun"
+	world_icon_state = "12g-stun"
+	stack_type = /obj/item/ammo_box/magazine/ammo_stack/shotgun/pulverizer
 	projectile_type = /obj/projectile/bullet/shotgun_slug/pulverizer
 
 /obj/item/ammo_casing/shotgun/beanbag
 	name = "beanbag slug"
 	desc = "A weak beanbag slug for riot control."
-	icon_state = "bshell"
 	custom_materials = list(/datum/material/iron = SMALL_MATERIAL_AMOUNT * 3)
 	projectile_type = /obj/projectile/bullet/shotgun_beanbag
 
 /obj/item/ammo_casing/shotgun/incendiary
 	name = "incendiary slug"
 	desc = "An incendiary-coated shotgun slug."
-	icon_state = "ishell"
+	icon_state = "12g-hell"
+	base_icon_state = "12g-hell"
+	world_icon_state = "12g-hell"
 	projectile_type = /obj/projectile/bullet/incendiary/shotgun
 	custom_materials = list(/datum/material/iron = SMALL_MATERIAL_AMOUNT * 3)
 
@@ -49,7 +61,10 @@
 /obj/item/ammo_casing/shotgun/dragonsbreath
 	name = "dragonsbreath shell"
 	desc = "A shotgun shell which fires a cloud of incendiary pellets."
-	icon_state = "ishell2"
+	icon_state = "12g-dragon"
+	base_icon_state = "12g-dragon"
+	world_icon_state = "12g-dragon"
+	stack_type = /obj/item/ammo_box/magazine/ammo_stack/shotgun/dragonsbreath
 	projectile_type = /obj/projectile/bullet/incendiary/shotgun/dragonsbreath
 	pellets = 6
 	variance = 15
@@ -59,14 +74,18 @@
 /obj/item/ammo_casing/shotgun/stunslug
 	name = "taser slug"
 	desc = "A stunning taser slug."
-	icon_state = "stunshell"
+	icon_state = "12g-stun"
+	base_icon_state = "12g-stun"
+	world_icon_state = "12g-stun"
 	projectile_type = /obj/projectile/bullet/shotgun_stunslug
 	custom_materials = list(/datum/material/iron=SMALL_MATERIAL_AMOUNT*2.5)
 
 /obj/item/ammo_casing/shotgun/meteorslug
 	name = "meteorslug shell"
 	desc = "A shotgun shell rigged with CMC technology, which launches a massive slug when fired."
-	icon_state = "mshell"
+	icon_state = "12g-meteor"
+	base_icon_state = "12g-meteor"
+	world_icon_state = "12g-meteor"
 	projectile_type = /obj/projectile/bullet/cannonball/meteorslug
 	custom_materials = list(/datum/material/iron = SHEET_MATERIAL_AMOUNT * 6.5, /datum/material/glass = SHEET_MATERIAL_AMOUNT * 3.2)
 
@@ -89,7 +108,6 @@
 /obj/item/ammo_casing/shotgun/buckshot
 	name = "buckshot shell"
 	desc = "A 12 gauge buckshot shell."
-	icon_state = "gshell"
 	projectile_type = /obj/projectile/bullet/pellet/shotgun_buckshot
 	pellets = 6
 	variance = 15
@@ -116,7 +134,6 @@
 /obj/item/ammo_casing/shotgun/rubbershot
 	name = "rubber shot"
 	desc = "A shotgun casing filled with densely-packed rubber balls, used to incapacitate crowds from a distance."
-	icon_state = "rshell"
 	projectile_type = /obj/projectile/bullet/pellet/shotgun_rubbershot
 	pellets = 6
 	variance = 15
@@ -137,6 +154,10 @@
 	desc = "A shotgun casing filled with small metal darts. Pokes many tiny holes into meat and kevlar alike. Useful for turning someones insides \
 		into outsides."
 	icon_state = "flechette"
+	base_icon_state = "flechette"
+	world_icon_state = "flechette"
+	stack_type = /obj/item/ammo_box/magazine/ammo_stack/shotgun/flechette
+	// [HORIZON-EDIT] GunRework
 	projectile_type = /obj/projectile/bullet/pellet/flechette
 	custom_materials = list(/datum/material/iron = SMALL_MATERIAL_AMOUNT * 3, /datum/material/glass = SMALL_MATERIAL_AMOUNT * 2)
 	pellets = 8
@@ -148,7 +169,11 @@
 		A flechette not made from standard ferrous metals. But...plastic. It was a financial failure due to a complete lack of \
 		confidence in the product. Now there are millions of these things in landfills across the sector. This is one such example. \
 		Looks like a donk-pocket! Tastes like death!"
-	icon_state = "flechette_donk"
+	icon_state = "flechette-donk"
+	base_icon_state = "flechette-donk"
+	world_icon_state = "12g-stun"
+	stack_type = /obj/item/ammo_box/magazine/ammo_stack/shotgun/donk
+	// [HORIZON-EDIT] GunRework
 	projectile_type = /obj/projectile/bullet/pellet/flechette/donk
 	custom_materials = list(/datum/material/iron = SMALL_MATERIAL_AMOUNT * 3, /datum/material/plastic = SMALL_MATERIAL_AMOUNT * 2)
 	pellets = 5
@@ -157,7 +182,10 @@
 	name = "ion shell"
 	desc = "An advanced shotgun shell which uses a subspace ansible crystal to produce an effect similar to a standard ion rifle. \
 	The unique properties of the crystal split the pulse into a spread of individually weaker bolts."
-	icon_state = "ionshell"
+	icon_state = "12g-ion"
+	base_icon_state = "12g-ion"
+	world_icon_state = "12g-ion"
+	stack_type = /obj/item/ammo_box/magazine/ammo_stack/shotgun/ion
 	projectile_type = /obj/projectile/ion/weak
 	pellets = 4
 	variance = 15
@@ -167,7 +195,9 @@
 /obj/item/ammo_casing/shotgun/scatterlaser
 	name = "scatter laser shell"
 	desc = "An advanced shotgun shell that uses a micro laser to replicate the effects of a scatter laser weapon in a ballistic package."
-	icon_state = "lshell"
+	icon_state = "12g-scatter"
+	base_icon_state = "12g-scatter"
+	world_icon_state = "12g-scatter"
 	projectile_type = /obj/projectile/beam/scatter
 	pellets = 6
 	variance = 15
@@ -203,7 +233,9 @@
 /obj/item/ammo_casing/shotgun/dart
 	name = "shotgun dart"
 	desc = "A dart for use in shotguns. Can be injected with up to 15 units of any chemical."
-	icon_state = "cshell"
+	icon_state = "12g-chem"
+	base_icon_state = "12g-chem"
+	world_icon_state = "12g-chem"
 	projectile_type = /obj/projectile/bullet/dart
 	custom_materials = list(/datum/material/iron = SMALL_MATERIAL_AMOUNT * 3)
 	var/reagent_amount = 15
@@ -242,3 +274,28 @@
 	icon_state = "breacher"
 	projectile_type = /obj/projectile/bullet/shotgun_breaching
 	custom_materials = list(/datum/material/iron=SHEET_MATERIAL_AMOUNT*2)
+
+// [HORIZON-EDIT] GunRework
+// 4 gauge KS-23 shells (Destruidor de Bolas)
+/obj/item/ammo_casing/shotgun/bolas
+	name =  "Consumidor de Buceta 4 guage slug"
+	desc = "A 4 gauge destructive slug designed with the purpose of destroying armored structures at a range. \
+		But It can destroy flesh, too."
+	icon_state = "8g"
+	base_icon_state = "8g"
+	world_icon_state = "8g"
+	caliber = CALIBER_KS23
+	projectile_type = /obj/projectile/bullet/shotgun_bolas
+	stack_type = /obj/item/ammo_box/magazine/ammo_stack/shotgun/bolas
+
+/obj/item/ammo_casing/shotgun/bolas/buckshot
+	name = "Estuprador-3 4 gauge buckshot"
+	desc = "A 4 gauge anti-personnel buckshot shell for the sole purpose of completely fucking obliterating soft tissue from close range."
+	icon_state = "8g"
+	base_icon_state = "8g"
+	world_icon_state = "8g"
+	caliber = CALIBER_KS23
+	pellets = 10
+	variance = 10
+	projectile_type = /obj/projectile/bullet/pellet/shotgun_bolas/buckshot
+// [/HORIZON-EDIT]
